@@ -54,6 +54,7 @@ pub struct Secret {
 
     /// Optional. A list of up to 10 Pub/Sub topics to which messages are published
     /// when control plane operations are called on the secret or its versions.
+    #[serde(default, skip_serializing_if = "std::vec::Vec::is_empty")]
     pub topics: Vec<crate::model::Topic>,
 
     /// Optional. Etag of the currently stored

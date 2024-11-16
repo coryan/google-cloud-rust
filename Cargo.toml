@@ -36,6 +36,7 @@ members = [
   "src/generated/cloud/common",
   "src/generated/cloud/iam/v1",
   "src/generated/api",
+  "src/prototypes/client-as-trait",
 ]
 
 [workspace.package]
