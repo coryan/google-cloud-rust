@@ -36,9 +36,18 @@ pub async fn secretmanager() -> Result<(), Box<dyn Error>> {
             sm::model::CreateSecretRequest::default()
                 .set_parent(format!("projects/{PROJECT_ID}"))
                 .set_secret_id(&secret_id)
-                .set_secret(sm::model::Secret::default().set_labels(
-                    [("integration-test", "true")].map(|(k, v)| (k.to_string(), v.to_string())),
-                )),
+                .set_secret(
+                    sm::model::Secret::default()
+                        .set_replication(sm::model::Replication::default().set_replication(
+                            sm::model::replication::Replication::Automatic(
+                                sm::model::replication::Automatic::default(),
+                            ),
+                        ))
+                        .set_labels(
+                            [("integration-test", "true")]
+                                .map(|(k, v)| (k.to_string(), v.to_string())),
+                        ),
+                ),
         )
         .await?;
     println!("CREATE = {response:?}");
