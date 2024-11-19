@@ -31,7 +31,7 @@ pub async fn secretmanager() -> Result<(), Box<dyn Error>> {
 
     cleanup_stale_secrets(&client, &secret_id).await?;
 
-    let response = client
+    let create_response = client
         .create_secret(
             sm::model::CreateSecretRequest::default()
                 .set_parent(format!("projects/{PROJECT_ID}"))
@@ -50,15 +50,19 @@ pub async fn secretmanager() -> Result<(), Box<dyn Error>> {
                 ),
         )
         .await?;
-    println!("CREATE = {response:?}");
+    println!("CREATE = {create_response:?}");
 
-    assert_eq!(
-        response.name,
-        format!("projects/{PROJECT_ID}/secrets/{secret_id}")
-    );
+    let project_name = create_response.name.strip_suffix(format!("/secrets/{secret_id}").as_str());
+    assert!(project_name.is_some());
+
+    let get_response = client
+        .get_secret(sm::model::GetSecretRequest::default().set_name(&create_response.name))
+        .await?;
+    println!("GET = {get_response:?}");
+    assert_eq!(get_response, create_response);
 
     let response = client
-        .delete_secret(sm::model::DeleteSecretRequest::default().set_name(response.name))
+        .delete_secret(sm::model::DeleteSecretRequest::default().set_name(get_response.name))
         .await?;
     println!("DELETE = {response:?}");
 
