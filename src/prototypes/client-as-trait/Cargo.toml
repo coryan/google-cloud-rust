@@ -37,3 +37,5 @@ tower-reqwest = "0.4.0"
 http = "1.1.0"
 tower = { version = "0.5.1", features = ["reconnect", "retry", "timeout", "tokio", "tracing"] }
 chrono = { version = "0.4", features = ["serde"] }
+rand = "0.8.5"
+futures = "0.3.31"

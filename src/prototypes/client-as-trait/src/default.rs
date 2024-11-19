@@ -94,7 +94,14 @@ impl crate::SecretManagerService for DefaultSecretManagerService {
         &self,
         req: crate::model::CreateSecretRequest,
     ) -> Result<crate::model::Secret, Box<dyn std::error::Error>> {
-        Err("not implemented".into())
+        let builder = self.client
+            .post(format!("{}/v1/{}/secrets", self.endpoint, req.parent,))
+            .json(&req.secret)
+            .query(&[("alt", "json")]);
+        let builder =
+            gax::query_parameter::add(builder, "secretId", &req.secret_id).map_err(Error::other)?;
+        let response = self.send_impl::<crate::model::Secret>(builder).await?;
+        Ok(response)
     }
 
     /// Gets metadata for a given [Secret][google.cloud.secretmanager.v1.Secret].
@@ -102,7 +109,11 @@ impl crate::SecretManagerService for DefaultSecretManagerService {
         &self,
         req: crate::model::GetSecretRequest,
     ) -> Result<crate::model::Secret, Box<dyn std::error::Error>> {
-        Err("not implemented".into())
+        let builder = self.client
+            .get(format!("{}/v1/{}", self.endpoint, req.name,))
+            .query(&[("alt", "json")]);
+        let response = self.send_impl::<crate::model::Secret>(builder).await?;
+        Ok(response)
     }
 
     /// Deletes a [Secret][google.cloud.secretmanager.v1.Secret].
@@ -110,6 +121,10 @@ impl crate::SecretManagerService for DefaultSecretManagerService {
         &self,
         req: crate::model::DeleteSecretRequest,
     ) -> Result<wkt::Empty, Box<dyn std::error::Error>> {
-        Err("not implemented".into())
+        let builder = self.client
+            .delete(format!("{}/v1/{}", self.endpoint, req.name,))
+            .query(&[("alt", "json")]);
+        let response = self.send_impl::<wkt::Empty>(builder).await?;
+        Ok(response)
     }
 }
