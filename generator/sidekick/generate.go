@@ -37,7 +37,8 @@ func Generate(rootConfig *Config, args []string) error {
 		parserOpts    = map[string]string{}
 		language      = fs.String("language", "", "the generated language")
 		output        = fs.String("output", "generated", "the path within project-root to put generated files")
-		templateDir   = fs.String("template-dir", "templates/", "the path to the template directory")
+		templateDir   = fs.String("template-dir", rootConfig.General.TemplateDir, "the path to the template directory")
+		configOnly    = fs.Bool("config-only", false, "only generate the configuration file")
 		codecOpts     = map[string]string{}
 	)
 
@@ -83,6 +84,9 @@ func Generate(rootConfig *Config, args []string) error {
 	}
 	if err := writeSidekickToml(*output, config); err != nil {
 		return err
+	}
+	if *configOnly {
+		return nil
 	}
 
 	// Load the .sidekick.toml file and refresh the code.

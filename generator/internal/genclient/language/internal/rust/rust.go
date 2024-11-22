@@ -621,7 +621,7 @@ func (c *Codec) PackageName(api *genclient.API) string {
 	if len(c.PackageNameOverride) > 0 {
 		return c.PackageNameOverride
 	}
-	return api.Name
+	return "gcp-sdk-" + api.Name
 }
 
 func (c *Codec) validatePackageName(newPackage, elementName string) error {

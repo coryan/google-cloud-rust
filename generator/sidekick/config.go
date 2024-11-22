@@ -31,9 +31,9 @@ type Config struct {
 // Configuration parameters that affect Parsers and Codecs, including the
 // selection of parser and codec.
 type GeneralConfig struct {
-	Language            string `toml:"language"`
-	TemplateDir         string `toml:"template-dir"`
-	SpecificationFormat string `toml:"specification-format"`
+	Language            string `toml:"language,omitempty"`
+	TemplateDir         string `toml:"template-dir,omitempty"`
+	SpecificationFormat string `toml:"specification-format,omitempty"`
 	SpecificationSource string `toml:"specification-source"`
 	ServiceConfig       string `toml:"service-config"`
 }

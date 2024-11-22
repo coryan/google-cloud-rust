@@ -43,6 +43,11 @@ func root() error {
 	if err != nil {
 		return err
 	}
+	root, err := makeGoogleapisRoot(config)
+	if err != nil {
+		return err
+	}
+	config.Source["googleapis-root"] = root
 
 	args := flag.Args()
 	if len(args) < 1 {

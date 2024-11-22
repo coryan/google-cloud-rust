@@ -36,16 +36,12 @@ func RefreshAll(rootConfig *Config, args []string) error {
 	if err != nil {
 		return err
 	}
+	override := *rootConfig
+	override.Source["googleapis-root"] = root
+
 	directories, err := findAllDirectories(rootConfig)
 	if err != nil {
 		return err
-	}
-
-	override := *rootConfig
-	if override.Source == nil {
-		override.Source = map[string]string{"googleapis-root": root}
-	} else {
-		override.Source["googleapis-root"] = root
 	}
 
 	type result struct {

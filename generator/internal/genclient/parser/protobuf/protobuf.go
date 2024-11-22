@@ -22,6 +22,7 @@ import (
 	"log/slog"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -56,12 +57,22 @@ func (t *Parser) Parse(opts genclient.ParserOptions) (*genclient.API, error) {
 		return nil, err
 	}
 	var serviceConfig *serviceconfig.Service
-	if opts.ServiceConfig != "" {
-		cfg, err := genclient.ReadServiceConfig(opts.ServiceConfig)
+	for _, n := range []string{"input-root", "googleapis-root"} {
+		dir, ok := opts.Options[n]
+		if !ok {
+			continue
+		}
+		candidate := path.Join(dir, opts.ServiceConfig)
+		_, err := os.Stat(candidate)
+		if err != nil {
+			continue
+		}
+		cfg, err := genclient.ReadServiceConfig(candidate)
 		if err != nil {
 			return nil, err
 		}
 		serviceConfig = cfg
+		break
 	}
 	return MakeAPI(serviceConfig, request), nil
 }
@@ -143,9 +154,21 @@ func determineInputFiles(config genclient.ParserOptions) ([]string, error) {
 		return []string{config.Source}, nil
 	}
 
-	//
+	source := config.Source
+	for _, n := range []string{"input-root", "googleapis-root"} {
+		dir, ok := config.Options[n]
+		if !ok {
+			continue
+		}
+		candidate := path.Join(dir, config.Source)
+		_, err := os.Stat(candidate)
+		if err == nil {
+			source = candidate
+			break
+		}
+	}
 	var files []string
-	err := filepath.Walk(config.Source, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(source, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
