@@ -16,8 +16,8 @@
 language = 'rust'
 template-dir = 'generator/templates'
 specification-format = 'protobuf'
-specification-source = 'generator/testdata/googleapis/google/cloud/location'
-service-config = 'generator/testdata/googleapis/google/cloud/location/cloud.yaml'
+specification-source = 'google/cloud/location'
+service-config = 'google/cloud/location/cloud.yaml'
 
 [source]
 googleapis-root = 'generator/testdata/googleapis'
