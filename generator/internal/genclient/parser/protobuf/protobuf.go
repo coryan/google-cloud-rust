@@ -63,8 +63,8 @@ func (t *Parser) Parse(opts genclient.ParserOptions) (*genclient.API, error) {
 			continue
 		}
 		candidate := path.Join(dir, opts.ServiceConfig)
-		_, err := os.Stat(candidate)
-		if err != nil {
+		stat, err := os.Stat(candidate)
+		if err != nil || stat.IsDir() {
 			continue
 		}
 		cfg, err := genclient.ReadServiceConfig(candidate)
