@@ -92,31 +92,32 @@ func TestRustFromProtobuf(t *testing.T) {
 
 	configs := []TestConfig{
 		{
-			Source: "generator/testdata/googleapis/google/type",
+			Source: "google/type",
 			Name:   "type",
 			ExtraOptions: []string{
-				"-service-config", "generator/testdata/googleapis/google/type/type.yaml",
+				"-service-config", "google/type/type.yaml",
 			},
 		},
 		{
-			Source: "generator/testdata/googleapis/google/cloud/location",
+			Source: "google/cloud/location",
 			Name:   "location",
 			ExtraOptions: []string{
-				"-service-config", "generator/testdata/googleapis/google/cloud/location/cloud.yaml",
+				"-service-config", "google/cloud/location/cloud.yaml",
 			},
 		},
 		{
-			Source: "generator/testdata/googleapis/google/iam/v1",
+			Source: "google/iam/v1",
 			Name:   "iam/v1",
 			ExtraOptions: []string{
+				"-service-config", "google/iam/v1/iam_meta_api.yaml",
 				"-codec-option", "package:gtype=package=type-golden-gclient,path=generator/testdata/rust/gclient/golden/type,source=google.type",
 			},
 		},
 		{
-			Source: "generator/testdata/googleapis/google/cloud/secretmanager/v1",
+			Source: "google/cloud/secretmanager/v1",
 			Name:   "secretmanager",
 			ExtraOptions: []string{
-				"-service-config", "generator/testdata/googleapis/google/cloud/secretmanager/v1/secretmanager_v1.yaml",
+				"-service-config", "google/cloud/secretmanager/v1/secretmanager_v1.yaml",
 				"-codec-option", "package:iam=package=iam-v1-golden-gclient,path=generator/testdata/rust/gclient/golden/iam/v1,source=google.iam.v1",
 			},
 		},
