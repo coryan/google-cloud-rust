@@ -19,6 +19,10 @@ extend-exclude = [
   "generator/**/testdata/**",
 ]
 
+[type.rust.extend-words]
+# In src/generated/model.rs
+requestor = "requestor"
+
 [type.mustache]
 extend-glob = ["*.mustache"]
 
