@@ -22,9 +22,13 @@ limitations under the License.
 pub mod model;
 
 {{#HasServices}}
-use gax::error::{Error, HttpError};
+use gax::error::Error;
 use google_cloud_auth::{Credential, CredentialConfig};
-use std::sync::Arc;
+
+pub mod client;
+pub mod builder;
+pub(crate) mod transport;
+pub(crate) mod tracing;
 
 pub mod client;
 
@@ -33,17 +37,12 @@ const DEFAULT_HOST: &str = "https://{{DefaultHost}}/";
 /// A `Result` alias where the `Err` case is an [Error].
 pub type Result<T> = std::result::Result<T, Error>;
 
-struct InnerClient {
-    http_client: reqwest::Client,
-    cred: Credential,
-    endpoint: String,
-}
-
 #[derive(Default)]
 pub struct ConfigBuilder {
     pub(crate) endpoint: Option<String>,
     pub(crate) client: Option<reqwest::Client>,
     pub(crate) cred: Option<Credential>,
+    pub(crate) tracing: bool,
 }
 
 impl ConfigBuilder {
@@ -55,6 +54,12 @@ impl ConfigBuilder {
     /// Sets an endpoint that overrides the default endpoint for a service.
     pub fn set_endpoint<T: Into<String>>(mut self, v: T) -> Self {
         self.endpoint = Some(v.into());
+        self
+    }
+
+    /// Enable tracing.
+    pub fn set_tracing(mut self) -> Self {
+        self.tracing = true;
         self
     }
 
@@ -75,87 +80,7 @@ impl ConfigBuilder {
     }
 }
 
-#[derive(serde::Serialize)]
-#[allow(dead_code)]
-struct NoBody {}
 {{/HasServices}}
-
 {{#Services}}
-
-{{#DocLines}}
-{{{.}}}
-{{/DocLines}}
-#[derive(Clone)]
-pub struct {{NameToPascal}}Client {
-    inner: Arc<InnerClient>,
-}
-
-impl {{NameToPascal}}Client {
-    pub async fn new() -> Result<Self> {
-        Self::new_with_config(ConfigBuilder::new()).await
-    }
-
-    pub async fn new_with_config(conf: ConfigBuilder) -> Result<Self> {
-        let inner = InnerClient {
-            http_client: conf.client.unwrap_or(ConfigBuilder::default_client()),
-            cred: conf
-                .cred
-                .unwrap_or(ConfigBuilder::default_credential().await?),
-            endpoint: conf.endpoint.unwrap_or(DEFAULT_HOST.to_string()),
-        };
-        Ok(Self {
-            inner: Arc::new(inner),
-        })
-    }
-    {{#Methods}}
-
-    {{#DocLines}}
-    {{{.}}}
-    {{/DocLines}}
-    pub async fn {{NameToSnake}}(&self, req: {{InputTypeName}}) -> Result<{{OutputTypeName}}> {
-        let inner_client = self.inner.clone();
-        let builder = inner_client.http_client
-            .{{HTTPMethodToLower}}(format!(
-               "{}{{HTTPPathFmt}}",
-               inner_client.endpoint,
-               {{#HTTPPathArgs}}
-               {{{.}}},
-               {{/HTTPPathArgs}}
-            ))
-            .query(&[("alt", "json")]);
-        {{#QueryParams}}
-        let builder = gax::query_parameter::add(builder, "{{JSONName}}", {{{AsQueryParameter}}}).map_err(Error::other)?;
-        {{/QueryParams}}
-        self.execute(builder, {{#HasBody}}Some(req{{BodyAccessor}}){{/HasBody}}{{^HasBody}}None::<NoBody>{{/HasBody}}).await
-    }
-    {{/Methods}}
-
-    async fn execute<I: serde::ser::Serialize, O: serde::de::DeserializeOwned>(
-        &self,
-        mut builder: reqwest::RequestBuilder,
-        body: Option<I>,
-    ) -> Result<O> {
-        let inner_client = self.inner.clone();
-        builder = builder.bearer_auth(
-            &inner_client
-                .cred
-                .access_token()
-                .await
-                .map_err(Error::authentication)?
-                .value,
-        );
-        if let Some(body) = body {
-            builder = builder.json(&body);
-        }
-        let resp = builder.send().await.map_err(Error::io)?;
-        if !resp.status().is_success() {
-            let status = resp.status().as_u16();
-            let headers = gax::error::convert_headers(resp.headers());
-            let body = resp.bytes().await.map_err(Error::io)?;
-            return Err(HttpError::new(status, headers, Some(body)).into());
-        }
-        let response = resp.json::<O>().await.map_err(Error::serde)?;
-        Ok(response)
-    }
-}
+pub type {{NameToPascal}} = Box<dyn client::{{NameToPascal}} + Send + Sync>;
 {{/Services}}
