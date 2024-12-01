@@ -15,8 +15,16 @@
 use crate::Result;
 use gax::error::Error;
 use rand::{distributions::Alphanumeric, Rng};
+use tracing_subscriber::fmt::format::FmtSpan;
 
 pub async fn run() -> Result<()> {
+    let subscriber = tracing_subscriber::fmt()
+        .with_level(true)
+        .with_thread_ids(true)
+        .with_span_events(FmtSpan::NEW | FmtSpan::CLOSE)
+        .finish();
+    let _guard = tracing::subscriber::set_default(subscriber);
+
     let project_id = crate::project_id()?;
     let secret_id: String = rand::thread_rng()
         .sample_iter(&Alphanumeric)
@@ -24,8 +32,12 @@ pub async fn run() -> Result<()> {
         .map(char::from)
         .collect();
 
-    let client = sm::builder::SecretManagerService::new().await?;
-    let location_client = sm::builder::Locations::new().await?;
+    let client = sm::builder::SecretManagerService::new_with_config(
+        sm::ConfigBuilder::default().set_tracing(),
+    )
+    .await?;
+    let location_client =
+        sm::builder::Locations::new_with_config(sm::ConfigBuilder::default().set_tracing()).await?;
 
     cleanup_stale_secrets(&client, &project_id, &secret_id).await?;
 
@@ -194,10 +206,7 @@ async fn run_iam(client: &sm::SecretManagerService, secret_name: &str) -> Result
     Ok(())
 }
 
-async fn run_secret_versions(
-    client: &sm::SecretManagerService,
-    secret_name: &str,
-) -> Result<()> {
+async fn run_secret_versions(client: &sm::SecretManagerService, secret_name: &str) -> Result<()> {
     println!("\nTesting create_secret_version()");
     let data = "The quick brown fox jumps over the lazy dog".as_bytes();
     let checksum = crc32c::crc32c(data);

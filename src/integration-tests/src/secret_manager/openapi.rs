@@ -14,8 +14,16 @@
 
 use crate::Result;
 use rand::{distributions::Alphanumeric, Rng};
+use tracing_subscriber::fmt::format::FmtSpan;
 
 pub async fn run() -> Result<()> {
+    let subscriber = tracing_subscriber::fmt()
+        .with_level(true)
+        .with_thread_ids(true)
+        .with_span_events(FmtSpan::NEW | FmtSpan::CLOSE)
+        .finish();
+    let _guard = tracing::subscriber::set_default(subscriber);
+
     let project_id = crate::project_id()?;
     let secret_id: String = rand::thread_rng()
         .sample_iter(&Alphanumeric)
@@ -23,7 +31,10 @@ pub async fn run() -> Result<()> {
         .map(char::from)
         .collect();
 
-    let client = smo::builder::SecretManagerService::new().await?;
+    let client = smo::builder::SecretManagerService::new_with_config(
+        smo::ConfigBuilder::default().set_tracing(),
+    )
+    .await?;
 
     println!("\nTesting create_secret()");
     let create = client
