@@ -24,8 +24,8 @@ pub async fn run() -> Result<()> {
         .map(char::from)
         .collect();
 
-    let client = sm::SecretManagerServiceClient::new().await?;
-    let location_client = sm::LocationsClient::new().await?;
+    let client = sm::builder::SecretManagerService::new().await?;
+    let location_client = sm::builder::Locations::new().await?;
 
     cleanup_stale_secrets(&client, &project_id, &secret_id).await?;
 
@@ -102,7 +102,7 @@ pub async fn run() -> Result<()> {
     Ok(())
 }
 
-async fn run_locations(client: &sm::LocationsClient, project_id: &str) -> Result<()> {
+async fn run_locations(client: &sm::Locations, project_id: &str) -> Result<()> {
     println!("\nTesting list_locations()");
     let locations = client
         .list_locations(
@@ -135,7 +135,7 @@ async fn run_locations(client: &sm::LocationsClient, project_id: &str) -> Result
     Ok(())
 }
 
-async fn run_iam(client: &sm::SecretManagerServiceClient, secret_name: &str) -> Result<()> {
+async fn run_iam(client: &sm::SecretManagerService, secret_name: &str) -> Result<()> {
     let service_account = crate::service_account_for_iam_tests()?;
 
     println!("\nTesting get_iam_policy()");
@@ -195,7 +195,7 @@ async fn run_iam(client: &sm::SecretManagerServiceClient, secret_name: &str) -> 
 }
 
 async fn run_secret_versions(
-    client: &sm::SecretManagerServiceClient,
+    client: &sm::SecretManagerService,
     secret_name: &str,
 ) -> Result<()> {
     println!("\nTesting create_secret_version()");
@@ -273,7 +273,7 @@ async fn run_secret_versions(
 }
 
 async fn get_all_secret_version_names(
-    client: &sm::SecretManagerServiceClient,
+    client: &sm::SecretManagerService,
     secret_name: &str,
 ) -> Result<Vec<String>> {
     let mut names = Vec::new();
@@ -299,7 +299,7 @@ async fn get_all_secret_version_names(
 }
 
 async fn get_all_secret_names(
-    client: &sm::SecretManagerServiceClient,
+    client: &sm::SecretManagerService,
     project_id: &str,
 ) -> Result<Vec<String>> {
     let mut names = Vec::new();
@@ -325,7 +325,7 @@ async fn get_all_secret_names(
 }
 
 async fn cleanup_stale_secrets(
-    client: &sm::SecretManagerServiceClient,
+    client: &sm::SecretManagerService,
     project_id: &str,
     secret_id: &str,
 ) -> Result<()> {
