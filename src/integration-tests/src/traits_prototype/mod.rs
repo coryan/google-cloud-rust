@@ -15,9 +15,11 @@
 use gax::error::Error;
 use std::fmt::Debug;
 
-#[allow(async_fn_in_trait)]
 pub trait Service: Debug + Send + Sync {
-    async fn rpc(&self, req: model::Request) -> Result<model::Response, Error>;
+    fn rpc(
+        &self,
+        req: model::Request,
+    ) -> impl core::future::Future<Output = Result<model::Response, Error>> + Send;
 }
 
 pub struct Builder {}

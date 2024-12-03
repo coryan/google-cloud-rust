@@ -38,50 +38,63 @@ async fn use_generic_traits() {
 mod boxing {
     use super::*;
 
+    #[async_trait::async_trait]
+    trait BoxableService: Send + Sync {
+        async fn rpc(&self, req: Request) -> Result<Response>;
+    }
+
     #[derive(Debug)]
-    struct Boxable<T>
-    where
-        T: Service,
-    {
+    struct Boxable<T: Service> {
         inner: T,
     }
 
-    impl<T> Boxable<T>
-    where
-        T: Service,
-    {
-        fn new(inner: T) -> Self {
-            Self { inner }
-        }
-        fn to_box(inner: T) -> Box<impl Service> {
-            Box::new(Self::new(inner))
-        }
-    }
-
-    impl<T> Service for Boxable<T>
-    where
-        T: Service,
-    {
+    #[async_trait::async_trait]
+    impl<T: Service> BoxableService for Boxable<T> {
         async fn rpc(&self, req: Request) -> Result<Response> {
-            let r = self.inner.rpc(req).await;
-            r
+            let r = self.inner.rpc(req).await?;
+            Ok(r)
         }
     }
 
-    #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
-    async fn use_box() {
-        let mut svc = Boxable::to_box(Builder::with_tracing(Builder::build()));
+    impl<T: Service> Service for Boxable<T> {
+        async fn rpc(&self, req: Request) -> Result<Response> {
+            BoxableService::rpc(self, req).await
+        }
+    }
 
-        svc = Boxable::to_box(Builder::build());
+    #[async_trait::async_trait]
+    impl BoxableService for Box<dyn BoxableService + '_> {
+        async fn rpc(&self, req: Request) -> Result<Response> {
+            let r = <dyn BoxableService as BoxableService>::rpc(self, req).await?;
+            Ok(r)
+        }
+    }
 
+    async fn just_impl(svc: &impl BoxableService) -> Result<()> {
         let response = svc
             .rpc(Request {
                 parent: "parent".to_string(),
                 id: "id".to_string(),
             })
-            .await
-            .unwrap();
+            .await?;
         assert_eq!(response.name, "parent/foos/id");
+        Ok(())
+    }
+
+    impl<T: Service + 'static> Boxable<T> {
+        fn new(inner: T) -> Self {
+            Self { inner }
+        }
+        fn to_box(inner: T) -> Box<dyn BoxableService> {
+            Box::new(Self::new(inner))
+        }
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+    async fn use_box() -> Result<()> {
+        let boxed = Boxable::to_box(Builder::with_tracing(Builder::build()));
+        just_impl(&boxed).await?;
+        Ok(())
     }
 }
 
