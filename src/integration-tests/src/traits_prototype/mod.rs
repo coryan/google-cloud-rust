@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 use gax::error::Error;
 use std::fmt::Debug;
 
@@ -21,19 +20,22 @@ pub trait Service: Debug + Send + Sync {
     async fn rpc(&self, req: model::Request) -> Result<model::Response, Error>;
 }
 
-pub struct Builder {
-}
+pub struct Builder {}
 
 impl Builder {
     pub fn build() -> impl Service {
-        Transport{}
+        Transport {}
     }
-    pub fn with_tracing<T>(svc: T) -> impl Service 
-    where T: Service + Debug {
+    pub fn with_tracing<T>(svc: T) -> impl Service
+    where
+        T: Service + Debug,
+    {
         Tracing::new(svc)
     }
-    pub fn with_retry<T>(count: u32, svc: T) -> impl Service 
-    where T: Service + Debug {
+    pub fn with_retry<T>(count: u32, svc: T) -> impl Service
+    where
+        T: Service + Debug,
+    {
         Retry::new(count, svc)
     }
 }
@@ -42,7 +44,9 @@ struct Transport {}
 
 impl Service for Transport {
     async fn rpc(&self, req: model::Request) -> Result<model::Response, Error> {
-        Ok(model::Response{ name: format!("{}/foos/{}", req.parent, req.id)})
+        Ok(model::Response {
+            name: format!("{}/foos/{}", req.parent, req.id),
+        })
     }
 }
 
@@ -52,29 +56,41 @@ impl Debug for Transport {
     }
 }
 
-struct Tracing<T> where T: Service + Debug {
+struct Tracing<T>
+where
+    T: Service + Debug,
+{
     inner: T,
 }
 
 impl<T: Service + Debug> Tracing<T> {
     pub fn new(inner: T) -> Self {
         Self { inner }
-    } 
+    }
 }
 
-impl<T> Service for Tracing<T> where T: Service + Debug {
+impl<T> Service for Tracing<T>
+where
+    T: Service + Debug,
+{
     async fn rpc(&self, req: model::Request) -> Result<model::Response, Error> {
         self.inner.rpc(req).await
     }
 }
 
-impl<T> Debug for Tracing<T> where T: Service + Debug {
+impl<T> Debug for Tracing<T>
+where
+    T: Service + Debug,
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         write!(f, "Tracing<{:?}>", &self.inner)
     }
 }
 
-struct Retry<T> where T: Service + Debug {
+struct Retry<T>
+where
+    T: Service + Debug,
+{
     count: u32,
     inner: T,
 }
@@ -82,13 +98,16 @@ struct Retry<T> where T: Service + Debug {
 impl<T: Service + Debug> Retry<T> {
     pub fn new(count: u32, inner: T) -> Self {
         Self { count, inner }
-    } 
+    }
 }
 
-impl<T> Service for Retry<T> where T: Service + Debug {
+impl<T> Service for Retry<T>
+where
+    T: Service + Debug,
+{
     async fn rpc(&self, req: model::Request) -> Result<model::Response, Error> {
         for _ in 0..self.count {
-            let r =         self.inner.rpc(req.clone()).await;
+            let r = self.inner.rpc(req.clone()).await;
             if r.is_ok() {
                 return r;
             }
@@ -98,7 +117,10 @@ impl<T> Service for Retry<T> where T: Service + Debug {
     }
 }
 
-impl<T> Debug for Retry<T> where T: Service + Debug {
+impl<T> Debug for Retry<T>
+where
+    T: Service + Debug,
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         write!(f, "Retry<{}, {:?}>", self.count, &self.inner)
     }
@@ -115,4 +137,4 @@ pub mod model {
     pub struct Response {
         pub name: String,
     }
-} 
+}

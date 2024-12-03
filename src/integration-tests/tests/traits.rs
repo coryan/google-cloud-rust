@@ -39,11 +39,17 @@ mod boxing {
     use super::*;
 
     #[derive(Debug)]
-    struct Boxable<T> where T: Service {
-        inner: T
+    struct Boxable<T>
+    where
+        T: Service,
+    {
+        inner: T,
     }
 
-    impl<T> Boxable<T> where T: Service {
+    impl<T> Boxable<T>
+    where
+        T: Service,
+    {
         fn new(inner: T) -> Self {
             Self { inner }
         }
@@ -52,7 +58,10 @@ mod boxing {
         }
     }
 
-    impl<T> Service for Boxable<T> where T: Service {
+    impl<T> Service for Boxable<T>
+    where
+        T: Service,
+    {
         async fn rpc(&self, req: Request) -> Result<Response> {
             let r = self.inner.rpc(req).await;
             r
@@ -64,7 +73,7 @@ mod boxing {
         let mut svc = Boxable::to_box(Builder::with_tracing(Builder::build()));
 
         svc = Boxable::to_box(Builder::build());
-    
+
         let response = svc
             .rpc(Request {
                 parent: "parent".to_string(),
@@ -74,7 +83,6 @@ mod boxing {
             .unwrap();
         assert_eq!(response.name, "parent/foos/id");
     }
-    
 }
 
 #[cfg(test)]
