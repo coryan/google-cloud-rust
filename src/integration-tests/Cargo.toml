@@ -23,22 +23,25 @@ publish           = ["prevent-accidental-publication"]
 run-integration-tests = []
 
 [dependencies]
-serde        = { version = "1.0", features = ["serde_derive"] }
-tokio        = { version = "1.12", features = ["full", "macros"] }
-auth         = { path = "../../auth", package = "google-cloud-auth" }
-gax          = { path = "../../src/gax", package = "gcp-sdk-gax" }
-wkt          = { path = "../../src/wkt", package = "gcp-sdk-wkt" }
-iam_v1       = { path = "../../src/generated/iam/v1", package = "gcp-sdk-iam-v1" }
-sm           = { path = "../../src/generated/cloud/secretmanager/v1", package = "gcp-sdk-secretmanager-v1" }
-loc          = { path = "../../src/generated/cloud/location", package = "gcp-sdk-location" }
-smo          = { path = "../../generator/testdata/rust/openapi/golden", package = "secretmanager-golden-openapi" }
-rand         = "0.8"
-futures      = "0.3"
-bytes        = "1.8"
-crc32c       = "0.6"
-serde_json   = "1.0"
-async-trait  = "0.1"
+async-trait   = "0.1"
+bytes         = "1.8"
+crc32c        = "0.6"
+futures       = "0.3"
+rand          = "0.8"
+reqwest       = "0.12"
+serde         = { version = "1.0", features = ["serde_derive"] }
+serde_json    = "1.0"
+tokio         = { version = "1.12", features = ["full", "macros"] }
+tower-reqwest = "0.4"
+tower         = "0.5"
+auth          = { path = "../../auth", package = "google-cloud-auth" }
+gax           = { path = "../../src/gax", package = "gcp-sdk-gax" }
+wkt           = { path = "../../src/wkt", package = "gcp-sdk-wkt" }
+iam_v1        = { path = "../../src/generated/iam/v1", package = "gcp-sdk-iam-v1" }
+sm            = { path = "../../src/generated/cloud/secretmanager/v1", package = "gcp-sdk-secretmanager-v1" }
+loc           = { path = "../../src/generated/cloud/location", package = "gcp-sdk-location" }
+smo           = { path = "../../generator/testdata/rust/openapi/golden", package = "secretmanager-golden-openapi" }
 
 [dev-dependencies]
-tokio = { version = "1.12", features = ["full", "macros"] }
 mockall = "0.13"
+tokio = { version = "1.12", features = ["full", "macros"] }
