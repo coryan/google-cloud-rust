@@ -20,10 +20,10 @@ edition.workspace = true
 publish           = ["prevent-accidental-publication"]
 
 [features]
-run-integration-tests = ["dep:tokio"]
+run-integration-tests = []
 
 [dependencies]
-tokio      = { version = "1.12", features = ["full", "macros"], optional = true }
+tokio      = { version = "1.12", features = ["full", "macros"] }
 auth       = { path = "../../auth", package = "google-cloud-auth" }
 gax        = { path = "../../src/gax", package = "gcp-sdk-gax" }
 wkt        = { path = "../../src/wkt", package = "gcp-sdk-wkt" }
@@ -36,6 +36,7 @@ futures    = "0.3.31"
 bytes      = "1.8.0"
 crc32c     = "0.6.8"
 serde_json = "1.0.133"
+async-trait  = "0.1"
 
 [dev-dependencies]
 tokio = { version = "1.12", features = ["full", "macros"] }
