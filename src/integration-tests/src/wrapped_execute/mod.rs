@@ -35,8 +35,12 @@ mod gax2 {
     }
 
     impl Transport {
-        pub fn new(endpoint: String, cred: auth::Credential) -> Self{
-            Self { http_client: reqwest::Client::new(), endpoint: endpoint, cred: cred }
+        pub fn new(endpoint: String, cred: auth::Credential) -> Self {
+            Self {
+                http_client: reqwest::Client::new(),
+                endpoint: endpoint,
+                cred: cred,
+            }
         }
     }
 
@@ -74,11 +78,13 @@ mod gax2 {
 
     #[derive(Debug)]
     struct Tracing<T: Client> {
-        inner: T
+        inner: T,
     }
 
-    impl<T:Client> Tracing<T> {
-        fn new(inner: T) -> Self { Self { inner }}
+    impl<T: Client> Tracing<T> {
+        fn new(inner: T) -> Self {
+            Self { inner }
+        }
     }
 
     #[async_trait::async_trait]
@@ -115,7 +121,6 @@ mod gax2 {
         let response = resp.json::<O>().await.map_err(Error::serde)?;
         Ok(response)
     }
-
 
     pub(crate) async fn default_credential() -> Result<Credential> {
         let cc = auth::CredentialConfig::builder()
@@ -185,7 +190,9 @@ pub mod builder {
         }
 
         pub async fn build(self) -> super::Result<super::client::FooService> {
-            let endpoint = self.endpoint.unwrap_or_else(|| "https://foo.googleapis.com".to_string());
+            let endpoint = self
+                .endpoint
+                .unwrap_or_else(|| "https://foo.googleapis.com".to_string());
             let cred = gax2::default_credential().await?;
             let inner = Box::new(gax2::Transport::new(endpoint, cred));
             Ok(super::client::FooService::new(inner))

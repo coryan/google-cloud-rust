@@ -33,5 +33,5 @@ async fn tower_main() -> anyhow::Result<()> {
     let bytes = response.into_body().collect().await?.to_bytes();
     let value: serde_json::Value = serde_json::from_slice(&bytes)?;
     println!("{value:#?}");
-        Ok(())
+    Ok(())
 }
