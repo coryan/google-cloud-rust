@@ -13,12 +13,19 @@
 // limitations under the License.
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
-async fn tower_main() -> anyhow::Result<()> {
+async fn tower_main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
     use http_body_util::BodyExt;
-    use tower::Service;
+    use tower::{Service, ServiceBuilder};
+    use tower_http::ServiceBuilderExt;
+    use tower_reqwest::HttpClientLayer;
 
-    let mut client = tower::ServiceBuilder::new()
-        .layer(tower_reqwest::HttpClientLayer)
+    let mut client = ServiceBuilder::new()
+        .override_request_header(
+            http::header::USER_AGENT,
+            http::HeaderValue::from_static("test-with-tower"),
+        )
+        .timeout(std::time::Duration::new(60, 0))
+        .layer(HttpClientLayer)
         .service(reqwest::Client::new());
     // Execute request by using this service.
     let response = client
