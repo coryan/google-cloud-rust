@@ -42,3 +42,19 @@ async fn tower_main() -> std::result::Result<(), Box<dyn std::error::Error + Sen
     println!("{value:#?}");
     Ok(())
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+async fn reqwest_main() -> std::result::Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    let client = reqwest::Client::new();
+
+    let request = client
+        .request(reqwest::Method::GET, "http://ip.jsontest.com")
+        .build()?;
+
+    let response = client.execute(request).await?;
+    let bytes = response.bytes().await?;
+    let value: serde_json::Value = serde_json::from_slice(&bytes)?;
+    println!("{value:#?}");
+
+    Ok(())
+}
