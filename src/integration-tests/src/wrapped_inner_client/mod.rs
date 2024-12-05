@@ -20,31 +20,33 @@ pub mod model {
 }
 
 pub mod builder {
-    use super::private_traits;
-
-
-#[derive(Debug, Default)]
-pub struct FooService;
-
-impl FooService {
-    pub fn build(self) -> super::client::FooService {
-        use std::sync::Arc;
-        let client = super::gax3::ReqwestClient::arc();
-        let client = super::transport::FooService::new(client);
-        let client : Arc<dyn private_traits::FooService> = Arc::new(client);
-
-        super::client::FooService::new(client)
+    #[derive(Debug, Default)]
+    pub struct FooService<L> {
+        _layer: L,
     }
-    // TODO with_timeout()
-    // TODO with_tracing()
-}
+
+    impl FooService<Root> {
+        pub const fn new() -> Self {
+            Self { _layer: Root::new() }
+        }
+
+        pub fn build(self) -> super::transport::FooService {
+            let client = super::gax3::ReqwestClient::arc();
+            super::transport::FooService::new(client)
+        }
+    }
+
+    pub struct Root;
+
+    impl Root {
+        const fn new() -> Self { Self }
+    }
 }
 
 pub mod transport {
-    use crate::wrapped_execute::model::*;
     use super::gax3;
-    use super::private_traits;
     use super::Result;
+    use crate::wrapped_execute::model::*;
     use std::sync::Arc;
 
     pub struct FooService {
@@ -53,72 +55,98 @@ pub mod transport {
 
     impl FooService {
         pub(crate) fn new<T: Into<Arc<dyn gax3::Client>>>(inner: T) -> Self {
-            Self { inner: inner.into() }
+            Self {
+                inner: inner.into(),
+            }
         }
     }
 
-    #[async_trait::async_trait]
-    impl private_traits::FooService for FooService {
+    impl super::traits::FooService for FooService {
         async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
             if req.parent == "test-only" {
                 // Makes it easy to write tests that do not try to use HTTP connection
-                return Ok(Foo { name: format!("{}/foos/{}", &req.parent, &req.id), things: req.body.things })
+                return Ok(Foo {
+                    name: format!("{}/foos/{}", &req.parent, &req.id),
+                    things: req.body.things,
+                });
             }
-            let builder = self.inner.builder(reqwest::Method::POST, format!("/v1/{}", req.parent));
-            let response = gax3::execute(&self.inner, ".foo.FooService.CreateFoo", builder, Some(req.body)).await?;
+            let builder = self
+                .inner
+                .builder(reqwest::Method::POST, format!("/v1/{}", req.parent));
+            let response = gax3::execute(
+                &self.inner,
+                ".foo.FooService.CreateFoo",
+                builder,
+                Some(req.body),
+            )
+            .await?;
             Ok(response)
-        }
-    }
-
-}
-
-pub mod client {
-    use super::builder;
-    use crate::wrapped_execute::model::*;
-    use super::{private_traits, Result};
-    use std::sync::Arc;
-
-    pub struct FooService {
-        inner: Arc<dyn private_traits::FooService>,
-    }
-
-    impl FooService {
-        pub fn builder() -> builder::FooService {
-            builder::FooService::default()
-        }
-
-        pub async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
-            self.inner.create_foo(req).await
-        }
-
-        pub(crate) fn new<T: Into<Arc<dyn private_traits::FooService>>>(inner: T) -> Self {
-            Self { inner: inner.into() }
         }
     }
 
     #[cfg(feature = "unstable-client-trait")]
     #[async_trait::async_trait]
-    impl super::traits::FooService for FooService {
+    impl super::dyntraits::FooService for FooService
+    {
         async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
-            let request= FooService::create_foo(self, req).await?;
+            let request = FooService::create_foo(self, req).await?;
             Ok(request)
         }
     }
 }
 
-pub(crate) mod private_traits {
+pub mod client {
+    use super::{traits, Result};
     use crate::wrapped_execute::model::*;
+
+    pub struct FooService<T: traits::FooService> {
+        inner: T,
+    }
+
+    impl<T: traits::FooService> FooService<T> {
+        pub(crate) fn new(inner: T) -> Self {
+            Self { inner }
+        }
+    }
+
+    impl<T: traits::FooService> traits::FooService for FooService<T> {
+        async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
+            let response = self.inner.create_foo(req).await?;
+            Ok(response)      
+        }    
+    }
+
+    #[cfg(feature = "unstable-client-trait")]
+    #[async_trait::async_trait]
+    impl<T> super::dyntraits::FooService for FooService<T>
+    where
+        T: traits::FooService,
+    {
+        async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
+            let request = FooService::create_foo(self, req).await?;
+            Ok(request)
+        }
+    }
+}
+
+pub mod traits {
     use super::Result;
+    use crate::wrapped_execute::model::*;
+
+    pub trait FooService: Send + Sync {
+        fn create_foo(&self, req: CreateFooRequest) -> impl std::future::Future<Output = Result<Foo>> + Send;
+    }
+}
+
+#[cfg(feature = "unstable-client-trait")]
+pub mod dyntraits {
+    use super::Result;
+    use super::model::{CreateFooRequest, Foo};
 
     #[async_trait::async_trait]
     pub trait FooService: Send + Sync {
         async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo>;
     }
-}
-
-#[cfg(feature = "unstable-client-trait")]
-pub mod traits {
-    pub use super::private_traits::FooService;
 }
 
 mod gax3 {
@@ -138,11 +166,15 @@ mod gax3 {
         let response = response.json::<O>().await.map_err(Error::serde)?;
         Ok(response)
     }
-    
+
     #[async_trait::async_trait]
     pub trait Client: Send + Sync {
         fn builder(&self, method: reqwest::Method, path: String) -> reqwest::RequestBuilder;
-        async fn execute(&self, rpc_name: &str, builder: reqwest::RequestBuilder) -> Result<reqwest::Response>;
+        async fn execute(
+            &self,
+            rpc_name: &str,
+            builder: reqwest::RequestBuilder,
+        ) -> Result<reqwest::Response>;
     }
 
     pub struct ReqwestClient {
@@ -151,7 +183,12 @@ mod gax3 {
     }
 
     impl ReqwestClient {
-        pub fn default() -> Self { Self { inner: reqwest::Client::new(), endpoint: "https://foo.googleapis.com".to_string() }}
+        pub fn default() -> Self {
+            Self {
+                inner: reqwest::Client::new(),
+                endpoint: "https://foo.googleapis.com".to_string(),
+            }
+        }
         pub fn arc() -> std::sync::Arc<dyn Client> {
             std::sync::Arc::new(Self::default())
         }
@@ -160,12 +197,16 @@ mod gax3 {
     #[async_trait::async_trait]
     impl Client for ReqwestClient {
         fn builder(&self, method: reqwest::Method, path: String) -> reqwest::RequestBuilder {
-            self.inner.request(method, format!("{}/{path}", self.endpoint))
+            self.inner
+                .request(method, format!("{}/{path}", self.endpoint))
         }
 
-        async fn execute(&self, _rpc_name: &str, builder: reqwest::RequestBuilder) -> Result<reqwest::Response> {
+        async fn execute(
+            &self,
+            _rpc_name: &str,
+            builder: reqwest::RequestBuilder,
+        ) -> Result<reqwest::Response> {
             builder.send().await.map_err(Error::io)
         }
     }
-
 }

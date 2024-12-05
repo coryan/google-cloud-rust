@@ -15,36 +15,33 @@
 
 #[cfg(test)]
 mod tracing_test {
-    use integration_tests::wrapped_inner_client::{client, model};
+    use integration_tests::wrapped_inner_client::{builder, traits, model};
     
     use gax::error::Error;
     type Result<T> = std::result::Result<T, Error>;
 
-    async fn application(svc: &client::FooService) -> Result<Vec<String>> {
+    #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+    async fn for_real() -> Result<()> {
+        // TODO this should be builder::FooService::new().with_tracing().build();
+        use traits::FooService;
+        let svc = builder::FooService::new().build(); 
+
         let mut result = Vec::new();
         for id in ["id0", "id1", "id2"] {
             let r = svc
                 .create_foo(model::CreateFooRequest {
-                    parent: "p".to_string(),
+                    parent: "test-only".to_string(),
                     id: id.to_string(),
                     body: model::Foo::default(),
                 })
                 .await?;
             result.push(r);
         }
-        let result = result.into_iter().map(|r| r.name).collect();
-        Ok(result)
-    }
 
-    #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
-    async fn for_real() -> Result<()> {
-        // TODO this should be FooService::builder().with_tracing().build();
-        let svc = client::FooService::builder().build(); 
-
-        let result = application(&svc).await?;
+        let result : Vec<_> = result.into_iter().map(|r| r.name).collect();
         assert_eq!(
             result,
-            ["p/foos/id0", "p/foos/id1", "p/foos/id2"]
+            ["test-only/foos/id0", "test-only/foos/id1", "test-only/foos/id2"]
                 .map(str::to_string)
                 .to_vec()
         );

@@ -17,13 +17,13 @@
 #[cfg(test)]
 mod mocking {
     use integration_tests::wrapped_inner_client::model;
-    use integration_tests::wrapped_inner_client::client;
-    use integration_tests::wrapped_inner_client::traits;
+    use integration_tests::wrapped_inner_client::builder;
+    use integration_tests::wrapped_inner_client::dyntraits;
     
     use gax::error::Error;
     type Result<T> = std::result::Result<T, Error>;
 
-    async fn application(svc: impl traits::FooService) -> Result<Vec<String>> {
+    async fn application(svc: impl dyntraits::FooService) -> Result<Vec<String>> {
         let mut result = Vec::new();
         for id in ["id0", "id1", "id2"] {
             let r = svc
@@ -42,7 +42,7 @@ mod mocking {
     mockall::mock! {
         ServiceImpl {}
         #[async_trait::async_trait]
-        impl traits::FooService for ServiceImpl {
+        impl dyntraits::FooService for ServiceImpl {
             async fn create_foo(&self, req: model::CreateFooRequest) -> Result<model::Foo>;
         }
     }
@@ -72,7 +72,7 @@ mod mocking {
 
     #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
     async fn for_real() -> Result<()> {
-        let svc = client::FooService::builder().build(); 
+        let svc = builder::FooService::new().build(); 
 
         let result = application(svc).await?;
         assert_eq!(
