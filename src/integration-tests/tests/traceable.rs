@@ -22,9 +22,8 @@ mod tracing_test {
 
     #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
     async fn for_real() -> Result<()> {
-        // TODO this should be builder::FooService::new().with_tracing().build();
         use traits::FooService;
-        let svc = builder::FooService::new().build(); 
+        let svc = builder::FooService::new().with_tracing().build(); 
 
         let mut result = Vec::new();
         for id in ["id0", "id1", "id2"] {

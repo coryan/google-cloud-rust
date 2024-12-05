@@ -20,19 +20,48 @@ pub mod model {
 }
 
 pub mod builder {
+    pub trait FooServiceBuilder {
+        type Client: super::traits::FooService;
+
+        fn build(self) -> Self::Client;
+    }
+
     #[derive(Debug, Default)]
-    pub struct FooService<L> {
-        _layer: L,
+    pub struct FooService<L> where L: FooServiceBuilder {
+        layer: L,
+    }
+
+    impl<L> FooService<L> where L: FooServiceBuilder{
+        pub fn with_tracing(self) -> FooService<Tracing<L>> {
+            FooService::<Tracing<L>> { layer: Tracing::new(self.layer) }
+        }
+
+        pub fn build(self) -> L::Client {
+            self.layer.build()
+        }
     }
 
     impl FooService<Root> {
         pub const fn new() -> Self {
-            Self { _layer: Root::new() }
+            Self { layer: Root::new() }
         }
+    }
 
-        pub fn build(self) -> super::transport::FooService {
-            let client = super::gax3::ReqwestClient::arc();
-            super::transport::FooService::new(client)
+    pub struct Tracing<B> where B: FooServiceBuilder {
+        inner: B
+    }
+
+    impl<B> Tracing<B> where B: FooServiceBuilder {
+        pub fn new(inner: B) -> Self {
+            Self {inner}
+        }
+    }
+
+    impl<B: FooServiceBuilder> FooServiceBuilder for Tracing<B> {
+        type Client = super::tracing::FooService<B::Client>;
+
+        fn build(self) -> Self::Client {
+            super::tracing::FooService::new(self.inner.build())
         }
     }
 
@@ -40,6 +69,15 @@ pub mod builder {
 
     impl Root {
         const fn new() -> Self { Self }
+    }
+
+    impl FooServiceBuilder for Root {
+        type Client = super::transport::FooService;
+
+        fn build(self) -> Self::Client {
+            let client = super::gax3::ReqwestClient::arc();
+            Self::Client::new(client)
+        }
     }
 }
 
@@ -51,6 +89,12 @@ pub mod transport {
 
     pub struct FooService {
         inner: Arc<dyn gax3::Client>, // Arc because eventually may be a stack of things
+    }
+
+    impl std::fmt::Debug for FooService {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
+            write!(f, "SecretManagerService[{:?}]", self.inner)
+        }
     }
 
     impl FooService {
@@ -99,6 +143,7 @@ pub mod client {
     use super::{traits, Result};
     use crate::wrapped_execute::model::*;
 
+    #[derive(Debug)]
     pub struct FooService<T: traits::FooService> {
         inner: T,
     }
@@ -129,11 +174,48 @@ pub mod client {
     }
 }
 
+pub mod tracing {
+    use super::{traits, Result};
+    use crate::wrapped_execute::model::*;
+
+    #[derive(Debug)]
+    pub struct FooService<T: traits::FooService> {
+        inner: T,
+    }
+
+    impl<T: traits::FooService> FooService<T> {
+        pub(crate) fn new(inner: T) -> Self {
+            Self { inner }
+        }
+    }
+
+    impl<T: traits::FooService> traits::FooService for FooService<T> {
+        #[tracing::instrument(ret)]
+        async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
+            let response = self.inner.create_foo(req).await?;
+            Ok(response)      
+        }    
+    }
+
+    #[cfg(feature = "unstable-client-trait")]
+    #[async_trait::async_trait]
+    impl<T> super::dyntraits::FooService for FooService<T>
+    where
+        T: traits::FooService,
+    {
+        async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
+            let request = FooService::create_foo(self, req).await?;
+            Ok(request)
+        }
+    }
+}
+
+
 pub mod traits {
     use super::Result;
     use crate::wrapped_execute::model::*;
 
-    pub trait FooService: Send + Sync {
+    pub trait FooService: std::fmt::Debug + Send + Sync {
         fn create_foo(&self, req: CreateFooRequest) -> impl std::future::Future<Output = Result<Foo>> + Send;
     }
 }
@@ -168,7 +250,7 @@ mod gax3 {
     }
 
     #[async_trait::async_trait]
-    pub trait Client: Send + Sync {
+    pub trait Client: std::fmt::Debug + Send + Sync {
         fn builder(&self, method: reqwest::Method, path: String) -> reqwest::RequestBuilder;
         async fn execute(
             &self,
@@ -181,6 +263,13 @@ mod gax3 {
         inner: reqwest::Client,
         endpoint: String,
     }
+
+    impl std::fmt::Debug for ReqwestClient {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
+            write!(f, "Client[{}]", self.endpoint)
+        }
+    }
+    
 
     impl ReqwestClient {
         pub fn default() -> Self {
