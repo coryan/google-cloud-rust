@@ -20,6 +20,7 @@ pub mod wrapped_execute;
 pub mod wrapped_inner_client;
 pub mod gax4;
 pub mod client4;
+pub mod gax5;
 
 pub const SECRET_ID_LENGTH: usize = 64;
 
