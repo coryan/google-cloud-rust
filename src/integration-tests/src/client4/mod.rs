@@ -145,18 +145,6 @@ pub mod transport {
             Ok(response)
         }
     }
-
-    #[cfg(feature = "unstable-client-trait")]
-    #[async_trait::async_trait]
-    impl<T> super::dyntraits::FooService for FooService<T>
-    where
-        T: gax4::HttpClient,
-    {
-        async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
-            let request = FooService::<T>::create_foo(self, req).await?;
-            Ok(request)
-        }
-    }
 }
 
 pub mod tracing {
@@ -181,18 +169,6 @@ pub mod tracing {
             Ok(response)
         }
     }
-
-    #[cfg(feature = "unstable-client-trait")]
-    #[async_trait::async_trait]
-    impl<T> super::dyntraits::FooService for FooService<T>
-    where
-        T: traits::FooService,
-    {
-        async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
-            let request = FooService::create_foo(self, req).await?;
-            Ok(request)
-        }
-    }
 }
 
 pub mod traits {
@@ -215,5 +191,13 @@ pub mod dyntraits {
     #[async_trait::async_trait]
     pub trait FooService: Send + Sync {
         async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo>;
+    }
+
+    #[async_trait::async_trait]
+    impl<T: super::traits::FooService> FooService for T {
+        async fn create_foo(&self, req: CreateFooRequest) -> Result<Foo> {
+            let request = T::create_foo(self, req).await?;
+            Ok(request)
+        }
     }
 }
