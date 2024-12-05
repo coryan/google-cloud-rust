@@ -18,6 +18,7 @@ pub mod secret_manager;
 pub mod traits_prototype;
 pub mod wrapped_execute;
 pub mod wrapped_inner_client;
+pub mod gax4;
 
 pub const SECRET_ID_LENGTH: usize = 64;
 
