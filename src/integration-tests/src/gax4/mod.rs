@@ -18,6 +18,7 @@ type Result<T> = std::result::Result<T, Error>;
 pub async fn execute<I: serde::ser::Serialize, O: serde::de::DeserializeOwned>(
     client: &impl HttpClient,
     builder: http::request::Builder,
+    path: String,
     body: Option<I>,
 ) -> Result<O> {
     let body = body
@@ -28,7 +29,7 @@ pub async fn execute<I: serde::ser::Serialize, O: serde::de::DeserializeOwned>(
         None => reqwest::Body::default(),
         Some(_v) => reqwest::Body::default(),
     };
-    let response = client.execute(builder, body).await?;
+    let response = client.execute(builder, path, body).await?;
     // Handle HTTP errors here ..
     // Handle the case when body().as_bytes() is None.
     let response =
@@ -40,6 +41,7 @@ pub trait HttpClient: std::fmt::Debug + Send + Sync {
     fn execute(
         &self,
         builder: http::request::Builder,
+        path: String,
         body: reqwest::Body,
     ) -> impl std::future::Future<Output = Result<http::response::Response<reqwest::Body>>> + Send;
 }
@@ -51,16 +53,16 @@ pub struct ReqwestClient {
 
 impl std::fmt::Debug for ReqwestClient {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
-        write!(f, "Client[{}]", self.endpoint)
+        f.debug_struct("ReqwestClient").field("endpoint", &self.endpoint).finish()
     }
 }
 
 impl ReqwestClient {
-    pub fn default() -> Self {
+    pub fn new(endpoint: String) -> Self {
         Self {
             inner: reqwest::Client::new(),
-            endpoint: "https://foo.googleapis.com".to_string(),
-        }
+            endpoint: endpoint,
+        }        
     }
 }
 
@@ -68,6 +70,7 @@ impl HttpClient for ReqwestClient {
     async fn execute(
         &self,
         builder: http::request::Builder,
+        path: String,
         body: reqwest::Body,
     ) -> Result<http::response::Response<reqwest::Body>> {
         use tower::Service;
@@ -82,8 +85,9 @@ impl HttpClient for ReqwestClient {
             .layer(tower_reqwest::HttpClientLayer)
             .service(self.inner.clone());
 
+        let request = builder.uri(format!("{}/{}", &self.endpoint, &path)).body(body).map_err(Error::io)?;
         let response = client
-            .call(builder.body(body).map_err(Error::io)?)
+            .call(request)
             .await
             .map_err(Error::io)?;
         Ok(response)
