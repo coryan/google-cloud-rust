@@ -53,7 +53,9 @@ pub struct ReqwestClient {
 
 impl std::fmt::Debug for ReqwestClient {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
-        f.debug_struct("ReqwestClient").field("endpoint", &self.endpoint).finish()
+        f.debug_struct("ReqwestClient")
+            .field("endpoint", &self.endpoint)
+            .finish()
     }
 }
 
@@ -62,7 +64,46 @@ impl ReqwestClient {
         Self {
             inner: reqwest::Client::new(),
             endpoint: endpoint,
-        }        
+        }
+    }
+}
+
+#[derive(Clone)]
+struct Attempts(usize);
+
+impl<E> tower::retry::Policy<reqwest::Request, reqwest::Response, E>
+    for Attempts
+{
+    type Future = std::future::Ready<()>;
+
+    fn retry(
+        &mut self,
+        _req: &mut reqwest::Request,
+        result: &mut std::result::Result<reqwest::Response, E>,
+    ) -> Option<Self::Future> {
+        match result {
+            Ok(_) => {
+                // Treat all `Response`s as success,
+                // so don't retry...
+                None
+            }
+            Err(_) => {
+                // Treat all errors as failures...
+                // But we limit the number of attempts...
+                if self.0 > 0 {
+                    // Try again!
+                    self.0 -= 1;
+                    Some(std::future::ready(()))
+                } else {
+                    // Used all our attempts, no retry...
+                    None
+                }
+            }
+        }
+    }
+
+    fn clone_request(&mut self, _req: &reqwest::Request) -> Option<reqwest::Request> {
+        None
     }
 }
 
@@ -83,13 +124,14 @@ impl HttpClient for ReqwestClient {
             )
             .timeout(std::time::Duration::new(60, 0))
             .layer(tower_reqwest::HttpClientLayer)
+            .retry(Attempts(7))
             .service(self.inner.clone());
 
-        let request = builder.uri(format!("{}/{}", &self.endpoint, &path)).body(body).map_err(Error::io)?;
-        let response = client
-            .call(request)
-            .await
+        let request = builder
+            .uri(format!("{}/{}", &self.endpoint, &path))
+            .body(body)
             .map_err(Error::io)?;
+        let response = client.call(request).await.map_err(Error::io)?;
         Ok(response)
     }
 }
