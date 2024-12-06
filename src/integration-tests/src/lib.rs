@@ -22,6 +22,7 @@ pub mod gax4;
 pub mod client4;
 pub mod gax5;
 pub mod client5;
+pub mod client6;
 
 pub const SECRET_ID_LENGTH: usize = 64;
 
