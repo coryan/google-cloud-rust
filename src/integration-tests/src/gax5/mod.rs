@@ -53,7 +53,7 @@ pub struct Request {
     config: Config,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Config {
     pub with_retry: bool,
     pub retry_attempts: Option<i32>, // None means "use the default count"
