@@ -20,9 +20,9 @@ edition.workspace = true
 publish           = ["prevent-accidental-publication"]
 
 [features]
-default = ["unstable-client-trait"]
+default = ["unstable-dyntraits"]
 run-integration-tests = []
-unstable-client-trait = []
+unstable-dyntraits = []
 
 [dependencies]
 async-trait   = "0.1"

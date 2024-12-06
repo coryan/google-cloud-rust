@@ -52,6 +52,38 @@ async fn fully_static() -> Result<()> {
     Ok(())
 }
 
+#[cfg(feature = "unstable-dyntraits")]
+mod if_you_insist_you_can_use_dyn {
+    use super::*;
+
+    async fn dynapplication(svc: &dyn dyntraits::FooService) -> Result<Vec<String>> {
+        let mut result = Vec::new();
+        for id in ["id0", "id1", "id2"] {
+            let r = svc
+                .create_foo(CreateFooRequest {
+                    parent: "test-only".to_string(),
+                    id: id.to_string(),
+                    body: Foo::default(),
+                })
+                .await?;
+            result.push(r);
+        }
+        let result = result.into_iter().map(|r| r.name).collect();
+        Ok(result)
+    }
+    
+    #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+    async fn with_arc() -> Result<()> {
+        use std::sync::Arc;
+        let client: Arc<dyn dyntraits::FooService> =
+            Arc::new(builder::StaticBuilder::default().build());
+    
+        let result = dynapplication(client.as_ref()).await?;
+        println!("{result:?}");
+        Ok(())
+    }    
+}
+
 mod mocking {
     use super::*;
 

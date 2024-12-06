@@ -148,7 +148,7 @@ pub mod traits {
     }
 }
 
-#[cfg(feature = "unstable-client-trait")]
+#[cfg(feature = "unstable-dyntraits")]
 pub mod dyntraits {
     use super::model::{CreateFooRequest, Foo};
     use super::Result;

@@ -22,8 +22,8 @@ pub mod model {
 const ENDPOINT: &str = "https://foo.googleapis.com";
 
 pub mod builder {
-    use crate::gax5;
     use super::*;
+    use crate::gax5;
 
     #[derive(Clone, Debug, Default)]
     pub struct FooService {
@@ -60,18 +60,22 @@ pub mod builder {
             if tracing {
                 return true;
             }
-            return std::env::var("GOOGLE_CLOUD_RUST_TRACING").map(|v| v == "true").unwrap_or(false);
+            return std::env::var("GOOGLE_CLOUD_RUST_TRACING")
+                .map(|v| v == "true")
+                .unwrap_or(false);
         }
     }
 
     #[derive(Clone, Debug, Default)]
     pub struct StaticBuilder {
-        endpoint: Option<String>
+        endpoint: Option<String>,
     }
 
     impl StaticBuilder {
         pub fn new<T: Into<Option<String>>>(endpoint: T) -> Self {
-            Self { endpoint: endpoint.into() }
+            Self {
+                endpoint: endpoint.into(),
+            }
         }
 
         pub fn build_with_tracing(self) -> impl traits::FooService {
@@ -104,7 +108,7 @@ pub mod client {
     }
 
     impl std::fmt::Debug for FooService {
-        fn fmt(&self, f:  &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             self.inner.fmt(f)
         }
     }
@@ -209,18 +213,18 @@ pub mod traits {
         pub trait FooService: Send + Sync {
             async fn create_foo(&self, req: model::CreateFooRequest) -> Result<model::Foo>;
         }
-    
+
         #[async_trait::async_trait]
         impl<T: super::FooService> FooService for T {
             async fn create_foo(&self, req: model::CreateFooRequest) -> Result<model::Foo> {
                 let request = T::create_foo(self, req).await?;
                 Ok(request)
             }
-        }    
+        }
     }
 }
 
-#[cfg(feature = "unstable-client-trait")]
+#[cfg(feature = "unstable-dyntraits")]
 pub mod dyntraits {
     pub use super::traits::dynamic::FooService;
 }

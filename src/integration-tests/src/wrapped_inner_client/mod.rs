@@ -128,7 +128,7 @@ pub mod transport {
         }
     }
 
-    #[cfg(feature = "unstable-client-trait")]
+    #[cfg(feature = "unstable-dyntraits")]
     #[async_trait::async_trait]
     impl super::dyntraits::FooService for FooService
     {
@@ -161,7 +161,7 @@ pub mod client {
         }    
     }
 
-    #[cfg(feature = "unstable-client-trait")]
+    #[cfg(feature = "unstable-dyntraits")]
     #[async_trait::async_trait]
     impl<T> super::dyntraits::FooService for FooService<T>
     where
@@ -197,7 +197,7 @@ pub mod tracing {
         }    
     }
 
-    #[cfg(feature = "unstable-client-trait")]
+    #[cfg(feature = "unstable-dyntraits")]
     #[async_trait::async_trait]
     impl<T> super::dyntraits::FooService for FooService<T>
     where
@@ -220,7 +220,7 @@ pub mod traits {
     }
 }
 
-#[cfg(feature = "unstable-client-trait")]
+#[cfg(feature = "unstable-dyntraits")]
 pub mod dyntraits {
     use super::Result;
     use super::model::{CreateFooRequest, Foo};

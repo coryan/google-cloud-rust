@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-#[cfg(feature = "unstable-client-trait")]
+#[cfg(feature = "unstable-dyntraits")]
 #[cfg(test)]
 mod mocking {
     use integration_tests::wrapped_inner_client::model;
