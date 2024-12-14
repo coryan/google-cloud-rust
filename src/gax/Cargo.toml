@@ -34,6 +34,7 @@ reqwest     = { version = "0.12.9", optional = true }
 serde       = "1.0.214"
 serde_json  = "1.0.133"
 serde_with  = { version = "3.11.0", default-features = false, features = ["base64", "macros"] }
+tokio       = { version = "1.42", features = ["time", "macros"] }
 thiserror   = "2.0.3"
 auth        = { version = "0.1.0", path = "../../auth", package = "google-cloud-auth", optional = true }
 wkt         = { version = "0.1.0", path = "../wkt", package = "gcp-sdk-wkt" }
@@ -45,7 +46,7 @@ gax       = { path = ".", package = "gcp-sdk-gax", features = ["stream", "unstab
 axum      = "0.7.9"
 serde     = { version = "1.0.214", features = ["serde_derive"] }
 test-case = "3.3.1"
-tokio     = { version = "1.41.1", features = ["macros"] }
+tokio     = { version = "1.42", features = ["test-util"] }
 
 [build-dependencies]
 built = "0.7"

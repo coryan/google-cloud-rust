@@ -63,6 +63,12 @@ async fn echo(
 }
 
 async fn echo_impl(query: HashMap<String, String>, headers: HeaderMap) -> Result<String> {
+    if let Some(delay) = query.get("delay") {
+        use tokio::time::Duration;
+        if let Ok(duration) = delay.parse::<u64>().map(Duration::from_millis) {
+            tokio::time::sleep(duration).await;
+        }
+    }
     let query = serde_json::Value::Object(
         query
             .into_iter()

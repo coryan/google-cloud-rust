@@ -14,6 +14,7 @@
 
 use crate::error::Error;
 use crate::error::HttpError;
+use crate::options::RequestTimeout;
 use auth::Credential;
 type Result<T> = std::result::Result<T, crate::error::Error>;
 
@@ -68,7 +69,16 @@ impl ReqwestClient {
         if let Some(body) = body {
             builder = builder.json(&body);
         }
-        let resp = builder.send().await.map_err(Error::io)?;
+        let send = builder.send();
+        let resp = if let Some(timeout) = options.get::<RequestTimeout>() {
+            // Because of the timeout, we have a Result<Result<...>>. Unwrap.
+            let t = tokio::time::timeout(timeout, send)
+                .await
+                .map_err(Error::io)?;
+            t.map_err(Error::io)?
+        } else {
+            send.await.map_err(Error::io)?
+        };
         if !resp.status().is_success() {
             let status = resp.status().as_u16();
             let headers = crate::error::convert_headers(resp.headers());
