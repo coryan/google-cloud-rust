@@ -54,6 +54,55 @@ async fn retry_no_error() -> Result<()> {
     Ok(())
 }
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn retry_transient_errors() -> Result<()> {
+    let responses: VecDeque<_> = [
+        (StatusCode::BAD_REQUEST, unavailable()),
+        (StatusCode::BAD_REQUEST, unavailable()),
+        (StatusCode::OK, success()),
+    ]
+    .into_iter()
+    .collect();
+    let (endpoint, _server) = start(responses).await?;
+    let config = ClientConfig::default().set_credential(auth::Credential::test_credentials());
+    let client = ReqwestClient::new(config, &endpoint).await?;
+
+    let builder = client
+        .builder(reqwest::Method::GET, "/get".into())
+        .query(&[("name", "projects/test-only/foo/1")]);
+    let response = client
+        .execute_with_options::<serde_json::Value, serde_json::Value>(
+            builder,
+            None,
+            RequestOptions::new(),
+        )
+        .await?;
+
+    assert_eq!(
+        response,
+        json!({ "name": "projects/test-only/foos/1", "value": "v"})
+    );
+
+    Ok(())
+}
+
+fn success() -> serde_json::Value {
+    json!({ "name": "projects/test-only/foos/1", "value": "v" })
+}
+
+fn unavailable() -> serde_json::Value {
+    json!({
+        "error": {
+            "code": 400, "status":
+            "UNAVAILABLE",
+            "message": "service temporarily unavailable",
+            "details": [
+                {"@type": "google.rpc.RetryInfo", "retry_delay": "1.5s" }
+            ]
+        }
+    })
+}
+
 pub async fn start(responses: VecDeque<Response>) -> Result<(String, JoinHandle<()>)> {
     let app = axum::Router::new()
         .route("/get", axum::routing::get(handler))
