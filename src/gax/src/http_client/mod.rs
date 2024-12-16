@@ -17,6 +17,7 @@ use crate::error::HttpError;
 use crate::options::RequestTimeout;
 use auth::Credential;
 type Result<T> = std::result::Result<T, crate::error::Error>;
+use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct ReqwestClient {
@@ -70,10 +71,31 @@ impl ReqwestClient {
             builder = builder.json(&body);
         }
 
-        let policy = options.get::<RetryPolicy>().or_else(|| )
+        let policy = options.get::<options::RetryPolicy>().unwrap_or_else(|| Arc::new(NoRetryProvider)).start();
+        if !policy.may_retry() {
+            return Self::send(builder, &options).await;
+        }
 
-        let builder2 = builder.try_clone().or_else(|| Error::io("cannot clone request builder"));
+        
+        let make_request = |options: &crate::options::RequestOptions| async move {
+            let b = builder.try_clone().ok_or_else(|| Error::io("cannot clone request in retry loop".to_string()))?;
+            Self::send::<O>(b, options).await
+        };
 
+        for i in 0..3 {
+            let response = make_request(&options).await;
+            match response {
+                Ok(r) => return Ok(r),
+                Err(e) => {
+                    println!("error = {e}");
+                }
+            }
+        }
+        Err(Error::io("retry policy exhausted "))
+
+    }
+
+    async fn send<O: serde::de::DeserializeOwned>(builder: reqwest::RequestBuilder, options: &crate::options::RequestOptions) -> Result<O> {
         let send = builder.send();
         let resp = if let Some(timeout) = options.get::<RequestTimeout>() {
             // Because of the timeout, we have a Result<Result<...>>. Unwrap.
@@ -127,11 +149,11 @@ trait RetryPolicy: Send {
 }
 
 mod options {
-    trait RetryPolicyProvider: Send + Sync {
+    pub trait RetryPolicyProvider: Send + Sync {
         fn start(&self) -> Box<dyn super::RetryPolicy>;
     }
 
-    struct RetryPolicy;
+    pub struct RetryPolicy;
 
     impl crate::options::RequestOption for RetryPolicy {
         type Type = std::sync::Arc<dyn RetryPolicyProvider>;
@@ -143,6 +165,14 @@ pub struct NoRetry;
 
 impl RetryPolicy for NoRetry {
     fn may_retry(&self) -> bool { return false; }
+}
+
+#[derive(Clone, Debug)]
+pub struct NoRetryProvider;
+impl options::RetryPolicyProvider for NoRetryProvider {
+    fn start(&self) -> Box<dyn RetryPolicy> {
+        Box::new(NoRetry)
+    }
 }
 
 #[derive(Clone, Debug)]
