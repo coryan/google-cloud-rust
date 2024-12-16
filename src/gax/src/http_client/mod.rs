@@ -71,31 +71,34 @@ impl ReqwestClient {
             builder = builder.json(&body);
         }
 
-        let policy = options.get::<options::RetryPolicy>().unwrap_or_else(|| Arc::new(NoRetryProvider)).start();
+        let mut policy = options
+            .get::<options::RetryPolicy>()
+            .unwrap_or_else(|| Arc::new(NoRetryProvider))
+            .start();
         if !policy.may_retry() {
             return Self::send(builder, &options).await;
         }
 
-        
-        let make_request = |options: &crate::options::RequestOptions| async move {
-            let b = builder.try_clone().ok_or_else(|| Error::io("cannot clone request in retry loop".to_string()))?;
-            Self::send::<O>(b, options).await
-        };
-
-        for i in 0..3 {
-            let response = make_request(&options).await;
+        loop {
+            let b = builder
+                .try_clone()
+                .ok_or_else(|| Error::io("cannot clone request in retry loop".to_string()))?;
+            let response = Self::send(b, &options).await;
             match response {
                 Ok(r) => return Ok(r),
                 Err(e) => {
                     println!("error = {e}");
+                    policy.on_failure(e)?;
+                    tokio::time::sleep(tokio::time::Duration::from_micros(100)).await;
                 }
             }
         }
-        Err(Error::io("retry policy exhausted "))
-
     }
 
-    async fn send<O: serde::de::DeserializeOwned>(builder: reqwest::RequestBuilder, options: &crate::options::RequestOptions) -> Result<O> {
+    async fn send<O: serde::de::DeserializeOwned>(
+        builder: reqwest::RequestBuilder,
+        options: &crate::options::RequestOptions,
+    ) -> Result<O> {
         let send = builder.send();
         let resp = if let Some(timeout) = options.get::<RequestTimeout>() {
             // Because of the timeout, we have a Result<Result<...>>. Unwrap.
@@ -145,7 +148,10 @@ impl std::fmt::Debug for ReqwestClient {
 pub struct NoBody {}
 
 trait RetryPolicy: Send {
-    fn may_retry(&self) -> bool { return true; }
+    fn may_retry(&self) -> bool {
+        return true;
+    }
+    fn on_failure(&mut self, error: Error) -> Result<()>;
 }
 
 mod options {
@@ -164,7 +170,12 @@ mod options {
 pub struct NoRetry;
 
 impl RetryPolicy for NoRetry {
-    fn may_retry(&self) -> bool { return false; }
+    fn may_retry(&self) -> bool {
+        return false;
+    }
+    fn on_failure(&mut self, error: Error) -> Result<()> {
+        return Err(error)
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -177,7 +188,7 @@ impl options::RetryPolicyProvider for NoRetryProvider {
 
 #[derive(Clone, Debug)]
 pub struct LimitedErrorCount {
-    count:   u32,
+    count: u32,
     maximum: u32,
 }
 
@@ -188,9 +199,18 @@ impl LimitedErrorCount {
 }
 
 impl RetryPolicy for LimitedErrorCount {
-    fn may_retry(&self) -> bool { return true; }
+    fn may_retry(&self) -> bool {
+        return true;
+    }
+    fn on_failure(&mut self, error: Error) -> Result<()> {
+        self.count += 1;
+        if self.count < self.maximum {
+            Ok(())
+        } else {
+            Err(error)
+        }
+    }
 }
-
 
 #[derive(Default)]
 pub struct ClientConfig {
