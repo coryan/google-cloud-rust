@@ -19,6 +19,8 @@ use std::collections::HashMap;
 // modules to avoid overly large files and make these easier to find.
 mod request_timeout;
 pub use request_timeout::*;
+mod retry_policy;
+pub use retry_policy::*;
 mod user_agent_prefix;
 pub use user_agent_prefix::*;
 

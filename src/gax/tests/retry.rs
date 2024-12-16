@@ -64,12 +64,14 @@ async fn retry_transient_errors() -> Result<()> {
     .into_iter()
     .collect();
     let (endpoint, _server) = start(responses).await?;
-    let config = ClientConfig::default().set_credential(auth::Credential::test_credentials());
+    let config = ClientConfig::default()
+    .set_credential(auth::Credential::test_credentials());
     let client = ReqwestClient::new(config, &endpoint).await?;
 
     let builder = client
         .builder(reqwest::Method::GET, "/get".into())
         .query(&[("name", "projects/test-only/foo/1")]);
+    let options = gax::options::RequestOptions::new().set::<gax::>
     let response = client
         .execute_with_options::<serde_json::Value, serde_json::Value>(
             builder,

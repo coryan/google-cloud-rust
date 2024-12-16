@@ -147,23 +147,8 @@ impl std::fmt::Debug for ReqwestClient {
 #[derive(serde::Serialize)]
 pub struct NoBody {}
 
-trait RetryPolicy: Send {
-    fn may_retry(&self) -> bool {
-        return true;
-    }
-    fn on_failure(&mut self, error: Error) -> Result<()>;
-}
 
 mod options {
-    pub trait RetryPolicyProvider: Send + Sync {
-        fn start(&self) -> Box<dyn super::RetryPolicy>;
-    }
-
-    pub struct RetryPolicy;
-
-    impl crate::options::RequestOption for RetryPolicy {
-        type Type = std::sync::Arc<dyn RetryPolicyProvider>;
-    }
 }
 
 #[derive(Clone, Debug)]
@@ -193,7 +178,7 @@ pub struct LimitedErrorCount {
 }
 
 impl LimitedErrorCount {
-    fn new(maximum: u32) -> Self {
+    pub fn new(maximum: u32) -> Self {
         Self { count: 0, maximum }
     }
 }

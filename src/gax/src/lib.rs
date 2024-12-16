@@ -77,10 +77,16 @@ pub mod api_header;
 /// The core error types used by generated clients.
 pub mod error;
 
+/// The result type for this crate.
+pub type Result<T> = std::result::Result<T, crate::error::Error>;
+
 /// Defines some types and traits to convert and use List RPCs as a Stream.
 /// Async streams are not yet stable, so neither is the use of this feature.
 #[cfg(feature = "stream")]
 pub mod paginator;
+
+/// Defines traits, functions, and types used for retry policies.
+pub mod retry;
 
 /// Defines traits and helpers for HTTP client implementations.
 #[cfg(feature = "unstable-sdk-client")]
