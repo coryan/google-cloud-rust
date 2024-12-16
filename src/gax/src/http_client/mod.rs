@@ -17,7 +17,6 @@ use crate::error::HttpError;
 use crate::options::RequestTimeout;
 use auth::Credential;
 type Result<T> = std::result::Result<T, crate::error::Error>;
-use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct ReqwestClient {
@@ -72,8 +71,8 @@ impl ReqwestClient {
         }
 
         let mut policy = options
-            .get::<options::RetryPolicy>()
-            .unwrap_or_else(|| Arc::new(NoRetryProvider))
+            .get::<crate::options::RetryPolicy>()
+            .unwrap_or_else(|| crate::retry::new_provider(crate::retry::NoRetry))
             .start();
         if !policy.may_retry() {
             return Self::send(builder, &options).await;
@@ -146,56 +145,6 @@ impl std::fmt::Debug for ReqwestClient {
 
 #[derive(serde::Serialize)]
 pub struct NoBody {}
-
-
-mod options {
-}
-
-#[derive(Clone, Debug)]
-pub struct NoRetry;
-
-impl RetryPolicy for NoRetry {
-    fn may_retry(&self) -> bool {
-        return false;
-    }
-    fn on_failure(&mut self, error: Error) -> Result<()> {
-        return Err(error)
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct NoRetryProvider;
-impl options::RetryPolicyProvider for NoRetryProvider {
-    fn start(&self) -> Box<dyn RetryPolicy> {
-        Box::new(NoRetry)
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct LimitedErrorCount {
-    count: u32,
-    maximum: u32,
-}
-
-impl LimitedErrorCount {
-    pub fn new(maximum: u32) -> Self {
-        Self { count: 0, maximum }
-    }
-}
-
-impl RetryPolicy for LimitedErrorCount {
-    fn may_retry(&self) -> bool {
-        return true;
-    }
-    fn on_failure(&mut self, error: Error) -> Result<()> {
-        self.count += 1;
-        if self.count < self.maximum {
-            Ok(())
-        } else {
-            Err(error)
-        }
-    }
-}
 
 #[derive(Default)]
 pub struct ClientConfig {

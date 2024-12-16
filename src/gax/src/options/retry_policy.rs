@@ -15,5 +15,5 @@
 pub struct RetryPolicy;
 
 impl crate::options::RequestOption for RetryPolicy {
-    type Type = std::sync::Arc<dyn crate::retry::RetryPolicyProvider>;
+    type Type = std::sync::Arc<dyn crate::retry::PolicyProvider + Send + Sync>;
 }

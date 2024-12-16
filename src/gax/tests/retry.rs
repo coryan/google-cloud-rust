@@ -71,12 +71,15 @@ async fn retry_transient_errors() -> Result<()> {
     let builder = client
         .builder(reqwest::Method::GET, "/get".into())
         .query(&[("name", "projects/test-only/foo/1")]);
-    let options = gax::options::RequestOptions::new().set::<gax::>
+    let options = gax::options::RequestOptions::new().set::<gax::options::RetryPolicy>(
+        gax::retry::new_provider(
+        gax::retry::LimitedErrorCount::new(3)
+    ));
     let response = client
         .execute_with_options::<serde_json::Value, serde_json::Value>(
             builder,
             None,
-            RequestOptions::new(),
+            options,
         )
         .await?;
 
@@ -119,9 +122,8 @@ pub async fn start(responses: VecDeque<Response>) -> Result<(String, JoinHandle<
 }
 
 async fn handler(
-    State(responses): State<VecDeque<Response>>,
+    State(responses): &mut State<VecDeque<Response>>,
 ) -> (StatusCode, Json<serde_json::Value>) {
-    let mut responses = responses;
     match responses.pop_front() {
         Some(r) => (r.0, Json::from(r.1)),
         None => (
