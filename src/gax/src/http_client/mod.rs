@@ -69,6 +69,11 @@ impl ReqwestClient {
         if let Some(body) = body {
             builder = builder.json(&body);
         }
+
+        let policy = options.get::<RetryPolicy>().or_else(|| )
+
+        let builder2 = builder.try_clone().or_else(|| Error::io("cannot clone request builder"));
+
         let send = builder.send();
         let resp = if let Some(timeout) = options.get::<RequestTimeout>() {
             // Because of the timeout, we have a Result<Result<...>>. Unwrap.
@@ -116,6 +121,46 @@ impl std::fmt::Debug for ReqwestClient {
 
 #[derive(serde::Serialize)]
 pub struct NoBody {}
+
+trait RetryPolicy: Send {
+    fn may_retry(&self) -> bool { return true; }
+}
+
+mod options {
+    trait RetryPolicyProvider: Send + Sync {
+        fn start(&self) -> Box<dyn super::RetryPolicy>;
+    }
+
+    struct RetryPolicy;
+
+    impl crate::options::RequestOption for RetryPolicy {
+        type Type = std::sync::Arc<dyn RetryPolicyProvider>;
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct NoRetry;
+
+impl RetryPolicy for NoRetry {
+    fn may_retry(&self) -> bool { return false; }
+}
+
+#[derive(Clone, Debug)]
+pub struct LimitedErrorCount {
+    count:   u32,
+    maximum: u32,
+}
+
+impl LimitedErrorCount {
+    fn new(maximum: u32) -> Self {
+        Self { count: 0, maximum }
+    }
+}
+
+impl RetryPolicy for LimitedErrorCount {
+    fn may_retry(&self) -> bool { return true; }
+}
+
 
 #[derive(Default)]
 pub struct ClientConfig {
