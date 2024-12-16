@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use axum::{extract::State, http::StatusCode, Json};
+use axum::{http::StatusCode, Json};
 use gax::http_client::*;
 use gax::options::*;
 use gcp_sdk_gax as gax;
@@ -64,29 +64,55 @@ async fn retry_transient_errors() -> Result<()> {
     .into_iter()
     .collect();
     let (endpoint, _server) = start(responses).await?;
-    let config = ClientConfig::default()
-    .set_credential(auth::Credential::test_credentials());
+    let config = ClientConfig::default().set_credential(auth::Credential::test_credentials());
     let client = ReqwestClient::new(config, &endpoint).await?;
 
     let builder = client
         .builder(reqwest::Method::GET, "/get".into())
         .query(&[("name", "projects/test-only/foo/1")]);
     let options = gax::options::RequestOptions::new().set::<gax::options::RetryPolicy>(
-        gax::retry::new_provider(
-        gax::retry::LimitedErrorCount::new(3)
-    ));
+        gax::retry::new_provider(gax::retry::LimitedErrorCount::new(3)),
+    );
     let response = client
-        .execute_with_options::<serde_json::Value, serde_json::Value>(
-            builder,
-            None,
-            options,
-        )
+        .execute_with_options::<serde_json::Value, serde_json::Value>(builder, None, options)
         .await?;
 
     assert_eq!(
         response,
         json!({ "name": "projects/test-only/foos/1", "value": "v"})
     );
+
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn retry_too_many_transient_errors() -> Result<()> {
+    let responses: VecDeque<_> = [
+        (StatusCode::BAD_REQUEST, unavailable()),
+        (StatusCode::BAD_REQUEST, unavailable()),
+        (StatusCode::BAD_REQUEST, unavailable()),
+        (StatusCode::BAD_REQUEST, unavailable()),
+        (StatusCode::BAD_REQUEST, unavailable()),
+        (StatusCode::OK, success()),
+    ]
+    .into_iter()
+    .collect();
+    let (endpoint, _server) = start(responses).await?;
+    let config = ClientConfig::default().set_credential(auth::Credential::test_credentials());
+    let client = ReqwestClient::new(config, &endpoint).await?;
+
+    let builder = client
+        .builder(reqwest::Method::GET, "/get".into())
+        .query(&[("name", "projects/test-only/foo/1")]);
+    let options = gax::options::RequestOptions::new().set::<gax::options::RetryPolicy>(
+        gax::retry::new_provider(gax::retry::LimitedErrorCount::new(3)),
+    );
+    let response = client
+        .execute_with_options::<serde_json::Value, serde_json::Value>(builder, None, options)
+        .await;
+    assert!(response.is_err());
+    let response = response.err().unwrap();
+    assert_eq!(response.kind(), gax::error::ErrorKind::Rpc);
 
     Ok(())
 }
@@ -108,10 +134,19 @@ fn unavailable() -> serde_json::Value {
     })
 }
 
+use std::sync::Arc;
+use std::sync::Mutex;
+type SharedState = Arc<Mutex<State>>;
+
+struct State {
+    responses: VecDeque<Response>,
+}
+
 pub async fn start(responses: VecDeque<Response>) -> Result<(String, JoinHandle<()>)> {
+    let state = Arc::new(Mutex::new(State { responses }));
     let app = axum::Router::new()
         .route("/get", axum::routing::get(handler))
-        .with_state(responses);
+        .with_state(state);
     let listener = tokio::net::TcpListener::bind("0.0.0.0:0").await?;
     let addr = listener.local_addr()?;
     let server = tokio::spawn(async {
@@ -122,13 +157,19 @@ pub async fn start(responses: VecDeque<Response>) -> Result<(String, JoinHandle<
 }
 
 async fn handler(
-    State(responses): &mut State<VecDeque<Response>>,
+    axum::extract::State(state): axum::extract::State<SharedState>,
 ) -> (StatusCode, Json<serde_json::Value>) {
-    match responses.pop_front() {
-        Some(r) => (r.0, Json::from(r.1)),
-        None => (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            Json::from(serde_json::Value::String("out of responses".into())),
-        ),
+    if let Ok(mut state) = state.lock() {
+        return match state.responses.pop_front() {
+            Some(r) => (r.0, Json::from(r.1)),
+            None => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json::from(serde_json::Value::String("out of responses".into())),
+            ),
+        };
     }
+    (
+        StatusCode::INTERNAL_SERVER_ERROR,
+        Json::from(serde_json::Value::String("cannot lock state".into())),
+    )
 }
