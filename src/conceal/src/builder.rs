@@ -65,39 +65,31 @@ impl ListFoosRequest {
     }
 
     pub async fn send(self) -> Result<model::ListFoosResponse> {
-        Self::send_impl(self.client, self.options, self.request).await
-    }
-
-    pub fn stream(self) -> gax::paginator::Paginator<model::ListFoosResponse, gax::error::Error> {
-        let token = self.request.page_token.clone();
-        let (client, options, request) = (self.client, self.options, self.request);
-        let execute = move |token: String| {
-            let mut req = request.clone();
-            req.page_token = token;
-            Self::send_impl(client.clone(), options.clone(), req)
-        };
-        gax::paginator::Paginator::new(token, execute)
-    }
-
-    async fn send_impl(
-        client: HttpClient,
-        _options: HashMap<String, String>,
-        request: model::ListFoosRequest,
-    ) -> Result<model::ListFoosResponse> {
-        let builder = client
+        let builder = self
+            .client
             .builder(reqwest::Method::GET, "/v0/foos".into())
             .query(&[("alt", "json")])
             .header(
                 "x-goog-api-client",
                 reqwest::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
             );
-        let builder =
-            gax::query_parameter::add(builder, "prefix", &request.prefix).map_err(Error::other)?;
-        let builder = gax::query_parameter::add(builder, "pageToken", &request.page_token)
+        let builder = gax::query_parameter::add(builder, "prefix", &self.request.prefix)
             .map_err(Error::other)?;
-        client
+        let builder = gax::query_parameter::add(builder, "pageToken", &self.request.page_token)
+            .map_err(Error::other)?;
+        self.client
             .execute(builder, None::<gax::http_client::NoBody>)
             .await
+    }
+
+    pub fn stream(self) -> gax::paginator::Paginator<model::ListFoosResponse, gax::error::Error> {
+        let token = self.request.page_token.clone();
+        let execute = move |token: String| {
+            let mut copy = self.clone();
+            copy.request.page_token = token;
+            copy.send()
+        };
+        gax::paginator::Paginator::new(token, execute)
     }
 }
 
