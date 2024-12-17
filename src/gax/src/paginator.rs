@@ -53,7 +53,7 @@ where
                     ControlFlow::Continue(token) => token,
                     ControlFlow::Break(_) => return None,
                 };
-                let resp = match execute(token).await {
+                match execute(token).await {
                     Ok(page_resp) => {
                         let tok = page_resp.next_page_token();
                         let next_state = if tok.is_empty() {
@@ -64,8 +64,7 @@ where
                         Some((Ok(page_resp), next_state))
                     }
                     Err(e) => Some((Err(e), ControlFlow::Break(()))),
-                };
-                resp
+                }
             }
         });
         Self {
@@ -74,6 +73,7 @@ where
     }
 
     /// Returns the next mutation of the wrapped stream.
+    #[allow(clippy::should_implement_trait)]
     pub fn next(&mut self) -> futures::stream::Next<'_, Self> {
         StreamExt::next(self)
     }
