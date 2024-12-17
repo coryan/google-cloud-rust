@@ -14,7 +14,6 @@
 
 use gax::error::Error;
 pub type Result<T> = std::result::Result<T, gax::error::Error>;
-pub mod builder_based_client;
 pub mod secret_manager;
 
 pub const SECRET_ID_LENGTH: usize = 64;

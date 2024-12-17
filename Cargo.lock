@@ -311,6 +311,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "conceal"
+version = "0.0.0"
+dependencies = [
+ "futures",
+ "gcp-sdk-gax",
+ "gcp-sdk-wkt",
+ "google-cloud-auth",
+ "lazy_static",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "test-case",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "core-foundation"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1128,11 +1146,8 @@ dependencies = [
  "gcp-sdk-secretmanager-v1",
  "gcp-sdk-wkt",
  "google-cloud-auth",
- "lazy_static",
  "rand",
- "reqwest",
  "secretmanager-openapi-v1",
- "serde",
  "serde_json",
  "test-case",
  "tokio",

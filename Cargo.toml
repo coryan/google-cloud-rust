@@ -19,6 +19,7 @@ members = [
   "auth",
   "src/auth",
   "src/base",
+  "src/conceal",
   "src/gax",
   "src/generated/api",
   "src/generated/cloud/common",
