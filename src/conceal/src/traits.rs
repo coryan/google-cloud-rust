@@ -13,7 +13,7 @@
 // limitations under the License.
 
 pub trait FooService: std::fmt::Debug + Send + Sync {
-    fn list_foos(&self) -> super::builder::ListFoosRequestBuilder;
+    fn list_foos(&self) -> super::builder::ListFoosRequest;
     // fn get_foo(&self) -> super::builder::GetFooRequestBuilder;
     // fn create_foo(&self) -> super::builder::CreateFooRequestBuilder;
     // fn delete_foo(&self) -> super::builder::DeleteFooRequestBuilder;

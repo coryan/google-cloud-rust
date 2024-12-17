@@ -21,7 +21,7 @@ use gax::error::Error;
 pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Clone, Debug)]
-pub struct ListFoosRequestBuilder {
+pub struct ListFoosRequest {
     request: model::ListFoosRequest,
 
     // Placeholder, this should be a real implementation.
@@ -30,7 +30,7 @@ pub struct ListFoosRequestBuilder {
     client: gax::http_client::ReqwestClient,
 }
 
-impl ListFoosRequestBuilder {
+impl ListFoosRequest {
     pub fn new(client: gax::http_client::ReqwestClient) -> Self {
         Self {
             request: model::ListFoosRequest::default(),
@@ -84,11 +84,11 @@ impl ListFoosRequestBuilder {
     }
 }
 
-pub struct GetFooRequestBuilder;
+pub struct GetFooRequest;
 
-pub struct CreateFooRequestBuilder;
+pub struct CreateFooRequest;
 
-pub struct DeleteFooRequestBuilder;
+pub struct DeleteFooRequest;
 
 pub(crate) mod info {
     const NAME: &str = env!("CARGO_PKG_NAME");
