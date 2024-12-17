@@ -12,9 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use gax::http_client::ClientConfig;
+
 #[derive(Clone, Debug)]
 pub struct FooService {
     client: gax::http_client::ReqwestClient,
+}
+
+impl FooService {
+    pub async fn new(endpoint: &str) -> crate::Result<Self> {
+        let config = ClientConfig::default().set_credential(auth::Credential::test_credentials());
+        let client = gax::http_client::ReqwestClient::new(config, endpoint).await?;
+        Ok(Self { client })
+    }
 }
 
 impl super::traits::FooService for FooService {

@@ -12,11 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-type Result<T> = std::result::Result<T, gax::error::Error>;
+use conceal::traits::FooService as _;
 
-pub mod builder;
-pub mod client;
-pub mod model;
-pub mod traits;
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-pub mod server;
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn basic_requests() -> Result<()> {
+    let (endpoint, _server) = conceal::server::start().await?;
+    let client = conceal::client::FooService::new(&endpoint).await?;
+
+    let response = client
+        .list_foos()
+        .set_prefix("abc")
+        .with_timeout(std::time::Duration::from_millis(100))
+        .send()
+        .await;
+
+    println!("response = {response:?}");
+
+    Ok(())
+}
