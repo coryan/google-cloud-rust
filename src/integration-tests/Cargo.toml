@@ -24,7 +24,7 @@ run-integration-tests = ["dep:tokio"]
 
 [dependencies]
 auth               = { path = "../../auth", package = "google-cloud-auth" }
-gax                = { path = "../../src/gax", package = "gcp-sdk-gax" }
+gax                = { path = "../../src/gax", package = "gcp-sdk-gax", features = ["unstable-sdk-client"] }
 wkt                = { path = "../../src/wkt", package = "gcp-sdk-wkt" }
 iam_v1             = { path = "../../src/generated/iam/v1", package = "gcp-sdk-iam-v1" }
 sm                 = { path = "../../src/generated/cloud/secretmanager/v1", package = "gcp-sdk-secretmanager-v1" }
@@ -33,7 +33,10 @@ smo                = { path = "../../src/generated/openapi-validation", package 
 bytes              = "1.8.0"
 crc32c             = "0.6.8"
 futures            = "0.3.31"
+lazy_static        = "1.5.0"
 rand               = "0.8.5"
+reqwest            = "0.12.9"
+serde              = { version = "1.0.216", features = ["serde_derive"] }
 serde_json         = "1.0.133"
 tokio              = { version = "1.42", features = ["full", "macros"], optional = true }
 tracing            = "0.1.41"
