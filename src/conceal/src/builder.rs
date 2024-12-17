@@ -73,7 +73,7 @@ impl ListFoosRequest {
         let (client, options, request) = (self.client, self.options, self.request);
         let execute = move |token: String| {
             let mut req = request.clone();
-            req.page_token = token.into();
+            req.page_token = token;
             Self::send_impl(client.clone(), options.clone(), req)
         };
         gax::paginator::Paginator::new(token, execute)

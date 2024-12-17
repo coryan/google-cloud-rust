@@ -83,17 +83,17 @@ fn list_impl(
     use crate::model::*;
     let filter: Box<dyn Fn(&Foo) -> bool> = if let Some(prefix) = query.get("prefix") {
         let p = prefix.to_owned();
-        Box::new(move |foo: &crate::model::Foo| foo.name.starts_with(&p))
+        Box::new(move |item: &crate::model::Foo| item.name.starts_with(&p))
     } else {
         Box::new(|_: &crate::model::Foo| true)
     };
 
-    let state = state.lock().map_err(|e| to_internal_error(e))?;
+    let state = state.lock().map_err(to_internal_error)?;
     let response = ListFoosResponse {
         items: state
             .foos
             .iter()
-            .filter_map(|(_, v)| filter(&v).then_some(v.clone()))
+            .filter_map(|(_, v)| filter(v).then_some(v.clone()))
             .collect(),
         next_page_token: None, //
     };
