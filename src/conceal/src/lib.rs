@@ -18,9 +18,15 @@ pub use gax::error::Error;
 /// The result type for all operations in this crate.
 pub type Result<T> = std::result::Result<T, gax::error::Error>;
 
+/// A placeholder for request options.
+pub type RequestOptions = std::collections::HashMap<String, String>;
+
 pub mod builder;
 pub mod client;
 pub mod model;
 pub mod traits;
+
+pub mod stubs;
+pub(crate) mod transport;
 
 pub mod server;

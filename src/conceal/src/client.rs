@@ -12,27 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gax::http_client::ClientConfig;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
 pub struct FooService {
-    client: gax::http_client::ReqwestClient,
+    stub: Arc<dyn crate::stubs::dyncompatible::FooService>,
 }
 
 impl FooService {
     pub async fn new(endpoint: &str) -> crate::Result<Self> {
-        let config = ClientConfig::default().set_credential(auth::Credential::test_credentials());
-        let client = gax::http_client::ReqwestClient::new(config, endpoint).await?;
-        Ok(Self { client })
-    }
-}
-
-impl super::traits::FooService for FooService {
-    fn list_foos(&self) -> super::builder::ListFoosRequest {
-        super::builder::ListFoosRequest::new(self.client.clone())
+        let stub = crate::transport::FooService::new(endpoint).await?;
+        let stub = Arc::new(stub);
+        Ok(Self { stub })
     }
 
-    fn create_foo(&self) -> super::builder::CreateFooRequest {
-        super::builder::CreateFooRequest::new(self.client.clone())
+    pub fn from_stub(stub: impl crate::stubs::FooService + 'static) -> Self {
+        Self { stub: Arc::new(stub) }
+    }
+
+    pub fn list_foos(&self) -> super::builder::ListFoosRequest {
+        super::builder::ListFoosRequest::new(self.stub.clone())
+    }
+
+    pub fn create_foo(&self) -> super::builder::CreateFooRequest {
+        super::builder::CreateFooRequest::new(self.stub.clone())
     }
 }

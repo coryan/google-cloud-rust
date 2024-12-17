@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use conceal::traits::FooService as _;
-
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
@@ -84,6 +82,50 @@ async fn create_and_list() -> Result<()> {
         .await;
 
     println!("response = {response:?}");
+
+    Ok(())
+}
+
+async fn thing_under_test(
+    client: &conceal::client::FooService,
+) -> conceal::Result<conceal::model::Foo> {
+    client
+        .create_foo()
+        .set_parent("abc")
+        .set_foo_id("123")
+        .with_timeout(std::time::Duration::from_millis(100))
+        .send()
+        .await
+}
+
+mockall::mock! {
+    #[derive(Debug)]
+    FooService {}
+    impl conceal::stubs::FooService for FooService {
+        async fn create_foo(
+            &self,
+            request: conceal::model::CreateFooRequest,
+            options: conceal::RequestOptions
+        ) -> conceal::Result<conceal::model::Foo>;
+
+        async fn list_foos(
+            &self,
+            request: conceal::model::ListFoosRequest,
+            options: conceal::RequestOptions
+        ) -> conceal::Result<conceal::model::ListFoosResponse>;
+    }
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn mocking() -> Result<()> {
+    let mut mock = MockFooService::new();
+    mock.expect_create_foo()
+        .return_once(|_, _| Err(conceal::Error::other("simulated failure")));
+
+    let client = conceal::client::FooService::from_stub(mock);
+
+    let response = thing_under_test(&client).await;
+    assert!(response.is_err());
 
     Ok(())
 }

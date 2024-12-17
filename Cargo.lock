@@ -314,6 +314,7 @@ dependencies = [
 name = "conceal"
 version = "0.0.0"
 dependencies = [
+ "async-trait",
  "axum",
  "bytes",
  "futures",
@@ -321,10 +322,10 @@ dependencies = [
  "gcp-sdk-wkt",
  "google-cloud-auth",
  "lazy_static",
+ "mockall",
  "reqwest",
  "serde",
  "serde_json",
- "test-case",
  "tokio",
  "tracing",
  "tracing-subscriber",

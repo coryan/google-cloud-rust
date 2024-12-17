@@ -13,70 +13,59 @@
 // limitations under the License.
 
 use super::model;
-use crate::Error;
 use crate::Result;
 use std::collections::HashMap;
-
-type HttpClient = gax::http_client::ReqwestClient;
+use std::sync::Arc;
 
 #[derive(Clone, Debug)]
-pub struct ListFoosRequest {
-    request: model::ListFoosRequest,
+pub struct RequestBuilder<T: std::default::Default> {
+    request: T,
     options: HashMap<String, String>,
-    client: HttpClient,
+    stub: Arc<dyn crate::stubs::dyncompatible::FooService>,
 }
 
-impl ListFoosRequest {
-    pub(crate) fn new(client: HttpClient) -> Self {
+impl<T> RequestBuilder<T>
+where T: std::default::Default {
+    pub(crate) fn new(stub: Arc<dyn crate::stubs::dyncompatible::FooService>) -> Self {
         Self {
-            request: model::ListFoosRequest::default(),
+            request: T::default(),
             // Should provide defaults for timeout and retry options.
             options: HashMap::default(),
-            client,
+            stub,
         }
     }
 
-    /// Only return the `Foos` starting with this prefix.
-    pub fn set_prefix<T: Into<String>>(mut self, v: T) -> Self {
-        self.request.prefix = v.into();
-        self
-    }
-
     /// Set the full request.
-    pub fn with_request<T: Into<model::ListFoosRequest>>(mut self, v: T) -> Self {
+    pub fn with_request<V: Into<T>>(mut self, v: V) -> Self {
         self.request = v.into();
         self
     }
 
     /// Set the timeout option.
-    pub fn with_timeout<T: Into<std::time::Duration>>(mut self, v: T) -> Self {
+    pub fn with_timeout<V: Into<std::time::Duration>>(mut self, v: V) -> Self {
         let d: std::time::Duration = v.into();
         self.options.insert("timeout".into(), format!("{:?}", d));
         self
     }
 
     /// Set the user agent option.
-    pub fn with_user_agent<T: Into<String>>(mut self, v: T) -> Self {
+    pub fn with_user_agent<V: Into<String>>(mut self, v: V) -> Self {
         self.options.insert("user-agent".into(), v.into());
+        self
+    }
+}
+
+pub type ListFoosRequest = RequestBuilder<model::ListFoosRequest>;
+
+impl ListFoosRequest {
+    /// Only return the `Foos` starting with this prefix.
+    pub fn set_prefix<T: Into<String>>(mut self, v: T) -> Self {
+        self.request.prefix = v.into();
         self
     }
 
     pub async fn send(self) -> Result<model::ListFoosResponse> {
-        let builder = self
-            .client
-            .builder(reqwest::Method::GET, "/v0/foos".into())
-            .query(&[("alt", "json")])
-            .header(
-                "x-goog-api-client",
-                reqwest::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
-            );
-        let builder = gax::query_parameter::add(builder, "prefix", &self.request.prefix)
-            .map_err(Error::other)?;
-        let builder = gax::query_parameter::add(builder, "pageToken", &self.request.page_token)
-            .map_err(Error::other)?;
-        self.client
-            .execute(builder, None::<gax::http_client::NoBody>)
-            .await
+        self.stub.list_foos(self.request, self.options).await
     }
 
     pub fn stream(self) -> gax::paginator::Paginator<model::ListFoosResponse, gax::error::Error> {
@@ -90,22 +79,9 @@ impl ListFoosRequest {
     }
 }
 
-pub struct CreateFooRequest {
-    request: model::CreateFooRequest,
-    options: HashMap<String, String>,
-    client: HttpClient,
-}
+pub type CreateFooRequest = RequestBuilder<model::CreateFooRequest>;
 
 impl CreateFooRequest {
-    pub(crate) fn new(client: HttpClient) -> Self {
-        Self {
-            request: model::CreateFooRequest::default(),
-            // Should provide defaults for timeout and retry options.
-            options: HashMap::default(),
-            client,
-        }
-    }
-
     /// Set the parent.
     pub fn set_parent<T: Into<String>>(mut self, v: T) -> Self {
         self.request.parent = v.into();
@@ -123,41 +99,8 @@ impl CreateFooRequest {
         self
     }
 
-    /// Set the full request.
-    pub fn with_request<T: Into<model::CreateFooRequest>>(mut self, v: T) -> Self {
-        self.request = v.into();
-        self
-    }
-
-    /// Set the timeout option.
-    pub fn with_timeout<T: Into<std::time::Duration>>(mut self, v: T) -> Self {
-        let d: std::time::Duration = v.into();
-        self.options.insert("timeout".into(), format!("{:?}", d));
-        self
-    }
-
-    /// Set the user agent option.
-    pub fn with_user_agent<T: Into<String>>(mut self, v: T) -> Self {
-        self.options.insert("user-agent".into(), v.into());
-        self
-    }
-
     pub async fn send(self) -> Result<model::Foo> {
-        let builder = self
-            .client
-            .builder(reqwest::Method::POST, "/v0/foos".into())
-            .query(&[("alt", "json")])
-            .header(
-                "x-goog-api-client",
-                reqwest::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
-            );
-        let builder = gax::query_parameter::add(builder, "parent", &self.request.parent)
-            .map_err(Error::other)?;
-        let builder = gax::query_parameter::add(builder, "foo_id", &self.request.foo_id)
-            .map_err(Error::other)?;
-        self.client
-            .execute(builder, Some(self.request.item))
-            .await
+        self.stub.create_foo(self.request, self.options).await
     }
 }
 
@@ -165,17 +108,3 @@ pub struct GetFooRequest;
 
 pub struct DeleteFooRequest;
 
-pub(crate) mod info {
-    const NAME: &str = env!("CARGO_PKG_NAME");
-    const VERSION: &str = env!("CARGO_PKG_VERSION");
-    lazy_static::lazy_static! {
-        pub(crate) static ref X_GOOG_API_CLIENT_HEADER: String = {
-            let ac = gax::api_header::XGoogApiClient{
-                name:          NAME,
-                version:       VERSION,
-                library_type:  gax::api_header::GAPIC,
-            };
-            ac.header_value()
-        };
-    }
-}

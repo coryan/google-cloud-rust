@@ -11,10 +11,3 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-pub trait FooService: std::fmt::Debug + Send + Sync {
-    fn list_foos(&self) -> super::builder::ListFoosRequest;
-    fn create_foo(&self) -> super::builder::CreateFooRequest;
-    // fn get_foo(&self) -> super::builder::GetFooRequestBuilder;
-    // fn delete_foo(&self) -> super::builder::DeleteFooRequestBuilder;
-}
