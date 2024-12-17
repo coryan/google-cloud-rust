@@ -31,4 +31,8 @@ impl super::traits::FooService for FooService {
     fn list_foos(&self) -> super::builder::ListFoosRequest {
         super::builder::ListFoosRequest::new(self.client.clone())
     }
+
+    fn create_foo(&self) -> super::builder::CreateFooRequest {
+        super::builder::CreateFooRequest::new(self.client.clone())
+    }
 }

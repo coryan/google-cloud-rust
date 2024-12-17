@@ -22,15 +22,12 @@ type HttpClient = gax::http_client::ReqwestClient;
 #[derive(Clone, Debug)]
 pub struct ListFoosRequest {
     request: model::ListFoosRequest,
-
-    // Placeholder, this should be a real implementation.
     options: HashMap<String, String>,
-
     client: HttpClient,
 }
 
 impl ListFoosRequest {
-    pub fn new(client: HttpClient) -> Self {
+    pub(crate) fn new(client: HttpClient) -> Self {
         Self {
             request: model::ListFoosRequest::default(),
             // Should provide defaults for timeout and retry options.
@@ -93,9 +90,78 @@ impl ListFoosRequest {
     }
 }
 
-pub struct GetFooRequest;
+pub struct CreateFooRequest {
+    request: model::CreateFooRequest,
+    options: HashMap<String, String>,
+    client: HttpClient,
+}
 
-pub struct CreateFooRequest;
+impl CreateFooRequest {
+    pub(crate) fn new(client: HttpClient) -> Self {
+        Self {
+            request: model::CreateFooRequest::default(),
+            // Should provide defaults for timeout and retry options.
+            options: HashMap::default(),
+            client,
+        }
+    }
+
+    /// Set the parent.
+    pub fn set_parent<T: Into<String>>(mut self, v: T) -> Self {
+        self.request.parent = v.into();
+        self
+    }
+
+    /// Set the item id.
+    pub fn set_foo_id<T: Into<String>>(mut self, v: T) -> Self {
+        self.request.foo_id = v.into();
+        self
+    }
+
+    pub fn set_item<T: Into<model::Foo>>(mut self, v: T) -> Self {
+        self.request.item = v.into();
+        self
+    }
+
+    /// Set the full request.
+    pub fn with_request<T: Into<model::CreateFooRequest>>(mut self, v: T) -> Self {
+        self.request = v.into();
+        self
+    }
+
+    /// Set the timeout option.
+    pub fn with_timeout<T: Into<std::time::Duration>>(mut self, v: T) -> Self {
+        let d: std::time::Duration = v.into();
+        self.options.insert("timeout".into(), format!("{:?}", d));
+        self
+    }
+
+    /// Set the user agent option.
+    pub fn with_user_agent<T: Into<String>>(mut self, v: T) -> Self {
+        self.options.insert("user-agent".into(), v.into());
+        self
+    }
+
+    pub async fn send(self) -> Result<model::Foo> {
+        let builder = self
+            .client
+            .builder(reqwest::Method::POST, "/v0/foos".into())
+            .query(&[("alt", "json")])
+            .header(
+                "x-goog-api-client",
+                reqwest::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
+            );
+        let builder = gax::query_parameter::add(builder, "parent", &self.request.parent)
+            .map_err(Error::other)?;
+        let builder = gax::query_parameter::add(builder, "foo_id", &self.request.foo_id)
+            .map_err(Error::other)?;
+        self.client
+            .execute(builder, Some(self.request.item))
+            .await
+    }
+}
+
+pub struct GetFooRequest;
 
 pub struct DeleteFooRequest;
 

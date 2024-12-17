@@ -51,3 +51,39 @@ async fn streaming_list() -> Result<()> {
 
     Ok(())
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn create_and_list() -> Result<()> {
+    let (endpoint, _server) = conceal::server::start().await?;
+    let client = conceal::client::FooService::new(&endpoint).await?;
+
+    let response = client
+        .create_foo()
+        .set_parent("abc")
+        .set_foo_id("123")
+        .with_timeout(std::time::Duration::from_millis(100))
+        .send()
+        .await?;
+
+    println!("response1 = {response:?}");
+    let response = client
+        .create_foo()
+        .set_parent("abc")
+        .set_foo_id("234")
+        .with_timeout(std::time::Duration::from_millis(100))
+        .send()
+        .await?;
+
+    println!("response2 = {response:?}");
+
+    let response = client
+        .list_foos()
+        .set_prefix("abc")
+        .with_timeout(std::time::Duration::from_millis(100))
+        .send()
+        .await;
+
+    println!("response = {response:?}");
+
+    Ok(())
+}

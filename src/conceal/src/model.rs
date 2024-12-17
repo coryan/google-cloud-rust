@@ -19,7 +19,7 @@ pub struct Foo {
     pub payload: String,
 }
 
-/// The response message for [super::traits::FooService::list_foos].
+/// The request message for [super::traits::FooService::list_foos].
 #[derive(Clone, Debug, Default, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct ListFoosRequest {
     pub prefix: String,
@@ -41,4 +41,12 @@ impl gax::paginator::PageableResponse for ListFoosResponse {
             .cloned()
             .unwrap_or_else(String::new)
     }
+}
+
+/// The request message for [super::traits::FooService::create_foo].
+#[derive(Clone, Debug, Default, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct CreateFooRequest {
+    pub parent: String,
+    pub foo_id: String,
+    pub item: Foo
 }
