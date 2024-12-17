@@ -17,7 +17,7 @@ use conceal::traits::FooService as _;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-async fn basic_requests() -> Result<()> {
+async fn basic_list() -> Result<()> {
     let (endpoint, _server) = conceal::server::start().await?;
     let client = conceal::client::FooService::new(&endpoint).await?;
 
@@ -29,6 +29,25 @@ async fn basic_requests() -> Result<()> {
         .await;
 
     println!("response = {response:?}");
+
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn streaming_list() -> Result<()> {
+    let (endpoint, _server) = conceal::server::start().await?;
+    let client = conceal::client::FooService::new(&endpoint).await?;
+
+    let mut stream = client
+        .list_foos()
+        .set_prefix("abc")
+        .with_timeout(std::time::Duration::from_millis(100))
+        .stream();
+
+    while let Some(page) = stream.next().await {
+        let page = page?;
+        println!("page = {page:?}");
+    }
 
     Ok(())
 }

@@ -13,12 +13,11 @@
 // limitations under the License.
 
 use super::model;
+use crate::Error;
+use crate::Result;
 use std::collections::HashMap;
 
-use gax::error::Error;
-
-/// A type alias for [std::result::Result] where the error is always [gax::error::Error].
-pub type Result<T> = std::result::Result<T, Error>;
+type HttpClient = gax::http_client::ReqwestClient;
 
 #[derive(Clone, Debug)]
 pub struct ListFoosRequest {
@@ -27,11 +26,11 @@ pub struct ListFoosRequest {
     // Placeholder, this should be a real implementation.
     options: HashMap<String, String>,
 
-    client: gax::http_client::ReqwestClient,
+    client: HttpClient,
 }
 
 impl ListFoosRequest {
-    pub fn new(client: gax::http_client::ReqwestClient) -> Self {
+    pub fn new(client: HttpClient) -> Self {
         Self {
             request: model::ListFoosRequest::default(),
             // Should provide defaults for timeout and retry options.
@@ -66,19 +65,37 @@ impl ListFoosRequest {
     }
 
     pub async fn send(self) -> Result<model::ListFoosResponse> {
-        let builder = self
-            .client
+        Self::send_impl(self.client, self.options, self.request).await
+    }
+
+    pub fn stream(self) -> gax::paginator::Paginator<model::ListFoosResponse, gax::error::Error> {
+        let token = self.request.page_token.clone();
+        let (client, options, request) = (self.client, self.options, self.request);
+        let execute = move |token: String| {
+            let mut req = request.clone();
+            req.page_token = token.into();
+            Self::send_impl(client.clone(), options.clone(), req)
+        };
+        gax::paginator::Paginator::new(token, execute)
+    }
+
+    async fn send_impl(
+        client: HttpClient,
+        _options: HashMap<String, String>,
+        request: model::ListFoosRequest,
+    ) -> Result<model::ListFoosResponse> {
+        let builder = client
             .builder(reqwest::Method::GET, "/v0/foos".into())
             .query(&[("alt", "json")])
             .header(
                 "x-goog-api-client",
                 reqwest::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
             );
-        let builder = gax::query_parameter::add(builder, "prefix", &self.request.prefix)
+        let builder =
+            gax::query_parameter::add(builder, "prefix", &request.prefix).map_err(Error::other)?;
+        let builder = gax::query_parameter::add(builder, "pageToken", &request.page_token)
             .map_err(Error::other)?;
-        let builder = gax::query_parameter::add(builder, "pageToken", &self.request.page_token)
-            .map_err(Error::other)?;
-        self.client
+        client
             .execute(builder, None::<gax::http_client::NoBody>)
             .await
     }

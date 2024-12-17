@@ -12,7 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-type Result<T> = std::result::Result<T, gax::error::Error>;
+/// The error type for all operations in this crate.
+pub use gax::error::Error;
+
+/// The result type for all operations in this crate.
+pub type Result<T> = std::result::Result<T, gax::error::Error>;
 
 pub mod builder;
 pub mod client;

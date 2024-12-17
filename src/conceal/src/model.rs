@@ -24,7 +24,7 @@ pub struct Foo {
 pub struct ListFoosRequest {
     pub prefix: String,
     pub page_size: Option<i32>,
-    pub page_token: Option<String>,
+    pub page_token: String,
 }
 
 /// The response message for [super::traits::FooService::list_foos].
@@ -32,4 +32,13 @@ pub struct ListFoosRequest {
 pub struct ListFoosResponse {
     pub items: Vec<Foo>,
     pub next_page_token: Option<String>,
+}
+
+impl gax::paginator::PageableResponse for ListFoosResponse {
+    fn next_page_token(&self) -> String {
+        self.next_page_token
+            .as_ref()
+            .cloned()
+            .unwrap_or_else(String::new)
+    }
 }
