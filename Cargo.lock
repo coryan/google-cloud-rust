@@ -572,6 +572,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "gapic-showcase"
+version = "0.1.0-rc2"
+dependencies = [
+ "async-trait",
+ "bytes",
+ "gcp-sdk-gax",
+ "gcp-sdk-iam-v1",
+ "gcp-sdk-location",
+ "gcp-sdk-longrunning",
+ "gcp-sdk-rpc",
+ "gcp-sdk-wkt",
+ "lazy_static",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "serde_with",
+ "tracing",
+]
+
+[[package]]
 name = "gcp-sdk"
 version = "0.0.0"
 
