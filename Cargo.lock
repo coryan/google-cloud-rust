@@ -501,7 +501,7 @@ version = "0.0.0"
 
 [[package]]
 name = "gcp-sdk-auth"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "axum",
@@ -530,7 +530,7 @@ version = "0.0.0"
 
 [[package]]
 name = "gcp-sdk-gax"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "axum",
  "base64",
@@ -559,7 +559,7 @@ dependencies = [
 
 [[package]]
 name = "gcp-sdk-iam-v1"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "bytes",
@@ -576,7 +576,7 @@ dependencies = [
 
 [[package]]
 name = "gcp-sdk-location"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "bytes",
@@ -592,7 +592,7 @@ dependencies = [
 
 [[package]]
 name = "gcp-sdk-longrunning"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "bytes",
@@ -609,7 +609,7 @@ dependencies = [
 
 [[package]]
 name = "gcp-sdk-rpc"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bytes",
  "gcp-sdk-wkt",
@@ -619,7 +619,7 @@ dependencies = [
 
 [[package]]
 name = "gcp-sdk-secretmanager-v1"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "bytes",
@@ -637,7 +637,7 @@ dependencies = [
 
 [[package]]
 name = "gcp-sdk-type"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bytes",
  "gcp-sdk-wkt",
@@ -647,7 +647,7 @@ dependencies = [
 
 [[package]]
 name = "gcp-sdk-wkt"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bytes",
  "chrono",
@@ -662,7 +662,7 @@ dependencies = [
 
 [[package]]
 name = "gcp-sdk-workflows-v1"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "bytes",
