@@ -2065,7 +2065,7 @@ pub mod containerd_config {
             #[non_exhaustive]
             pub enum CertificateConfig {
                 /// Google Secret Manager (GCP) certificate configuration.
-                GcpSecretManagerCertificateConfig(crate::model::containerd_config::private_registry_access_config::certificate_authority_domain_config::GCPSecretManagerCertificateConfig),
+                GcpSecretManagerCertificateConfig(std::boxed::Box<crate::model::containerd_config::private_registry_access_config::certificate_authority_domain_config::GCPSecretManagerCertificateConfig>),
             }
         }
     }
@@ -9836,7 +9836,9 @@ pub mod blue_green_settings {
     #[non_exhaustive]
     pub enum RolloutPolicy {
         /// Standard policy for the blue-green upgrade.
-        StandardRolloutPolicy(crate::model::blue_green_settings::StandardRolloutPolicy),
+        StandardRolloutPolicy(
+            std::boxed::Box<crate::model::blue_green_settings::StandardRolloutPolicy>,
+        ),
     }
 }
 
@@ -10863,11 +10865,11 @@ pub mod maintenance_window {
     #[non_exhaustive]
     pub enum Policy {
         /// DailyMaintenanceWindow specifies a daily maintenance operation window.
-        DailyMaintenanceWindow(crate::model::DailyMaintenanceWindow),
+        DailyMaintenanceWindow(std::boxed::Box<crate::model::DailyMaintenanceWindow>),
         /// RecurringWindow specifies some number of recurring time periods for
         /// maintenance to occur. The time windows may be overlapping. If no
         /// maintenance windows are set, maintenance can occur at any time.
-        RecurringWindow(crate::model::RecurringTimeWindow),
+        RecurringWindow(std::boxed::Box<crate::model::RecurringTimeWindow>),
     }
 }
 
@@ -10938,7 +10940,7 @@ pub mod time_window {
     pub enum Options {
         /// MaintenanceExclusionOptions provides maintenance exclusion related
         /// options.
-        MaintenanceExclusionOptions(crate::model::MaintenanceExclusionOptions),
+        MaintenanceExclusionOptions(std::boxed::Box<crate::model::MaintenanceExclusionOptions>),
     }
 }
 
