@@ -90,8 +90,8 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 name = "auth-integration-tests"
 version = "0.0.0"
 dependencies = [
- "gcp-sdk-auth",
- "gcp-sdk-gax",
+ "google-cloud-auth",
+ "google-cloud-gax",
  "google-cloud-secretmanager-v1",
  "scoped-env",
  "serial_test",
@@ -501,7 +501,7 @@ name = "echo-server"
 version = "0.0.0"
 dependencies = [
  "axum",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "serde_json",
  "tokio",
@@ -680,84 +680,6 @@ name = "gcp-sdk"
 version = "0.0.0"
 
 [[package]]
-name = "gcp-sdk-auth"
-version = "0.1.1"
-dependencies = [
- "async-trait",
- "axum",
- "base64",
- "derive_builder",
- "http",
- "mockall",
- "rand 0.8.5",
- "regex",
- "reqwest",
- "rsa",
- "rustls",
- "rustls-pemfile",
- "scoped-env",
- "serde",
- "serde_json",
- "serial_test",
- "tempfile",
- "test-case",
- "thiserror",
- "time",
- "tokio",
- "tokio-test",
-]
-
-[[package]]
-name = "gcp-sdk-base"
-version = "0.0.0"
-
-[[package]]
-name = "gcp-sdk-gax"
-version = "0.2.0"
-dependencies = [
- "axum",
- "base64",
- "built",
- "bytes",
- "echo-server",
- "futures",
- "gcp-sdk-auth",
- "gcp-sdk-gax",
- "google-cloud-rpc",
- "google-cloud-wkt",
- "http",
- "mockall",
- "pin-project",
- "rand 0.9.0",
- "reqwest",
- "serde",
- "serde_json",
- "serde_with",
- "serial_test",
- "tempfile",
- "test-case",
- "thiserror",
- "tokio",
-]
-
-[[package]]
-name = "gcp-sdk-longrunning"
-version = "0.2.0"
-dependencies = [
- "async-trait",
- "bytes",
- "gcp-sdk-gax",
- "google-cloud-rpc",
- "google-cloud-wkt",
- "lazy_static",
- "reqwest",
- "serde",
- "serde_json",
- "serde_with",
- "tracing",
-]
-
-[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -808,7 +730,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -824,7 +746,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -840,11 +762,11 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-longrunning",
  "google-cloud-api",
  "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -864,9 +786,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -896,8 +818,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -915,8 +837,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
  "google-cloud-api",
+ "google-cloud-gax",
  "google-cloud-logging-type",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -934,7 +856,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-rpc-context",
  "google-cloud-wkt",
@@ -952,10 +874,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-api",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -973,9 +895,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-api",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -993,8 +915,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1012,7 +934,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-wkt",
  "lazy_static",
@@ -1029,8 +951,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1048,10 +970,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-longrunning",
  "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-identity-accesscontextmanager-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-orgpolicy-v1",
  "google-cloud-osconfig-v1",
@@ -1073,8 +995,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1084,6 +1006,34 @@ dependencies = [
  "serde_with",
  "tokio",
  "tracing",
+]
+
+[[package]]
+name = "google-cloud-auth"
+version = "0.18.0"
+dependencies = [
+ "async-trait",
+ "axum",
+ "base64",
+ "derive_builder",
+ "http",
+ "mockall",
+ "rand 0.8.5",
+ "regex",
+ "reqwest",
+ "rsa",
+ "rustls",
+ "rustls-pemfile",
+ "scoped-env",
+ "serde",
+ "serde_json",
+ "serial_test",
+ "tempfile",
+ "test-case",
+ "thiserror",
+ "time",
+ "tokio",
+ "tokio-test",
 ]
 
 [[package]]
@@ -1092,9 +1042,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1107,15 +1057,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "google-cloud-base"
+version = "0.0.0"
+
+[[package]]
 name = "google-cloud-beyondcorp-appconnections-v1"
 version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-longrunning",
  "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1133,9 +1087,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1153,7 +1107,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-wkt",
  "lazy_static",
@@ -1187,7 +1141,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-location",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -1223,7 +1177,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-wkt",
  "lazy_static",
@@ -1240,9 +1194,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -1261,7 +1215,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -1279,7 +1233,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-grafeas-v1",
  "google-cloud-wkt",
  "lazy_static",
@@ -1296,9 +1250,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1316,10 +1270,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -1348,10 +1302,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-longrunning",
  "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -1370,8 +1324,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -1391,7 +1345,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-wkt",
  "lazy_static",
@@ -1408,9 +1362,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -1429,8 +1383,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1448,9 +1402,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -1469,8 +1423,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1488,9 +1442,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1508,10 +1462,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -1530,10 +1484,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -1553,9 +1507,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-api",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1573,10 +1527,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-api",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1594,7 +1548,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-wkt",
  "lazy_static",
@@ -1611,9 +1565,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -1633,9 +1587,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -1655,9 +1609,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-api",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -1677,10 +1631,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-api",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -1700,7 +1654,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -1716,10 +1670,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -1738,10 +1692,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-common",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1759,10 +1713,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -1776,15 +1730,44 @@ dependencies = [
 ]
 
 [[package]]
+name = "google-cloud-gax"
+version = "0.20.0"
+dependencies = [
+ "axum",
+ "base64",
+ "built",
+ "bytes",
+ "echo-server",
+ "futures",
+ "google-cloud-auth",
+ "google-cloud-gax",
+ "google-cloud-rpc",
+ "google-cloud-wkt",
+ "http",
+ "mockall",
+ "pin-project",
+ "rand 0.9.0",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "serde_with",
+ "serial_test",
+ "tempfile",
+ "test-case",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
 name = "google-cloud-gkebackup-v1"
 version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -1803,7 +1786,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-wkt",
  "lazy_static",
@@ -1820,7 +1803,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -1838,7 +1821,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -1854,7 +1837,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-type",
  "google-cloud-wkt",
  "lazy_static",
@@ -1871,8 +1854,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -1891,8 +1874,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-longrunning",
  "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -1911,7 +1894,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-wkt",
  "lazy_static",
@@ -1938,10 +1921,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-identity-accesscontextmanager-type",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -1960,8 +1943,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -1979,7 +1962,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-kms-v1",
  "google-cloud-wkt",
  "lazy_static",
@@ -1996,10 +1979,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2017,7 +2000,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -2033,7 +2016,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -2059,10 +2042,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-api",
+ "google-cloud-gax",
  "google-cloud-logging-type",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -2076,14 +2059,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "google-cloud-longrunning"
+version = "0.2.0"
+dependencies = [
+ "async-trait",
+ "bytes",
+ "google-cloud-gax",
+ "google-cloud-rpc",
+ "google-cloud-wkt",
+ "lazy_static",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "serde_with",
+ "tracing",
+]
+
+[[package]]
 name = "google-cloud-lro"
 version = "0.1.0"
 dependencies = [
  "axum",
  "futures",
- "gcp-sdk-auth",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-auth",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -2100,8 +2100,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2119,9 +2119,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2140,10 +2140,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2162,9 +2162,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-longrunning",
  "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2183,8 +2183,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
  "google-cloud-api",
+ "google-cloud-gax",
  "google-cloud-type",
  "google-cloud-wkt",
  "lazy_static",
@@ -2201,8 +2201,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2220,8 +2220,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
  "google-cloud-api",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2239,9 +2239,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2259,10 +2259,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2280,10 +2280,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -2302,10 +2302,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2323,10 +2323,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2344,8 +2344,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2364,8 +2364,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2394,7 +2394,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-type",
  "google-cloud-wkt",
  "lazy_static",
@@ -2411,8 +2411,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2441,7 +2441,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-oslogin-common",
  "google-cloud-wkt",
  "lazy_static",
@@ -2458,9 +2458,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -2480,7 +2480,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-iam-v2",
  "google-cloud-rpc",
@@ -2500,7 +2500,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -2519,7 +2519,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2537,7 +2537,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-wkt",
  "lazy_static",
@@ -2565,7 +2565,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-type",
  "google-cloud-wkt",
  "lazy_static",
@@ -2582,9 +2582,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2603,9 +2603,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2624,9 +2624,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2644,9 +2644,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-api",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -2686,10 +2686,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
  "google-cloud-api",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -2708,7 +2708,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-location",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -2726,7 +2726,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
  "google-cloud-wkt",
@@ -2744,10 +2744,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2765,10 +2765,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-type",
  "google-cloud-wkt",
@@ -2787,9 +2787,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2807,7 +2807,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
  "google-cloud-wkt",
@@ -2825,8 +2825,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2844,9 +2844,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -2865,9 +2865,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -2885,9 +2885,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -2906,8 +2906,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -2927,7 +2927,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -2943,8 +2943,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -2964,7 +2964,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
  "google-cloud-rpc",
@@ -2983,9 +2983,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-longrunning",
  "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -3003,8 +3003,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -3022,9 +3022,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -3044,9 +3044,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -3075,7 +3075,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-rpc",
  "google-cloud-wkt",
  "lazy_static",
@@ -3092,8 +3092,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -3112,8 +3112,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-type",
@@ -3133,9 +3133,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -3154,10 +3154,10 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-longrunning",
  "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -3175,9 +3175,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -3195,8 +3195,8 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -3214,7 +3214,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -3245,7 +3245,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -3261,9 +3261,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-wkt",
  "lazy_static",
@@ -3281,9 +3281,9 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
+ "google-cloud-longrunning",
  "google-cloud-lro",
  "google-cloud-rpc",
  "google-cloud-wkt",
@@ -3658,10 +3658,10 @@ dependencies = [
  "bytes",
  "crc32c",
  "futures",
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
  "google-cloud-iam-v1",
  "google-cloud-location",
+ "google-cloud-longrunning",
  "google-cloud-secretmanager-v1",
  "google-cloud-wkt",
  "google-cloud-workflows-v1",
@@ -4487,7 +4487,7 @@ version = "0.2.0"
 dependencies = [
  "async-trait",
  "bytes",
- "gcp-sdk-gax",
+ "google-cloud-gax",
  "google-cloud-wkt",
  "lazy_static",
  "reqwest",
@@ -5115,8 +5115,8 @@ dependencies = [
 name = "user-guide-samples"
 version = "0.0.0"
 dependencies = [
- "gcp-sdk-gax",
- "gcp-sdk-longrunning",
+ "google-cloud-gax",
+ "google-cloud-longrunning",
  "google-cloud-secretmanager-v1",
  "google-cloud-speech-v2",
  "tokio",
