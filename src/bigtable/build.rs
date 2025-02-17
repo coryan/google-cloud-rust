@@ -23,8 +23,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "google/bigtable/v2/request_stats.proto",
             "google/bigtable/v2/response_params.proto",
             "google/bigtable/v2/types.proto",
-        ].map(|v| std::path::Path::new(&root).join(v)).to_vec();
-    
+        ]
+        .map(|v| std::path::Path::new(&root).join(v))
+        .to_vec();
+
         let mut config = prost_build::Config::new();
         config.bytes(&["."]);
         tonic_build::configure()
@@ -32,9 +34,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .out_dir("src/generated")
             .compile_protos_with_config(
                 config,
-                &protos.iter().filter_map(|p| p.to_str()).collect::<Vec<&str>>(),
+                &protos
+                    .iter()
+                    .filter_map(|p| p.to_str())
+                    .collect::<Vec<&str>>(),
                 &[&root],
-            )?;    
+            )?;
     }
     Ok(())
 }
