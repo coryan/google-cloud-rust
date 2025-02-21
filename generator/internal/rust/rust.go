@@ -89,6 +89,7 @@ func newCodec(protobufSource bool, options map[string]string) (*codec, error) {
 		version:          "0.0.0",
 		releaseLevel:     "preview",
 		systemParameters: sysParams,
+		skipConvert:      map[string]bool{},
 	}
 
 	for key, definition := range options {
@@ -126,6 +127,12 @@ func newCodec(protobufSource bool, options map[string]string) (*codec, error) {
 			}
 		case key == "disabled-rustdoc-warnings":
 			codec.disabledRustdocWarnings = strings.Split(definition, ",")
+		case key == "template-override":
+			codec.templateOverride = definition
+		case key == "skip-convert":
+			for _, id := range strings.Split(definition, ",") {
+				codec.skipConvert[id] = true
+			}
 		default:
 			return nil, fmt.Errorf("unknown Rust codec option %q", key)
 		}
@@ -225,6 +232,10 @@ type codec struct {
 	disabledRustdocWarnings []string
 	// The default system parameters included in all requests.
 	systemParameters []systemParameter
+	// Overrides the template sudirectory.
+	templateOverride string
+	// A list of message ID skipped during `convert` generation
+	skipConvert map[string]bool
 }
 
 type systemParameter struct {
@@ -676,6 +687,9 @@ func templatesProvider() language.TemplateProvider {
 }
 
 func (c *codec) generatedFiles(hasServices bool) []language.GeneratedFile {
+	if c.templateOverride != "" {
+		return language.WalkTemplatesDir(rustTemplates, c.templateOverride)
+	}
 	var root string
 	switch {
 	case c.generateModule:

@@ -1,0 +1,2 @@
+# Ignore files created during code generation.
+src/protos/**/target/

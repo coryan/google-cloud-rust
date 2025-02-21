@@ -1,0 +1,3 @@
+# Ignore Cargo.lock files created during code generation. These files change
+# all the time and we do not care about their contents.
+Cargo.lock

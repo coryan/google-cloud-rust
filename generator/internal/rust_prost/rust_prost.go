@@ -52,6 +52,9 @@ func Generate(model *api.API, outdir string, cfg *config.Config) error {
 	if err := testExternalCommand("protoc", "--version"); err != nil {
 		return fmt.Errorf("got an error trying to run `protoc --version`, the instructions on https://grpc.io/docs/protoc-installation/ may solve this problem: %w", err)
 	}
+	if err := rust.Generate(model, outdir, cfg.Codec); err != nil {
+		return err
+	}
 
 	googleapisRoot := cfg.Source["googleapis-root"]
 	files, err := protobuf.DetermineInputFiles(cfg.General.SpecificationSource, cfg.Source)

@@ -52,6 +52,7 @@ func TestParseOptionsProtobuf(t *testing.T) {
 		"package:wkt":           "package=types,path=src/wkt,source=google.protobuf,source=test-only",
 		"package:gax":           "package=gax,path=src/gax,feature=unstable-sdk-client",
 		"package:serde_with":    "package=serde_with,version=2.3.4,default-features=false",
+		"skip-convert":          ".test.v1.Name,.test.v1.AnotherName",
 	}
 	got, err := newCodec(true, options)
 	if err != nil {
@@ -93,6 +94,10 @@ func TestParseOptionsProtobuf(t *testing.T) {
 		},
 		systemParameters: []systemParameter{
 			{Name: "$alt", Value: "json;enum-encoding=int"},
+		},
+		skipConvert: map[string]bool{
+			".test.v1.Name":        true,
+			".test.v1.AnotherName": true,
 		},
 	}
 	sort.Slice(want.extraPackages, func(i, j int) bool {
