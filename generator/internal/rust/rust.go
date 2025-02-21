@@ -63,7 +63,7 @@ func Generate(model *api.API, outdir string, options map[string]string) error {
 	}
 	annotations := annotateModel(model, codec, outdir)
 	provider := templatesProvider()
-	generatedFiles := generatedFiles(codec.generateModule, annotations.HasServices)
+	generatedFiles := codec.generatedFiles(annotations.HasServices)
 	return language.GenerateFromRoot(outdir, model, provider, generatedFiles)
 }
 
@@ -113,6 +113,8 @@ func newCodec(options map[string]string) (*codec, error) {
 			}
 		case key == "disabled-rustdoc-warnings":
 			codec.disabledRustdocWarnings = strings.Split(definition, ",")
+		case key == "template-override":
+			codec.templateOverride = definition
 		default:
 			return nil, fmt.Errorf("unknown Rust codec option %q", key)
 		}
@@ -210,6 +212,8 @@ type codec struct {
 	hasServices bool
 	// A list of `rustdoc` warnings disabled for specific services.
 	disabledRustdocWarnings []string
+	// Overrides the template sudirectory.
+	templateOverride string
 }
 
 type packagez struct {
@@ -655,10 +659,13 @@ func templatesProvider() language.TemplateProvider {
 	}
 }
 
-func generatedFiles(generateModule, hasServices bool) []language.GeneratedFile {
+func (c *codec) generatedFiles(hasServices bool) []language.GeneratedFile {
+	if c.templateOverride != "" {
+		return language.WalkTemplatesDir(rustTemplates, c.templateOverride)
+	}
 	var root string
 	switch {
-	case generateModule:
+	case c.generateModule:
 		root = "templates/mod"
 	case !hasServices:
 		root = "templates/nosvc"
