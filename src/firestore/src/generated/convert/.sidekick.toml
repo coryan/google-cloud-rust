@@ -13,15 +13,10 @@
 # limitations under the License.
 
 [general]
-language = 'rust+prost'
-specification-format = 'protobuf'
-specification-source = 'testdata/googleapis/google/type'
-service-config = 'testdata/googleapis/google/type/type.yaml'
-
-[source]
-googleapis-root = 'testdata/googleapis'
+language             = 'rust'
+specification-source = 'google/firestore/v1'
+service-config       = 'google/firestore/v1/firestore_v1.yaml'
 
 [codec]
-copyright-year = '2025'
-not-for-publication = 'true'
-template-override = 'templates/mod-prost'
+copyright-year    = '2025'
+template-override = 'templates/prost'

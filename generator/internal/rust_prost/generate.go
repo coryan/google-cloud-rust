@@ -25,6 +25,7 @@ import (
 	"github.com/googleapis/google-cloud-rust/generator/internal/api"
 	"github.com/googleapis/google-cloud-rust/generator/internal/config"
 	"github.com/googleapis/google-cloud-rust/generator/internal/language"
+	"github.com/googleapis/google-cloud-rust/generator/internal/rust"
 )
 
 //go:embed all:templates
@@ -39,6 +40,9 @@ func Generate(model *api.API, outdir string, cfg *config.Config) error {
 	}
 	if err := testExternalCommand("protoc", "--version"); err != nil {
 		return fmt.Errorf("got an error trying to run `protoc --version`, the instructions on https://grpc.io/docs/protoc-installation/ may solve this problem: %w", err)
+	}
+	if err := rust.Generate(model, outdir, cfg); err != nil {
+		return err
 	}
 
 	googleapisRoot := cfg.Source["googleapis-root"]

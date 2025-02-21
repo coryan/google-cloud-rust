@@ -40,6 +40,7 @@ func TestRustProstFromProtobuf(t *testing.T) {
 		Codec: map[string]string{
 			"copyright-year":      "2025",
 			"not-for-publication": "true",
+			"template-override":   "templates/mod-prost",
 		},
 	}
 	cmdGenerate, _, _ := cmdSidekick.lookup([]string{"generate"})
