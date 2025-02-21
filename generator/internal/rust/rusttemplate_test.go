@@ -207,6 +207,8 @@ func Test_RustEnumAnnotations(t *testing.T) {
 		ModuleName:       "test_enum",
 		DocLines:         []string{"/// The enum is documented."},
 		DefaultValueName: "VALUE",
+		FQEnumName:       "crate::model::TestEnum",
+		RelativeName:     "TestEnum",
 	}, enum.Codec); diff != "" {
 		t.Errorf("mismatch in enum annotations (-want, +got)\n:%s", diff)
 	}

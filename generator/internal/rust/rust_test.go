@@ -52,6 +52,7 @@ func TestParseOptions(t *testing.T) {
 		"package:wkt":           "package=types,path=src/wkt,source=google.protobuf,source=test-only",
 		"package:gax":           "package=gax,path=src/gax,feature=unstable-sdk-client",
 		"package:serde_with":    "package=serde_with,version=2.3.4,default-features=false",
+		"skip-convert":          ".test.v1.Name,.test.v1.AnotherName",
 	}
 	got, err := newCodec(options)
 	if err != nil {
@@ -91,6 +92,7 @@ func TestParseOptions(t *testing.T) {
 			"google.protobuf": gp,
 			"test-only":       gp,
 		},
+		skipConvert: map[string]bool{".test.v1.Name": true, ".test.v2.AnotherName": true},
 	}
 	sort.Slice(want.extraPackages, func(i, j int) bool {
 		return want.extraPackages[i].name < want.extraPackages[j].name
@@ -256,23 +258,24 @@ func TestWellKnownTypesAsMethod(t *testing.T) {
 }
 
 func TestGeneratedFiles(t *testing.T) {
-	generateModule := true
-	files := generatedFiles(generateModule, false)
+	codec := createRustCodec()
+	codec.generateModule = true
+	files := codec.generatedFiles(false)
 	if len(files) == 0 {
 		t.Errorf("expected a non-empty list of template files from generatedFiles(true, false)")
 	}
 	// No crate for module-only files
 	unexpectedGeneratedFile(t, "Cargo.toml", files)
 
-	files = generatedFiles(generateModule, true)
+	files = codec.generatedFiles(true)
 	if len(files) == 0 {
 		t.Errorf("expected a non-empty list of template files from generatedFiles(true, true)")
 	}
 	// No crate for module-only files
 	unexpectedGeneratedFile(t, "Cargo.toml", files)
 
-	generateModule = false
-	files = generatedFiles(generateModule, false)
+	codec.generateModule = false
+	files = codec.generatedFiles(false)
 	if len(files) == 0 {
 		t.Errorf("expected a non-empty list of template files from generatedFiles(false, false)")
 	}
@@ -281,7 +284,7 @@ func TestGeneratedFiles(t *testing.T) {
 	// Should not have a client if there are no services.
 	unexpectedGeneratedFile(t, "client.rs", files)
 
-	files = generatedFiles(generateModule, true)
+	files = codec.generatedFiles(true)
 	if len(files) == 0 {
 		t.Errorf("expected a non-empty list of template files from generatedFiles(false, false)")
 	}

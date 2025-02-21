@@ -16,6 +16,7 @@ package rust
 
 import (
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/googleapis/google-cloud-rust/generator/internal/api"
@@ -76,6 +77,7 @@ type messageAnnotation struct {
 	Name          string
 	ModuleName    string
 	QualifiedName string
+	RelativeName  string // The name relative to crate::model
 	// The FQN is the source specification
 	SourceFQN         string
 	MessageAttributes []string
@@ -92,6 +94,9 @@ type messageAnnotation struct {
 	// If true, this is a synthetic message, some generation is skipped for
 	// synthetic messages
 	HasSyntheticFields bool
+	// If true, the to/from protobuf conversions are skipped. Ignored if the
+	// mustache templates do not generate protobuf conversions.
+	SkipConversion bool
 }
 
 type methodAnnotation struct {
@@ -137,8 +142,10 @@ type oneOfAnnotation struct {
 	EnumName string
 	// The Rust `enum` may be in a deeply nested scope. This is a shortcut.
 	FQEnumName string
-	FieldType  string
-	DocLines   []string
+	// Like FQEnumName relative to `crate::model`.
+	RelativeEnumName string
+	FieldType        string
+	DocLines         []string
 	// The subset of the oneof fields that are neither maps, nor repeated.
 	SingularFields []*api.Field
 	// The subset of the oneof fields that are repeated (`Vec<T>` in Rust).
@@ -169,6 +176,10 @@ type fieldAnnotations struct {
 	// respectively.
 	KeyType   string
 	ValueType string
+	// The templates need to generate different code for boxed fields.
+	IsBoxed bool
+	// The templates need to generate different code for enum fields.
+	IsEnum bool
 }
 
 type enumAnnotation struct {
@@ -176,6 +187,8 @@ type enumAnnotation struct {
 	ModuleName       string
 	DocLines         []string
 	DefaultValueName string
+	FQEnumName       string
+	RelativeName     string // The name relative to crate::model
 }
 
 type enumValueAnnotation struct {
@@ -188,21 +201,21 @@ type enumValueAnnotation struct {
 // Fields and methods defined in this struct directly correspond to Mustache
 // tags. For example, the Mustache tag {{#Services}} uses the
 // [Template.Services] field.
-func annotateModel(model *api.API, c *codec, outdir string) *modelAnnotations {
-	c.hasServices = len(model.State.ServiceByID) > 0
+func annotateModel(model *api.API, codec *codec, outdir string) *modelAnnotations {
+	codec.hasServices = len(model.State.ServiceByID) > 0
 
 	loadWellKnownTypes(model.State)
-	resolveUsedPackages(model, c.extraPackages)
-	packageName := PackageName(model, c.packageNameOverride)
+	resolveUsedPackages(model, codec.extraPackages)
+	packageName := PackageName(model, codec.packageNameOverride)
 	packageNamespace := strings.ReplaceAll(packageName, "-", "_")
 	// Only annotate enums and messages that we intend to generate. In the
 	// process we discover the external dependencies and trim the list of
 	// packages used by this API.
 	for _, e := range model.Enums {
-		annotateEnum(e, model.State, c.modulePath, c.packageMapping)
+		codec.annotateEnum(e, model.State, model.PackageName)
 	}
 	for _, m := range model.Messages {
-		annotateMessage(m, model.State, c.modulePath, model.PackageName, c.packageMapping)
+		codec.annotateMessage(m, model.State, model.PackageName)
 	}
 	hasLROs := false
 	for _, s := range model.Services {
@@ -213,15 +226,15 @@ func annotateModel(model *api.API, c *codec, outdir string) *modelAnnotations {
 			if !generateMethod(m) {
 				continue
 			}
-			annotateMethod(m, s, model.State, c.modulePath, model.PackageName, c.packageMapping, packageNamespace)
+			annotateMethod(m, s, model.State, codec.modulePath, model.PackageName, codec.packageMapping, packageNamespace)
 			if m := m.InputType; m != nil {
-				annotateMessage(m, model.State, c.modulePath, model.PackageName, c.packageMapping)
+				codec.annotateMessage(m, model.State, model.PackageName)
 			}
 			if m := m.OutputType; m != nil {
-				annotateMessage(m, model.State, c.modulePath, model.PackageName, c.packageMapping)
+				codec.annotateMessage(m, model.State, model.PackageName)
 			}
 		}
-		annotateService(s, model, c.modulePath, c.packageMapping)
+		annotateService(s, model, codec.modulePath, codec.packageMapping)
 	}
 
 	servicesSubset := language.FilterSlice(model.Services, func(s *api.Service) bool {
@@ -235,7 +248,7 @@ func annotateModel(model *api.API, c *codec, outdir string) *modelAnnotations {
 
 	// Delay this until the Codec had a chance to compute what packages are
 	// used.
-	findUsedPackages(model, c)
+	findUsedPackages(model, codec)
 	defaultHost := func() string {
 		if len(model.Services) > 0 {
 			return model.Services[0].DefaultHost
@@ -252,13 +265,13 @@ func annotateModel(model *api.API, c *codec, outdir string) *modelAnnotations {
 	ann := &modelAnnotations{
 		PackageName:      packageName,
 		PackageNamespace: packageNamespace,
-		PackageVersion:   c.version,
-		ReleaseLevel:     c.releaseLevel,
-		RequiredPackages: requiredPackages(outdir, c.extraPackages),
-		ExternPackages:   externPackages(c.extraPackages),
+		PackageVersion:   codec.version,
+		ReleaseLevel:     codec.releaseLevel,
+		RequiredPackages: requiredPackages(outdir, codec.extraPackages),
+		ExternPackages:   externPackages(codec.extraPackages),
 		HasServices:      len(servicesSubset) > 0,
 		HasLROs:          hasLROs,
-		CopyrightYear:    c.generationYear,
+		CopyrightYear:    codec.generationYear,
 		BoilerPlate: append(license.LicenseHeaderBulk(),
 			"",
 			" Code generated by sidekick. DO NOT EDIT."),
@@ -266,12 +279,12 @@ func annotateModel(model *api.API, c *codec, outdir string) *modelAnnotations {
 		DefaultHostShort:        defaultHostShort,
 		Services:                servicesSubset,
 		NameToLower:             strings.ToLower(model.Name),
-		NotForPublication:       c.doNotPublish,
+		NotForPublication:       codec.doNotPublish,
 		IsWktCrate:              model.PackageName == "google.protobuf",
-		DisabledRustdocWarnings: c.disabledRustdocWarnings,
+		DisabledRustdocWarnings: codec.disabledRustdocWarnings,
 	}
 
-	addStreamingFeature(ann, model, c.extraPackages)
+	addStreamingFeature(ann, model, codec.extraPackages)
 	model.Codec = ann
 	return ann
 }
@@ -335,18 +348,18 @@ func partitionFields(fields []*api.Field, state *api.APIState) fieldPartition {
 
 // annotateMessage annotates the message, its fields, its nested
 // messages, and its nested enums.
-func annotateMessage(m *api.Message, state *api.APIState, modulePath, sourceSpecificationPackageName string, packageMapping map[string]*packagez) {
+func (c *codec) annotateMessage(m *api.Message, state *api.APIState, sourceSpecificationPackageName string) {
 	for _, f := range m.Fields {
-		annotateField(f, m, state, modulePath, sourceSpecificationPackageName, packageMapping)
+		annotateField(f, m, state, c.modulePath, sourceSpecificationPackageName, c.packageMapping)
 	}
 	for _, f := range m.OneOfs {
-		annotateOneOf(f, m, state, modulePath, sourceSpecificationPackageName, packageMapping)
+		annotateOneOf(f, m, state, c.modulePath, sourceSpecificationPackageName, c.packageMapping)
 	}
 	for _, e := range m.Enums {
-		annotateEnum(e, state, modulePath, packageMapping)
+		c.annotateEnum(e, state, sourceSpecificationPackageName)
 	}
 	for _, child := range m.Messages {
-		annotateMessage(child, state, modulePath, sourceSpecificationPackageName, packageMapping)
+		c.annotateMessage(child, state, sourceSpecificationPackageName)
 	}
 	hasSyntheticFields := false
 	for _, f := range m.Fields {
@@ -359,12 +372,15 @@ func annotateMessage(m *api.Message, state *api.APIState, modulePath, sourceSpec
 		return !f.IsOneOf
 	})
 	partition := partitionFields(basicFields, state)
+	qualifiedName := fullyQualifiedMessageName(m, c.modulePath, sourceSpecificationPackageName, c.packageMapping)
+	relativeName := strings.TrimPrefix(qualifiedName, c.modulePath+"::")
 	m.Codec = &messageAnnotation{
 		Name:               toPascal(m.Name),
 		ModuleName:         toSnake(m.Name),
-		QualifiedName:      fullyQualifiedMessageName(m, modulePath, sourceSpecificationPackageName, packageMapping),
+		QualifiedName:      qualifiedName,
+		RelativeName:       relativeName,
 		SourceFQN:          strings.TrimPrefix(m.ID, "."),
-		DocLines:           formatDocComments(m.Documentation, m.ID, state, modulePath, m.Scopes(), packageMapping),
+		DocLines:           formatDocComments(m.Documentation, m.ID, state, c.modulePath, m.Scopes(), c.packageMapping),
 		MessageAttributes:  messageAttributes(),
 		HasNestedTypes:     language.HasNestedTypes(m),
 		BasicFields:        basicFields,
@@ -372,6 +388,10 @@ func annotateMessage(m *api.Message, state *api.APIState, modulePath, sourceSpec
 		RepeatedFields:     partition.repeatedFields,
 		MapFields:          partition.mapFields,
 		HasSyntheticFields: hasSyntheticFields,
+		SkipConversion:     c.skipConvert[m.ID],
+	}
+	if m.ID == ".google.rpc.Status" {
+		slog.Info("skip status", "ID", m.ID, "skip", c.skipConvert[m.ID], "full", c.skipConvert)
 	}
 }
 
@@ -417,16 +437,18 @@ func annotateOneOf(oneof *api.OneOf, message *api.Message, state *api.APIState, 
 	scope := messageScopeName(message, "", modulePath, sourceSpecificationPackageName, packageMapping)
 	enumName := toPascal(oneof.Name)
 	fqEnumName := fmt.Sprintf("%s::%s", scope, enumName)
+	relativeEnumName := strings.TrimPrefix(fqEnumName, modulePath+"::")
 	oneof.Codec = &oneOfAnnotation{
-		FieldName:      toSnake(oneof.Name),
-		SetterName:     toSnakeNoMangling(oneof.Name),
-		EnumName:       enumName,
-		FQEnumName:     fqEnumName,
-		FieldType:      fmt.Sprintf("%s::%s", scope, toPascal(oneof.Name)),
-		DocLines:       formatDocComments(oneof.Documentation, oneof.ID, state, modulePath, message.Scopes(), packageMapping),
-		SingularFields: partition.singularFields,
-		RepeatedFields: partition.repeatedFields,
-		MapFields:      partition.mapFields,
+		FieldName:        toSnake(oneof.Name),
+		SetterName:       toSnakeNoMangling(oneof.Name),
+		EnumName:         enumName,
+		FQEnumName:       fqEnumName,
+		RelativeEnumName: relativeEnumName,
+		FieldType:        fmt.Sprintf("%s::%s", scope, toPascal(oneof.Name)),
+		DocLines:         formatDocComments(oneof.Documentation, oneof.ID, state, modulePath, message.Scopes(), packageMapping),
+		SingularFields:   partition.singularFields,
+		RepeatedFields:   partition.repeatedFields,
+		MapFields:        partition.mapFields,
 	}
 }
 
@@ -442,6 +464,12 @@ func annotateField(field *api.Field, message *api.Message, state *api.APIState, 
 		PrimitiveFieldType: fieldType(field, state, true, modulePath, sourceSpecificationPackageName, packageMapping),
 		AddQueryParameter:  addQueryParameter(field),
 	}
+	if field.Recursive || (field.Typez == api.MESSAGE_TYPE && field.IsOneOf) {
+		ann.IsBoxed = true
+	}
+	if field.Typez == api.ENUM_TYPE {
+		ann.IsEnum = true
+	}
 	field.Codec = ann
 	if field.Typez != api.MESSAGE_TYPE {
 		return
@@ -454,9 +482,9 @@ func annotateField(field *api.Field, message *api.Message, state *api.APIState, 
 	ann.ValueType = mapType(mapMessage.Fields[1], state, modulePath, sourceSpecificationPackageName, packageMapping)
 }
 
-func annotateEnum(e *api.Enum, state *api.APIState, modulePath string, packageMapping map[string]*packagez) {
+func (c *codec) annotateEnum(e *api.Enum, state *api.APIState, sourceSpecificationPackageName string) {
 	for _, ev := range e.Values {
-		annotateEnumValue(ev, e, state, modulePath, packageMapping)
+		annotateEnumValue(ev, e, state, c.modulePath, c.packageMapping)
 	}
 	defaultValueName := ""
 	for _, ev := range e.Values {
@@ -465,11 +493,15 @@ func annotateEnum(e *api.Enum, state *api.APIState, modulePath string, packageMa
 			break
 		}
 	}
+	fqName := fullyQualifiedEnumName(e, c.modulePath, sourceSpecificationPackageName, c.packageMapping)
+	relativeName := strings.TrimPrefix(fqName, c.modulePath+"::")
 	e.Codec = &enumAnnotation{
 		Name:             enumName(e),
 		ModuleName:       toSnake(enumName(e)),
-		DocLines:         formatDocComments(e.Documentation, e.ID, state, modulePath, e.Scopes(), packageMapping),
+		DocLines:         formatDocComments(e.Documentation, e.ID, state, c.modulePath, e.Scopes(), c.packageMapping),
 		DefaultValueName: defaultValueName,
+		FQEnumName:       fqName,
+		RelativeName:     relativeName,
 	}
 }
 

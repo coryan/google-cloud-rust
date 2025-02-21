@@ -63,7 +63,7 @@ func Generate(model *api.API, outdir string, options map[string]string) error {
 	}
 	annotations := annotateModel(model, codec, outdir)
 	provider := templatesProvider()
-	generatedFiles := generatedFiles(codec.generateModule, annotations.HasServices)
+	generatedFiles := codec.generatedFiles(annotations.HasServices)
 	return language.GenerateFromRoot(outdir, model, provider, generatedFiles)
 }
 
@@ -76,6 +76,7 @@ func newCodec(options map[string]string) (*codec, error) {
 		packageMapping: map[string]*packagez{},
 		version:        "0.0.0",
 		releaseLevel:   "preview",
+		skipConvert:    map[string]bool{},
 	}
 
 	for key, definition := range options {
@@ -113,6 +114,12 @@ func newCodec(options map[string]string) (*codec, error) {
 			}
 		case key == "disabled-rustdoc-warnings":
 			codec.disabledRustdocWarnings = strings.Split(definition, ",")
+		case key == "template-override":
+			codec.templateOverride = definition
+		case key == "skip-convert":
+			for _, id := range strings.Split(definition, ",") {
+				codec.skipConvert[id] = true
+			}
 		default:
 			return nil, fmt.Errorf("unknown Rust codec option %q", key)
 		}
@@ -210,6 +217,10 @@ type codec struct {
 	hasServices bool
 	// A list of `rustdoc` warnings disabled for specific services.
 	disabledRustdocWarnings []string
+	// Overrides the template sudirectory.
+	templateOverride string
+	// A list of message ID skipped during `convert` generation
+	skipConvert map[string]bool
 }
 
 type packagez struct {
@@ -655,10 +666,13 @@ func templatesProvider() language.TemplateProvider {
 	}
 }
 
-func generatedFiles(generateModule, hasServices bool) []language.GeneratedFile {
+func (c *codec) generatedFiles(hasServices bool) []language.GeneratedFile {
+	if c.templateOverride != "" {
+		return language.WalkTemplatesDir(rustTemplates, c.templateOverride)
+	}
 	var root string
 	switch {
-	case generateModule:
+	case c.generateModule:
 		root = "templates/mod"
 	case !hasServices:
 		root = "templates/nosvc"
