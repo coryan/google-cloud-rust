@@ -44,9 +44,9 @@ func Generate(model *api.API, outdir string, cfg *config.Config) error {
 	if err := runExternalCommand("protoc-gen-prost", "--version"); err != nil {
 		return fmt.Errorf("got an error trying to run `protoc-gen-prost --version`, `cargo install protoc-gen-prost` may solve this problem: %w", err)
 	}
-	codec := maps.Clone(cfg.Codec)
-	codec["template-override"] = "templates/prost"
-	if err := rust.Generate(model, outdir, codec); err != nil {
+	codecOptions := maps.Clone(cfg.Codec)
+	codecOptions["template-override"] = "templates/prost"
+	if err := rust.Generate(model, outdir, codecOptions); err != nil {
 		return err
 	}
 
