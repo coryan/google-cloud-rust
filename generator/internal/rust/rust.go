@@ -740,7 +740,7 @@ func fullyQualifiedEnumName(e *api.Enum, modulePath, sourceSpecificationPackageN
 func enumValueName(e *api.EnumValue) string {
 	// The Protobuf naming convention is to use SCREAMING_SNAKE_CASE, but
 	// sometimes it is not followed.
-	return escapeKeyword(toScreamingSnake(e.Name))
+	return EscapeKeyword(toScreamingSnake(e.Name))
 }
 
 func fullyQualifiedEnumValueName(v *api.EnumValue, modulePath, sourceSpecificationPackageName string, packageMapping map[string]*packagez) string {
@@ -837,7 +837,7 @@ func httpPathArgs(h *api.PathInfo, method *api.Method, state *api.APIState) []st
 //
 //	`toSnake("True") -> "true"`
 func toSnake(symbol string) string {
-	return escapeKeyword(toSnakeNoMangling(symbol))
+	return EscapeKeyword(toSnakeNoMangling(symbol))
 }
 
 func toSnakeNoMangling(symbol string) string {
@@ -862,7 +862,7 @@ func toPascal(symbol string) string {
 	// they are acronyms (consider `IAM`). In such cases we must use the normal
 	// mapping.
 	if strings.ToUpper(symbol) == symbol {
-		return escapeKeyword(strcase.ToCamel(symbol))
+		return EscapeKeyword(strcase.ToCamel(symbol))
 	}
 	// Symbols that are already `PascalCase` should need no mapping. This works
 	// better than calling `strcase.ToCamel()` in cases like `IAMPolicy`, which
@@ -871,13 +871,13 @@ func toPascal(symbol string) string {
 	// to keep the acronym for a reason.
 	runes := []rune(symbol)
 	if unicode.IsUpper(runes[0]) && !strings.ContainsRune(symbol, '_') {
-		return escapeKeyword(symbol)
+		return EscapeKeyword(symbol)
 	}
-	return escapeKeyword(strcase.ToCamel(symbol))
+	return EscapeKeyword(strcase.ToCamel(symbol))
 }
 
 func toCamel(symbol string) string {
-	return escapeKeyword(strcase.ToLowerCamel(symbol))
+	return EscapeKeyword(strcase.ToLowerCamel(symbol))
 }
 
 // Convert a name to `SCREAMING_SNAKE_CASE`. The Rust naming conventions use
@@ -1593,7 +1593,7 @@ func generateMethod(m *api.Method) bool {
 // The list of Rust keywords and reserved words can be found at:
 //
 //	https://doc.rust-lang.org/reference/keywords.html
-func escapeKeyword(symbol string) string {
+func EscapeKeyword(symbol string) string {
 	keywords := map[string]bool{
 		"as":       true,
 		"break":    true,
