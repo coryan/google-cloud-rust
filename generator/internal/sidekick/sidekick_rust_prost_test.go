@@ -46,7 +46,7 @@ func TestRustProstFromProtobuf(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for _, expected := range []string{"protos/README.md", "model.rs", "protos.rs"} {
+	for _, expected := range []string{".sidekick.toml", "protos/google.type.rs"} {
 		filename := path.Join(projectRoot, outDir, expected)
 		if _, err := os.Stat(filename); os.IsNotExist(err) {
 			t.Errorf("missing %s: %s", filename, err)
