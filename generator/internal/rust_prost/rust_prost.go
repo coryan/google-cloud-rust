@@ -159,6 +159,9 @@ func buildRoot(model *api.API, cfg *config.Config) (*root, error) {
 		}
 		result.Packages = append(result.Packages, pkg)
 	}
+	sort.Slice(result.Packages, func(i, j int) bool {
+		return result.Packages[i].Name < result.Packages[j].Name
+	})
 	return result, nil
 }
 
