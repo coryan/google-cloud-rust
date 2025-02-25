@@ -98,6 +98,9 @@ func refreshDir(rootConfig *config.Config, cmdLine *CommandLine, output string) 
 	case "rust":
 		return rust.Generate(model, output, config.Codec)
 	case "rust+prost":
+		if err := rust.Generate(model, output, config.Codec); err != nil {
+			return err
+		}
 		return rust_prost.Generate(model, output, config)
 	case "go":
 		return golang.Generate(model, output, config.Codec)

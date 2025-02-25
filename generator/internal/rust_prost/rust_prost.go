@@ -15,16 +15,27 @@
 package rust_prost
 
 import (
+	"embed"
 	"errors"
 	"fmt"
 	"log/slog"
 	"os"
 	"os/exec"
+	"strings"
+	"time"
 
 	"github.com/googleapis/google-cloud-rust/generator/internal/api"
 	"github.com/googleapis/google-cloud-rust/generator/internal/config"
+	"github.com/googleapis/google-cloud-rust/generator/internal/language"
 	"github.com/googleapis/google-cloud-rust/generator/internal/protobuf"
 )
+
+//go:embed all:templates
+var templates embed.FS
+
+type codec struct {
+	generationYear string
+}
 
 func Generate(model *api.API, outdir string, cfg *config.Config) error {
 	if cfg.General.SpecificationFormat != "protobuf" {
@@ -65,6 +76,46 @@ func Generate(model *api.API, outdir string, cfg *config.Config) error {
 	args = append(args, files...)
 	slog.Info("running protoc", "args", args)
 	return runExternalCommand("protoc", args...)
+
+	codec, err := newCodec(cfg)
+	if err != nil {
+		return err
+	}
+	_ = codec.annotate(model)
+	provider := templatesProvider()
+	generatedFiles := language.WalkTemplatesDir(templates, "templates")
+	return language.GenerateFromRoot(outdir, model, provider, generatedFiles)
+}
+
+func newCodec(cfg *config.Config) (*codec, error) {
+	year, _, _ := time.Now().Date()
+	codec := &codec{
+		generationYear: fmt.Sprintf("%04d", year),
+	}
+	for key, definition := range cfg.Codec {
+		switch {
+		case key == "copyright-year":
+			codec.generationYear = definition
+		case key == "version":
+		case key == "release-level":
+		case key == "disabled-rustdoc-warnings":
+		case strings.HasPrefix(key, "package:"):
+
+		default:
+			return nil, fmt.Errorf("unknown Rust+Prost codec option %q", key)
+		}
+	}
+	return codec, nil
+}
+
+func templatesProvider() language.TemplateProvider {
+	return func(name string) (string, error) {
+		contents, err := templates.ReadFile(name)
+		if err != nil {
+			return "", err
+		}
+		return string(contents), nil
+	}
 }
 
 func runExternalCommand(c string, arg ...string) error {
