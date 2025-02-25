@@ -1,0 +1,67 @@
+// Copyright 2025 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+impl std::convert::TryFrom<rpc::model::Code> for Code {
+    type Error = crate::Error;
+
+    fn try_from(value: rpc::model::Code) -> std::result::Result<Self, Self::Error> {
+        Self::from_str_name(value.value())
+            .ok_or_else(|| crate::Error::other("unknown rpc::model::Code value"))
+    }
+}
+
+impl std::convert::From<Code> for rpc::model::Code {
+    fn from(value: Code) -> Self {
+        Self::new(value.as_str_name())
+    }
+}
+
+impl std::convert::From<rpc::model::ErrorInfo> for ErrorInfo {
+    fn from(value: rpc::model::ErrorInfo) -> Self {
+        Self {
+            reason: value.reason.into(),
+            domain: value.domain.into(),
+            metadata: value.metadata.into(),
+        }
+    }
+}
+
+impl std::convert::From<ErrorInfo> for rpc::model::ErrorInfo {
+    fn from(value: ErrorInfo) -> Self {
+        Self::new()
+            .set_reason(value.reason)
+            .set_domain(value.domain)
+            .set_metadata(value.metadata)
+    }
+}
+
+impl std::convert::From<rpc::model::Status> for Status {
+    fn from(value: rpc::model::Status) -> Self {
+        Self {
+            code: value.code,
+            message: value.message,
+            // details: value.details,
+            ..Default::default()
+        }
+    }
+}
+
+impl std::convert::From<Status> for rpc::model::Status {
+    fn from(value: Status) -> Self {
+        Self::new()
+            .set_code(value.code)
+            .set_message(value.message)
+            // .set_details(value.details)
+    }
+}

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+pub use gax::error::Error;
+pub use gax::Result;
 pub mod model;
 
 pub(crate) mod google {
@@ -22,6 +24,7 @@ pub(crate) mod google {
     }
     pub mod rpc {
         include!("protos/rpc/google.rpc.rs");
+        include!("protos/rpc/convert.rs");
     }
     pub mod r#type {
         include!("protos/type/google.type.rs");
