@@ -788,7 +788,7 @@ impl Value {
             crate::model::value::ValueType::NullValue(
                 v.into()
             )
-        );
+        ); 
         self
     }
 
@@ -949,7 +949,7 @@ pub mod value {
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
     #[non_exhaustive]
-    pub enum ValueType {
+    pub enum ValueType { 
         /// A null value.
         NullValue(wkt::NullValue),
         /// A boolean value.
