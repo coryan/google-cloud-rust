@@ -24,10 +24,10 @@ pub(crate) mod google {
     }
     pub mod rpc {
         include!("protos/rpc/google.rpc.rs");
-        include!("protos/rpc/convert.rs");
+        include!("protos/rpc/convert-manual.rs");
     }
     pub mod r#type {
         include!("protos/type/google.type.rs");
-        include!("protos/type/convert.rs");
+        include!("protos/type/convert-manual.rs");
     }
 }
