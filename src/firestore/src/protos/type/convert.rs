@@ -12,19 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod model;
-
-pub(crate) mod google {
-    pub mod firestore {
-        pub mod v1 {
-            include!("protos/firestore/google.firestore.v1.rs");
+impl std::convert::From<gtype::model::LatLng> for LatLng {
+    fn from(value: gtype::model::LatLng) -> Self {
+        Self {
+            latitude: value.latitude.into(),
+            longitude: value.longitude.into(),
         }
     }
-    pub mod rpc {
-        include!("protos/rpc/google.rpc.rs");
-    }
-    pub mod r#type {
-        include!("protos/type/google.type.rs");
-        include!("protos/type/convert.rs");
+}
+
+impl std::convert::From<LatLng> for gtype::model::LatLng {
+    fn from(value: LatLng) -> Self {
+        Self::new().set_latitude(value.latitude).set_longitude(value.longitude)
     }
 }
