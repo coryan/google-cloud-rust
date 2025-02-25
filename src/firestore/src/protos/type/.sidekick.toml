@@ -16,5 +16,8 @@
 language             = 'rust+prost'
 specification-source = 'google/type'
 
+[source]
+include-list = 'latlng.proto'
+
 [codec]
 copyright-year    = '2025'
