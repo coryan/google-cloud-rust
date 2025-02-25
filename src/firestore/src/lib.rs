@@ -13,3 +13,17 @@
 // limitations under the License.
 
 pub mod model;
+
+pub(crate) mod google {
+    pub mod firestore {
+        pub mod v1 {
+            include!("protos/firestore/google.firestore.v1.rs");
+        }
+    }
+    pub mod rpc {
+        include!("protos/rpc/google.rpc.rs");
+    }
+    pub mod r#type {
+        include!("protos/type/google.type.rs");
+    }
+}
