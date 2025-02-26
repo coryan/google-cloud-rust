@@ -13,4 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 }}
-{{> ../common/enum}}
+
+impl std::convert::TryFrom<{{Codec.FQEnumName}}> for {{Codec.Name}} {
+    type Error = crate::Error;
+
+    fn try_from(value: {{Codec.FQEnumName}}) -> std::result::Result<Self, Self::Error> {
+        Self::from_str_name(value.value())
+            .ok_or_else(|| crate::Error::other("unknown {{Codec.FQEnumName}} value"))
+    }
+}
+
+impl std::convert::From<{{Codec.Name}}> for {{Codec.FQEnumName}} {
+    fn from(value: {{Codec.Name}}) -> Self {
+        Self::new(value.as_str_name())
+    }
+}

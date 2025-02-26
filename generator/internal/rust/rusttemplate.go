@@ -176,6 +176,7 @@ type enumAnnotation struct {
 	ModuleName       string
 	DocLines         []string
 	DefaultValueName string
+	FQEnumName       string
 }
 
 type enumValueAnnotation struct {
@@ -199,7 +200,7 @@ func annotateModel(model *api.API, c *codec, outdir string) *modelAnnotations {
 	// process we discover the external dependencies and trim the list of
 	// packages used by this API.
 	for _, e := range model.Enums {
-		annotateEnum(e, model.State, c.modulePath, c.packageMapping)
+		annotateEnum(e, model.State, c.modulePath, model.PackageName, c.packageMapping)
 	}
 	for _, m := range model.Messages {
 		annotateMessage(m, model.State, c.modulePath, model.PackageName, c.packageMapping)
@@ -343,7 +344,7 @@ func annotateMessage(m *api.Message, state *api.APIState, modulePath, sourceSpec
 		annotateOneOf(f, m, state, modulePath, sourceSpecificationPackageName, packageMapping)
 	}
 	for _, e := range m.Enums {
-		annotateEnum(e, state, modulePath, packageMapping)
+		annotateEnum(e, state, modulePath, sourceSpecificationPackageName, packageMapping)
 	}
 	for _, child := range m.Messages {
 		annotateMessage(child, state, modulePath, sourceSpecificationPackageName, packageMapping)
@@ -454,7 +455,7 @@ func annotateField(field *api.Field, message *api.Message, state *api.APIState, 
 	ann.ValueType = mapType(mapMessage.Fields[1], state, modulePath, sourceSpecificationPackageName, packageMapping)
 }
 
-func annotateEnum(e *api.Enum, state *api.APIState, modulePath string, packageMapping map[string]*packagez) {
+func annotateEnum(e *api.Enum, state *api.APIState, modulePath, sourceSpecificationPackageName string, packageMapping map[string]*packagez) {
 	for _, ev := range e.Values {
 		annotateEnumValue(ev, e, state, modulePath, packageMapping)
 	}
@@ -470,6 +471,7 @@ func annotateEnum(e *api.Enum, state *api.APIState, modulePath string, packageMa
 		ModuleName:       toSnake(enumName(e)),
 		DocLines:         formatDocComments(e.Documentation, e.ID, state, modulePath, e.Scopes(), packageMapping),
 		DefaultValueName: defaultValueName,
+		FQEnumName:       fullyQualifiedEnumName(e, modulePath, sourceSpecificationPackageName, packageMapping),
 	}
 }
 
