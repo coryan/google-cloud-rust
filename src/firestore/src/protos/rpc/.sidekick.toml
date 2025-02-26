@@ -18,3 +18,5 @@ specification-source = 'google/rpc'
 
 [codec]
 copyright-year    = '2025'
+template-override = 'templates/prost'
+module-path       = 'rpc::model'
