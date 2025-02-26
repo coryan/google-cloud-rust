@@ -76,6 +76,7 @@ type messageAnnotation struct {
 	Name          string
 	ModuleName    string
 	QualifiedName string
+	RelativeName  string // The name relative to crate::model
 	// The FQN is the source specification
 	SourceFQN         string
 	MessageAttributes []string
@@ -360,10 +361,13 @@ func annotateMessage(m *api.Message, state *api.APIState, modulePath, sourceSpec
 		return !f.IsOneOf
 	})
 	partition := partitionFields(basicFields, state)
+	qualifiedName := fullyQualifiedMessageName(m, modulePath, sourceSpecificationPackageName, packageMapping)
+	relativeName := strings.TrimPrefix(qualifiedName, modulePath+"::")
 	m.Codec = &messageAnnotation{
 		Name:               toPascal(m.Name),
 		ModuleName:         toSnake(m.Name),
-		QualifiedName:      fullyQualifiedMessageName(m, modulePath, sourceSpecificationPackageName, packageMapping),
+		QualifiedName:      qualifiedName,
+		RelativeName:       relativeName,
 		SourceFQN:          strings.TrimPrefix(m.ID, "."),
 		DocLines:           formatDocComments(m.Documentation, m.ID, state, modulePath, m.Scopes(), packageMapping),
 		MessageAttributes:  messageAttributes(),
