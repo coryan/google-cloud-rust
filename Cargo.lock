@@ -1930,6 +1930,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "google-cloud-wkt-protobuf"
+version = "0.1.0"
+dependencies = [
+ "google-cloud-wkt",
+ "prost-types",
+]
+
+[[package]]
 name = "google-cloud-workflows-v1"
 version = "0.1.0"
 dependencies = [

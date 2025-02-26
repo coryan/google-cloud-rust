@@ -206,6 +206,7 @@ members = [
   "src/lro",
   "src/root",
   "src/wkt",
+  "src/wkt-protobuf",
   "tools/check-copyright",
 ]
 
