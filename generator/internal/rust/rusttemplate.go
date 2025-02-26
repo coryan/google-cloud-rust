@@ -160,12 +160,13 @@ type fieldAnnotations struct {
 	// These must be in `PascalCase`.
 	BranchName string
 	// The fully qualified name of the containing message.
-	FQMessageName      string
-	DocLines           []string
-	Attributes         []string
-	FieldType          string
-	PrimitiveFieldType string
-	AddQueryParameter  string
+	FQMessageName              string
+	DocLines                   []string
+	Attributes                 []string
+	FieldType                  string
+	PrimitiveFieldType         string
+	RelativePrimitiveFieldType string
+	AddQueryParameter          string
 	// For fields that are maps, these are the type of the key and value,
 	// respectively.
 	KeyType   string
@@ -436,16 +437,18 @@ func annotateOneOf(oneof *api.OneOf, message *api.Message, state *api.APIState, 
 }
 
 func annotateField(field *api.Field, message *api.Message, state *api.APIState, modulePath, sourceSpecificationPackageName string, packageMapping map[string]*packagez) {
+	primitiveFieldType := fieldType(field, state, true, modulePath, sourceSpecificationPackageName, packageMapping)
 	ann := &fieldAnnotations{
-		FieldName:          toSnake(field.Name),
-		SetterName:         toSnakeNoMangling(field.Name),
-		FQMessageName:      fullyQualifiedMessageName(message, modulePath, sourceSpecificationPackageName, packageMapping),
-		BranchName:         toPascal(field.Name),
-		DocLines:           formatDocComments(field.Documentation, field.ID, state, modulePath, message.Scopes(), packageMapping),
-		Attributes:         fieldAttributes(field, state),
-		FieldType:          fieldType(field, state, false, modulePath, sourceSpecificationPackageName, packageMapping),
-		PrimitiveFieldType: fieldType(field, state, true, modulePath, sourceSpecificationPackageName, packageMapping),
-		AddQueryParameter:  addQueryParameter(field),
+		FieldName:                  toSnake(field.Name),
+		SetterName:                 toSnakeNoMangling(field.Name),
+		FQMessageName:              fullyQualifiedMessageName(message, modulePath, sourceSpecificationPackageName, packageMapping),
+		BranchName:                 toPascal(field.Name),
+		DocLines:                   formatDocComments(field.Documentation, field.ID, state, modulePath, message.Scopes(), packageMapping),
+		Attributes:                 fieldAttributes(field, state),
+		FieldType:                  fieldType(field, state, false, modulePath, sourceSpecificationPackageName, packageMapping),
+		PrimitiveFieldType:         primitiveFieldType,
+		RelativePrimitiveFieldType: strings.TrimPrefix(primitiveFieldType, modulePath+"::"),
+		AddQueryParameter:          addQueryParameter(field),
 	}
 	field.Codec = ann
 	if field.Typez != api.MESSAGE_TYPE {

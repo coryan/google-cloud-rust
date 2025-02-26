@@ -24,9 +24,20 @@ limitations under the License.
 impl std::convert::From<{{Codec.QualifiedName}}> for {{Codec.RelativeName}} {
     fn from(value: {{Codec.QualifiedName}}) -> Self {
         Self {
-            {{#Fields}}
+            {{#Codec.SingularFields}}
+            {{^Optional}}
             {{Codec.FieldName}}: value.{{Codec.FieldName}}.into(),
-            {{/Fields}}
+            {{/Optional}}
+            {{#Optional}}
+            {{Codec.FieldName}}: value.{{Codec.FieldName}}.map({{Codec.RelativePrimitiveFieldType}}::from),
+            {{/Optional}}
+            {{/Codec.SingularFields}}
+            {{#Codec.RepeatedFields}}
+            {{Codec.FieldName}}: value.{{Codec.FieldName}}.into_iter().map({{Codec.RelativePrimitiveFieldType}}::from).collect(),
+            {{/Codec.RepeatedFields}}
+            {{#Codec.MapFields}}
+            {{Codec.FieldName}}: value.{{Codec.FieldName}}.into(),
+            {{/Codec.MapFields}}
         }
     }
 }
@@ -35,7 +46,12 @@ impl std::convert::From<{{Codec.RelativeName}}> for {{Codec.QualifiedName}} {
     fn from(value: {{Codec.RelativeName}}) -> Self {
         Self::new()
             {{#Fields}}
+            {{^Optional}}
             .set_{{Codec.SetterName}}(value.{{Codec.FieldName}})
+            {{/Optional}}
+            {{#Optional}}
+            .set_{{Codec.SetterName}}(value.{{Codec.FieldName}}.map({{Codec.PrimitiveFieldType}}::from))
+            {{/Optional}}
             {{/Fields}}
     }
 }
