@@ -29,11 +29,11 @@ impl std::convert::From<{{Codec.QualifiedName}}> for {{Codec.RelativeName}} {
             {{Codec.FieldName}}: value.{{Codec.FieldName}}.into(),
             {{/Optional}}
             {{#Optional}}
-            {{Codec.FieldName}}: value.{{Codec.FieldName}}.map({{Codec.RelativePrimitiveFieldType}}::from),
+            {{Codec.FieldName}}: value.{{Codec.FieldName}}.map(|v| v.into()),
             {{/Optional}}
             {{/Codec.SingularFields}}
             {{#Codec.RepeatedFields}}
-            {{Codec.FieldName}}: value.{{Codec.FieldName}}.into_iter().map({{Codec.RelativePrimitiveFieldType}}::from).collect(),
+            {{Codec.FieldName}}: value.{{Codec.FieldName}}.into_iter().map(|v| v.into()).collect(),
             {{/Codec.RepeatedFields}}
             {{#Codec.MapFields}}
             {{Codec.FieldName}}: value.{{Codec.FieldName}}.into(),
@@ -50,7 +50,7 @@ impl std::convert::From<{{Codec.RelativeName}}> for {{Codec.QualifiedName}} {
             .set_{{Codec.SetterName}}(value.{{Codec.FieldName}})
             {{/Optional}}
             {{#Optional}}
-            .set_{{Codec.SetterName}}(value.{{Codec.FieldName}}.map({{Codec.PrimitiveFieldType}}::from))
+            .set_{{Codec.SetterName}}(value.{{Codec.FieldName}}.map(|v| v.into())
             {{/Optional}}
             {{/Fields}}
     }
