@@ -50,7 +50,7 @@ impl std::convert::From<{{Codec.RelativeName}}> for {{Codec.QualifiedName}} {
             .set_{{Codec.SetterName}}(value.{{Codec.FieldName}})
             {{/Optional}}
             {{#Optional}}
-            .set_{{Codec.SetterName}}(value.{{Codec.FieldName}}.map(|v| v.into())
+            .set_{{Codec.SetterName}}(value.{{Codec.FieldName}}.map(|v| v.into()))
             {{/Optional}}
             {{/Fields}}
     }

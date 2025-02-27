@@ -59,7 +59,7 @@ impl std::convert::From<rpc::model::RetryInfo> for RetryInfo {
 impl std::convert::From<RetryInfo> for rpc::model::RetryInfo {
     fn from(value: RetryInfo) -> Self {
         Self::new()
-            .set_retry_delay(value.retry_delay.map(|v| v.into())
+            .set_retry_delay(value.retry_delay.map(|v| v.into()))
     }
 }
 
@@ -163,7 +163,7 @@ impl std::convert::From<bad_request::FieldViolation> for rpc::model::bad_request
             .set_field(value.field)
             .set_description(value.description)
             .set_reason(value.reason)
-            .set_localized_message(value.localized_message.map(|v| v.into())
+            .set_localized_message(value.localized_message.map(|v| v.into()))
     }
 }
 
