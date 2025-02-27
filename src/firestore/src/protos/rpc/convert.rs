@@ -327,22 +327,3 @@ impl std::convert::From<HttpHeader> for rpc::model::HttpHeader {
             .set_value(value.value)
     }
 }
-
-impl std::convert::From<rpc::model::Status> for Status {
-    fn from(value: rpc::model::Status) -> Self {
-        Self {
-            code: value.code.into(),
-            message: value.message.into(),
-            details: value.details.into_iter().map(|v| v.into()).collect(),
-        }
-    }
-}
-
-impl std::convert::From<Status> for rpc::model::Status {
-    fn from(value: Status) -> Self {
-        Self::new()
-            .set_code(value.code)
-            .set_message(value.message)
-            .set_details(value.details)
-    }
-}
