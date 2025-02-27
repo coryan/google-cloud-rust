@@ -20,6 +20,7 @@ limitations under the License.
 {{#Enums}}
 {{> enum}}
 {{/Enums}}
+{{^Codec.SkipConversion}}
 
 impl std::convert::From<{{Codec.QualifiedName}}> for {{Codec.RelativeName}} {
     fn from(value: {{Codec.QualifiedName}}) -> Self {
@@ -55,4 +56,5 @@ impl std::convert::From<{{Codec.RelativeName}}> for {{Codec.QualifiedName}} {
             {{/Fields}}
     }
 }
+{{/Codec.SkipConversion}}
 {{/IsMap}}

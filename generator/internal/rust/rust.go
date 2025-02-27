@@ -76,6 +76,7 @@ func newCodec(options map[string]string) (*codec, error) {
 		packageMapping: map[string]*packagez{},
 		version:        "0.0.0",
 		releaseLevel:   "preview",
+		skipConvert:    map[string]bool{},
 	}
 
 	for key, definition := range options {
@@ -115,6 +116,10 @@ func newCodec(options map[string]string) (*codec, error) {
 			codec.disabledRustdocWarnings = strings.Split(definition, ",")
 		case key == "template-override":
 			codec.templateOverride = definition
+		case key == "skip-convert":
+			for _, id := range strings.Split(definition, ",") {
+				codec.skipConvert[id] = true
+			}
 		default:
 			return nil, fmt.Errorf("unknown Rust codec option %q", key)
 		}
@@ -214,6 +219,8 @@ type codec struct {
 	disabledRustdocWarnings []string
 	// Overrides the template sudirectory.
 	templateOverride string
+	// A list of message ID skipped during `convert` generation
+	skipConvert map[string]bool
 }
 
 type packagez struct {
