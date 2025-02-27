@@ -28,6 +28,6 @@ pub(crate) mod google {
     }
     pub mod r#type {
         include!("protos/type/google.type.rs");
-        include!("protos/type/convert-manual.rs");
+        include!("protos/type/convert.rs");
     }
 }

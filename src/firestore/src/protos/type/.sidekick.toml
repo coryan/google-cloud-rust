@@ -21,3 +21,5 @@ include-list = 'latlng.proto'
 
 [codec]
 copyright-year    = '2025'
+template-override = 'templates/prost'
+module-path       = 'gtype::model'

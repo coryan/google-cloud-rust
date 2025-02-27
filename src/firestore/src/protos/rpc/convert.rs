@@ -51,7 +51,7 @@ impl std::convert::From<ErrorInfo> for rpc::model::ErrorInfo {
 impl std::convert::From<rpc::model::RetryInfo> for RetryInfo {
     fn from(value: rpc::model::RetryInfo) -> Self {
         Self {
-            retry_delay: value.retry_delay.map(wkt::Duration::from),
+            retry_delay: value.retry_delay.map(|v| v.into()),
         }
     }
 }
@@ -59,7 +59,7 @@ impl std::convert::From<rpc::model::RetryInfo> for RetryInfo {
 impl std::convert::From<RetryInfo> for rpc::model::RetryInfo {
     fn from(value: RetryInfo) -> Self {
         Self::new()
-            .set_retry_delay(value.retry_delay.map(wkt::Duration::from))
+            .set_retry_delay(value.retry_delay.map(|v| v.into())
     }
 }
 
@@ -67,7 +67,7 @@ impl std::convert::From<rpc::model::DebugInfo> for DebugInfo {
     fn from(value: rpc::model::DebugInfo) -> Self {
         Self {
             detail: value.detail.into(),
-            stack_entries: value.stack_entries.into_iter().map(std::string::String::from).collect(),
+            stack_entries: value.stack_entries.into_iter().map(|v| v.into()).collect(),
         }
     }
 }
@@ -100,7 +100,7 @@ impl std::convert::From<quota_failure::Violation> for rpc::model::quota_failure:
 impl std::convert::From<rpc::model::QuotaFailure> for QuotaFailure {
     fn from(value: rpc::model::QuotaFailure) -> Self {
         Self {
-            violations: value.violations.into_iter().map(quota_failure::Violation::from).collect(),
+            violations: value.violations.into_iter().map(|v| v.into()).collect(),
         }
     }
 }
@@ -134,7 +134,7 @@ impl std::convert::From<precondition_failure::Violation> for rpc::model::precond
 impl std::convert::From<rpc::model::PreconditionFailure> for PreconditionFailure {
     fn from(value: rpc::model::PreconditionFailure) -> Self {
         Self {
-            violations: value.violations.into_iter().map(precondition_failure::Violation::from).collect(),
+            violations: value.violations.into_iter().map(|v| v.into()).collect(),
         }
     }
 }
@@ -152,7 +152,7 @@ impl std::convert::From<rpc::model::bad_request::FieldViolation> for bad_request
             field: value.field.into(),
             description: value.description.into(),
             reason: value.reason.into(),
-            localized_message: value.localized_message.map(LocalizedMessage::from),
+            localized_message: value.localized_message.map(|v| v.into()),
         }
     }
 }
@@ -163,14 +163,14 @@ impl std::convert::From<bad_request::FieldViolation> for rpc::model::bad_request
             .set_field(value.field)
             .set_description(value.description)
             .set_reason(value.reason)
-            .set_localized_message(value.localized_message.map(rpc::model::LocalizedMessage::from))
+            .set_localized_message(value.localized_message.map(|v| v.into())
     }
 }
 
 impl std::convert::From<rpc::model::BadRequest> for BadRequest {
     fn from(value: rpc::model::BadRequest) -> Self {
         Self {
-            field_violations: value.field_violations.into_iter().map(bad_request::FieldViolation::from).collect(),
+            field_violations: value.field_violations.into_iter().map(|v| v.into()).collect(),
         }
     }
 }
@@ -240,7 +240,7 @@ impl std::convert::From<help::Link> for rpc::model::help::Link {
 impl std::convert::From<rpc::model::Help> for Help {
     fn from(value: rpc::model::Help) -> Self {
         Self {
-            links: value.links.into_iter().map(help::Link::from).collect(),
+            links: value.links.into_iter().map(|v| v.into()).collect(),
         }
     }
 }
@@ -275,7 +275,7 @@ impl std::convert::From<rpc::model::HttpRequest> for HttpRequest {
             method: value.method.into(),
             uri: value.uri.into(),
             body: value.body.into(),
-            headers: value.headers.into_iter().map(HttpHeader::from).collect(),
+            headers: value.headers.into_iter().map(|v| v.into()).collect(),
         }
     }
 }
@@ -296,7 +296,7 @@ impl std::convert::From<rpc::model::HttpResponse> for HttpResponse {
             status: value.status.into(),
             reason: value.reason.into(),
             body: value.body.into(),
-            headers: value.headers.into_iter().map(HttpHeader::from).collect(),
+            headers: value.headers.into_iter().map(|v| v.into()).collect(),
         }
     }
 }
@@ -333,7 +333,7 @@ impl std::convert::From<rpc::model::Status> for Status {
         Self {
             code: value.code.into(),
             message: value.message.into(),
-            details: value.details.into_iter().map(wkt::Any::from).collect(),
+            details: value.details.into_iter().map(|v| v.into()).collect(),
         }
     }
 }
