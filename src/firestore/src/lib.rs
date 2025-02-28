@@ -20,6 +20,7 @@ pub(crate) mod google {
     pub mod firestore {
         pub mod v1 {
             include!("protos/firestore/google.firestore.v1.rs");
+            include!("protos/firestore/convert.rs");
         }
     }
     pub mod rpc {
