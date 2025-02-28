@@ -80,11 +80,19 @@ pub struct ErrorInfo {
     #[prost(map="string, string", tag="3")]
     pub metadata: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
 }
+impl ::prost::Name for ErrorInfo {
+const NAME: &'static str = "ErrorInfo";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.ErrorInfo".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.ErrorInfo".into() }}
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct RetryInfo {
     #[prost(message, optional, tag="1")]
     pub retry_delay: ::core::option::Option<::prost_types::Duration>,
 }
+impl ::prost::Name for RetryInfo {
+const NAME: &'static str = "RetryInfo";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.RetryInfo".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.RetryInfo".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DebugInfo {
     #[prost(string, repeated, tag="1")]
@@ -92,6 +100,10 @@ pub struct DebugInfo {
     #[prost(string, tag="2")]
     pub detail: ::prost::alloc::string::String,
 }
+impl ::prost::Name for DebugInfo {
+const NAME: &'static str = "DebugInfo";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.DebugInfo".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.DebugInfo".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QuotaFailure {
     #[prost(message, repeated, tag="1")]
@@ -106,7 +118,15 @@ pub mod quota_failure {
         #[prost(string, tag="2")]
         pub description: ::prost::alloc::string::String,
     }
+impl ::prost::Name for Violation {
+const NAME: &'static str = "Violation";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.QuotaFailure.Violation".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.QuotaFailure.Violation".into() }}
 }
+impl ::prost::Name for QuotaFailure {
+const NAME: &'static str = "QuotaFailure";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.QuotaFailure".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.QuotaFailure".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PreconditionFailure {
     #[prost(message, repeated, tag="1")]
@@ -123,7 +143,15 @@ pub mod precondition_failure {
         #[prost(string, tag="3")]
         pub description: ::prost::alloc::string::String,
     }
+impl ::prost::Name for Violation {
+const NAME: &'static str = "Violation";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.PreconditionFailure.Violation".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.PreconditionFailure.Violation".into() }}
 }
+impl ::prost::Name for PreconditionFailure {
+const NAME: &'static str = "PreconditionFailure";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.PreconditionFailure".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.PreconditionFailure".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BadRequest {
     #[prost(message, repeated, tag="1")]
@@ -142,7 +170,15 @@ pub mod bad_request {
         #[prost(message, optional, tag="4")]
         pub localized_message: ::core::option::Option<super::LocalizedMessage>,
     }
+impl ::prost::Name for FieldViolation {
+const NAME: &'static str = "FieldViolation";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.BadRequest.FieldViolation".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.BadRequest.FieldViolation".into() }}
 }
+impl ::prost::Name for BadRequest {
+const NAME: &'static str = "BadRequest";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.BadRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.BadRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RequestInfo {
     #[prost(string, tag="1")]
@@ -150,6 +186,10 @@ pub struct RequestInfo {
     #[prost(string, tag="2")]
     pub serving_data: ::prost::alloc::string::String,
 }
+impl ::prost::Name for RequestInfo {
+const NAME: &'static str = "RequestInfo";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.RequestInfo".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.RequestInfo".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ResourceInfo {
     #[prost(string, tag="1")]
@@ -161,6 +201,10 @@ pub struct ResourceInfo {
     #[prost(string, tag="4")]
     pub description: ::prost::alloc::string::String,
 }
+impl ::prost::Name for ResourceInfo {
+const NAME: &'static str = "ResourceInfo";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.ResourceInfo".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.ResourceInfo".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Help {
     #[prost(message, repeated, tag="1")]
@@ -175,7 +219,15 @@ pub mod help {
         #[prost(string, tag="2")]
         pub url: ::prost::alloc::string::String,
     }
+impl ::prost::Name for Link {
+const NAME: &'static str = "Link";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.Help.Link".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.Help.Link".into() }}
 }
+impl ::prost::Name for Help {
+const NAME: &'static str = "Help";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.Help".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.Help".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LocalizedMessage {
     #[prost(string, tag="1")]
@@ -183,6 +235,10 @@ pub struct LocalizedMessage {
     #[prost(string, tag="2")]
     pub message: ::prost::alloc::string::String,
 }
+impl ::prost::Name for LocalizedMessage {
+const NAME: &'static str = "LocalizedMessage";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.LocalizedMessage".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.LocalizedMessage".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpRequest {
     #[prost(string, tag="1")]
@@ -194,6 +250,10 @@ pub struct HttpRequest {
     #[prost(bytes="vec", tag="4")]
     pub body: ::prost::alloc::vec::Vec<u8>,
 }
+impl ::prost::Name for HttpRequest {
+const NAME: &'static str = "HttpRequest";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.HttpRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.HttpRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpResponse {
     #[prost(int32, tag="1")]
@@ -205,6 +265,10 @@ pub struct HttpResponse {
     #[prost(bytes="vec", tag="4")]
     pub body: ::prost::alloc::vec::Vec<u8>,
 }
+impl ::prost::Name for HttpResponse {
+const NAME: &'static str = "HttpResponse";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.HttpResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.HttpResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HttpHeader {
     #[prost(string, tag="1")]
@@ -212,6 +276,10 @@ pub struct HttpHeader {
     #[prost(string, tag="2")]
     pub value: ::prost::alloc::string::String,
 }
+impl ::prost::Name for HttpHeader {
+const NAME: &'static str = "HttpHeader";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.HttpHeader".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.HttpHeader".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Status {
     #[prost(int32, tag="1")]
@@ -221,4 +289,8 @@ pub struct Status {
     #[prost(message, repeated, tag="3")]
     pub details: ::prost::alloc::vec::Vec<::prost_types::Any>,
 }
+impl ::prost::Name for Status {
+const NAME: &'static str = "Status";
+const PACKAGE: &'static str = "google.rpc";
+fn full_name() -> ::prost::alloc::string::String { "google.rpc.Status".into() }fn type_url() -> ::prost::alloc::string::String { "/google.rpc.Status".into() }}
 // @@protoc_insertion_point(module)

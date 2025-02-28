@@ -34,7 +34,7 @@ impl std::convert::From<rpc::model::ErrorInfo> for ErrorInfo {
         Self {
             reason: value.reason.into(),
             domain: value.domain.into(),
-            metadata: value.metadata.into(),
+            metadata: value.metadata.into_iter().map(|(k, v)| (k.into(), v.into())).collect(),
         }
     }
 }
