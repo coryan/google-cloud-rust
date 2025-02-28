@@ -142,8 +142,10 @@ type oneOfAnnotation struct {
 	EnumName string
 	// The Rust `enum` may be in a deeply nested scope. This is a shortcut.
 	FQEnumName string
-	FieldType  string
-	DocLines   []string
+	// Like FQEnumName relative to `crate::model`.
+	RelativeEnumName string
+	FieldType        string
+	DocLines         []string
 	// The subset of the oneof fields that are neither maps, nor repeated.
 	SingularFields []*api.Field
 	// The subset of the oneof fields that are repeated (`Vec<T>` in Rust).
@@ -430,16 +432,18 @@ func annotateOneOf(oneof *api.OneOf, message *api.Message, state *api.APIState, 
 	scope := messageScopeName(message, "", modulePath, sourceSpecificationPackageName, packageMapping)
 	enumName := toPascal(oneof.Name)
 	fqEnumName := fmt.Sprintf("%s::%s", scope, enumName)
+	relativeEnumName := strings.TrimPrefix(fqEnumName, modulePath+"::")
 	oneof.Codec = &oneOfAnnotation{
-		FieldName:      toSnake(oneof.Name),
-		SetterName:     toSnakeNoMangling(oneof.Name),
-		EnumName:       enumName,
-		FQEnumName:     fqEnumName,
-		FieldType:      fmt.Sprintf("%s::%s", scope, toPascal(oneof.Name)),
-		DocLines:       formatDocComments(oneof.Documentation, oneof.ID, state, modulePath, message.Scopes(), packageMapping),
-		SingularFields: partition.singularFields,
-		RepeatedFields: partition.repeatedFields,
-		MapFields:      partition.mapFields,
+		FieldName:        toSnake(oneof.Name),
+		SetterName:       toSnakeNoMangling(oneof.Name),
+		EnumName:         enumName,
+		FQEnumName:       fqEnumName,
+		RelativeEnumName: relativeEnumName,
+		FieldType:        fmt.Sprintf("%s::%s", scope, toPascal(oneof.Name)),
+		DocLines:         formatDocComments(oneof.Documentation, oneof.ID, state, modulePath, message.Scopes(), packageMapping),
+		SingularFields:   partition.singularFields,
+		RepeatedFields:   partition.repeatedFields,
+		MapFields:        partition.mapFields,
 	}
 }
 

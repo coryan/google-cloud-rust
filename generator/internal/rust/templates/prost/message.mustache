@@ -20,6 +20,9 @@ limitations under the License.
 {{#Enums}}
 {{> enum}}
 {{/Enums}}
+{{#OneOfs}}
+{{> oneof}}
+{{/OneOfs}}
 {{^Codec.SkipConversion}}
 
 impl std::convert::From<{{Codec.QualifiedName}}> for {{Codec.RelativeName}} {
@@ -37,8 +40,11 @@ impl std::convert::From<{{Codec.QualifiedName}}> for {{Codec.RelativeName}} {
             {{Codec.FieldName}}: value.{{Codec.FieldName}}.into_iter().map(|v| v.into()).collect(),
             {{/Codec.RepeatedFields}}
             {{#Codec.MapFields}}
-            {{Codec.FieldName}}: value.{{Codec.FieldName}}.into(),
+            {{Codec.FieldName}}: value.{{Codec.FieldName}}.into_iter().map(|(k, v)| (k.into(), v.into())).collect(),
             {{/Codec.MapFields}}
+            {{#OneOfs}}
+            {{Codec.FieldName}}: value.{{Codec.FieldName}}.map(|v| v.into()),
+            {{/OneOfs}}
         }
     }
 }
@@ -46,14 +52,17 @@ impl std::convert::From<{{Codec.QualifiedName}}> for {{Codec.RelativeName}} {
 impl std::convert::From<{{Codec.RelativeName}}> for {{Codec.QualifiedName}} {
     fn from(value: {{Codec.RelativeName}}) -> Self {
         Self::new()
-            {{#Fields}}
+            {{#Codec.BasicFields}}
             {{^Optional}}
             .set_{{Codec.SetterName}}(value.{{Codec.FieldName}})
             {{/Optional}}
             {{#Optional}}
             .set_{{Codec.SetterName}}(value.{{Codec.FieldName}}.map(|v| v.into()))
             {{/Optional}}
-            {{/Fields}}
+            {{/Codec.BasicFields}}
+            {{#OneOfs}}
+            .set_{{Codec.SetterName}}(value.{{Codec.FieldName}}.map(|v| v.into())),
+            {{/OneOfs}}
     }
 }
 {{/Codec.SkipConversion}}
