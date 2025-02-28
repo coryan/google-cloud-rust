@@ -84,6 +84,10 @@ type BoxedError = Box<dyn std::error::Error + Send + Sync>;
 type Error = AnyError;
 
 impl Any {
+    pub fn type_url(&self) -> Option<&str> {
+        self.0.get("@type").and_then(serde_json::Value::as_str)
+    }
+
     /// Creates a new [Any] from any [Message][crate::message::Message] that
     /// also supports serialization to JSON.
     pub fn try_from<T>(message: &T) -> Result<Self, Error>
