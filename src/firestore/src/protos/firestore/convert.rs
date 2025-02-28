@@ -83,8 +83,8 @@ impl std::convert::From<crate::model::precondition::ConditionType> for precondit
         use crate::model::precondition::ConditionType as V;
         match value {
             V::Exists(v) => Self::Exists(v.into()),
-            V::UpdateTime(v) => Self::UpdateTime(v.into()),
-        } 
+            V::UpdateTime(v) => Self::UpdateTime((*v).into()),
+        }
     }
 }
 
@@ -93,7 +93,7 @@ impl std::convert::From<precondition::ConditionType> for crate::model::precondit
         use precondition::ConditionType as V;
         match value {
             V::Exists(v) => Self::Exists(v.into()),
-            V::UpdateTime(v) => Self::UpdateTime(v.into()),
+            V::UpdateTime(v) => Self::UpdateTime(Box::new(v.into())),
         }
     }
 }
@@ -109,7 +109,7 @@ impl std::convert::From<crate::model::Precondition> for Precondition {
 impl std::convert::From<Precondition> for crate::model::Precondition {
     fn from(value: Precondition) -> Self {
         Self::new()
-            .set_condition_type(value.condition_type.map(|v| v.into())),
+            .set_condition_type(value.condition_type.map(|v| v.into()))
     }
 }
 
@@ -132,7 +132,7 @@ impl std::convert::From<crate::model::transaction_options::read_only::Consistenc
     fn from(value: crate::model::transaction_options::read_only::ConsistencySelector) -> Self {
         use crate::model::transaction_options::read_only::ConsistencySelector as V;
         match value {
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime((*v).into()),
         }
     }
 }
@@ -141,7 +141,7 @@ impl std::convert::From<transaction_options::read_only::ConsistencySelector> for
     fn from(value: transaction_options::read_only::ConsistencySelector) -> Self {
         use transaction_options::read_only::ConsistencySelector as V;
         match value {
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime(Box::new(v.into())),
         }
     }
 }
@@ -157,7 +157,7 @@ impl std::convert::From<crate::model::transaction_options::ReadOnly> for transac
 impl std::convert::From<transaction_options::ReadOnly> for crate::model::transaction_options::ReadOnly {
     fn from(value: transaction_options::ReadOnly) -> Self {
         Self::new()
-            .set_consistency_selector(value.consistency_selector.map(|v| v.into())),
+            .set_consistency_selector(value.consistency_selector.map(|v| v.into()))
     }
 }
 
@@ -165,8 +165,8 @@ impl std::convert::From<crate::model::transaction_options::Mode> for transaction
     fn from(value: crate::model::transaction_options::Mode) -> Self {
         use crate::model::transaction_options::Mode as V;
         match value {
-            V::ReadOnly(v) => Self::ReadOnly(v.into()),
-            V::ReadWrite(v) => Self::ReadWrite(v.into()),
+            V::ReadOnly(v) => Self::ReadOnly((*v).into()),
+            V::ReadWrite(v) => Self::ReadWrite((*v).into()),
         }
     }
 }
@@ -175,8 +175,8 @@ impl std::convert::From<transaction_options::Mode> for crate::model::transaction
     fn from(value: transaction_options::Mode) -> Self {
         use transaction_options::Mode as V;
         match value {
-            V::ReadOnly(v) => Self::ReadOnly(v.into()),
-            V::ReadWrite(v) => Self::ReadWrite(v.into()),
+            V::ReadOnly(v) => Self::ReadOnly(Box::new(v.into())),
+            V::ReadWrite(v) => Self::ReadWrite(Box::new(v.into())),
         }
     }
 }
@@ -192,7 +192,7 @@ impl std::convert::From<crate::model::TransactionOptions> for TransactionOptions
 impl std::convert::From<TransactionOptions> for crate::model::TransactionOptions {
     fn from(value: TransactionOptions) -> Self {
         Self::new()
-            .set_mode(value.mode.map(|v| v.into())),
+            .set_mode(value.mode.map(|v| v.into()))
     }
 }
 
@@ -225,13 +225,13 @@ impl std::convert::From<crate::model::value::ValueType> for value::ValueType {
             V::BooleanValue(v) => Self::BooleanValue(v.into()),
             V::IntegerValue(v) => Self::IntegerValue(v.into()),
             V::DoubleValue(v) => Self::DoubleValue(v.into()),
-            V::TimestampValue(v) => Self::TimestampValue(v.into()),
+            V::TimestampValue(v) => Self::TimestampValue((*v).into()),
             V::StringValue(v) => Self::StringValue(v.into()),
             V::BytesValue(v) => Self::BytesValue(v.into()),
             V::ReferenceValue(v) => Self::ReferenceValue(v.into()),
-            V::GeoPointValue(v) => Self::GeoPointValue(v.into()),
-            V::ArrayValue(v) => Self::ArrayValue(v.into()),
-            V::MapValue(v) => Self::MapValue(v.into()),
+            V::GeoPointValue(v) => Self::GeoPointValue((*v).into()),
+            V::ArrayValue(v) => Self::ArrayValue((*v).into()),
+            V::MapValue(v) => Self::MapValue((*v).into()),
         }
     }
 }
@@ -244,13 +244,13 @@ impl std::convert::From<value::ValueType> for crate::model::value::ValueType {
             V::BooleanValue(v) => Self::BooleanValue(v.into()),
             V::IntegerValue(v) => Self::IntegerValue(v.into()),
             V::DoubleValue(v) => Self::DoubleValue(v.into()),
-            V::TimestampValue(v) => Self::TimestampValue(v.into()),
+            V::TimestampValue(v) => Self::TimestampValue(Box::new(v.into())),
             V::StringValue(v) => Self::StringValue(v.into()),
             V::BytesValue(v) => Self::BytesValue(v.into()),
             V::ReferenceValue(v) => Self::ReferenceValue(v.into()),
-            V::GeoPointValue(v) => Self::GeoPointValue(v.into()),
-            V::ArrayValue(v) => Self::ArrayValue(v.into()),
-            V::MapValue(v) => Self::MapValue(v.into()),
+            V::GeoPointValue(v) => Self::GeoPointValue(Box::new(v.into())),
+            V::ArrayValue(v) => Self::ArrayValue(Box::new(v.into())),
+            V::MapValue(v) => Self::MapValue(Box::new(v.into())),
         }
     }
 }
@@ -266,7 +266,7 @@ impl std::convert::From<crate::model::Value> for Value {
 impl std::convert::From<Value> for crate::model::Value {
     fn from(value: Value) -> Self {
         Self::new()
-            .set_value_type(value.value_type.map(|v| v.into())),
+            .set_value_type(value.value_type.map(|v| v.into()))
     }
 }
 
@@ -305,7 +305,7 @@ impl std::convert::From<crate::model::get_document_request::ConsistencySelector>
         use crate::model::get_document_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime((*v).into()),
         }
     }
 }
@@ -315,7 +315,7 @@ impl std::convert::From<get_document_request::ConsistencySelector> for crate::mo
         use get_document_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime(Box::new(v.into())),
         }
     }
 }
@@ -335,7 +335,7 @@ impl std::convert::From<GetDocumentRequest> for crate::model::GetDocumentRequest
         Self::new()
             .set_name(value.name)
             .set_mask(value.mask.map(|v| v.into()))
-            .set_consistency_selector(value.consistency_selector.map(|v| v.into())),
+            .set_consistency_selector(value.consistency_selector.map(|v| v.into()))
     }
 }
 
@@ -344,7 +344,7 @@ impl std::convert::From<crate::model::list_documents_request::ConsistencySelecto
         use crate::model::list_documents_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime((*v).into()),
         }
     }
 }
@@ -354,7 +354,7 @@ impl std::convert::From<list_documents_request::ConsistencySelector> for crate::
         use list_documents_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime(Box::new(v.into())),
         }
     }
 }
@@ -384,7 +384,7 @@ impl std::convert::From<ListDocumentsRequest> for crate::model::ListDocumentsReq
             .set_order_by(value.order_by)
             .set_mask(value.mask.map(|v| v.into()))
             .set_show_missing(value.show_missing)
-            .set_consistency_selector(value.consistency_selector.map(|v| v.into())),
+            .set_consistency_selector(value.consistency_selector.map(|v| v.into()))
     }
 }
 
@@ -471,8 +471,8 @@ impl std::convert::From<crate::model::batch_get_documents_request::ConsistencySe
         use crate::model::batch_get_documents_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::NewTransaction(v) => Self::NewTransaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::NewTransaction(v) => Self::NewTransaction((*v).into()),
+            V::ReadTime(v) => Self::ReadTime((*v).into()),
         }
     }
 }
@@ -482,8 +482,8 @@ impl std::convert::From<batch_get_documents_request::ConsistencySelector> for cr
         use batch_get_documents_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::NewTransaction(v) => Self::NewTransaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::NewTransaction(v) => Self::NewTransaction(Box::new(v.into())),
+            V::ReadTime(v) => Self::ReadTime(Box::new(v.into())),
         }
     }
 }
@@ -505,7 +505,7 @@ impl std::convert::From<BatchGetDocumentsRequest> for crate::model::BatchGetDocu
             .set_database(value.database)
             .set_documents(value.documents)
             .set_mask(value.mask.map(|v| v.into()))
-            .set_consistency_selector(value.consistency_selector.map(|v| v.into())),
+            .set_consistency_selector(value.consistency_selector.map(|v| v.into()))
     }
 }
 
@@ -513,7 +513,7 @@ impl std::convert::From<crate::model::batch_get_documents_response::Result> for 
     fn from(value: crate::model::batch_get_documents_response::Result) -> Self {
         use crate::model::batch_get_documents_response::Result as V;
         match value {
-            V::Found(v) => Self::Found(v.into()),
+            V::Found(v) => Self::Found((*v).into()),
             V::Missing(v) => Self::Missing(v.into()),
         }
     }
@@ -523,7 +523,7 @@ impl std::convert::From<batch_get_documents_response::Result> for crate::model::
     fn from(value: batch_get_documents_response::Result) -> Self {
         use batch_get_documents_response::Result as V;
         match value {
-            V::Found(v) => Self::Found(v.into()),
+            V::Found(v) => Self::Found(Box::new(v.into())),
             V::Missing(v) => Self::Missing(v.into()),
         }
     }
@@ -544,7 +544,7 @@ impl std::convert::From<BatchGetDocumentsResponse> for crate::model::BatchGetDoc
         Self::new()
             .set_transaction(value.transaction)
             .set_read_time(value.read_time.map(|v| v.into()))
-            .set_result(value.result.map(|v| v.into())),
+            .set_result(value.result.map(|v| v.into()))
     }
 }
 
@@ -637,7 +637,7 @@ impl std::convert::From<crate::model::run_query_request::QueryType> for run_quer
     fn from(value: crate::model::run_query_request::QueryType) -> Self {
         use crate::model::run_query_request::QueryType as V;
         match value {
-            V::StructuredQuery(v) => Self::StructuredQuery(v.into()),
+            V::StructuredQuery(v) => Self::StructuredQuery((*v).into()),
         }
     }
 }
@@ -646,7 +646,7 @@ impl std::convert::From<run_query_request::QueryType> for crate::model::run_quer
     fn from(value: run_query_request::QueryType) -> Self {
         use run_query_request::QueryType as V;
         match value {
-            V::StructuredQuery(v) => Self::StructuredQuery(v.into()),
+            V::StructuredQuery(v) => Self::StructuredQuery(Box::new(v.into())),
         }
     }
 }
@@ -656,8 +656,8 @@ impl std::convert::From<crate::model::run_query_request::ConsistencySelector> fo
         use crate::model::run_query_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::NewTransaction(v) => Self::NewTransaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::NewTransaction(v) => Self::NewTransaction((*v).into()),
+            V::ReadTime(v) => Self::ReadTime((*v).into()),
         }
     }
 }
@@ -667,8 +667,8 @@ impl std::convert::From<run_query_request::ConsistencySelector> for crate::model
         use run_query_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::NewTransaction(v) => Self::NewTransaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::NewTransaction(v) => Self::NewTransaction(Box::new(v.into())),
+            V::ReadTime(v) => Self::ReadTime(Box::new(v.into())),
         }
     }
 }
@@ -689,8 +689,8 @@ impl std::convert::From<RunQueryRequest> for crate::model::RunQueryRequest {
         Self::new()
             .set_parent(value.parent)
             .set_explain_options(value.explain_options.map(|v| v.into()))
-            .set_query_type(value.query_type.map(|v| v.into())),
-            .set_consistency_selector(value.consistency_selector.map(|v| v.into())),
+            .set_query_type(value.query_type.map(|v| v.into()))
+            .set_consistency_selector(value.consistency_selector.map(|v| v.into()))
     }
 }
 
@@ -733,7 +733,7 @@ impl std::convert::From<RunQueryResponse> for crate::model::RunQueryResponse {
             .set_read_time(value.read_time.map(|v| v.into()))
             .set_skipped_results(value.skipped_results)
             .set_explain_metrics(value.explain_metrics.map(|v| v.into()))
-            .set_continuation_selector(value.continuation_selector.map(|v| v.into())),
+            .set_continuation_selector(value.continuation_selector.map(|v| v.into()))
     }
 }
 
@@ -741,7 +741,7 @@ impl std::convert::From<crate::model::run_aggregation_query_request::QueryType> 
     fn from(value: crate::model::run_aggregation_query_request::QueryType) -> Self {
         use crate::model::run_aggregation_query_request::QueryType as V;
         match value {
-            V::StructuredAggregationQuery(v) => Self::StructuredAggregationQuery(v.into()),
+            V::StructuredAggregationQuery(v) => Self::StructuredAggregationQuery((*v).into()),
         }
     }
 }
@@ -750,7 +750,7 @@ impl std::convert::From<run_aggregation_query_request::QueryType> for crate::mod
     fn from(value: run_aggregation_query_request::QueryType) -> Self {
         use run_aggregation_query_request::QueryType as V;
         match value {
-            V::StructuredAggregationQuery(v) => Self::StructuredAggregationQuery(v.into()),
+            V::StructuredAggregationQuery(v) => Self::StructuredAggregationQuery(Box::new(v.into())),
         }
     }
 }
@@ -760,8 +760,8 @@ impl std::convert::From<crate::model::run_aggregation_query_request::Consistency
         use crate::model::run_aggregation_query_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::NewTransaction(v) => Self::NewTransaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::NewTransaction(v) => Self::NewTransaction((*v).into()),
+            V::ReadTime(v) => Self::ReadTime((*v).into()),
         }
     }
 }
@@ -771,8 +771,8 @@ impl std::convert::From<run_aggregation_query_request::ConsistencySelector> for 
         use run_aggregation_query_request::ConsistencySelector as V;
         match value {
             V::Transaction(v) => Self::Transaction(v.into()),
-            V::NewTransaction(v) => Self::NewTransaction(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::NewTransaction(v) => Self::NewTransaction(Box::new(v.into())),
+            V::ReadTime(v) => Self::ReadTime(Box::new(v.into())),
         }
     }
 }
@@ -793,8 +793,8 @@ impl std::convert::From<RunAggregationQueryRequest> for crate::model::RunAggrega
         Self::new()
             .set_parent(value.parent)
             .set_explain_options(value.explain_options.map(|v| v.into()))
-            .set_query_type(value.query_type.map(|v| v.into())),
-            .set_consistency_selector(value.consistency_selector.map(|v| v.into())),
+            .set_query_type(value.query_type.map(|v| v.into()))
+            .set_consistency_selector(value.consistency_selector.map(|v| v.into()))
     }
 }
 
@@ -823,7 +823,7 @@ impl std::convert::From<crate::model::partition_query_request::QueryType> for pa
     fn from(value: crate::model::partition_query_request::QueryType) -> Self {
         use crate::model::partition_query_request::QueryType as V;
         match value {
-            V::StructuredQuery(v) => Self::StructuredQuery(v.into()),
+            V::StructuredQuery(v) => Self::StructuredQuery((*v).into()),
         }
     }
 }
@@ -832,7 +832,7 @@ impl std::convert::From<partition_query_request::QueryType> for crate::model::pa
     fn from(value: partition_query_request::QueryType) -> Self {
         use partition_query_request::QueryType as V;
         match value {
-            V::StructuredQuery(v) => Self::StructuredQuery(v.into()),
+            V::StructuredQuery(v) => Self::StructuredQuery(Box::new(v.into())),
         }
     }
 }
@@ -841,7 +841,7 @@ impl std::convert::From<crate::model::partition_query_request::ConsistencySelect
     fn from(value: crate::model::partition_query_request::ConsistencySelector) -> Self {
         use crate::model::partition_query_request::ConsistencySelector as V;
         match value {
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime((*v).into()),
         }
     }
 }
@@ -850,7 +850,7 @@ impl std::convert::From<partition_query_request::ConsistencySelector> for crate:
     fn from(value: partition_query_request::ConsistencySelector) -> Self {
         use partition_query_request::ConsistencySelector as V;
         match value {
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime(Box::new(v.into())),
         }
     }
 }
@@ -875,8 +875,8 @@ impl std::convert::From<PartitionQueryRequest> for crate::model::PartitionQueryR
             .set_partition_count(value.partition_count)
             .set_page_token(value.page_token)
             .set_page_size(value.page_size)
-            .set_query_type(value.query_type.map(|v| v.into())),
-            .set_consistency_selector(value.consistency_selector.map(|v| v.into())),
+            .set_query_type(value.query_type.map(|v| v.into()))
+            .set_consistency_selector(value.consistency_selector.map(|v| v.into()))
     }
 }
 
@@ -945,7 +945,7 @@ impl std::convert::From<crate::model::listen_request::TargetChange> for listen_r
     fn from(value: crate::model::listen_request::TargetChange) -> Self {
         use crate::model::listen_request::TargetChange as V;
         match value {
-            V::AddTarget(v) => Self::AddTarget(v.into()),
+            V::AddTarget(v) => Self::AddTarget((*v).into()),
             V::RemoveTarget(v) => Self::RemoveTarget(v.into()),
         }
     }
@@ -955,7 +955,7 @@ impl std::convert::From<listen_request::TargetChange> for crate::model::listen_r
     fn from(value: listen_request::TargetChange) -> Self {
         use listen_request::TargetChange as V;
         match value {
-            V::AddTarget(v) => Self::AddTarget(v.into()),
+            V::AddTarget(v) => Self::AddTarget(Box::new(v.into())),
             V::RemoveTarget(v) => Self::RemoveTarget(v.into()),
         }
     }
@@ -976,7 +976,7 @@ impl std::convert::From<ListenRequest> for crate::model::ListenRequest {
         Self::new()
             .set_database(value.database)
             .set_labels(value.labels)
-            .set_target_change(value.target_change.map(|v| v.into())),
+            .set_target_change(value.target_change.map(|v| v.into()))
     }
 }
 
@@ -984,11 +984,11 @@ impl std::convert::From<crate::model::listen_response::ResponseType> for listen_
     fn from(value: crate::model::listen_response::ResponseType) -> Self {
         use crate::model::listen_response::ResponseType as V;
         match value {
-            V::TargetChange(v) => Self::TargetChange(v.into()),
-            V::DocumentChange(v) => Self::DocumentChange(v.into()),
-            V::DocumentDelete(v) => Self::DocumentDelete(v.into()),
-            V::DocumentRemove(v) => Self::DocumentRemove(v.into()),
-            V::Filter(v) => Self::Filter(v.into()),
+            V::TargetChange(v) => Self::TargetChange((*v).into()),
+            V::DocumentChange(v) => Self::DocumentChange((*v).into()),
+            V::DocumentDelete(v) => Self::DocumentDelete((*v).into()),
+            V::DocumentRemove(v) => Self::DocumentRemove((*v).into()),
+            V::Filter(v) => Self::Filter((*v).into()),
         }
     }
 }
@@ -997,11 +997,11 @@ impl std::convert::From<listen_response::ResponseType> for crate::model::listen_
     fn from(value: listen_response::ResponseType) -> Self {
         use listen_response::ResponseType as V;
         match value {
-            V::TargetChange(v) => Self::TargetChange(v.into()),
-            V::DocumentChange(v) => Self::DocumentChange(v.into()),
-            V::DocumentDelete(v) => Self::DocumentDelete(v.into()),
-            V::DocumentRemove(v) => Self::DocumentRemove(v.into()),
-            V::Filter(v) => Self::Filter(v.into()),
+            V::TargetChange(v) => Self::TargetChange(Box::new(v.into())),
+            V::DocumentChange(v) => Self::DocumentChange(Box::new(v.into())),
+            V::DocumentDelete(v) => Self::DocumentDelete(Box::new(v.into())),
+            V::DocumentRemove(v) => Self::DocumentRemove(Box::new(v.into())),
+            V::Filter(v) => Self::Filter(Box::new(v.into())),
         }
     }
 }
@@ -1017,7 +1017,7 @@ impl std::convert::From<crate::model::ListenResponse> for ListenResponse {
 impl std::convert::From<ListenResponse> for crate::model::ListenResponse {
     fn from(value: ListenResponse) -> Self {
         Self::new()
-            .set_response_type(value.response_type.map(|v| v.into())),
+            .set_response_type(value.response_type.map(|v| v.into()))
     }
 }
 
@@ -1040,7 +1040,7 @@ impl std::convert::From<crate::model::target::query_target::QueryType> for targe
     fn from(value: crate::model::target::query_target::QueryType) -> Self {
         use crate::model::target::query_target::QueryType as V;
         match value {
-            V::StructuredQuery(v) => Self::StructuredQuery(v.into()),
+            V::StructuredQuery(v) => Self::StructuredQuery((*v).into()),
         }
     }
 }
@@ -1049,7 +1049,7 @@ impl std::convert::From<target::query_target::QueryType> for crate::model::targe
     fn from(value: target::query_target::QueryType) -> Self {
         use target::query_target::QueryType as V;
         match value {
-            V::StructuredQuery(v) => Self::StructuredQuery(v.into()),
+            V::StructuredQuery(v) => Self::StructuredQuery(Box::new(v.into())),
         }
     }
 }
@@ -1067,7 +1067,7 @@ impl std::convert::From<target::QueryTarget> for crate::model::target::QueryTarg
     fn from(value: target::QueryTarget) -> Self {
         Self::new()
             .set_parent(value.parent)
-            .set_query_type(value.query_type.map(|v| v.into())),
+            .set_query_type(value.query_type.map(|v| v.into()))
     }
 }
 
@@ -1075,8 +1075,8 @@ impl std::convert::From<crate::model::target::TargetType> for target::TargetType
     fn from(value: crate::model::target::TargetType) -> Self {
         use crate::model::target::TargetType as V;
         match value {
-            V::Query(v) => Self::Query(v.into()),
-            V::Documents(v) => Self::Documents(v.into()),
+            V::Query(v) => Self::Query((*v).into()),
+            V::Documents(v) => Self::Documents((*v).into()),
         }
     }
 }
@@ -1085,8 +1085,8 @@ impl std::convert::From<target::TargetType> for crate::model::target::TargetType
     fn from(value: target::TargetType) -> Self {
         use target::TargetType as V;
         match value {
-            V::Query(v) => Self::Query(v.into()),
-            V::Documents(v) => Self::Documents(v.into()),
+            V::Query(v) => Self::Query(Box::new(v.into())),
+            V::Documents(v) => Self::Documents(Box::new(v.into())),
         }
     }
 }
@@ -1096,7 +1096,7 @@ impl std::convert::From<crate::model::target::ResumeType> for target::ResumeType
         use crate::model::target::ResumeType as V;
         match value {
             V::ResumeToken(v) => Self::ResumeToken(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime((*v).into()),
         }
     }
 }
@@ -1106,7 +1106,7 @@ impl std::convert::From<target::ResumeType> for crate::model::target::ResumeType
         use target::ResumeType as V;
         match value {
             V::ResumeToken(v) => Self::ResumeToken(v.into()),
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime(Box::new(v.into())),
         }
     }
 }
@@ -1129,8 +1129,8 @@ impl std::convert::From<Target> for crate::model::Target {
             .set_target_id(value.target_id)
             .set_once(value.once)
             .set_expected_count(value.expected_count.map(|v| v.into()))
-            .set_target_type(value.target_type.map(|v| v.into())),
-            .set_resume_type(value.resume_type.map(|v| v.into())),
+            .set_target_type(value.target_type.map(|v| v.into()))
+            .set_resume_type(value.resume_type.map(|v| v.into()))
     }
 }
 
@@ -1176,7 +1176,7 @@ impl std::convert::From<crate::model::list_collection_ids_request::ConsistencySe
     fn from(value: crate::model::list_collection_ids_request::ConsistencySelector) -> Self {
         use crate::model::list_collection_ids_request::ConsistencySelector as V;
         match value {
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime((*v).into()),
         }
     }
 }
@@ -1185,7 +1185,7 @@ impl std::convert::From<list_collection_ids_request::ConsistencySelector> for cr
     fn from(value: list_collection_ids_request::ConsistencySelector) -> Self {
         use list_collection_ids_request::ConsistencySelector as V;
         match value {
-            V::ReadTime(v) => Self::ReadTime(v.into()),
+            V::ReadTime(v) => Self::ReadTime(Box::new(v.into())),
         }
     }
 }
@@ -1207,7 +1207,7 @@ impl std::convert::From<ListCollectionIdsRequest> for crate::model::ListCollecti
             .set_parent(value.parent)
             .set_page_size(value.page_size)
             .set_page_token(value.page_token)
-            .set_consistency_selector(value.consistency_selector.map(|v| v.into())),
+            .set_consistency_selector(value.consistency_selector.map(|v| v.into()))
     }
 }
 
@@ -1285,9 +1285,9 @@ impl std::convert::From<crate::model::structured_query::filter::FilterType> for 
     fn from(value: crate::model::structured_query::filter::FilterType) -> Self {
         use crate::model::structured_query::filter::FilterType as V;
         match value {
-            V::CompositeFilter(v) => Self::CompositeFilter(v.into()),
-            V::FieldFilter(v) => Self::FieldFilter(v.into()),
-            V::UnaryFilter(v) => Self::UnaryFilter(v.into()),
+            V::CompositeFilter(v) => Self::CompositeFilter((*v).into()),
+            V::FieldFilter(v) => Self::FieldFilter((*v).into()),
+            V::UnaryFilter(v) => Self::UnaryFilter((*v).into()),
         }
     }
 }
@@ -1296,9 +1296,9 @@ impl std::convert::From<structured_query::filter::FilterType> for crate::model::
     fn from(value: structured_query::filter::FilterType) -> Self {
         use structured_query::filter::FilterType as V;
         match value {
-            V::CompositeFilter(v) => Self::CompositeFilter(v.into()),
-            V::FieldFilter(v) => Self::FieldFilter(v.into()),
-            V::UnaryFilter(v) => Self::UnaryFilter(v.into()),
+            V::CompositeFilter(v) => Self::CompositeFilter(Box::new(v.into())),
+            V::FieldFilter(v) => Self::FieldFilter(Box::new(v.into())),
+            V::UnaryFilter(v) => Self::UnaryFilter(Box::new(v.into())),
         }
     }
 }
@@ -1314,7 +1314,7 @@ impl std::convert::From<crate::model::structured_query::Filter> for structured_q
 impl std::convert::From<structured_query::Filter> for crate::model::structured_query::Filter {
     fn from(value: structured_query::Filter) -> Self {
         Self::new()
-            .set_filter_type(value.filter_type.map(|v| v.into())),
+            .set_filter_type(value.filter_type.map(|v| v.into()))
     }
 }
 
@@ -1403,7 +1403,7 @@ impl std::convert::From<crate::model::structured_query::unary_filter::OperandTyp
     fn from(value: crate::model::structured_query::unary_filter::OperandType) -> Self {
         use crate::model::structured_query::unary_filter::OperandType as V;
         match value {
-            V::Field(v) => Self::Field(v.into()),
+            V::Field(v) => Self::Field((*v).into()),
         }
     }
 }
@@ -1412,7 +1412,7 @@ impl std::convert::From<structured_query::unary_filter::OperandType> for crate::
     fn from(value: structured_query::unary_filter::OperandType) -> Self {
         use structured_query::unary_filter::OperandType as V;
         match value {
-            V::Field(v) => Self::Field(v.into()),
+            V::Field(v) => Self::Field(Box::new(v.into())),
         }
     }
 }
@@ -1430,7 +1430,7 @@ impl std::convert::From<structured_query::UnaryFilter> for crate::model::structu
     fn from(value: structured_query::UnaryFilter) -> Self {
         Self::new()
             .set_op(value.op)
-            .set_operand_type(value.operand_type.map(|v| v.into())),
+            .set_operand_type(value.operand_type.map(|v| v.into()))
     }
 }
 
@@ -1616,9 +1616,9 @@ impl std::convert::From<crate::model::structured_aggregation_query::aggregation:
     fn from(value: crate::model::structured_aggregation_query::aggregation::Operator) -> Self {
         use crate::model::structured_aggregation_query::aggregation::Operator as V;
         match value {
-            V::Count(v) => Self::Count(v.into()),
-            V::Sum(v) => Self::Sum(v.into()),
-            V::Avg(v) => Self::Avg(v.into()),
+            V::Count(v) => Self::Count((*v).into()),
+            V::Sum(v) => Self::Sum((*v).into()),
+            V::Avg(v) => Self::Avg((*v).into()),
         }
     }
 }
@@ -1627,9 +1627,9 @@ impl std::convert::From<structured_aggregation_query::aggregation::Operator> for
     fn from(value: structured_aggregation_query::aggregation::Operator) -> Self {
         use structured_aggregation_query::aggregation::Operator as V;
         match value {
-            V::Count(v) => Self::Count(v.into()),
-            V::Sum(v) => Self::Sum(v.into()),
-            V::Avg(v) => Self::Avg(v.into()),
+            V::Count(v) => Self::Count(Box::new(v.into())),
+            V::Sum(v) => Self::Sum(Box::new(v.into())),
+            V::Avg(v) => Self::Avg(Box::new(v.into())),
         }
     }
 }
@@ -1647,7 +1647,7 @@ impl std::convert::From<structured_aggregation_query::Aggregation> for crate::mo
     fn from(value: structured_aggregation_query::Aggregation) -> Self {
         Self::new()
             .set_alias(value.alias)
-            .set_operator(value.operator.map(|v| v.into())),
+            .set_operator(value.operator.map(|v| v.into()))
     }
 }
 
@@ -1655,7 +1655,7 @@ impl std::convert::From<crate::model::structured_aggregation_query::QueryType> f
     fn from(value: crate::model::structured_aggregation_query::QueryType) -> Self {
         use crate::model::structured_aggregation_query::QueryType as V;
         match value {
-            V::StructuredQuery(v) => Self::StructuredQuery(v.into()),
+            V::StructuredQuery(v) => Self::StructuredQuery((*v).into()),
         }
     }
 }
@@ -1664,7 +1664,7 @@ impl std::convert::From<structured_aggregation_query::QueryType> for crate::mode
     fn from(value: structured_aggregation_query::QueryType) -> Self {
         use structured_aggregation_query::QueryType as V;
         match value {
-            V::StructuredQuery(v) => Self::StructuredQuery(v.into()),
+            V::StructuredQuery(v) => Self::StructuredQuery(Box::new(v.into())),
         }
     }
 }
@@ -1682,7 +1682,7 @@ impl std::convert::From<StructuredAggregationQuery> for crate::model::Structured
     fn from(value: StructuredAggregationQuery) -> Self {
         Self::new()
             .set_aggregations(value.aggregations)
-            .set_query_type(value.query_type.map(|v| v.into())),
+            .set_query_type(value.query_type.map(|v| v.into()))
     }
 }
 
@@ -1775,9 +1775,9 @@ impl std::convert::From<crate::model::write::Operation> for write::Operation {
     fn from(value: crate::model::write::Operation) -> Self {
         use crate::model::write::Operation as V;
         match value {
-            V::Update(v) => Self::Update(v.into()),
+            V::Update(v) => Self::Update((*v).into()),
             V::Delete(v) => Self::Delete(v.into()),
-            V::Transform(v) => Self::Transform(v.into()),
+            V::Transform(v) => Self::Transform((*v).into()),
         }
     }
 }
@@ -1786,9 +1786,9 @@ impl std::convert::From<write::Operation> for crate::model::write::Operation {
     fn from(value: write::Operation) -> Self {
         use write::Operation as V;
         match value {
-            V::Update(v) => Self::Update(v.into()),
+            V::Update(v) => Self::Update(Box::new(v.into())),
             V::Delete(v) => Self::Delete(v.into()),
-            V::Transform(v) => Self::Transform(v.into()),
+            V::Transform(v) => Self::Transform(Box::new(v.into())),
         }
     }
 }
@@ -1810,7 +1810,7 @@ impl std::convert::From<Write> for crate::model::Write {
             .set_update_mask(value.update_mask.map(|v| v.into()))
             .set_update_transforms(value.update_transforms)
             .set_current_document(value.current_document.map(|v| v.into()))
-            .set_operation(value.operation.map(|v| v.into())),
+            .set_operation(value.operation.map(|v| v.into()))
     }
 }
 
@@ -1834,11 +1834,11 @@ impl std::convert::From<crate::model::document_transform::field_transform::Trans
         use crate::model::document_transform::field_transform::TransformType as V;
         match value {
             V::SetToServerValue(v) => Self::SetToServerValue(v.into()),
-            V::Increment(v) => Self::Increment(v.into()),
-            V::Maximum(v) => Self::Maximum(v.into()),
-            V::Minimum(v) => Self::Minimum(v.into()),
-            V::AppendMissingElements(v) => Self::AppendMissingElements(v.into()),
-            V::RemoveAllFromArray(v) => Self::RemoveAllFromArray(v.into()),
+            V::Increment(v) => Self::Increment((*v).into()),
+            V::Maximum(v) => Self::Maximum((*v).into()),
+            V::Minimum(v) => Self::Minimum((*v).into()),
+            V::AppendMissingElements(v) => Self::AppendMissingElements((*v).into()),
+            V::RemoveAllFromArray(v) => Self::RemoveAllFromArray((*v).into()),
         }
     }
 }
@@ -1848,11 +1848,11 @@ impl std::convert::From<document_transform::field_transform::TransformType> for 
         use document_transform::field_transform::TransformType as V;
         match value {
             V::SetToServerValue(v) => Self::SetToServerValue(v.into()),
-            V::Increment(v) => Self::Increment(v.into()),
-            V::Maximum(v) => Self::Maximum(v.into()),
-            V::Minimum(v) => Self::Minimum(v.into()),
-            V::AppendMissingElements(v) => Self::AppendMissingElements(v.into()),
-            V::RemoveAllFromArray(v) => Self::RemoveAllFromArray(v.into()),
+            V::Increment(v) => Self::Increment(Box::new(v.into())),
+            V::Maximum(v) => Self::Maximum(Box::new(v.into())),
+            V::Minimum(v) => Self::Minimum(Box::new(v.into())),
+            V::AppendMissingElements(v) => Self::AppendMissingElements(Box::new(v.into())),
+            V::RemoveAllFromArray(v) => Self::RemoveAllFromArray(Box::new(v.into())),
         }
     }
 }
@@ -1870,7 +1870,7 @@ impl std::convert::From<document_transform::FieldTransform> for crate::model::do
     fn from(value: document_transform::FieldTransform) -> Self {
         Self::new()
             .set_field_path(value.field_path)
-            .set_transform_type(value.transform_type.map(|v| v.into())),
+            .set_transform_type(value.transform_type.map(|v| v.into()))
     }
 }
 
