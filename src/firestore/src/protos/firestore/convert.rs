@@ -1134,7 +1134,7 @@ impl std::convert::From<Target> for crate::model::Target {
     }
 }
 
-impl std::convert::TryFrom<crate::model::target_change::TargetChangeType> for TargetChangeType {
+impl std::convert::TryFrom<crate::model::target_change::TargetChangeType> for target_change::TargetChangeType {
     type Error = crate::Error;
 
     fn try_from(value: crate::model::target_change::TargetChangeType) -> std::result::Result<Self, Self::Error> {
@@ -1143,11 +1143,11 @@ impl std::convert::TryFrom<crate::model::target_change::TargetChangeType> for Ta
     }
 }
 
-impl std::convert::From<TargetChangeType> for crate::model::target_change::TargetChangeType {
-    fn from(value: TargetChangeType) -> Self {
+impl std::convert::From<target_change::TargetChangeType> for crate::model::target_change::TargetChangeType {
+    fn from(value: target_change::TargetChangeType) -> Self {
         Self::new(value.as_str_name())
     }
-}
+} 
 
 impl std::convert::From<crate::model::TargetChange> for TargetChange {
     fn from(value: crate::model::TargetChange) -> Self {
@@ -1318,7 +1318,7 @@ impl std::convert::From<structured_query::Filter> for crate::model::structured_q
     }
 }
 
-impl std::convert::TryFrom<crate::model::structured_query::composite_filter::Operator> for Operator {
+impl std::convert::TryFrom<crate::model::structured_query::composite_filter::Operator> for structured_query::composite_filter::Operator {
     type Error = crate::Error;
 
     fn try_from(value: crate::model::structured_query::composite_filter::Operator) -> std::result::Result<Self, Self::Error> {
@@ -1327,8 +1327,8 @@ impl std::convert::TryFrom<crate::model::structured_query::composite_filter::Ope
     }
 }
 
-impl std::convert::From<Operator> for crate::model::structured_query::composite_filter::Operator {
-    fn from(value: Operator) -> Self {
+impl std::convert::From<structured_query::composite_filter::Operator> for crate::model::structured_query::composite_filter::Operator {
+    fn from(value: structured_query::composite_filter::Operator) -> Self {
         Self::new(value.as_str_name())
     }
 }
@@ -1350,7 +1350,7 @@ impl std::convert::From<structured_query::CompositeFilter> for crate::model::str
     }
 }
 
-impl std::convert::TryFrom<crate::model::structured_query::field_filter::Operator> for Operator {
+impl std::convert::TryFrom<crate::model::structured_query::field_filter::Operator> for structured_query::field_filter::Operator {
     type Error = crate::Error;
 
     fn try_from(value: crate::model::structured_query::field_filter::Operator) -> std::result::Result<Self, Self::Error> {
@@ -1359,8 +1359,8 @@ impl std::convert::TryFrom<crate::model::structured_query::field_filter::Operato
     }
 }
 
-impl std::convert::From<Operator> for crate::model::structured_query::field_filter::Operator {
-    fn from(value: Operator) -> Self {
+impl std::convert::From<structured_query::field_filter::Operator> for crate::model::structured_query::field_filter::Operator {
+    fn from(value: structured_query::field_filter::Operator) -> Self {
         Self::new(value.as_str_name())
     }
 }
@@ -1384,7 +1384,7 @@ impl std::convert::From<structured_query::FieldFilter> for crate::model::structu
     }
 }
 
-impl std::convert::TryFrom<crate::model::structured_query::unary_filter::Operator> for Operator {
+impl std::convert::TryFrom<crate::model::structured_query::unary_filter::Operator> for structured_query::unary_filter::Operator {
     type Error = crate::Error;
 
     fn try_from(value: crate::model::structured_query::unary_filter::Operator) -> std::result::Result<Self, Self::Error> {
@@ -1393,8 +1393,8 @@ impl std::convert::TryFrom<crate::model::structured_query::unary_filter::Operato
     }
 }
 
-impl std::convert::From<Operator> for crate::model::structured_query::unary_filter::Operator {
-    fn from(value: Operator) -> Self {
+impl std::convert::From<structured_query::unary_filter::Operator> for crate::model::structured_query::unary_filter::Operator {
+    fn from(value: structured_query::unary_filter::Operator) -> Self {
         Self::new(value.as_str_name())
     }
 }
@@ -1481,7 +1481,7 @@ impl std::convert::From<structured_query::Projection> for crate::model::structur
     }
 }
 
-impl std::convert::TryFrom<crate::model::structured_query::find_nearest::DistanceMeasure> for DistanceMeasure {
+impl std::convert::TryFrom<crate::model::structured_query::find_nearest::DistanceMeasure> for structured_query::find_nearest::DistanceMeasure {
     type Error = crate::Error;
 
     fn try_from(value: crate::model::structured_query::find_nearest::DistanceMeasure) -> std::result::Result<Self, Self::Error> {
@@ -1490,8 +1490,8 @@ impl std::convert::TryFrom<crate::model::structured_query::find_nearest::Distanc
     }
 }
 
-impl std::convert::From<DistanceMeasure> for crate::model::structured_query::find_nearest::DistanceMeasure {
-    fn from(value: DistanceMeasure) -> Self {
+impl std::convert::From<structured_query::find_nearest::DistanceMeasure> for crate::model::structured_query::find_nearest::DistanceMeasure {
+    fn from(value: structured_query::find_nearest::DistanceMeasure) -> Self {
         Self::new(value.as_str_name())
     }
 }
@@ -1521,7 +1521,7 @@ impl std::convert::From<structured_query::FindNearest> for crate::model::structu
     }
 }
 
-impl std::convert::TryFrom<crate::model::structured_query::Direction> for Direction {
+impl std::convert::TryFrom<crate::model::structured_query::Direction> for structured_query::Direction {
     type Error = crate::Error;
 
     fn try_from(value: crate::model::structured_query::Direction) -> std::result::Result<Self, Self::Error> {
@@ -1530,8 +1530,8 @@ impl std::convert::TryFrom<crate::model::structured_query::Direction> for Direct
     }
 }
 
-impl std::convert::From<Direction> for crate::model::structured_query::Direction {
-    fn from(value: Direction) -> Self {
+impl std::convert::From<structured_query::Direction> for crate::model::structured_query::Direction {
+    fn from(value: structured_query::Direction) -> Self {
         Self::new(value.as_str_name())
     }
 }
@@ -1814,7 +1814,7 @@ impl std::convert::From<Write> for crate::model::Write {
     }
 }
 
-impl std::convert::TryFrom<crate::model::document_transform::field_transform::ServerValue> for ServerValue {
+impl std::convert::TryFrom<crate::model::document_transform::field_transform::ServerValue> for document_transform::field_transform::ServerValue {
     type Error = crate::Error;
 
     fn try_from(value: crate::model::document_transform::field_transform::ServerValue) -> std::result::Result<Self, Self::Error> {
@@ -1823,8 +1823,8 @@ impl std::convert::TryFrom<crate::model::document_transform::field_transform::Se
     }
 }
 
-impl std::convert::From<ServerValue> for crate::model::document_transform::field_transform::ServerValue {
-    fn from(value: ServerValue) -> Self {
+impl std::convert::From<document_transform::field_transform::ServerValue> for crate::model::document_transform::field_transform::ServerValue {
+    fn from(value: document_transform::field_transform::ServerValue) -> Self {
         Self::new(value.as_str_name())
     }
 }

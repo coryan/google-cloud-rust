@@ -186,6 +186,7 @@ type enumAnnotation struct {
 	DocLines         []string
 	DefaultValueName string
 	FQEnumName       string
+	RelativeName     string // The name relative to crate::model
 }
 
 type enumValueAnnotation struct {
@@ -487,12 +488,15 @@ func annotateEnum(e *api.Enum, state *api.APIState, modulePath, sourceSpecificat
 			break
 		}
 	}
+	fqName := fullyQualifiedEnumName(e, modulePath, sourceSpecificationPackageName, packageMapping)
+	relativeName := strings.TrimPrefix(fqName, modulePath+"::")
 	e.Codec = &enumAnnotation{
 		Name:             enumName(e),
 		ModuleName:       toSnake(enumName(e)),
 		DocLines:         formatDocComments(e.Documentation, e.ID, state, modulePath, e.Scopes(), packageMapping),
 		DefaultValueName: defaultValueName,
-		FQEnumName:       fullyQualifiedEnumName(e, modulePath, sourceSpecificationPackageName, packageMapping),
+		FQEnumName:       fqName,
+		RelativeName:     relativeName,
 	}
 }
 
