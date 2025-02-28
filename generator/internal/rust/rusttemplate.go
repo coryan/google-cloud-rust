@@ -176,6 +176,8 @@ type fieldAnnotations struct {
 	// respectively.
 	KeyType   string
 	ValueType string
+	// The templates need to generate different code for boxed fields.
+	IsBoxed bool
 }
 
 type enumAnnotation struct {
@@ -458,6 +460,9 @@ func annotateField(field *api.Field, message *api.Message, state *api.APIState, 
 		FieldType:          fieldType(field, state, false, modulePath, sourceSpecificationPackageName, packageMapping),
 		PrimitiveFieldType: fieldType(field, state, true, modulePath, sourceSpecificationPackageName, packageMapping),
 		AddQueryParameter:  addQueryParameter(field),
+	}
+	if field.Recursive || (field.Typez == api.MESSAGE_TYPE && field.IsOneOf) {
+		ann.IsBoxed = true
 	}
 	field.Codec = ann
 	if field.Typez != api.MESSAGE_TYPE {

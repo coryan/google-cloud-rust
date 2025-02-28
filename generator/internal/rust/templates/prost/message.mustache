@@ -61,7 +61,7 @@ impl std::convert::From<{{Codec.RelativeName}}> for {{Codec.QualifiedName}} {
             {{/Optional}}
             {{/Codec.BasicFields}}
             {{#OneOfs}}
-            .set_{{Codec.SetterName}}(value.{{Codec.FieldName}}.map(|v| v.into())),
+            .set_{{Codec.SetterName}}(value.{{Codec.FieldName}}.map(|v| v.into()))
             {{/OneOfs}}
     }
 }

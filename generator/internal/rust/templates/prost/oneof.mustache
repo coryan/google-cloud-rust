@@ -19,7 +19,12 @@ impl std::convert::From<{{Codec.FQEnumName}}> for {{Codec.RelativeEnumName}} {
         use {{Codec.FQEnumName}} as V;
         match value {
             {{#Fields}}
+            {{^Codec.IsBoxed}}
             V::{{Codec.BranchName}}(v) => Self::{{Codec.BranchName}}(v.into()),
+            {{/Codec.IsBoxed}}
+            {{#Codec.IsBoxed}}
+            V::{{Codec.BranchName}}(v) => Self::{{Codec.BranchName}}((*v).into()),
+            {{/Codec.IsBoxed}}
             {{/Fields}}
         }
     }
@@ -30,7 +35,12 @@ impl std::convert::From<{{Codec.RelativeEnumName}}> for {{Codec.FQEnumName}} {
         use {{Codec.RelativeEnumName}} as V;
         match value {
             {{#Fields}}
+            {{^Codec.IsBoxed}}
             V::{{Codec.BranchName}}(v) => Self::{{Codec.BranchName}}(v.into()),
+            {{/Codec.IsBoxed}}
+            {{#Codec.IsBoxed}}
+            V::{{Codec.BranchName}}(v) => Self::{{Codec.BranchName}}(Box::new(v.into())),
+            {{/Codec.IsBoxed}}
             {{/Fields}}
         }
     }
