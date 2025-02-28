@@ -52,7 +52,7 @@ func Generate(model *api.API, outdir string, cfg *config.Config) error {
 	}
 	args := []string{
 		"--prost_out", outdir,
-		"--prost_opt=disable_comments=.",
+		"--prost_opt=disable_comments=.,enable_type_names=true,type_name_domain=type.googleapis.com",
 		"--tonic_out", outdir,
 		"--tonic_opt=no_server=true",
 	}
