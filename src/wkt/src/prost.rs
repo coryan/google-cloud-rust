@@ -45,6 +45,18 @@ impl std::convert::From<prost_types::Timestamp> for crate::Timestamp {
     }
 }
 
+impl std::convert::From<crate::NullValue> for i32 {
+    fn from(_value: crate::NullValue) -> Self {
+        0
+    }
+}
+
+impl std::convert::From<i32> for crate::NullValue {
+    fn from(_value: i32) -> Self {
+        Self
+    }
+}
+
 #[cfg(test)]
 mod test {
     #[test]
