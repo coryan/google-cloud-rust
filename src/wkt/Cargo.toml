@@ -40,6 +40,13 @@ thiserror   = "2"
 time        = { version = "0.3", features = ["formatting", "parsing"] }
 
 [dev-dependencies]
+<<<<<<< HEAD
 bytes     = { version = "1", features = ["serde"] }
 test-case = "3"
 wkt       = { path = ".", package = "google-cloud-wkt", features = ["chrono", "prost", "time"] }
+=======
+bytes      = { version = "1.10.0", features = ["serde"] }
+test-case  = "3.3.1"
+serde_test = "1"
+wkt        = { path = ".", package = "google-cloud-wkt", features = ["chrono", "time"] }
+>>>>>>> bd956384 (Optimize deserialization to avoid copying)
