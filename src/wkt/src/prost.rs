@@ -180,7 +180,10 @@ mod test {
     #[test_case::test_case(0 as f64)]
     #[test_case::test_case(0 as i64)]
     #[test_case::test_case(0 as u64)]
-    fn primitive_numeric<T>(input: T) where T: std::fmt::Debug + Copy + PartialEq + Convert<T> {
+    fn primitive_numeric<T>(input: T)
+    where
+        T: std::fmt::Debug + Copy + PartialEq + Convert<T>,
+    {
         let got: T = input.cnv();
         assert_eq!(got, input);
     }
@@ -211,6 +214,28 @@ mod test {
 
     #[test]
     fn from_wkt_duration() {
+        let input = crate::Duration::clamp(123, 456);
+        let got: prost_types::Duration = input.cnv();
+        assert_eq!(
+            got,
+            prost_types::Duration {
+                seconds: 123,
+                nanos: 456
+            }
+        );
+    }
+
+    #[test]
+    fn from_prost_field_mask() {
+        let input = prost_types::FieldMask {
+            paths: ["a", "b", "c"].map(str::to_string).to_vec(),
+        };
+        let got: crate::FieldMask = input.cnv();
+        assert_eq!(got, crate::FieldMask::default().set_paths(["a", "b", "c"].map(str::to_string).to_vec()));
+    }
+
+    #[test]
+    fn from_wkt_field_mask() {
         let input = crate::Duration::clamp(123, 456);
         let got: prost_types::Duration = input.cnv();
         assert_eq!(
