@@ -11,6 +11,10 @@ pub struct Document {
     #[prost(message, optional, tag="4")]
     pub update_time: ::core::option::Option<::prost_types::Timestamp>,
 }
+impl ::prost::Name for Document {
+const NAME: &'static str = "Document";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.Document".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.Document".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Value {
     #[prost(oneof="value::ValueType", tags="11, 1, 2, 3, 10, 17, 18, 5, 8, 9, 6")]
@@ -44,21 +48,37 @@ pub mod value {
         MapValue(super::MapValue),
     }
 }
+impl ::prost::Name for Value {
+const NAME: &'static str = "Value";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.Value".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.Value".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ArrayValue {
     #[prost(message, repeated, tag="1")]
     pub values: ::prost::alloc::vec::Vec<Value>,
 }
+impl ::prost::Name for ArrayValue {
+const NAME: &'static str = "ArrayValue";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ArrayValue".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ArrayValue".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MapValue {
     #[prost(map="string, message", tag="1")]
     pub fields: ::std::collections::HashMap<::prost::alloc::string::String, Value>,
 }
+impl ::prost::Name for MapValue {
+const NAME: &'static str = "MapValue";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.MapValue".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.MapValue".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AggregationResult {
     #[prost(map="string, message", tag="2")]
     pub aggregate_fields: ::std::collections::HashMap<::prost::alloc::string::String, Value>,
 }
+impl ::prost::Name for AggregationResult {
+const NAME: &'static str = "AggregationResult";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.AggregationResult".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.AggregationResult".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BitSequence {
     #[prost(bytes="vec", tag="1")]
@@ -66,6 +86,10 @@ pub struct BitSequence {
     #[prost(int32, tag="2")]
     pub padding: i32,
 }
+impl ::prost::Name for BitSequence {
+const NAME: &'static str = "BitSequence";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.BitSequence".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.BitSequence".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BloomFilter {
     #[prost(message, optional, tag="1")]
@@ -73,11 +97,19 @@ pub struct BloomFilter {
     #[prost(int32, tag="2")]
     pub hash_count: i32,
 }
+impl ::prost::Name for BloomFilter {
+const NAME: &'static str = "BloomFilter";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.BloomFilter".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.BloomFilter".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DocumentMask {
     #[prost(string, repeated, tag="1")]
     pub field_paths: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
+impl ::prost::Name for DocumentMask {
+const NAME: &'static str = "DocumentMask";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.DocumentMask".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.DocumentMask".into() }}
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Precondition {
     #[prost(oneof="precondition::ConditionType", tags="1, 2")]
@@ -93,6 +125,10 @@ pub mod precondition {
         UpdateTime(::prost_types::Timestamp),
     }
 }
+impl ::prost::Name for Precondition {
+const NAME: &'static str = "Precondition";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.Precondition".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.Precondition".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TransactionOptions {
     #[prost(oneof="transaction_options::Mode", tags="2, 3")]
@@ -105,6 +141,10 @@ pub mod transaction_options {
         #[prost(bytes="vec", tag="1")]
         pub retry_transaction: ::prost::alloc::vec::Vec<u8>,
     }
+impl ::prost::Name for ReadWrite {
+const NAME: &'static str = "ReadWrite";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.TransactionOptions.ReadWrite".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.TransactionOptions.ReadWrite".into() }}
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct ReadOnly {
         #[prost(oneof="read_only::ConsistencySelector", tags="2")]
@@ -118,6 +158,10 @@ pub mod transaction_options {
             ReadTime(::prost_types::Timestamp),
         }
     }
+impl ::prost::Name for ReadOnly {
+const NAME: &'static str = "ReadOnly";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.TransactionOptions.ReadOnly".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.TransactionOptions.ReadOnly".into() }}
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Mode {
         #[prost(message, tag="2")]
@@ -126,6 +170,10 @@ pub mod transaction_options {
         ReadWrite(ReadWrite),
     }
 }
+impl ::prost::Name for TransactionOptions {
+const NAME: &'static str = "TransactionOptions";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.TransactionOptions".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.TransactionOptions".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct StructuredQuery {
     #[prost(message, optional, tag="1")]
@@ -156,6 +204,10 @@ pub mod structured_query {
         #[prost(bool, tag="3")]
         pub all_descendants: bool,
     }
+impl ::prost::Name for CollectionSelector {
+const NAME: &'static str = "CollectionSelector";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery.CollectionSelector".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery.CollectionSelector".into() }}
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Filter {
         #[prost(oneof="filter::FilterType", tags="1, 2, 3")]
@@ -173,6 +225,10 @@ pub mod structured_query {
             UnaryFilter(super::UnaryFilter),
         }
     }
+impl ::prost::Name for Filter {
+const NAME: &'static str = "Filter";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery.Filter".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery.Filter".into() }}
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct CompositeFilter {
         #[prost(enumeration="composite_filter::Operator", tag="1")]
@@ -212,6 +268,10 @@ pub mod structured_query {
             }
         }
     }
+impl ::prost::Name for CompositeFilter {
+const NAME: &'static str = "CompositeFilter";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery.CompositeFilter".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery.CompositeFilter".into() }}
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct FieldFilter {
         #[prost(message, optional, tag="1")]
@@ -277,6 +337,10 @@ pub mod structured_query {
             }
         }
     }
+impl ::prost::Name for FieldFilter {
+const NAME: &'static str = "FieldFilter";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery.FieldFilter".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery.FieldFilter".into() }}
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct UnaryFilter {
         #[prost(enumeration="unary_filter::Operator", tag="1")]
@@ -327,6 +391,10 @@ pub mod structured_query {
             Field(super::FieldReference),
         }
     }
+impl ::prost::Name for UnaryFilter {
+const NAME: &'static str = "UnaryFilter";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery.UnaryFilter".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery.UnaryFilter".into() }}
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Order {
         #[prost(message, optional, tag="1")]
@@ -334,16 +402,28 @@ pub mod structured_query {
         #[prost(enumeration="Direction", tag="2")]
         pub direction: i32,
     }
+impl ::prost::Name for Order {
+const NAME: &'static str = "Order";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery.Order".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery.Order".into() }}
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct FieldReference {
         #[prost(string, tag="2")]
         pub field_path: ::prost::alloc::string::String,
     }
+impl ::prost::Name for FieldReference {
+const NAME: &'static str = "FieldReference";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery.FieldReference".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery.FieldReference".into() }}
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct Projection {
         #[prost(message, repeated, tag="2")]
         pub fields: ::prost::alloc::vec::Vec<FieldReference>,
     }
+impl ::prost::Name for Projection {
+const NAME: &'static str = "Projection";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery.Projection".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery.Projection".into() }}
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct FindNearest {
         #[prost(message, optional, tag="1")]
@@ -394,6 +474,10 @@ pub mod structured_query {
             }
         }
     }
+impl ::prost::Name for FindNearest {
+const NAME: &'static str = "FindNearest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery.FindNearest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery.FindNearest".into() }}
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
     #[repr(i32)]
     pub enum Direction {
@@ -424,6 +508,10 @@ pub mod structured_query {
         }
     }
 }
+impl ::prost::Name for StructuredQuery {
+const NAME: &'static str = "StructuredQuery";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredQuery".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredQuery".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct StructuredAggregationQuery {
     #[prost(message, repeated, tag="3")]
@@ -447,16 +535,28 @@ pub mod structured_aggregation_query {
             #[prost(message, optional, tag="1")]
             pub up_to: ::core::option::Option<i64>,
         }
+impl ::prost::Name for Count {
+const NAME: &'static str = "Count";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredAggregationQuery.Aggregation.Count".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredAggregationQuery.Aggregation.Count".into() }}
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct Sum {
             #[prost(message, optional, tag="1")]
             pub field: ::core::option::Option<super::super::structured_query::FieldReference>,
         }
+impl ::prost::Name for Sum {
+const NAME: &'static str = "Sum";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredAggregationQuery.Aggregation.Sum".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredAggregationQuery.Aggregation.Sum".into() }}
         #[derive(Clone, PartialEq, ::prost::Message)]
         pub struct Avg {
             #[prost(message, optional, tag="1")]
             pub field: ::core::option::Option<super::super::structured_query::FieldReference>,
         }
+impl ::prost::Name for Avg {
+const NAME: &'static str = "Avg";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredAggregationQuery.Aggregation.Avg".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredAggregationQuery.Aggregation.Avg".into() }}
         #[derive(Clone, PartialEq, ::prost::Oneof)]
         pub enum Operator {
             #[prost(message, tag="1")]
@@ -467,12 +567,20 @@ pub mod structured_aggregation_query {
             Avg(Avg),
         }
     }
+impl ::prost::Name for Aggregation {
+const NAME: &'static str = "Aggregation";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredAggregationQuery.Aggregation".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredAggregationQuery.Aggregation".into() }}
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum QueryType {
         #[prost(message, tag="1")]
         StructuredQuery(super::StructuredQuery),
     }
 }
+impl ::prost::Name for StructuredAggregationQuery {
+const NAME: &'static str = "StructuredAggregationQuery";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.StructuredAggregationQuery".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.StructuredAggregationQuery".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Cursor {
     #[prost(message, repeated, tag="1")]
@@ -480,11 +588,19 @@ pub struct Cursor {
     #[prost(bool, tag="2")]
     pub before: bool,
 }
+impl ::prost::Name for Cursor {
+const NAME: &'static str = "Cursor";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.Cursor".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.Cursor".into() }}
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct ExplainOptions {
     #[prost(bool, tag="1")]
     pub analyze: bool,
 }
+impl ::prost::Name for ExplainOptions {
+const NAME: &'static str = "ExplainOptions";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ExplainOptions".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ExplainOptions".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ExplainMetrics {
     #[prost(message, optional, tag="1")]
@@ -492,11 +608,19 @@ pub struct ExplainMetrics {
     #[prost(message, optional, tag="2")]
     pub execution_stats: ::core::option::Option<ExecutionStats>,
 }
+impl ::prost::Name for ExplainMetrics {
+const NAME: &'static str = "ExplainMetrics";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ExplainMetrics".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ExplainMetrics".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PlanSummary {
     #[prost(message, repeated, tag="1")]
     pub indexes_used: ::prost::alloc::vec::Vec<::prost_types::Struct>,
 }
+impl ::prost::Name for PlanSummary {
+const NAME: &'static str = "PlanSummary";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.PlanSummary".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.PlanSummary".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ExecutionStats {
     #[prost(int64, tag="1")]
@@ -508,6 +632,10 @@ pub struct ExecutionStats {
     #[prost(message, optional, tag="5")]
     pub debug_stats: ::core::option::Option<::prost_types::Struct>,
 }
+impl ::prost::Name for ExecutionStats {
+const NAME: &'static str = "ExecutionStats";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ExecutionStats".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ExecutionStats".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Write {
     #[prost(message, optional, tag="3")]
@@ -531,6 +659,10 @@ pub mod write {
         Transform(super::DocumentTransform),
     }
 }
+impl ::prost::Name for Write {
+const NAME: &'static str = "Write";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.Write".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.Write".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DocumentTransform {
     #[prost(string, tag="1")]
@@ -591,7 +723,15 @@ pub mod document_transform {
             RemoveAllFromArray(super::super::ArrayValue),
         }
     }
+impl ::prost::Name for FieldTransform {
+const NAME: &'static str = "FieldTransform";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.DocumentTransform.FieldTransform".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.DocumentTransform.FieldTransform".into() }}
 }
+impl ::prost::Name for DocumentTransform {
+const NAME: &'static str = "DocumentTransform";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.DocumentTransform".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.DocumentTransform".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WriteResult {
     #[prost(message, optional, tag="1")]
@@ -599,6 +739,10 @@ pub struct WriteResult {
     #[prost(message, repeated, tag="2")]
     pub transform_results: ::prost::alloc::vec::Vec<Value>,
 }
+impl ::prost::Name for WriteResult {
+const NAME: &'static str = "WriteResult";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.WriteResult".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.WriteResult".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DocumentChange {
     #[prost(message, optional, tag="1")]
@@ -608,6 +752,10 @@ pub struct DocumentChange {
     #[prost(int32, repeated, tag="6")]
     pub removed_target_ids: ::prost::alloc::vec::Vec<i32>,
 }
+impl ::prost::Name for DocumentChange {
+const NAME: &'static str = "DocumentChange";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.DocumentChange".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.DocumentChange".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DocumentDelete {
     #[prost(string, tag="1")]
@@ -617,6 +765,10 @@ pub struct DocumentDelete {
     #[prost(message, optional, tag="4")]
     pub read_time: ::core::option::Option<::prost_types::Timestamp>,
 }
+impl ::prost::Name for DocumentDelete {
+const NAME: &'static str = "DocumentDelete";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.DocumentDelete".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.DocumentDelete".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DocumentRemove {
     #[prost(string, tag="1")]
@@ -626,6 +778,10 @@ pub struct DocumentRemove {
     #[prost(message, optional, tag="4")]
     pub read_time: ::core::option::Option<::prost_types::Timestamp>,
 }
+impl ::prost::Name for DocumentRemove {
+const NAME: &'static str = "DocumentRemove";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.DocumentRemove".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.DocumentRemove".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ExistenceFilter {
     #[prost(int32, tag="1")]
@@ -635,6 +791,10 @@ pub struct ExistenceFilter {
     #[prost(message, optional, tag="3")]
     pub unchanged_names: ::core::option::Option<BloomFilter>,
 }
+impl ::prost::Name for ExistenceFilter {
+const NAME: &'static str = "ExistenceFilter";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ExistenceFilter".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ExistenceFilter".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetDocumentRequest {
     #[prost(string, tag="1")]
@@ -654,6 +814,10 @@ pub mod get_document_request {
         ReadTime(::prost_types::Timestamp),
     }
 }
+impl ::prost::Name for GetDocumentRequest {
+const NAME: &'static str = "GetDocumentRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.GetDocumentRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.GetDocumentRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListDocumentsRequest {
     #[prost(string, tag="1")]
@@ -683,6 +847,10 @@ pub mod list_documents_request {
         ReadTime(::prost_types::Timestamp),
     }
 }
+impl ::prost::Name for ListDocumentsRequest {
+const NAME: &'static str = "ListDocumentsRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ListDocumentsRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ListDocumentsRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListDocumentsResponse {
     #[prost(message, repeated, tag="1")]
@@ -690,6 +858,10 @@ pub struct ListDocumentsResponse {
     #[prost(string, tag="2")]
     pub next_page_token: ::prost::alloc::string::String,
 }
+impl ::prost::Name for ListDocumentsResponse {
+const NAME: &'static str = "ListDocumentsResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ListDocumentsResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ListDocumentsResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CreateDocumentRequest {
     #[prost(string, tag="1")]
@@ -703,6 +875,10 @@ pub struct CreateDocumentRequest {
     #[prost(message, optional, tag="5")]
     pub mask: ::core::option::Option<DocumentMask>,
 }
+impl ::prost::Name for CreateDocumentRequest {
+const NAME: &'static str = "CreateDocumentRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.CreateDocumentRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.CreateDocumentRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UpdateDocumentRequest {
     #[prost(message, optional, tag="1")]
@@ -714,6 +890,10 @@ pub struct UpdateDocumentRequest {
     #[prost(message, optional, tag="4")]
     pub current_document: ::core::option::Option<Precondition>,
 }
+impl ::prost::Name for UpdateDocumentRequest {
+const NAME: &'static str = "UpdateDocumentRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.UpdateDocumentRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.UpdateDocumentRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeleteDocumentRequest {
     #[prost(string, tag="1")]
@@ -721,6 +901,10 @@ pub struct DeleteDocumentRequest {
     #[prost(message, optional, tag="2")]
     pub current_document: ::core::option::Option<Precondition>,
 }
+impl ::prost::Name for DeleteDocumentRequest {
+const NAME: &'static str = "DeleteDocumentRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.DeleteDocumentRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.DeleteDocumentRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BatchGetDocumentsRequest {
     #[prost(string, tag="1")]
@@ -744,6 +928,10 @@ pub mod batch_get_documents_request {
         ReadTime(::prost_types::Timestamp),
     }
 }
+impl ::prost::Name for BatchGetDocumentsRequest {
+const NAME: &'static str = "BatchGetDocumentsRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.BatchGetDocumentsRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.BatchGetDocumentsRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BatchGetDocumentsResponse {
     #[prost(bytes="vec", tag="3")]
@@ -763,6 +951,10 @@ pub mod batch_get_documents_response {
         Missing(::prost::alloc::string::String),
     }
 }
+impl ::prost::Name for BatchGetDocumentsResponse {
+const NAME: &'static str = "BatchGetDocumentsResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.BatchGetDocumentsResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.BatchGetDocumentsResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BeginTransactionRequest {
     #[prost(string, tag="1")]
@@ -770,11 +962,19 @@ pub struct BeginTransactionRequest {
     #[prost(message, optional, tag="2")]
     pub options: ::core::option::Option<TransactionOptions>,
 }
+impl ::prost::Name for BeginTransactionRequest {
+const NAME: &'static str = "BeginTransactionRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.BeginTransactionRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.BeginTransactionRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BeginTransactionResponse {
     #[prost(bytes="vec", tag="1")]
     pub transaction: ::prost::alloc::vec::Vec<u8>,
 }
+impl ::prost::Name for BeginTransactionResponse {
+const NAME: &'static str = "BeginTransactionResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.BeginTransactionResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.BeginTransactionResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CommitRequest {
     #[prost(string, tag="1")]
@@ -784,6 +984,10 @@ pub struct CommitRequest {
     #[prost(bytes="vec", tag="3")]
     pub transaction: ::prost::alloc::vec::Vec<u8>,
 }
+impl ::prost::Name for CommitRequest {
+const NAME: &'static str = "CommitRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.CommitRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.CommitRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CommitResponse {
     #[prost(message, repeated, tag="1")]
@@ -791,6 +995,10 @@ pub struct CommitResponse {
     #[prost(message, optional, tag="2")]
     pub commit_time: ::core::option::Option<::prost_types::Timestamp>,
 }
+impl ::prost::Name for CommitResponse {
+const NAME: &'static str = "CommitResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.CommitResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.CommitResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RollbackRequest {
     #[prost(string, tag="1")]
@@ -798,6 +1006,10 @@ pub struct RollbackRequest {
     #[prost(bytes="vec", tag="2")]
     pub transaction: ::prost::alloc::vec::Vec<u8>,
 }
+impl ::prost::Name for RollbackRequest {
+const NAME: &'static str = "RollbackRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.RollbackRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.RollbackRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RunQueryRequest {
     #[prost(string, tag="1")]
@@ -826,6 +1038,10 @@ pub mod run_query_request {
         ReadTime(::prost_types::Timestamp),
     }
 }
+impl ::prost::Name for RunQueryRequest {
+const NAME: &'static str = "RunQueryRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.RunQueryRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.RunQueryRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RunQueryResponse {
     #[prost(bytes="vec", tag="2")]
@@ -849,6 +1065,10 @@ pub mod run_query_response {
         Done(bool),
     }
 }
+impl ::prost::Name for RunQueryResponse {
+const NAME: &'static str = "RunQueryResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.RunQueryResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.RunQueryResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RunAggregationQueryRequest {
     #[prost(string, tag="1")]
@@ -877,6 +1097,10 @@ pub mod run_aggregation_query_request {
         ReadTime(::prost_types::Timestamp),
     }
 }
+impl ::prost::Name for RunAggregationQueryRequest {
+const NAME: &'static str = "RunAggregationQueryRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.RunAggregationQueryRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.RunAggregationQueryRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RunAggregationQueryResponse {
     #[prost(message, optional, tag="1")]
@@ -888,6 +1112,10 @@ pub struct RunAggregationQueryResponse {
     #[prost(message, optional, tag="10")]
     pub explain_metrics: ::core::option::Option<ExplainMetrics>,
 }
+impl ::prost::Name for RunAggregationQueryResponse {
+const NAME: &'static str = "RunAggregationQueryResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.RunAggregationQueryResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.RunAggregationQueryResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PartitionQueryRequest {
     #[prost(string, tag="1")]
@@ -916,6 +1144,10 @@ pub mod partition_query_request {
         ReadTime(::prost_types::Timestamp),
     }
 }
+impl ::prost::Name for PartitionQueryRequest {
+const NAME: &'static str = "PartitionQueryRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.PartitionQueryRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.PartitionQueryRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PartitionQueryResponse {
     #[prost(message, repeated, tag="1")]
@@ -923,6 +1155,10 @@ pub struct PartitionQueryResponse {
     #[prost(string, tag="2")]
     pub next_page_token: ::prost::alloc::string::String,
 }
+impl ::prost::Name for PartitionQueryResponse {
+const NAME: &'static str = "PartitionQueryResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.PartitionQueryResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.PartitionQueryResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WriteRequest {
     #[prost(string, tag="1")]
@@ -936,6 +1172,10 @@ pub struct WriteRequest {
     #[prost(map="string, string", tag="5")]
     pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
 }
+impl ::prost::Name for WriteRequest {
+const NAME: &'static str = "WriteRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.WriteRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.WriteRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WriteResponse {
     #[prost(string, tag="1")]
@@ -947,6 +1187,10 @@ pub struct WriteResponse {
     #[prost(message, optional, tag="4")]
     pub commit_time: ::core::option::Option<::prost_types::Timestamp>,
 }
+impl ::prost::Name for WriteResponse {
+const NAME: &'static str = "WriteResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.WriteResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.WriteResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListenRequest {
     #[prost(string, tag="1")]
@@ -966,6 +1210,10 @@ pub mod listen_request {
         RemoveTarget(i32),
     }
 }
+impl ::prost::Name for ListenRequest {
+const NAME: &'static str = "ListenRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ListenRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ListenRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListenResponse {
     #[prost(oneof="listen_response::ResponseType", tags="2, 3, 4, 6, 5")]
@@ -987,6 +1235,10 @@ pub mod listen_response {
         Filter(super::ExistenceFilter),
     }
 }
+impl ::prost::Name for ListenResponse {
+const NAME: &'static str = "ListenResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ListenResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ListenResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Target {
     #[prost(int32, tag="5")]
@@ -1007,6 +1259,10 @@ pub mod target {
         #[prost(string, repeated, tag="2")]
         pub documents: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     }
+impl ::prost::Name for DocumentsTarget {
+const NAME: &'static str = "DocumentsTarget";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.Target.DocumentsTarget".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.Target.DocumentsTarget".into() }}
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct QueryTarget {
         #[prost(string, tag="1")]
@@ -1022,6 +1278,10 @@ pub mod target {
             StructuredQuery(super::super::StructuredQuery),
         }
     }
+impl ::prost::Name for QueryTarget {
+const NAME: &'static str = "QueryTarget";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.Target.QueryTarget".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.Target.QueryTarget".into() }}
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum TargetType {
         #[prost(message, tag="2")]
@@ -1037,6 +1297,10 @@ pub mod target {
         ReadTime(::prost_types::Timestamp),
     }
 }
+impl ::prost::Name for Target {
+const NAME: &'static str = "Target";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.Target".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.Target".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TargetChange {
     #[prost(enumeration="target_change::TargetChangeType", tag="1")]
@@ -1088,6 +1352,10 @@ pub mod target_change {
         }
     }
 }
+impl ::prost::Name for TargetChange {
+const NAME: &'static str = "TargetChange";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.TargetChange".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.TargetChange".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListCollectionIdsRequest {
     #[prost(string, tag="1")]
@@ -1107,6 +1375,10 @@ pub mod list_collection_ids_request {
         ReadTime(::prost_types::Timestamp),
     }
 }
+impl ::prost::Name for ListCollectionIdsRequest {
+const NAME: &'static str = "ListCollectionIdsRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ListCollectionIdsRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ListCollectionIdsRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ListCollectionIdsResponse {
     #[prost(string, repeated, tag="1")]
@@ -1114,6 +1386,10 @@ pub struct ListCollectionIdsResponse {
     #[prost(string, tag="2")]
     pub next_page_token: ::prost::alloc::string::String,
 }
+impl ::prost::Name for ListCollectionIdsResponse {
+const NAME: &'static str = "ListCollectionIdsResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.ListCollectionIdsResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.ListCollectionIdsResponse".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BatchWriteRequest {
     #[prost(string, tag="1")]
@@ -1123,6 +1399,10 @@ pub struct BatchWriteRequest {
     #[prost(map="string, string", tag="3")]
     pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
 }
+impl ::prost::Name for BatchWriteRequest {
+const NAME: &'static str = "BatchWriteRequest";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.BatchWriteRequest".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.BatchWriteRequest".into() }}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct BatchWriteResponse {
     #[prost(message, repeated, tag="1")]
@@ -1130,5 +1410,9 @@ pub struct BatchWriteResponse {
     #[prost(message, repeated, tag="2")]
     pub status: ::prost::alloc::vec::Vec<super::super::rpc::Status>,
 }
+impl ::prost::Name for BatchWriteResponse {
+const NAME: &'static str = "BatchWriteResponse";
+const PACKAGE: &'static str = "google.firestore.v1";
+fn full_name() -> ::prost::alloc::string::String { "google.firestore.v1.BatchWriteResponse".into() }fn type_url() -> ::prost::alloc::string::String { "/google.firestore.v1.BatchWriteResponse".into() }}
 include!("google.firestore.v1.tonic.rs");
 // @@protoc_insertion_point(module)
