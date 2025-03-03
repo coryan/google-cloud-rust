@@ -4729,6 +4729,7 @@ impl wkt::message::Message for BatchWriteResponse {
 /// . order_by + start_at + end_at
 /// . offset
 /// . limit
+/// . find_nearest
 #[serde_with::serde_as]
 #[derive(Clone, Debug, Default, PartialEq, serde::Deserialize, serde::Serialize)]
 #[serde(default, rename_all = "camelCase")]
@@ -5748,8 +5749,8 @@ pub mod structured_query {
         /// Since DOT_PRODUCT distances increase when the vectors are more similar,
         /// the comparison is inverted.
         ///
-        /// For EUCLIDEAN, COSINE: WHERE distance <= distance_threshold
-        /// For DOT_PRODUCT:       WHERE distance >= distance_threshold
+        /// * For EUCLIDEAN, COSINE: WHERE distance <= distance_threshold
+        /// * For DOT_PRODUCT:       WHERE distance >= distance_threshold
         #[serde(skip_serializing_if = "std::option::Option::is_none")]
         pub distance_threshold: std::option::Option<wkt::DoubleValue>,
     }

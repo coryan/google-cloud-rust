@@ -134,16 +134,66 @@ fn to_prost_error_detail(detail: wkt::Any) -> Option<prost_types::Any> {
         return None;
     }
     let any = match url.unwrap() {
-        "type.googleapis.com/google.rpc.BadRequest" => detail.try_into_message::<rpc::model::BadRequest>().ok().map(google::rpc::BadRequest::from).as_ref().map(prost_types::Any::from_msg),
-        "type.googleapis.com/google.rpc.DebugInfo" => detail.try_into_message::<rpc::model::DebugInfo>().ok().map(google::rpc::DebugInfo::from).as_ref().map(prost_types::Any::from_msg),
-        "type.googleapis.com/google.rpc.ErrorInfo" => detail.try_into_message::<rpc::model::ErrorInfo>().ok().map(google::rpc::ErrorInfo::from).as_ref().map(prost_types::Any::from_msg),
-        "type.googleapis.com/google.rpc.Help" => detail.try_into_message::<rpc::model::Help>().ok().map(google::rpc::Help::from).as_ref().map(prost_types::Any::from_msg),
-        "type.googleapis.com/google.rpc.LocalizedMessage" => detail.try_into_message::<rpc::model::LocalizedMessage>().ok().map(google::rpc::LocalizedMessage::from).as_ref().map(prost_types::Any::from_msg),
-        "type.googleapis.com/google.rpc.PreconditionFailure" => detail.try_into_message::<rpc::model::PreconditionFailure>().ok().map(google::rpc::PreconditionFailure::from).as_ref().map(prost_types::Any::from_msg),
-        "type.googleapis.com/google.rpc.QuotaFailure" => detail.try_into_message::<rpc::model::QuotaFailure>().ok().map(google::rpc::QuotaFailure::from).as_ref().map(prost_types::Any::from_msg),
-        "type.googleapis.com/google.rpc.RequestInfo" => detail.try_into_message::<rpc::model::RequestInfo>().ok().map(google::rpc::RequestInfo::from).as_ref().map(prost_types::Any::from_msg),
-        "type.googleapis.com/google.rpc.ResourceInfo" => detail.try_into_message::<rpc::model::ResourceInfo>().ok().map(google::rpc::ResourceInfo::from).as_ref().map(prost_types::Any::from_msg),
-        "type.googleapis.com/google.rpc.RetryInfo" => detail.try_into_message::<rpc::model::RetryInfo>().ok().map(google::rpc::RetryInfo::from).as_ref().map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.BadRequest" => detail
+            .try_into_message::<rpc::model::BadRequest>()
+            .ok()
+            .map(google::rpc::BadRequest::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.DebugInfo" => detail
+            .try_into_message::<rpc::model::DebugInfo>()
+            .ok()
+            .map(google::rpc::DebugInfo::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.ErrorInfo" => detail
+            .try_into_message::<rpc::model::ErrorInfo>()
+            .ok()
+            .map(google::rpc::ErrorInfo::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.Help" => detail
+            .try_into_message::<rpc::model::Help>()
+            .ok()
+            .map(google::rpc::Help::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.LocalizedMessage" => detail
+            .try_into_message::<rpc::model::LocalizedMessage>()
+            .ok()
+            .map(google::rpc::LocalizedMessage::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.PreconditionFailure" => detail
+            .try_into_message::<rpc::model::PreconditionFailure>()
+            .ok()
+            .map(google::rpc::PreconditionFailure::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.QuotaFailure" => detail
+            .try_into_message::<rpc::model::QuotaFailure>()
+            .ok()
+            .map(google::rpc::QuotaFailure::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.RequestInfo" => detail
+            .try_into_message::<rpc::model::RequestInfo>()
+            .ok()
+            .map(google::rpc::RequestInfo::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.ResourceInfo" => detail
+            .try_into_message::<rpc::model::ResourceInfo>()
+            .ok()
+            .map(google::rpc::ResourceInfo::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
+        "type.googleapis.com/google.rpc.RetryInfo" => detail
+            .try_into_message::<rpc::model::RetryInfo>()
+            .ok()
+            .map(google::rpc::RetryInfo::from)
+            .as_ref()
+            .map(prost_types::Any::from_msg),
         _ => None,
     };
     any.transpose().ok().flatten()
