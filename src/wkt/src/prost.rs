@@ -15,64 +15,107 @@
 //! Helper functions to convert from the well-known types to and from their
 //! Prost versions.
 
-impl std::convert::From<crate::Duration> for prost_types::Duration {
-    fn from(value: crate::Duration) -> Self {
-        Self {
-            seconds: value.seconds(),
-            nanos: value.nanos(),
+/// Converts from `Self` into `T`.
+pub trait Convert<T>: Sized {
+    fn cnv(self) -> T;
+}
+
+impl<T, U> Convert<U> for T where T: std::convert::Into<U> {
+    fn cnv(self) -> U {
+        self.into()
+    }
+}
+
+impl Convert<crate::Duration> for prost_types::Duration {
+    fn cnv(self) -> crate::Duration {
+        crate::Duration::clamp(self.seconds, self.nanos)
+    }
+}
+
+impl Convert<prost_types::Duration> for crate::Duration {
+    fn cnv(self) -> prost_types::Duration {
+        prost_types::Duration {
+            seconds: self.seconds(),
+            nanos: self.nanos(),
         }
     }
 }
 
-impl std::convert::From<prost_types::Duration> for crate::Duration {
-    fn from(value: prost_types::Duration) -> Self {
-        Self::clamp(value.seconds, value.nanos)
+impl Convert<crate::Timestamp> for prost_types::Timestamp {
+    fn cnv(self) -> crate::Timestamp {
+        crate::Timestamp::clamp(self.seconds, self.nanos)
     }
 }
 
-impl std::convert::From<crate::Timestamp> for prost_types::Timestamp {
-    fn from(value: crate::Timestamp) -> Self {
-        Self {
-            seconds: value.seconds(),
-            nanos: value.nanos(),
-        }
+impl Convert<prost_types::Timestamp> for crate::Timestamp {
+    fn cnv(self) -> prost_types::Timestamp {
+        prost_types::Timestamp { seconds: self.seconds(), nanos: self.nanos() }
     }
 }
 
-impl std::convert::From<prost_types::Timestamp> for crate::Timestamp {
-    fn from(value: prost_types::Timestamp) -> Self {
-        Self::clamp(value.seconds, value.nanos)
+impl Convert<crate::NullValue> for i32 {
+    fn cnv(self) -> crate::NullValue {
+        crate::NullValue
     }
 }
 
-impl std::convert::From<crate::NullValue> for i32 {
-    fn from(_value: crate::NullValue) -> Self {
-        0
+impl Convert<i32> for crate::NullValue {
+    fn cnv(self) -> i32 {
+        prost_types::NullValue::NullValue as i32
     }
 }
 
-impl std::convert::From<i32> for crate::NullValue {
-    fn from(_value: i32) -> Self {
-        Self
+impl Convert<crate::NullValue> for prost_types::NullValue {
+    fn cnv(self) -> crate::NullValue {
+        crate::NullValue
     }
 }
+
+impl Convert<prost_types::NullValue> for crate::NullValue {
+    fn cnv(self) -> prost_types::NullValue {
+        prost_types::NullValue::NullValue
+    }
+}
+
+
 
 #[cfg(test)]
 mod test {
+    use super::*;
+
+    #[test]
+    fn basic_types() {
+        let input : i64 = 0;
+        let got : i64 = input.cnv();
+        assert_eq!(got, input);
+
+        let input : f64 = 0.0;
+        let got : f64 = input.cnv();
+        assert_eq!(got, input);
+
+        let input : bool = true;
+        let got : bool = input.cnv();
+        assert_eq!(got, input);
+
+        let input = "abc".to_string();
+        let got : String = input.cnv();
+        assert_eq!(&got, "abc");
+    }
+
     #[test]
     fn from_prost_duration() {
         let input = prost_types::Duration {
             seconds: 123,
             nanos: 456,
         };
-        let got = crate::Duration::from(input);
+        let got  : crate::Duration = input.cnv();
         assert_eq!(got, crate::Duration::clamp(123, 456));
     }
 
     #[test]
     fn from_wkt_duration() {
         let input = crate::Duration::clamp(123, 456);
-        let got = prost_types::Duration::from(input);
+        let got: prost_types::Duration = input.cnv();
         assert_eq!(
             got,
             prost_types::Duration {
@@ -88,14 +131,14 @@ mod test {
             seconds: 123,
             nanos: 456,
         };
-        let got = crate::Timestamp::from(input);
+        let got : crate::Timestamp = input.cnv();
         assert_eq!(got, crate::Timestamp::clamp(123, 456));
     }
 
     #[test]
     fn from_wkt_timestamp() {
         let input = crate::Timestamp::clamp(123, 456);
-        let got = prost_types::Timestamp::from(input);
+        let got : prost_types::Timestamp = input.cnv();
         assert_eq!(
             got,
             prost_types::Timestamp {
@@ -104,4 +147,5 @@ mod test {
             }
         );
     }
+
 }
