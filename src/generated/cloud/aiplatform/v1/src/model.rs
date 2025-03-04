@@ -384,6 +384,15 @@ pub mod api_auth {
         /// The API secret.
         ApiKeyConfig(std::boxed::Box<crate::model::api_auth::ApiKeyConfig>),
     }
+
+    impl AuthConfig {
+        /// Initializes the enum to the [ApiKeyConfig](Self::ApiKeyConfig) branch.
+        pub fn from_api_key_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::api_auth::ApiKeyConfig>>,
+        ) -> Self {
+            Self::ApiKeyConfig(value.into())
+        }
+    }
 }
 
 /// Instance of a general artifact.
@@ -1291,6 +1300,21 @@ pub mod batch_prediction_job {
             /// be ignored.
             BigquerySource(std::boxed::Box<crate::model::BigQuerySource>),
         }
+
+        impl Source {
+            /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+            pub fn from_gcs_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+            ) -> Self {
+                Self::GcsSource(value.into())
+            }
+            /// Initializes the enum to the [BigquerySource](Self::BigquerySource) branch.
+            pub fn from_bigquery_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+            ) -> Self {
+                Self::BigquerySource(value.into())
+            }
+        }
     }
 
     /// Configuration defining how to transform batch prediction input instances to
@@ -1652,6 +1676,21 @@ pub mod batch_prediction_job {
             /// [google.rpc.Status]: rpc::model::Status
             BigqueryDestination(std::boxed::Box<crate::model::BigQueryDestination>),
         }
+
+        impl Destination {
+            /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+            pub fn from_gcs_destination(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+            ) -> Self {
+                Self::GcsDestination(value.into())
+            }
+            /// Initializes the enum to the [BigqueryDestination](Self::BigqueryDestination) branch.
+            pub fn from_bigquery_destination(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDestination>>,
+            ) -> Self {
+                Self::BigqueryDestination(value.into())
+            }
+        }
     }
 
     /// Further describes this job's output.
@@ -1786,6 +1825,21 @@ pub mod batch_prediction_job {
             /// `bq://projectId.bqDatasetId`
             /// format, into which the prediction output is written.
             BigqueryOutputDataset(std::string::String),
+        }
+
+        impl OutputLocation {
+            /// Initializes the enum to the [GcsOutputDirectory](Self::GcsOutputDirectory) branch.
+            pub fn from_gcs_output_directory(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::GcsOutputDirectory(value.into())
+            }
+            /// Initializes the enum to the [BigqueryOutputDataset](Self::BigqueryOutputDataset) branch.
+            pub fn from_bigquery_output_dataset(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::BigqueryOutputDataset(value.into())
+            }
         }
     }
 }
@@ -2091,6 +2145,19 @@ pub mod cached_content {
         /// Input only. The TTL for this resource. The expiration time is computed:
         /// now + TTL.
         Ttl(std::boxed::Box<wkt::Duration>),
+    }
+
+    impl Expiration {
+        /// Initializes the enum to the [ExpireTime](Self::ExpireTime) branch.
+        pub fn from_expire_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::ExpireTime(value.into())
+        }
+        /// Initializes the enum to the [Ttl](Self::Ttl) branch.
+        pub fn from_ttl(value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>) -> Self {
+            Self::Ttl(value.into())
+        }
     }
 }
 
@@ -2502,6 +2569,49 @@ pub mod part {
         CodeExecutionResult(std::boxed::Box<crate::model::CodeExecutionResult>),
     }
 
+    impl Data {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [InlineData](Self::InlineData) branch.
+        pub fn from_inline_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Blob>>,
+        ) -> Self {
+            Self::InlineData(value.into())
+        }
+        /// Initializes the enum to the [FileData](Self::FileData) branch.
+        pub fn from_file_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FileData>>,
+        ) -> Self {
+            Self::FileData(value.into())
+        }
+        /// Initializes the enum to the [FunctionCall](Self::FunctionCall) branch.
+        pub fn from_function_call(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FunctionCall>>,
+        ) -> Self {
+            Self::FunctionCall(value.into())
+        }
+        /// Initializes the enum to the [FunctionResponse](Self::FunctionResponse) branch.
+        pub fn from_function_response(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FunctionResponse>>,
+        ) -> Self {
+            Self::FunctionResponse(value.into())
+        }
+        /// Initializes the enum to the [ExecutableCode](Self::ExecutableCode) branch.
+        pub fn from_executable_code(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExecutableCode>>,
+        ) -> Self {
+            Self::ExecutableCode(value.into())
+        }
+        /// Initializes the enum to the [CodeExecutionResult](Self::CodeExecutionResult) branch.
+        pub fn from_code_execution_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CodeExecutionResult>>,
+        ) -> Self {
+            Self::CodeExecutionResult(value.into())
+        }
+    }
+
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
     #[non_exhaustive]
@@ -2509,6 +2619,15 @@ pub mod part {
         /// Optional. Video metadata. The metadata should only be specified while the
         /// video data is presented in inline_data or file_data.
         VideoMetadata(std::boxed::Box<crate::model::VideoMetadata>),
+    }
+
+    impl Metadata {
+        /// Initializes the enum to the [VideoMetadata](Self::VideoMetadata) branch.
+        pub fn from_video_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VideoMetadata>>,
+        ) -> Self {
+            Self::VideoMetadata(value.into())
+        }
     }
 }
 
@@ -3102,6 +3221,29 @@ pub mod generation_config {
             ManualMode(
                 std::boxed::Box<crate::model::generation_config::routing_config::ManualRoutingMode>,
             ),
+        }
+
+        impl RoutingConfig {
+            /// Initializes the enum to the [AutoMode](Self::AutoMode) branch.
+            pub fn from_auto_mode(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::generation_config::routing_config::AutoRoutingMode,
+                    >,
+                >,
+            ) -> Self {
+                Self::AutoMode(value.into())
+            }
+            /// Initializes the enum to the [ManualMode](Self::ManualMode) branch.
+            pub fn from_manual_mode(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::generation_config::routing_config::ManualRoutingMode,
+                    >,
+                >,
+            ) -> Self {
+                Self::ManualMode(value.into())
+            }
         }
     }
 }
@@ -4208,6 +4350,23 @@ pub mod grounding_chunk {
         Web(std::boxed::Box<crate::model::grounding_chunk::Web>),
         /// Grounding chunk from context retrieved by the retrieval tools.
         RetrievedContext(std::boxed::Box<crate::model::grounding_chunk::RetrievedContext>),
+    }
+
+    impl ChunkType {
+        /// Initializes the enum to the [Web](Self::Web) branch.
+        pub fn from_web(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::grounding_chunk::Web>>,
+        ) -> Self {
+            Self::Web(value.into())
+        }
+        /// Initializes the enum to the [RetrievedContext](Self::RetrievedContext) branch.
+        pub fn from_retrieved_context(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::grounding_chunk::RetrievedContext>,
+            >,
+        ) -> Self {
+            Self::RetrievedContext(value.into())
+        }
     }
 }
 
@@ -5331,6 +5490,21 @@ pub mod worker_pool_spec {
         /// The Python packaged task.
         PythonPackageSpec(std::boxed::Box<crate::model::PythonPackageSpec>),
     }
+
+    impl Task {
+        /// Initializes the enum to the [ContainerSpec](Self::ContainerSpec) branch.
+        pub fn from_container_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ContainerSpec>>,
+        ) -> Self {
+            Self::ContainerSpec(value.into())
+        }
+        /// Initializes the enum to the [PythonPackageSpec](Self::PythonPackageSpec) branch.
+        pub fn from_python_package_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PythonPackageSpec>>,
+        ) -> Self {
+            Self::PythonPackageSpec(value.into())
+        }
+    }
 }
 
 /// The spec of a Container.
@@ -6206,6 +6380,17 @@ pub mod active_learning_config {
         /// Max percent of total DataItems for human labeling.
         MaxDataItemPercentage(i32),
     }
+
+    impl HumanLabelingBudget {
+        /// Initializes the enum to the [MaxDataItemCount](Self::MaxDataItemCount) branch.
+        pub fn from_max_data_item_count(value: impl std::convert::Into<i64>) -> Self {
+            Self::MaxDataItemCount(value.into())
+        }
+        /// Initializes the enum to the [MaxDataItemPercentage](Self::MaxDataItemPercentage) branch.
+        pub fn from_max_data_item_percentage(value: impl std::convert::Into<i32>) -> Self {
+            Self::MaxDataItemPercentage(value.into())
+        }
+    }
 }
 
 /// Active learning data sampling config. For every active learning labeling
@@ -6390,6 +6575,13 @@ pub mod sample_config {
         InitialBatchSamplePercentage(i32),
     }
 
+    impl InitialBatchSampleSize {
+        /// Initializes the enum to the [InitialBatchSamplePercentage](Self::InitialBatchSamplePercentage) branch.
+        pub fn from_initial_batch_sample_percentage(value: impl std::convert::Into<i32>) -> Self {
+            Self::InitialBatchSamplePercentage(value.into())
+        }
+    }
+
     /// Decides sample size for the following batches.
     /// following_batch_sample_percentage is used by default.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
@@ -6399,6 +6591,13 @@ pub mod sample_config {
         /// The percentage of data needed to be labeled in each following batch
         /// (except the first batch).
         FollowingBatchSamplePercentage(i32),
+    }
+
+    impl FollowingBatchSampleSize {
+        /// Initializes the enum to the [FollowingBatchSamplePercentage](Self::FollowingBatchSamplePercentage) branch.
+        pub fn from_following_batch_sample_percentage(value: impl std::convert::Into<i32>) -> Self {
+            Self::FollowingBatchSamplePercentage(value.into())
+        }
     }
 }
 
@@ -6829,6 +7028,15 @@ pub mod import_data_config {
         /// The Google Cloud Storage location for the input content.
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// Describes what part of the Dataset is to be exported, the destination of
@@ -7144,6 +7352,15 @@ pub mod export_data_config {
         GcsDestination(std::boxed::Box<crate::model::GcsDestination>),
     }
 
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
+    }
+
     /// The instructions how the export data should be split between the
     /// training, validation and test sets.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
@@ -7154,6 +7371,21 @@ pub mod export_data_config {
         FractionSplit(std::boxed::Box<crate::model::ExportFractionSplit>),
         /// Split based on the provided filters for each set.
         FilterSplit(std::boxed::Box<crate::model::ExportFilterSplit>),
+    }
+
+    impl Split {
+        /// Initializes the enum to the [FractionSplit](Self::FractionSplit) branch.
+        pub fn from_fraction_split(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExportFractionSplit>>,
+        ) -> Self {
+            Self::FractionSplit(value.into())
+        }
+        /// Initializes the enum to the [FilterSplit](Self::FilterSplit) branch.
+        pub fn from_filter_split(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExportFilterSplit>>,
+        ) -> Self {
+            Self::FilterSplit(value.into())
+        }
     }
 }
 
@@ -8856,6 +9088,23 @@ pub mod search_data_items_request {
         OrderByAnnotation(
             std::boxed::Box<crate::model::search_data_items_request::OrderByAnnotation>,
         ),
+    }
+
+    impl Order {
+        /// Initializes the enum to the [OrderByDataItem](Self::OrderByDataItem) branch.
+        pub fn from_order_by_data_item(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::OrderByDataItem(value.into())
+        }
+        /// Initializes the enum to the [OrderByAnnotation](Self::OrderByAnnotation) branch.
+        pub fn from_order_by_annotation(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::search_data_items_request::OrderByAnnotation>,
+            >,
+        ) -> Self {
+            Self::OrderByAnnotation(value.into())
+        }
     }
 }
 
@@ -11063,6 +11312,25 @@ pub mod deployed_model {
         /// `projects/{project}/locations/{location}/deploymentResourcePools/{deployment_resource_pool}`
         SharedResources(std::string::String),
     }
+
+    impl PredictionResources {
+        /// Initializes the enum to the [DedicatedResources](Self::DedicatedResources) branch.
+        pub fn from_dedicated_resources(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DedicatedResources>>,
+        ) -> Self {
+            Self::DedicatedResources(value.into())
+        }
+        /// Initializes the enum to the [AutomaticResources](Self::AutomaticResources) branch.
+        pub fn from_automatic_resources(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AutomaticResources>>,
+        ) -> Self {
+            Self::AutomaticResources(value.into())
+        }
+        /// Initializes the enum to the [SharedResources](Self::SharedResources) branch.
+        pub fn from_shared_resources(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::SharedResources(value.into())
+        }
+    }
 }
 
 /// PrivateEndpoints proto is used to provide paths for users to send
@@ -11454,6 +11722,25 @@ pub mod speculative_decoding_spec {
         NgramSpeculation(
             std::boxed::Box<crate::model::speculative_decoding_spec::NgramSpeculation>,
         ),
+    }
+
+    impl Speculation {
+        /// Initializes the enum to the [DraftModelSpeculation](Self::DraftModelSpeculation) branch.
+        pub fn from_draft_model_speculation(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::speculative_decoding_spec::DraftModelSpeculation>,
+            >,
+        ) -> Self {
+            Self::DraftModelSpeculation(value.into())
+        }
+        /// Initializes the enum to the [NgramSpeculation](Self::NgramSpeculation) branch.
+        pub fn from_ngram_speculation(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::speculative_decoding_spec::NgramSpeculation>,
+            >,
+        ) -> Self {
+            Self::NgramSpeculation(value.into())
+        }
     }
 }
 
@@ -13975,6 +14262,169 @@ pub mod evaluate_instances_request {
         /// Input for Metricx metric.
         MetricxInput(std::boxed::Box<crate::model::MetricxInput>),
     }
+
+    impl MetricInputs {
+        /// Initializes the enum to the [ExactMatchInput](Self::ExactMatchInput) branch.
+        pub fn from_exact_match_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExactMatchInput>>,
+        ) -> Self {
+            Self::ExactMatchInput(value.into())
+        }
+        /// Initializes the enum to the [BleuInput](Self::BleuInput) branch.
+        pub fn from_bleu_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BleuInput>>,
+        ) -> Self {
+            Self::BleuInput(value.into())
+        }
+        /// Initializes the enum to the [RougeInput](Self::RougeInput) branch.
+        pub fn from_rouge_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RougeInput>>,
+        ) -> Self {
+            Self::RougeInput(value.into())
+        }
+        /// Initializes the enum to the [FluencyInput](Self::FluencyInput) branch.
+        pub fn from_fluency_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FluencyInput>>,
+        ) -> Self {
+            Self::FluencyInput(value.into())
+        }
+        /// Initializes the enum to the [CoherenceInput](Self::CoherenceInput) branch.
+        pub fn from_coherence_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CoherenceInput>>,
+        ) -> Self {
+            Self::CoherenceInput(value.into())
+        }
+        /// Initializes the enum to the [SafetyInput](Self::SafetyInput) branch.
+        pub fn from_safety_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SafetyInput>>,
+        ) -> Self {
+            Self::SafetyInput(value.into())
+        }
+        /// Initializes the enum to the [GroundednessInput](Self::GroundednessInput) branch.
+        pub fn from_groundedness_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GroundednessInput>>,
+        ) -> Self {
+            Self::GroundednessInput(value.into())
+        }
+        /// Initializes the enum to the [FulfillmentInput](Self::FulfillmentInput) branch.
+        pub fn from_fulfillment_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FulfillmentInput>>,
+        ) -> Self {
+            Self::FulfillmentInput(value.into())
+        }
+        /// Initializes the enum to the [SummarizationQualityInput](Self::SummarizationQualityInput) branch.
+        pub fn from_summarization_quality_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SummarizationQualityInput>>,
+        ) -> Self {
+            Self::SummarizationQualityInput(value.into())
+        }
+        /// Initializes the enum to the [PairwiseSummarizationQualityInput](Self::PairwiseSummarizationQualityInput) branch.
+        pub fn from_pairwise_summarization_quality_input(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::PairwiseSummarizationQualityInput>,
+            >,
+        ) -> Self {
+            Self::PairwiseSummarizationQualityInput(value.into())
+        }
+        /// Initializes the enum to the [SummarizationHelpfulnessInput](Self::SummarizationHelpfulnessInput) branch.
+        pub fn from_summarization_helpfulness_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SummarizationHelpfulnessInput>>,
+        ) -> Self {
+            Self::SummarizationHelpfulnessInput(value.into())
+        }
+        /// Initializes the enum to the [SummarizationVerbosityInput](Self::SummarizationVerbosityInput) branch.
+        pub fn from_summarization_verbosity_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SummarizationVerbosityInput>>,
+        ) -> Self {
+            Self::SummarizationVerbosityInput(value.into())
+        }
+        /// Initializes the enum to the [QuestionAnsweringQualityInput](Self::QuestionAnsweringQualityInput) branch.
+        pub fn from_question_answering_quality_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::QuestionAnsweringQualityInput>>,
+        ) -> Self {
+            Self::QuestionAnsweringQualityInput(value.into())
+        }
+        /// Initializes the enum to the [PairwiseQuestionAnsweringQualityInput](Self::PairwiseQuestionAnsweringQualityInput) branch.
+        pub fn from_pairwise_question_answering_quality_input(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::PairwiseQuestionAnsweringQualityInput>,
+            >,
+        ) -> Self {
+            Self::PairwiseQuestionAnsweringQualityInput(value.into())
+        }
+        /// Initializes the enum to the [QuestionAnsweringRelevanceInput](Self::QuestionAnsweringRelevanceInput) branch.
+        pub fn from_question_answering_relevance_input(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::QuestionAnsweringRelevanceInput>,
+            >,
+        ) -> Self {
+            Self::QuestionAnsweringRelevanceInput(value.into())
+        }
+        /// Initializes the enum to the [QuestionAnsweringHelpfulnessInput](Self::QuestionAnsweringHelpfulnessInput) branch.
+        pub fn from_question_answering_helpfulness_input(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::QuestionAnsweringHelpfulnessInput>,
+            >,
+        ) -> Self {
+            Self::QuestionAnsweringHelpfulnessInput(value.into())
+        }
+        /// Initializes the enum to the [QuestionAnsweringCorrectnessInput](Self::QuestionAnsweringCorrectnessInput) branch.
+        pub fn from_question_answering_correctness_input(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::QuestionAnsweringCorrectnessInput>,
+            >,
+        ) -> Self {
+            Self::QuestionAnsweringCorrectnessInput(value.into())
+        }
+        /// Initializes the enum to the [PointwiseMetricInput](Self::PointwiseMetricInput) branch.
+        pub fn from_pointwise_metric_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PointwiseMetricInput>>,
+        ) -> Self {
+            Self::PointwiseMetricInput(value.into())
+        }
+        /// Initializes the enum to the [PairwiseMetricInput](Self::PairwiseMetricInput) branch.
+        pub fn from_pairwise_metric_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PairwiseMetricInput>>,
+        ) -> Self {
+            Self::PairwiseMetricInput(value.into())
+        }
+        /// Initializes the enum to the [ToolCallValidInput](Self::ToolCallValidInput) branch.
+        pub fn from_tool_call_valid_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ToolCallValidInput>>,
+        ) -> Self {
+            Self::ToolCallValidInput(value.into())
+        }
+        /// Initializes the enum to the [ToolNameMatchInput](Self::ToolNameMatchInput) branch.
+        pub fn from_tool_name_match_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ToolNameMatchInput>>,
+        ) -> Self {
+            Self::ToolNameMatchInput(value.into())
+        }
+        /// Initializes the enum to the [ToolParameterKeyMatchInput](Self::ToolParameterKeyMatchInput) branch.
+        pub fn from_tool_parameter_key_match_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ToolParameterKeyMatchInput>>,
+        ) -> Self {
+            Self::ToolParameterKeyMatchInput(value.into())
+        }
+        /// Initializes the enum to the [ToolParameterKvMatchInput](Self::ToolParameterKvMatchInput) branch.
+        pub fn from_tool_parameter_kv_match_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ToolParameterKVMatchInput>>,
+        ) -> Self {
+            Self::ToolParameterKvMatchInput(value.into())
+        }
+        /// Initializes the enum to the [CometInput](Self::CometInput) branch.
+        pub fn from_comet_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CometInput>>,
+        ) -> Self {
+            Self::CometInput(value.into())
+        }
+        /// Initializes the enum to the [MetricxInput](Self::MetricxInput) branch.
+        pub fn from_metricx_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MetricxInput>>,
+        ) -> Self {
+            Self::MetricxInput(value.into())
+        }
+    }
 }
 
 /// Response message for EvaluationService.EvaluateInstances.
@@ -14908,6 +15358,173 @@ pub mod evaluate_instances_response {
         CometResult(std::boxed::Box<crate::model::CometResult>),
         /// Result for Metricx metric.
         MetricxResult(std::boxed::Box<crate::model::MetricxResult>),
+    }
+
+    impl EvaluationResults {
+        /// Initializes the enum to the [ExactMatchResults](Self::ExactMatchResults) branch.
+        pub fn from_exact_match_results(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExactMatchResults>>,
+        ) -> Self {
+            Self::ExactMatchResults(value.into())
+        }
+        /// Initializes the enum to the [BleuResults](Self::BleuResults) branch.
+        pub fn from_bleu_results(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BleuResults>>,
+        ) -> Self {
+            Self::BleuResults(value.into())
+        }
+        /// Initializes the enum to the [RougeResults](Self::RougeResults) branch.
+        pub fn from_rouge_results(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RougeResults>>,
+        ) -> Self {
+            Self::RougeResults(value.into())
+        }
+        /// Initializes the enum to the [FluencyResult](Self::FluencyResult) branch.
+        pub fn from_fluency_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FluencyResult>>,
+        ) -> Self {
+            Self::FluencyResult(value.into())
+        }
+        /// Initializes the enum to the [CoherenceResult](Self::CoherenceResult) branch.
+        pub fn from_coherence_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CoherenceResult>>,
+        ) -> Self {
+            Self::CoherenceResult(value.into())
+        }
+        /// Initializes the enum to the [SafetyResult](Self::SafetyResult) branch.
+        pub fn from_safety_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SafetyResult>>,
+        ) -> Self {
+            Self::SafetyResult(value.into())
+        }
+        /// Initializes the enum to the [GroundednessResult](Self::GroundednessResult) branch.
+        pub fn from_groundedness_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GroundednessResult>>,
+        ) -> Self {
+            Self::GroundednessResult(value.into())
+        }
+        /// Initializes the enum to the [FulfillmentResult](Self::FulfillmentResult) branch.
+        pub fn from_fulfillment_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FulfillmentResult>>,
+        ) -> Self {
+            Self::FulfillmentResult(value.into())
+        }
+        /// Initializes the enum to the [SummarizationQualityResult](Self::SummarizationQualityResult) branch.
+        pub fn from_summarization_quality_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SummarizationQualityResult>>,
+        ) -> Self {
+            Self::SummarizationQualityResult(value.into())
+        }
+        /// Initializes the enum to the [PairwiseSummarizationQualityResult](Self::PairwiseSummarizationQualityResult) branch.
+        pub fn from_pairwise_summarization_quality_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::PairwiseSummarizationQualityResult>,
+            >,
+        ) -> Self {
+            Self::PairwiseSummarizationQualityResult(value.into())
+        }
+        /// Initializes the enum to the [SummarizationHelpfulnessResult](Self::SummarizationHelpfulnessResult) branch.
+        pub fn from_summarization_helpfulness_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::SummarizationHelpfulnessResult>,
+            >,
+        ) -> Self {
+            Self::SummarizationHelpfulnessResult(value.into())
+        }
+        /// Initializes the enum to the [SummarizationVerbosityResult](Self::SummarizationVerbosityResult) branch.
+        pub fn from_summarization_verbosity_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SummarizationVerbosityResult>>,
+        ) -> Self {
+            Self::SummarizationVerbosityResult(value.into())
+        }
+        /// Initializes the enum to the [QuestionAnsweringQualityResult](Self::QuestionAnsweringQualityResult) branch.
+        pub fn from_question_answering_quality_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::QuestionAnsweringQualityResult>,
+            >,
+        ) -> Self {
+            Self::QuestionAnsweringQualityResult(value.into())
+        }
+        /// Initializes the enum to the [PairwiseQuestionAnsweringQualityResult](Self::PairwiseQuestionAnsweringQualityResult) branch.
+        pub fn from_pairwise_question_answering_quality_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::PairwiseQuestionAnsweringQualityResult>,
+            >,
+        ) -> Self {
+            Self::PairwiseQuestionAnsweringQualityResult(value.into())
+        }
+        /// Initializes the enum to the [QuestionAnsweringRelevanceResult](Self::QuestionAnsweringRelevanceResult) branch.
+        pub fn from_question_answering_relevance_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::QuestionAnsweringRelevanceResult>,
+            >,
+        ) -> Self {
+            Self::QuestionAnsweringRelevanceResult(value.into())
+        }
+        /// Initializes the enum to the [QuestionAnsweringHelpfulnessResult](Self::QuestionAnsweringHelpfulnessResult) branch.
+        pub fn from_question_answering_helpfulness_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::QuestionAnsweringHelpfulnessResult>,
+            >,
+        ) -> Self {
+            Self::QuestionAnsweringHelpfulnessResult(value.into())
+        }
+        /// Initializes the enum to the [QuestionAnsweringCorrectnessResult](Self::QuestionAnsweringCorrectnessResult) branch.
+        pub fn from_question_answering_correctness_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::QuestionAnsweringCorrectnessResult>,
+            >,
+        ) -> Self {
+            Self::QuestionAnsweringCorrectnessResult(value.into())
+        }
+        /// Initializes the enum to the [PointwiseMetricResult](Self::PointwiseMetricResult) branch.
+        pub fn from_pointwise_metric_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PointwiseMetricResult>>,
+        ) -> Self {
+            Self::PointwiseMetricResult(value.into())
+        }
+        /// Initializes the enum to the [PairwiseMetricResult](Self::PairwiseMetricResult) branch.
+        pub fn from_pairwise_metric_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PairwiseMetricResult>>,
+        ) -> Self {
+            Self::PairwiseMetricResult(value.into())
+        }
+        /// Initializes the enum to the [ToolCallValidResults](Self::ToolCallValidResults) branch.
+        pub fn from_tool_call_valid_results(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ToolCallValidResults>>,
+        ) -> Self {
+            Self::ToolCallValidResults(value.into())
+        }
+        /// Initializes the enum to the [ToolNameMatchResults](Self::ToolNameMatchResults) branch.
+        pub fn from_tool_name_match_results(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ToolNameMatchResults>>,
+        ) -> Self {
+            Self::ToolNameMatchResults(value.into())
+        }
+        /// Initializes the enum to the [ToolParameterKeyMatchResults](Self::ToolParameterKeyMatchResults) branch.
+        pub fn from_tool_parameter_key_match_results(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ToolParameterKeyMatchResults>>,
+        ) -> Self {
+            Self::ToolParameterKeyMatchResults(value.into())
+        }
+        /// Initializes the enum to the [ToolParameterKvMatchResults](Self::ToolParameterKvMatchResults) branch.
+        pub fn from_tool_parameter_kv_match_results(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ToolParameterKVMatchResults>>,
+        ) -> Self {
+            Self::ToolParameterKvMatchResults(value.into())
+        }
+        /// Initializes the enum to the [CometResult](Self::CometResult) branch.
+        pub fn from_comet_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CometResult>>,
+        ) -> Self {
+            Self::CometResult(value.into())
+        }
+        /// Initializes the enum to the [MetricxResult](Self::MetricxResult) branch.
+        pub fn from_metricx_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MetricxResult>>,
+        ) -> Self {
+            Self::MetricxResult(value.into())
+        }
     }
 }
 
@@ -18313,6 +18930,13 @@ pub mod pointwise_metric_instance {
         /// PointwiseMetricSpec.instance_prompt_template.
         JsonInstance(std::string::String),
     }
+
+    impl Instance {
+        /// Initializes the enum to the [JsonInstance](Self::JsonInstance) branch.
+        pub fn from_json_instance(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::JsonInstance(value.into())
+        }
+    }
 }
 
 /// Spec for pointwise metric.
@@ -18511,6 +19135,13 @@ pub mod pairwise_metric_instance {
         /// in the json_instance to render
         /// PairwiseMetricSpec.instance_prompt_template.
         JsonInstance(std::string::String),
+    }
+
+    impl Instance {
+        /// Initializes the enum to the [JsonInstance](Self::JsonInstance) branch.
+        pub fn from_json_instance(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::JsonInstance(value.into())
+        }
     }
 }
 
@@ -20825,6 +21456,35 @@ pub mod explanation_parameters {
         /// provided dataset.
         Examples(std::boxed::Box<crate::model::Examples>),
     }
+
+    impl Method {
+        /// Initializes the enum to the [SampledShapleyAttribution](Self::SampledShapleyAttribution) branch.
+        pub fn from_sampled_shapley_attribution(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SampledShapleyAttribution>>,
+        ) -> Self {
+            Self::SampledShapleyAttribution(value.into())
+        }
+        /// Initializes the enum to the [IntegratedGradientsAttribution](Self::IntegratedGradientsAttribution) branch.
+        pub fn from_integrated_gradients_attribution(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::IntegratedGradientsAttribution>,
+            >,
+        ) -> Self {
+            Self::IntegratedGradientsAttribution(value.into())
+        }
+        /// Initializes the enum to the [XraiAttribution](Self::XraiAttribution) branch.
+        pub fn from_xrai_attribution(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::XraiAttribution>>,
+        ) -> Self {
+            Self::XraiAttribution(value.into())
+        }
+        /// Initializes the enum to the [Examples](Self::Examples) branch.
+        pub fn from_examples(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Examples>>,
+        ) -> Self {
+            Self::Examples(value.into())
+        }
+    }
 }
 
 /// An attribution method that approximates Shapley values for features that
@@ -21163,6 +21823,19 @@ pub mod smooth_grad_config {
         ///
         /// [google.cloud.aiplatform.v1.SmoothGradConfig.noise_sigma]: crate::model::SmoothGradConfig::gradient_noise_sigma
         FeatureNoiseSigma(std::boxed::Box<crate::model::FeatureNoiseSigma>),
+    }
+
+    impl GradientNoiseSigma {
+        /// Initializes the enum to the [NoiseSigma](Self::NoiseSigma) branch.
+        pub fn from_noise_sigma(value: impl std::convert::Into<f32>) -> Self {
+            Self::NoiseSigma(value.into())
+        }
+        /// Initializes the enum to the [FeatureNoiseSigma](Self::FeatureNoiseSigma) branch.
+        pub fn from_feature_noise_sigma(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FeatureNoiseSigma>>,
+        ) -> Self {
+            Self::FeatureNoiseSigma(value.into())
+        }
     }
 }
 
@@ -21542,6 +22215,15 @@ pub mod examples {
         ExampleGcsSource(std::boxed::Box<crate::model::examples::ExampleGcsSource>),
     }
 
+    impl Source {
+        /// Initializes the enum to the [ExampleGcsSource](Self::ExampleGcsSource) branch.
+        pub fn from_example_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::examples::ExampleGcsSource>>,
+        ) -> Self {
+            Self::ExampleGcsSource(value.into())
+        }
+    }
+
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
     #[non_exhaustive]
@@ -21556,6 +22238,21 @@ pub mod examples {
         /// Simplified preset configuration, which automatically sets configuration
         /// values based on the desired query speed-precision trade-off and modality.
         Presets(std::boxed::Box<crate::model::Presets>),
+    }
+
+    impl Config {
+        /// Initializes the enum to the [NearestNeighborSearchConfig](Self::NearestNeighborSearchConfig) branch.
+        pub fn from_nearest_neighbor_search_config(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Value>>,
+        ) -> Self {
+            Self::NearestNeighborSearchConfig(value.into())
+        }
+        /// Initializes the enum to the [Presets](Self::Presets) branch.
+        pub fn from_presets(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Presets>>,
+        ) -> Self {
+            Self::Presets(value.into())
+        }
     }
 }
 
@@ -23128,6 +23825,21 @@ pub mod explanation_metadata {
             /// [google.cloud.aiplatform.v1.Attribution.output_index]: crate::model::Attribution::output_index
             DisplayNameMappingKey(std::string::String),
         }
+
+        impl DisplayNameMapping {
+            /// Initializes the enum to the [IndexDisplayNameMapping](Self::IndexDisplayNameMapping) branch.
+            pub fn from_index_display_name_mapping(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Value>>,
+            ) -> Self {
+                Self::IndexDisplayNameMapping(value.into())
+            }
+            /// Initializes the enum to the [DisplayNameMappingKey](Self::DisplayNameMappingKey) branch.
+            pub fn from_display_name_mapping_key(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::DisplayNameMappingKey(value.into())
+            }
+        }
     }
 }
 
@@ -23807,6 +24519,15 @@ pub mod feature_group {
         /// named `feature_timestamp`.
         BigQuery(std::boxed::Box<crate::model::feature_group::BigQuery>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [BigQuery](Self::BigQuery) branch.
+        pub fn from_big_query(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::feature_group::BigQuery>>,
+        ) -> Self {
+            Self::BigQuery(value.into())
+        }
+    }
 }
 
 /// Stats and Anomaly generated at specific timestamp for specific Feature.
@@ -24434,6 +25155,25 @@ pub mod feature_online_store {
         ///
         /// [google.cloud.aiplatform.v1.PrivateServiceConnectConfig.enable_private_service_connect]: crate::model::PrivateServiceConnectConfig::enable_private_service_connect
         Optimized(std::boxed::Box<crate::model::feature_online_store::Optimized>),
+    }
+
+    impl StorageType {
+        /// Initializes the enum to the [Bigtable](Self::Bigtable) branch.
+        pub fn from_bigtable(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::feature_online_store::Bigtable>,
+            >,
+        ) -> Self {
+            Self::Bigtable(value.into())
+        }
+        /// Initializes the enum to the [Optimized](Self::Optimized) branch.
+        pub fn from_optimized(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::feature_online_store::Optimized>,
+            >,
+        ) -> Self {
+            Self::Optimized(value.into())
+        }
     }
 }
 
@@ -25749,6 +26489,21 @@ pub mod feature_view_data_key {
         /// with the way ID is defined in the FeatureView spec.
         CompositeKey(std::boxed::Box<crate::model::feature_view_data_key::CompositeKey>),
     }
+
+    impl KeyOneof {
+        /// Initializes the enum to the [Key](Self::Key) branch.
+        pub fn from_key(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Key(value.into())
+        }
+        /// Initializes the enum to the [CompositeKey](Self::CompositeKey) branch.
+        pub fn from_composite_key(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::feature_view_data_key::CompositeKey>,
+            >,
+        ) -> Self {
+            Self::CompositeKey(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -26063,6 +26818,15 @@ pub mod fetch_feature_values_response {
                 /// Feature value.
                 Value(std::boxed::Box<crate::model::FeatureValue>),
             }
+
+            impl Data {
+                /// Initializes the enum to the [Value](Self::Value) branch.
+                pub fn from_value(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::FeatureValue>>,
+                ) -> Self {
+                    Self::Value(value.into())
+                }
+            }
         }
     }
 
@@ -26076,6 +26840,25 @@ pub mod fetch_feature_values_response {
         ),
         /// Feature values in proto Struct format.
         ProtoStruct(std::boxed::Box<wkt::Struct>),
+    }
+
+    impl Format {
+        /// Initializes the enum to the [KeyValues](Self::KeyValues) branch.
+        pub fn from_key_values(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::fetch_feature_values_response::FeatureNameValuePairList,
+                >,
+            >,
+        ) -> Self {
+            Self::KeyValues(value.into())
+        }
+        /// Initializes the enum to the [ProtoStruct](Self::ProtoStruct) branch.
+        pub fn from_proto_struct(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Struct>>,
+        ) -> Self {
+            Self::ProtoStruct(value.into())
+        }
     }
 }
 
@@ -26565,6 +27348,21 @@ pub mod nearest_neighbor_query {
             /// double value type.
             ValueDouble(f64),
         }
+
+        impl Value {
+            /// Initializes the enum to the [ValueInt](Self::ValueInt) branch.
+            pub fn from_value_int(value: impl std::convert::Into<i64>) -> Self {
+                Self::ValueInt(value.into())
+            }
+            /// Initializes the enum to the [ValueFloat](Self::ValueFloat) branch.
+            pub fn from_value_float(value: impl std::convert::Into<f32>) -> Self {
+                Self::ValueFloat(value.into())
+            }
+            /// Initializes the enum to the [ValueDouble](Self::ValueDouble) branch.
+            pub fn from_value_double(value: impl std::convert::Into<f64>) -> Self {
+                Self::ValueDouble(value.into())
+            }
+        }
     }
 
     /// Parameters that can be overrided in each query to tune query latency and
@@ -26623,6 +27421,21 @@ pub mod nearest_neighbor_query {
         EntityId(std::string::String),
         /// Optional. The embedding vector that be used for similar search.
         Embedding(std::boxed::Box<crate::model::nearest_neighbor_query::Embedding>),
+    }
+
+    impl Instance {
+        /// Initializes the enum to the [EntityId](Self::EntityId) branch.
+        pub fn from_entity_id(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::EntityId(value.into())
+        }
+        /// Initializes the enum to the [Embedding](Self::Embedding) branch.
+        pub fn from_embedding(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::nearest_neighbor_query::Embedding>,
+            >,
+        ) -> Self {
+            Self::Embedding(value.into())
+        }
     }
 }
 
@@ -28131,6 +28944,25 @@ pub mod feature_view {
                 std::boxed::Box<crate::model::feature_view::index_config::BruteForceConfig>,
             ),
         }
+
+        impl AlgorithmConfig {
+            /// Initializes the enum to the [TreeAhConfig](Self::TreeAhConfig) branch.
+            pub fn from_tree_ah_config(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::feature_view::index_config::TreeAHConfig>,
+                >,
+            ) -> Self {
+                Self::TreeAhConfig(value.into())
+            }
+            /// Initializes the enum to the [BruteForceConfig](Self::BruteForceConfig) branch.
+            pub fn from_brute_force_config(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::feature_view::index_config::BruteForceConfig>,
+                >,
+            ) -> Self {
+                Self::BruteForceConfig(value.into())
+            }
+        }
     }
 
     /// A Feature Registry source for features that need to be synced to Online
@@ -28388,6 +29220,29 @@ pub mod feature_view {
         FeatureRegistrySource(std::boxed::Box<crate::model::feature_view::FeatureRegistrySource>),
         /// Optional. The Vertex RAG Source that the FeatureView is linked to.
         VertexRagSource(std::boxed::Box<crate::model::feature_view::VertexRagSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [BigQuerySource](Self::BigQuerySource) branch.
+        pub fn from_big_query_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::feature_view::BigQuerySource>>,
+        ) -> Self {
+            Self::BigQuerySource(value.into())
+        }
+        /// Initializes the enum to the [FeatureRegistrySource](Self::FeatureRegistrySource) branch.
+        pub fn from_feature_registry_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::feature_view::FeatureRegistrySource>,
+            >,
+        ) -> Self {
+            Self::FeatureRegistrySource(value.into())
+        }
+        /// Initializes the enum to the [VertexRagSource](Self::VertexRagSource) branch.
+        pub fn from_vertex_rag_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::feature_view::VertexRagSource>>,
+        ) -> Self {
+            Self::VertexRagSource(value.into())
+        }
     }
 }
 
@@ -29336,6 +30191,13 @@ pub mod featurestore_monitoring_config {
             ///   that feature.
             Value(f64),
         }
+
+        impl Threshold {
+            /// Initializes the enum to the [Value](Self::Value) branch.
+            pub fn from_value(value: impl std::convert::Into<f64>) -> Self {
+                Self::Value(value.into())
+            }
+        }
     }
 }
 
@@ -29852,6 +30714,21 @@ pub mod read_feature_values_response {
                 /// being returned as empty.
                 Values(std::boxed::Box<crate::model::FeatureValueList>),
             }
+
+            impl Data {
+                /// Initializes the enum to the [Value](Self::Value) branch.
+                pub fn from_value(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::FeatureValue>>,
+                ) -> Self {
+                    Self::Value(value.into())
+                }
+                /// Initializes the enum to the [Values](Self::Values) branch.
+                pub fn from_values(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::FeatureValueList>>,
+                ) -> Self {
+                    Self::Values(value.into())
+                }
+            }
         }
     }
 }
@@ -30294,6 +31171,59 @@ pub mod feature_value {
         BytesValue(bytes::Bytes),
         /// A struct type feature value.
         StructValue(std::boxed::Box<crate::model::StructValue>),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+        pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolValue(value.into())
+        }
+        /// Initializes the enum to the [DoubleValue](Self::DoubleValue) branch.
+        pub fn from_double_value(value: impl std::convert::Into<f64>) -> Self {
+            Self::DoubleValue(value.into())
+        }
+        /// Initializes the enum to the [Int64Value](Self::Int64Value) branch.
+        pub fn from_int64_value(value: impl std::convert::Into<i64>) -> Self {
+            Self::Int64Value(value.into())
+        }
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
+        /// Initializes the enum to the [BoolArrayValue](Self::BoolArrayValue) branch.
+        pub fn from_bool_array_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BoolArray>>,
+        ) -> Self {
+            Self::BoolArrayValue(value.into())
+        }
+        /// Initializes the enum to the [DoubleArrayValue](Self::DoubleArrayValue) branch.
+        pub fn from_double_array_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DoubleArray>>,
+        ) -> Self {
+            Self::DoubleArrayValue(value.into())
+        }
+        /// Initializes the enum to the [Int64ArrayValue](Self::Int64ArrayValue) branch.
+        pub fn from_int64_array_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Int64Array>>,
+        ) -> Self {
+            Self::Int64ArrayValue(value.into())
+        }
+        /// Initializes the enum to the [StringArrayValue](Self::StringArrayValue) branch.
+        pub fn from_string_array_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StringArray>>,
+        ) -> Self {
+            Self::StringArrayValue(value.into())
+        }
+        /// Initializes the enum to the [BytesValue](Self::BytesValue) branch.
+        pub fn from_bytes_value(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::BytesValue(value.into())
+        }
+        /// Initializes the enum to the [StructValue](Self::StructValue) branch.
+        pub fn from_struct_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StructValue>>,
+        ) -> Self {
+            Self::StructValue(value.into())
+        }
     }
 }
 
@@ -31143,6 +32073,27 @@ pub mod import_feature_values_request {
         CsvSource(std::boxed::Box<crate::model::CsvSource>),
     }
 
+    impl Source {
+        /// Initializes the enum to the [AvroSource](Self::AvroSource) branch.
+        pub fn from_avro_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AvroSource>>,
+        ) -> Self {
+            Self::AvroSource(value.into())
+        }
+        /// Initializes the enum to the [BigquerySource](Self::BigquerySource) branch.
+        pub fn from_bigquery_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+        ) -> Self {
+            Self::BigquerySource(value.into())
+        }
+        /// Initializes the enum to the [CsvSource](Self::CsvSource) branch.
+        pub fn from_csv_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CsvSource>>,
+        ) -> Self {
+            Self::CsvSource(value.into())
+        }
+    }
+
     /// Source of Feature timestamp for all Feature values of each entity.
     /// Timestamps must be millisecond-aligned.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
@@ -31155,6 +32106,21 @@ pub mod import_feature_values_request {
         /// Single Feature timestamp for all entities being imported. The
         /// timestamp must not have higher than millisecond precision.
         FeatureTime(std::boxed::Box<wkt::Timestamp>),
+    }
+
+    impl FeatureTimeSource {
+        /// Initializes the enum to the [FeatureTimeField](Self::FeatureTimeField) branch.
+        pub fn from_feature_time_field(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::FeatureTimeField(value.into())
+        }
+        /// Initializes the enum to the [FeatureTime](Self::FeatureTime) branch.
+        pub fn from_feature_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::FeatureTime(value.into())
+        }
     }
 }
 
@@ -31554,6 +32520,21 @@ pub mod batch_read_feature_values_request {
         /// Similar to csv_read_instances, but from BigQuery source.
         BigqueryReadInstances(std::boxed::Box<crate::model::BigQuerySource>),
     }
+
+    impl ReadOption {
+        /// Initializes the enum to the [CsvReadInstances](Self::CsvReadInstances) branch.
+        pub fn from_csv_read_instances(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CsvSource>>,
+        ) -> Self {
+            Self::CsvReadInstances(value.into())
+        }
+        /// Initializes the enum to the [BigqueryReadInstances](Self::BigqueryReadInstances) branch.
+        pub fn from_bigquery_read_instances(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+        ) -> Self {
+            Self::BigqueryReadInstances(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -31841,6 +32822,25 @@ pub mod export_feature_values_request {
         /// time range
         FullExport(std::boxed::Box<crate::model::export_feature_values_request::FullExport>),
     }
+
+    impl Mode {
+        /// Initializes the enum to the [SnapshotExport](Self::SnapshotExport) branch.
+        pub fn from_snapshot_export(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::export_feature_values_request::SnapshotExport>,
+            >,
+        ) -> Self {
+            Self::SnapshotExport(value.into())
+        }
+        /// Initializes the enum to the [FullExport](Self::FullExport) branch.
+        pub fn from_full_export(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::export_feature_values_request::FullExport>,
+            >,
+        ) -> Self {
+            Self::FullExport(value.into())
+        }
+    }
 }
 
 #[serde_with::serde_as]
@@ -32051,6 +33051,27 @@ pub mod feature_value_destination {
         /// Output in CSV format. Array Feature value types are not allowed in CSV
         /// format.
         CsvDestination(std::boxed::Box<crate::model::CsvDestination>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [BigqueryDestination](Self::BigqueryDestination) branch.
+        pub fn from_bigquery_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDestination>>,
+        ) -> Self {
+            Self::BigqueryDestination(value.into())
+        }
+        /// Initializes the enum to the [TfrecordDestination](Self::TfrecordDestination) branch.
+        pub fn from_tfrecord_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TFRecordDestination>>,
+        ) -> Self {
+            Self::TfrecordDestination(value.into())
+        }
+        /// Initializes the enum to the [CsvDestination](Self::CsvDestination) branch.
+        pub fn from_csv_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CsvDestination>>,
+        ) -> Self {
+            Self::CsvDestination(value.into())
+        }
     }
 }
 
@@ -33857,6 +34878,27 @@ pub mod delete_feature_values_request {
             std::boxed::Box<crate::model::delete_feature_values_request::SelectTimeRangeAndFeature>,
         ),
     }
+
+    impl DeleteOption {
+        /// Initializes the enum to the [SelectEntity](Self::SelectEntity) branch.
+        pub fn from_select_entity(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::delete_feature_values_request::SelectEntity>,
+            >,
+        ) -> Self {
+            Self::SelectEntity(value.into())
+        }
+        /// Initializes the enum to the [SelectTimeRangeAndFeature](Self::SelectTimeRangeAndFeature) branch.
+        pub fn from_select_time_range_and_feature(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::delete_feature_values_request::SelectTimeRangeAndFeature,
+                >,
+            >,
+        ) -> Self {
+            Self::SelectTimeRangeAndFeature(value.into())
+        }
+    }
 }
 
 /// Response message for
@@ -34106,6 +35148,27 @@ pub mod delete_feature_values_response {
             >,
         ),
     }
+
+    impl Response {
+        /// Initializes the enum to the [SelectEntity](Self::SelectEntity) branch.
+        pub fn from_select_entity(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::delete_feature_values_response::SelectEntity>,
+            >,
+        ) -> Self {
+            Self::SelectEntity(value.into())
+        }
+        /// Initializes the enum to the [SelectTimeRangeAndFeature](Self::SelectTimeRangeAndFeature) branch.
+        pub fn from_select_time_range_and_feature(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::delete_feature_values_response::SelectTimeRangeAndFeature,
+                >,
+            >,
+        ) -> Self {
+            Self::SelectTimeRangeAndFeature(value.into())
+        }
+    }
 }
 
 /// Selector for entityId. Getting ids from the given source.
@@ -34195,6 +35258,15 @@ pub mod entity_id_selector {
     pub enum EntityIdsSource {
         /// Source of Csv
         CsvSource(std::boxed::Box<crate::model::CsvSource>),
+    }
+
+    impl EntityIdsSource {
+        /// Initializes the enum to the [CsvSource](Self::CsvSource) branch.
+        pub fn from_csv_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CsvSource>>,
+        ) -> Self {
+            Self::CsvSource(value.into())
+        }
     }
 }
 
@@ -35823,6 +36895,21 @@ pub mod index_datapoint {
             ValueFloat(f32),
             /// Represents 64 bit float.
             ValueDouble(f64),
+        }
+
+        impl Value {
+            /// Initializes the enum to the [ValueInt](Self::ValueInt) branch.
+            pub fn from_value_int(value: impl std::convert::Into<i64>) -> Self {
+                Self::ValueInt(value.into())
+            }
+            /// Initializes the enum to the [ValueFloat](Self::ValueFloat) branch.
+            pub fn from_value_float(value: impl std::convert::Into<f32>) -> Self {
+                Self::ValueFloat(value.into())
+            }
+            /// Initializes the enum to the [ValueDouble](Self::ValueDouble) branch.
+            pub fn from_value_double(value: impl std::convert::Into<f64>) -> Self {
+                Self::ValueDouble(value.into())
+            }
         }
     }
 
@@ -39327,6 +40414,21 @@ pub mod share_point_sources {
             SharepointFolderId(std::string::String),
         }
 
+        impl FolderSource {
+            /// Initializes the enum to the [SharepointFolderPath](Self::SharepointFolderPath) branch.
+            pub fn from_sharepoint_folder_path(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::SharepointFolderPath(value.into())
+            }
+            /// Initializes the enum to the [SharepointFolderId](Self::SharepointFolderId) branch.
+            pub fn from_sharepoint_folder_id(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::SharepointFolderId(value.into())
+            }
+        }
+
         /// The SharePoint drive source.
         #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
         #[serde(rename_all = "camelCase")]
@@ -39336,6 +40438,17 @@ pub mod share_point_sources {
             DriveName(std::string::String),
             /// The ID of the drive to download from.
             DriveId(std::string::String),
+        }
+
+        impl DriveSource {
+            /// Initializes the enum to the [DriveName](Self::DriveName) branch.
+            pub fn from_drive_name(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::DriveName(value.into())
+            }
+            /// Initializes the enum to the [DriveId](Self::DriveId) branch.
+            pub fn from_drive_id(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::DriveId(value.into())
+            }
         }
     }
 }
@@ -42945,6 +44058,17 @@ pub mod find_neighbors_request {
         pub enum Ranking {
             /// Optional. Represents RRF algorithm that combines search results.
             Rrf(std::boxed::Box<crate::model::find_neighbors_request::query::Rrf>),
+        }
+
+        impl Ranking {
+            /// Initializes the enum to the [Rrf](Self::Rrf) branch.
+            pub fn from_rrf(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::find_neighbors_request::query::Rrf>,
+                >,
+            ) -> Self {
+                Self::Rrf(value.into())
+            }
         }
     }
 }
@@ -46660,6 +47784,41 @@ pub mod migratable_resource {
             std::boxed::Box<crate::model::migratable_resource::DataLabelingDataset>,
         ),
     }
+
+    impl Resource {
+        /// Initializes the enum to the [MlEngineModelVersion](Self::MlEngineModelVersion) branch.
+        pub fn from_ml_engine_model_version(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::migratable_resource::MlEngineModelVersion>,
+            >,
+        ) -> Self {
+            Self::MlEngineModelVersion(value.into())
+        }
+        /// Initializes the enum to the [AutomlModel](Self::AutomlModel) branch.
+        pub fn from_automl_model(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::migratable_resource::AutomlModel>,
+            >,
+        ) -> Self {
+            Self::AutomlModel(value.into())
+        }
+        /// Initializes the enum to the [AutomlDataset](Self::AutomlDataset) branch.
+        pub fn from_automl_dataset(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::migratable_resource::AutomlDataset>,
+            >,
+        ) -> Self {
+            Self::AutomlDataset(value.into())
+        }
+        /// Initializes the enum to the [DataLabelingDataset](Self::DataLabelingDataset) branch.
+        pub fn from_data_labeling_dataset(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::migratable_resource::DataLabelingDataset>,
+            >,
+        ) -> Self {
+            Self::DataLabelingDataset(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -47336,6 +48495,45 @@ pub mod migrate_resource_request {
             >,
         ),
     }
+
+    impl Request {
+        /// Initializes the enum to the [MigrateMlEngineModelVersionConfig](Self::MigrateMlEngineModelVersionConfig) branch.
+        pub fn from_migrate_ml_engine_model_version_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::migrate_resource_request::MigrateMlEngineModelVersionConfig,
+                >,
+            >,
+        ) -> Self {
+            Self::MigrateMlEngineModelVersionConfig(value.into())
+        }
+        /// Initializes the enum to the [MigrateAutomlModelConfig](Self::MigrateAutomlModelConfig) branch.
+        pub fn from_migrate_automl_model_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::migrate_resource_request::MigrateAutomlModelConfig>,
+            >,
+        ) -> Self {
+            Self::MigrateAutomlModelConfig(value.into())
+        }
+        /// Initializes the enum to the [MigrateAutomlDatasetConfig](Self::MigrateAutomlDatasetConfig) branch.
+        pub fn from_migrate_automl_dataset_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::migrate_resource_request::MigrateAutomlDatasetConfig>,
+            >,
+        ) -> Self {
+            Self::MigrateAutomlDatasetConfig(value.into())
+        }
+        /// Initializes the enum to the [MigrateDataLabelingDatasetConfig](Self::MigrateDataLabelingDatasetConfig) branch.
+        pub fn from_migrate_data_labeling_dataset_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::migrate_resource_request::MigrateDataLabelingDatasetConfig,
+                >,
+            >,
+        ) -> Self {
+            Self::MigrateDataLabelingDatasetConfig(value.into())
+        }
+    }
 }
 
 /// Response message for
@@ -47492,6 +48690,17 @@ pub mod migrate_resource_response {
         Dataset(std::string::String),
         /// Migrated Model's resource name.
         Model(std::string::String),
+    }
+
+    impl MigratedResource {
+        /// Initializes the enum to the [Dataset](Self::Dataset) branch.
+        pub fn from_dataset(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Dataset(value.into())
+        }
+        /// Initializes the enum to the [Model](Self::Model) branch.
+        pub fn from_model(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Model(value.into())
+        }
     }
 }
 
@@ -47706,6 +48915,23 @@ pub mod batch_migrate_resources_operation_metadata {
             Model(std::string::String),
             /// Migrated dataset resource name.
             Dataset(std::string::String),
+        }
+
+        impl Result {
+            /// Initializes the enum to the [Error](Self::Error) branch.
+            pub fn from_error(
+                value: impl std::convert::Into<std::boxed::Box<rpc::model::Status>>,
+            ) -> Self {
+                Self::Error(value.into())
+            }
+            /// Initializes the enum to the [Model](Self::Model) branch.
+            pub fn from_model(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Model(value.into())
+            }
+            /// Initializes the enum to the [Dataset](Self::Dataset) branch.
+            pub fn from_dataset(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Dataset(value.into())
+            }
         }
     }
 }
@@ -48767,6 +49993,21 @@ pub mod model {
             ModelGardenSource(std::boxed::Box<crate::model::ModelGardenSource>),
             /// Information about the base model of Genie models.
             GenieSource(std::boxed::Box<crate::model::GenieSource>),
+        }
+
+        impl Source {
+            /// Initializes the enum to the [ModelGardenSource](Self::ModelGardenSource) branch.
+            pub fn from_model_garden_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::ModelGardenSource>>,
+            ) -> Self {
+                Self::ModelGardenSource(value.into())
+            }
+            /// Initializes the enum to the [GenieSource](Self::GenieSource) branch.
+            pub fn from_genie_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::GenieSource>>,
+            ) -> Self {
+                Self::GenieSource(value.into())
+            }
         }
     }
 
@@ -50054,6 +51295,33 @@ pub mod probe {
         /// TcpSocketAction probes the health of a container by opening a TCP socket
         /// connection.
         TcpSocket(std::boxed::Box<crate::model::probe::TcpSocketAction>),
+    }
+
+    impl ProbeType {
+        /// Initializes the enum to the [Exec](Self::Exec) branch.
+        pub fn from_exec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::probe::ExecAction>>,
+        ) -> Self {
+            Self::Exec(value.into())
+        }
+        /// Initializes the enum to the [HttpGet](Self::HttpGet) branch.
+        pub fn from_http_get(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::probe::HttpGetAction>>,
+        ) -> Self {
+            Self::HttpGet(value.into())
+        }
+        /// Initializes the enum to the [Grpc](Self::Grpc) branch.
+        pub fn from_grpc(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::probe::GrpcAction>>,
+        ) -> Self {
+            Self::Grpc(value.into())
+        }
+        /// Initializes the enum to the [TcpSocket](Self::TcpSocket) branch.
+        pub fn from_tcp_socket(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::probe::TcpSocketAction>>,
+        ) -> Self {
+            Self::TcpSocket(value.into())
+        }
     }
 }
 
@@ -51735,6 +53003,35 @@ pub mod model_evaluation_slice {
                     /// Example: `{"all_values":{"value":true}}`
                     AllValues(std::boxed::Box<wkt::BoolValue>),
                 }
+
+                impl Kind {
+                    /// Initializes the enum to the [Value](Self::Value) branch.
+                    pub fn from_value(
+                        value: impl std::convert::Into<
+                            std::boxed::Box<
+                                crate::model::model_evaluation_slice::slice::slice_spec::Value,
+                            >,
+                        >,
+                    ) -> Self {
+                        Self::Value(value.into())
+                    }
+                    /// Initializes the enum to the [Range](Self::Range) branch.
+                    pub fn from_range(
+                        value: impl std::convert::Into<
+                            std::boxed::Box<
+                                crate::model::model_evaluation_slice::slice::slice_spec::Range,
+                            >,
+                        >,
+                    ) -> Self {
+                        Self::Range(value.into())
+                    }
+                    /// Initializes the enum to the [AllValues](Self::AllValues) branch.
+                    pub fn from_all_values(
+                        value: impl std::convert::Into<std::boxed::Box<wkt::BoolValue>>,
+                    ) -> Self {
+                        Self::AllValues(value.into())
+                    }
+                }
             }
 
             /// A range of values for slice(s).
@@ -51880,6 +53177,19 @@ pub mod model_evaluation_slice {
                     StringValue(std::string::String),
                     /// Float type.
                     FloatValue(f32),
+                }
+
+                impl Kind {
+                    /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+                    pub fn from_string_value(
+                        value: impl std::convert::Into<std::string::String>,
+                    ) -> Self {
+                        Self::StringValue(value.into())
+                    }
+                    /// Initializes the enum to the [FloatValue](Self::FloatValue) branch.
+                    pub fn from_float_value(value: impl std::convert::Into<f32>) -> Self {
+                        Self::FloatValue(value.into())
+                    }
                 }
             }
         }
@@ -52256,6 +53566,25 @@ pub mod model_monitoring_objective_config {
             /// Model.
             BigquerySource(std::boxed::Box<crate::model::BigQuerySource>),
         }
+
+        impl DataSource {
+            /// Initializes the enum to the [Dataset](Self::Dataset) branch.
+            pub fn from_dataset(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Dataset(value.into())
+            }
+            /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+            pub fn from_gcs_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+            ) -> Self {
+                Self::GcsSource(value.into())
+            }
+            /// Initializes the enum to the [BigquerySource](Self::BigquerySource) branch.
+            pub fn from_bigquery_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+            ) -> Self {
+                Self::BigquerySource(value.into())
+            }
+        }
     }
 
     /// The config for Training & Prediction data skew detection. It specifies the
@@ -52625,6 +53954,21 @@ pub mod model_monitoring_objective_config {
                 /// BigQuery location for BatchExplain output.
                 Bigquery(std::boxed::Box<crate::model::BigQueryDestination>),
             }
+
+            impl Destination {
+                /// Initializes the enum to the [Gcs](Self::Gcs) branch.
+                pub fn from_gcs(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+                ) -> Self {
+                    Self::Gcs(value.into())
+                }
+                /// Initializes the enum to the [Bigquery](Self::Bigquery) branch.
+                pub fn from_bigquery(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDestination>>,
+                ) -> Self {
+                    Self::Bigquery(value.into())
+                }
+            }
         }
     }
 }
@@ -52778,6 +54122,17 @@ pub mod model_monitoring_alert_config {
             std::boxed::Box<crate::model::model_monitoring_alert_config::EmailAlertConfig>,
         ),
     }
+
+    impl Alert {
+        /// Initializes the enum to the [EmailAlertConfig](Self::EmailAlertConfig) branch.
+        pub fn from_email_alert_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::model_monitoring_alert_config::EmailAlertConfig>,
+            >,
+        ) -> Self {
+            Self::EmailAlertConfig(value.into())
+        }
+    }
 }
 
 /// The config for feature monitoring threshold.
@@ -52854,6 +54209,13 @@ pub mod threshold_config {
         ///   Each feature must have a non-zero threshold if they need to be monitored.
         ///   Otherwise no alert will be triggered for that feature.
         Value(f64),
+    }
+
+    impl Threshold {
+        /// Initializes the enum to the [Value](Self::Value) branch.
+        pub fn from_value(value: impl std::convert::Into<f64>) -> Self {
+            Self::Value(value.into())
+        }
     }
 }
 
@@ -54408,6 +55770,17 @@ pub mod copy_model_request {
         /// `projects/{project}/locations/{location}/models/{model}`
         ParentModel(std::string::String),
     }
+
+    impl DestinationModel {
+        /// Initializes the enum to the [ModelId](Self::ModelId) branch.
+        pub fn from_model_id(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::ModelId(value.into())
+        }
+        /// Initializes the enum to the [ParentModel](Self::ParentModel) branch.
+        pub fn from_parent_model(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::ParentModel(value.into())
+        }
+    }
 }
 
 /// Details of
@@ -55862,6 +57235,17 @@ pub mod nas_job_spec {
             std::boxed::Box<crate::model::nas_job_spec::MultiTrialAlgorithmSpec>,
         ),
     }
+
+    impl NasAlgorithmSpec {
+        /// Initializes the enum to the [MultiTrialAlgorithmSpec](Self::MultiTrialAlgorithmSpec) branch.
+        pub fn from_multi_trial_algorithm_spec(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::nas_job_spec::MultiTrialAlgorithmSpec>,
+            >,
+        ) -> Self {
+            Self::MultiTrialAlgorithmSpec(value.into())
+        }
+    }
 }
 
 /// Represents a uCAIP NasJob output.
@@ -55993,6 +57377,17 @@ pub mod nas_job_output {
         /// Output only. The output of this multi-trial Neural Architecture Search
         /// (NAS) job.
         MultiTrialJobOutput(std::boxed::Box<crate::model::nas_job_output::MultiTrialJobOutput>),
+    }
+
+    impl Output {
+        /// Initializes the enum to the [MultiTrialJobOutput](Self::MultiTrialJobOutput) branch.
+        pub fn from_multi_trial_job_output(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::nas_job_output::MultiTrialJobOutput>,
+            >,
+        ) -> Self {
+            Self::MultiTrialJobOutput(value.into())
+        }
     }
 }
 
@@ -57007,6 +58402,33 @@ pub mod notebook_execution_job {
         ),
     }
 
+    impl NotebookSource {
+        /// Initializes the enum to the [DataformRepositorySource](Self::DataformRepositorySource) branch.
+        pub fn from_dataform_repository_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::notebook_execution_job::DataformRepositorySource>,
+            >,
+        ) -> Self {
+            Self::DataformRepositorySource(value.into())
+        }
+        /// Initializes the enum to the [GcsNotebookSource](Self::GcsNotebookSource) branch.
+        pub fn from_gcs_notebook_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::notebook_execution_job::GcsNotebookSource>,
+            >,
+        ) -> Self {
+            Self::GcsNotebookSource(value.into())
+        }
+        /// Initializes the enum to the [DirectNotebookSource](Self::DirectNotebookSource) branch.
+        pub fn from_direct_notebook_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::notebook_execution_job::DirectNotebookSource>,
+            >,
+        ) -> Self {
+            Self::DirectNotebookSource(value.into())
+        }
+    }
+
     /// The compute config to use for an execution job.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -57020,6 +58442,23 @@ pub mod notebook_execution_job {
         ),
     }
 
+    impl EnvironmentSpec {
+        /// Initializes the enum to the [NotebookRuntimeTemplateResourceName](Self::NotebookRuntimeTemplateResourceName) branch.
+        pub fn from_notebook_runtime_template_resource_name(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::NotebookRuntimeTemplateResourceName(value.into())
+        }
+        /// Initializes the enum to the [CustomEnvironmentSpec](Self::CustomEnvironmentSpec) branch.
+        pub fn from_custom_environment_spec(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::notebook_execution_job::CustomEnvironmentSpec>,
+            >,
+        ) -> Self {
+            Self::CustomEnvironmentSpec(value.into())
+        }
+    }
+
     /// The location to store the notebook execution result.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -57028,6 +58467,13 @@ pub mod notebook_execution_job {
         /// The Cloud Storage location to upload the result to. Format:
         /// `gs://bucket-name`
         GcsOutputUri(std::string::String),
+    }
+
+    impl ExecutionSink {
+        /// Initializes the enum to the [GcsOutputUri](Self::GcsOutputUri) branch.
+        pub fn from_gcs_output_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsOutputUri(value.into())
+        }
     }
 
     /// The identity to run the execution as.
@@ -57041,6 +58487,17 @@ pub mod notebook_execution_job {
         ServiceAccount(std::string::String),
     }
 
+    impl ExecutionIdentity {
+        /// Initializes the enum to the [ExecutionUser](Self::ExecutionUser) branch.
+        pub fn from_execution_user(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::ExecutionUser(value.into())
+        }
+        /// Initializes the enum to the [ServiceAccount](Self::ServiceAccount) branch.
+        pub fn from_service_account(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::ServiceAccount(value.into())
+        }
+    }
+
     /// Runtime environment for the notebook execution job. If unspecified, the
     /// default runtime of Colab is used.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
@@ -57049,6 +58506,17 @@ pub mod notebook_execution_job {
     pub enum RuntimeEnvironment {
         /// The Workbench runtime configuration to use for the notebook execution.
         WorkbenchRuntime(std::boxed::Box<crate::model::notebook_execution_job::WorkbenchRuntime>),
+    }
+
+    impl RuntimeEnvironment {
+        /// Initializes the enum to the [WorkbenchRuntime](Self::WorkbenchRuntime) branch.
+        pub fn from_workbench_runtime(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::notebook_execution_job::WorkbenchRuntime>,
+            >,
+        ) -> Self {
+            Self::WorkbenchRuntime(value.into())
+        }
     }
 }
 
@@ -61765,6 +63233,15 @@ pub mod pipeline_job {
                 /// metadatastore as the pipeline.
                 ArtifactId(std::string::String),
             }
+
+            impl Kind {
+                /// Initializes the enum to the [ArtifactId](Self::ArtifactId) branch.
+                pub fn from_artifact_id(
+                    value: impl std::convert::Into<std::string::String>,
+                ) -> Self {
+                    Self::ArtifactId(value.into())
+                }
+            }
         }
     }
 }
@@ -62515,6 +63992,25 @@ pub mod pipeline_task_executor_detail {
         CustomJobDetail(
             std::boxed::Box<crate::model::pipeline_task_executor_detail::CustomJobDetail>,
         ),
+    }
+
+    impl Details {
+        /// Initializes the enum to the [ContainerDetail](Self::ContainerDetail) branch.
+        pub fn from_container_detail(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::pipeline_task_executor_detail::ContainerDetail>,
+            >,
+        ) -> Self {
+            Self::ContainerDetail(value.into())
+        }
+        /// Initializes the enum to the [CustomJobDetail](Self::CustomJobDetail) branch.
+        pub fn from_custom_job_detail(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::pipeline_task_executor_detail::CustomJobDetail>,
+            >,
+        ) -> Self {
+            Self::CustomJobDetail(value.into())
+        }
     }
 }
 
@@ -65565,6 +67061,25 @@ pub mod publisher_model {
             /// Description of the resource.
             Description(std::string::String),
         }
+
+        impl Reference {
+            /// Initializes the enum to the [Uri](Self::Uri) branch.
+            pub fn from_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Uri(value.into())
+            }
+            /// Initializes the enum to the [ResourceName](Self::ResourceName) branch.
+            pub fn from_resource_name(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::ResourceName(value.into())
+            }
+            /// Initializes the enum to the [UseCase](Self::UseCase) branch.
+            pub fn from_use_case(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::UseCase(value.into())
+            }
+            /// Initializes the enum to the [Description](Self::Description) branch.
+            pub fn from_description(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Description(value.into())
+            }
+        }
     }
 
     /// A named piece of documentation.
@@ -66432,6 +67947,27 @@ pub mod publisher_model {
                 /// Format:
                 /// `projects/{project}/locations/{location}/deploymentResourcePools/{deployment_resource_pool}`
                 SharedResources(std::string::String),
+            }
+
+            impl PredictionResources {
+                /// Initializes the enum to the [DedicatedResources](Self::DedicatedResources) branch.
+                pub fn from_dedicated_resources(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::DedicatedResources>>,
+                ) -> Self {
+                    Self::DedicatedResources(value.into())
+                }
+                /// Initializes the enum to the [AutomaticResources](Self::AutomaticResources) branch.
+                pub fn from_automatic_resources(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::AutomaticResources>>,
+                ) -> Self {
+                    Self::AutomaticResources(value.into())
+                }
+                /// Initializes the enum to the [SharedResources](Self::SharedResources) branch.
+                pub fn from_shared_resources(
+                    value: impl std::convert::Into<std::string::String>,
+                ) -> Self {
+                    Self::SharedResources(value.into())
+                }
             }
         }
 
@@ -68101,6 +69637,13 @@ pub mod schedule {
         Cron(std::string::String),
     }
 
+    impl TimeSpecification {
+        /// Initializes the enum to the [Cron](Self::Cron) branch.
+        pub fn from_cron(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Cron(value.into())
+        }
+    }
+
     /// Required.
     /// The API request template to launch the scheduled runs.
     /// User-specified ID is not supported in the request template.
@@ -68122,6 +69665,23 @@ pub mod schedule {
         CreateNotebookExecutionJobRequest(
             std::boxed::Box<crate::model::CreateNotebookExecutionJobRequest>,
         ),
+    }
+
+    impl Request {
+        /// Initializes the enum to the [CreatePipelineJobRequest](Self::CreatePipelineJobRequest) branch.
+        pub fn from_create_pipeline_job_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CreatePipelineJobRequest>>,
+        ) -> Self {
+            Self::CreatePipelineJobRequest(value.into())
+        }
+        /// Initializes the enum to the [CreateNotebookExecutionJobRequest](Self::CreateNotebookExecutionJobRequest) branch.
+        pub fn from_create_notebook_execution_job_request(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::CreateNotebookExecutionJobRequest>,
+            >,
+        ) -> Self {
+            Self::CreateNotebookExecutionJobRequest(value.into())
+        }
     }
 }
 
@@ -69823,6 +71383,21 @@ pub mod study_time_constraint {
         /// Compares the wallclock time to this time. Must use UTC timezone.
         EndTime(std::boxed::Box<wkt::Timestamp>),
     }
+
+    impl Constraint {
+        /// Initializes the enum to the [MaxDuration](Self::MaxDuration) branch.
+        pub fn from_max_duration(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+        ) -> Self {
+            Self::MaxDuration(value.into())
+        }
+        /// Initializes the enum to the [EndTime](Self::EndTime) branch.
+        pub fn from_end_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::EndTime(value.into())
+        }
+    }
 }
 
 /// Represents specification of a Study.
@@ -70931,6 +72506,27 @@ pub mod study_spec {
                 /// `CATEGORICAL` type.
                 ParentCategoricalValues(std::boxed::Box<crate::model::study_spec::parameter_spec::conditional_parameter_spec::CategoricalValueCondition>),
             }
+
+            impl ParentValueCondition {
+                /// Initializes the enum to the [ParentDiscreteValues](Self::ParentDiscreteValues) branch.
+                pub fn from_parent_discrete_values(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::study_spec::parameter_spec::conditional_parameter_spec::DiscreteValueCondition>>,
+                ) -> Self {
+                    Self::ParentDiscreteValues(value.into())
+                }
+                /// Initializes the enum to the [ParentIntValues](Self::ParentIntValues) branch.
+                pub fn from_parent_int_values(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::study_spec::parameter_spec::conditional_parameter_spec::IntValueCondition>>,
+                ) -> Self {
+                    Self::ParentIntValues(value.into())
+                }
+                /// Initializes the enum to the [ParentCategoricalValues](Self::ParentCategoricalValues) branch.
+                pub fn from_parent_categorical_values(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::study_spec::parameter_spec::conditional_parameter_spec::CategoricalValueCondition>>,
+                ) -> Self {
+                    Self::ParentCategoricalValues(value.into())
+                }
+            }
         }
 
         /// The type of scaling that should be applied to this parameter.
@@ -71002,6 +72598,41 @@ pub mod study_spec {
             DiscreteValueSpec(
                 std::boxed::Box<crate::model::study_spec::parameter_spec::DiscreteValueSpec>,
             ),
+        }
+
+        impl ParameterValueSpec {
+            /// Initializes the enum to the [DoubleValueSpec](Self::DoubleValueSpec) branch.
+            pub fn from_double_value_spec(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::study_spec::parameter_spec::DoubleValueSpec>,
+                >,
+            ) -> Self {
+                Self::DoubleValueSpec(value.into())
+            }
+            /// Initializes the enum to the [IntegerValueSpec](Self::IntegerValueSpec) branch.
+            pub fn from_integer_value_spec(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::study_spec::parameter_spec::IntegerValueSpec>,
+                >,
+            ) -> Self {
+                Self::IntegerValueSpec(value.into())
+            }
+            /// Initializes the enum to the [CategoricalValueSpec](Self::CategoricalValueSpec) branch.
+            pub fn from_categorical_value_spec(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::study_spec::parameter_spec::CategoricalValueSpec>,
+                >,
+            ) -> Self {
+                Self::CategoricalValueSpec(value.into())
+            }
+            /// Initializes the enum to the [DiscreteValueSpec](Self::DiscreteValueSpec) branch.
+            pub fn from_discrete_value_spec(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::study_spec::parameter_spec::DiscreteValueSpec>,
+                >,
+            ) -> Self {
+                Self::DiscreteValueSpec(value.into())
+            }
         }
     }
 
@@ -71520,6 +73151,33 @@ pub mod study_spec {
             std::boxed::Box<crate::model::study_spec::ConvexAutomatedStoppingSpec>,
         ),
     }
+
+    impl AutomatedStoppingSpec {
+        /// Initializes the enum to the [DecayCurveStoppingSpec](Self::DecayCurveStoppingSpec) branch.
+        pub fn from_decay_curve_stopping_spec(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::study_spec::DecayCurveAutomatedStoppingSpec>,
+            >,
+        ) -> Self {
+            Self::DecayCurveStoppingSpec(value.into())
+        }
+        /// Initializes the enum to the [MedianAutomatedStoppingSpec](Self::MedianAutomatedStoppingSpec) branch.
+        pub fn from_median_automated_stopping_spec(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::study_spec::MedianAutomatedStoppingSpec>,
+            >,
+        ) -> Self {
+            Self::MedianAutomatedStoppingSpec(value.into())
+        }
+        /// Initializes the enum to the [ConvexAutomatedStoppingSpec](Self::ConvexAutomatedStoppingSpec) branch.
+        pub fn from_convex_automated_stopping_spec(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::study_spec::ConvexAutomatedStoppingSpec>,
+            >,
+        ) -> Self {
+            Self::ConvexAutomatedStoppingSpec(value.into())
+        }
+    }
 }
 
 /// A message representing a Measurement of a Trial. A Measurement contains
@@ -72037,6 +73695,27 @@ pub mod time_series_data_point {
         Tensor(std::boxed::Box<crate::model::TensorboardTensor>),
         /// A blob sequence value.
         Blobs(std::boxed::Box<crate::model::TensorboardBlobSequence>),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [Scalar](Self::Scalar) branch.
+        pub fn from_scalar(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Scalar>>,
+        ) -> Self {
+            Self::Scalar(value.into())
+        }
+        /// Initializes the enum to the [Tensor](Self::Tensor) branch.
+        pub fn from_tensor(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TensorboardTensor>>,
+        ) -> Self {
+            Self::Tensor(value.into())
+        }
+        /// Initializes the enum to the [Blobs](Self::Blobs) branch.
+        pub fn from_blobs(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TensorboardBlobSequence>>,
+        ) -> Self {
+            Self::Blobs(value.into())
+        }
     }
 }
 
@@ -75800,6 +77479,21 @@ pub mod retrieval {
         /// User data is uploaded via the VertexRagDataService.
         VertexRagStore(std::boxed::Box<crate::model::VertexRagStore>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [VertexAiSearch](Self::VertexAiSearch) branch.
+        pub fn from_vertex_ai_search(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VertexAISearch>>,
+        ) -> Self {
+            Self::VertexAiSearch(value.into())
+        }
+        /// Initializes the enum to the [VertexRagStore](Self::VertexRagStore) branch.
+        pub fn from_vertex_rag_store(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VertexRagStore>>,
+        ) -> Self {
+            Self::VertexRagStore(value.into())
+        }
+    }
 }
 
 /// Retrieve from Vertex RAG Store for grounding.
@@ -76474,6 +78168,17 @@ pub mod rag_retrieval_config {
             /// Optional. Only returns contexts with vector similarity larger than the
             /// threshold.
             VectorSimilarityThreshold(f64),
+        }
+
+        impl VectorDbThreshold {
+            /// Initializes the enum to the [VectorDistanceThreshold](Self::VectorDistanceThreshold) branch.
+            pub fn from_vector_distance_threshold(value: impl std::convert::Into<f64>) -> Self {
+                Self::VectorDistanceThreshold(value.into())
+            }
+            /// Initializes the enum to the [VectorSimilarityThreshold](Self::VectorSimilarityThreshold) branch.
+            pub fn from_vector_similarity_threshold(value: impl std::convert::Into<f64>) -> Self {
+                Self::VectorSimilarityThreshold(value.into())
+            }
         }
     }
 }
@@ -77234,6 +78939,39 @@ pub mod input_data_config {
         StratifiedSplit(std::boxed::Box<crate::model::StratifiedSplit>),
     }
 
+    impl Split {
+        /// Initializes the enum to the [FractionSplit](Self::FractionSplit) branch.
+        pub fn from_fraction_split(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FractionSplit>>,
+        ) -> Self {
+            Self::FractionSplit(value.into())
+        }
+        /// Initializes the enum to the [FilterSplit](Self::FilterSplit) branch.
+        pub fn from_filter_split(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FilterSplit>>,
+        ) -> Self {
+            Self::FilterSplit(value.into())
+        }
+        /// Initializes the enum to the [PredefinedSplit](Self::PredefinedSplit) branch.
+        pub fn from_predefined_split(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PredefinedSplit>>,
+        ) -> Self {
+            Self::PredefinedSplit(value.into())
+        }
+        /// Initializes the enum to the [TimestampSplit](Self::TimestampSplit) branch.
+        pub fn from_timestamp_split(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimestampSplit>>,
+        ) -> Self {
+            Self::TimestampSplit(value.into())
+        }
+        /// Initializes the enum to the [StratifiedSplit](Self::StratifiedSplit) branch.
+        pub fn from_stratified_split(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StratifiedSplit>>,
+        ) -> Self {
+            Self::StratifiedSplit(value.into())
+        }
+    }
+
     /// Only applicable to Custom and Hyperparameter Tuning TrainingPipelines.
     ///
     /// The destination of the training data to be written to.
@@ -77299,6 +79037,21 @@ pub mod input_data_config {
         ///   "bigquery_destination.dataset_\<dataset-id\>_<annotation-type>_\<time\>.test"
         ///
         BigqueryDestination(std::boxed::Box<crate::model::BigQueryDestination>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
+        /// Initializes the enum to the [BigqueryDestination](Self::BigqueryDestination) branch.
+        pub fn from_bigquery_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDestination>>,
+        ) -> Self {
+            Self::BigqueryDestination(value.into())
+        }
     }
 }
 
@@ -77963,12 +79716,28 @@ pub mod tuning_job {
         BaseModel(std::string::String),
     }
 
+    impl SourceModel {
+        /// Initializes the enum to the [BaseModel](Self::BaseModel) branch.
+        pub fn from_base_model(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::BaseModel(value.into())
+        }
+    }
+
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
     #[non_exhaustive]
     pub enum TuningSpec {
         /// Tuning Spec for Supervised Fine Tuning.
         SupervisedTuningSpec(std::boxed::Box<crate::model::SupervisedTuningSpec>),
+    }
+
+    impl TuningSpec {
+        /// Initializes the enum to the [SupervisedTuningSpec](Self::SupervisedTuningSpec) branch.
+        pub fn from_supervised_tuning_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SupervisedTuningSpec>>,
+        ) -> Self {
+            Self::SupervisedTuningSpec(value.into())
+        }
     }
 }
 
@@ -78417,6 +80186,15 @@ pub mod tuning_data_stats {
         /// The SFT Tuning data stats.
         SupervisedTuningDataStats(std::boxed::Box<crate::model::SupervisedTuningDataStats>),
     }
+
+    impl TuningDataStats {
+        /// Initializes the enum to the [SupervisedTuningDataStats](Self::SupervisedTuningDataStats) branch.
+        pub fn from_supervised_tuning_data_stats(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SupervisedTuningDataStats>>,
+        ) -> Self {
+            Self::SupervisedTuningDataStats(value.into())
+        }
+    }
 }
 
 /// Hyperparameters for SFT.
@@ -78716,6 +80494,21 @@ pub mod tuned_model_ref {
         /// Support migration from tuning job list page, from bison model to gemini
         /// model.
         PipelineJob(std::string::String),
+    }
+
+    impl TunedModelRef {
+        /// Initializes the enum to the [TunedModel](Self::TunedModel) branch.
+        pub fn from_tuned_model(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TunedModel(value.into())
+        }
+        /// Initializes the enum to the [TuningJob](Self::TuningJob) branch.
+        pub fn from_tuning_job(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TuningJob(value.into())
+        }
+        /// Initializes the enum to the [PipelineJob](Self::PipelineJob) branch.
+        pub fn from_pipeline_job(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PipelineJob(value.into())
+        }
     }
 }
 
@@ -79363,6 +81156,17 @@ pub mod user_action_reference {
         /// `projects/{project}/locations/{location}/dataLabelingJobs/{data_labeling_job}`
         DataLabelingJob(std::string::String),
     }
+
+    impl Reference {
+        /// Initializes the enum to the [Operation](Self::Operation) branch.
+        pub fn from_operation(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Operation(value.into())
+        }
+        /// Initializes the enum to the [DataLabelingJob](Self::DataLabelingJob) branch.
+        pub fn from_data_labeling_job(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::DataLabelingJob(value.into())
+        }
+    }
 }
 
 /// Value is the value of the field.
@@ -79474,6 +81278,21 @@ pub mod value {
         DoubleValue(f64),
         /// A string value.
         StringValue(std::string::String),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [IntValue](Self::IntValue) branch.
+        pub fn from_int_value(value: impl std::convert::Into<i64>) -> Self {
+            Self::IntValue(value.into())
+        }
+        /// Initializes the enum to the [DoubleValue](Self::DoubleValue) branch.
+        pub fn from_double_value(value: impl std::convert::Into<f64>) -> Self {
+            Self::DoubleValue(value.into())
+        }
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
     }
 }
 
@@ -79629,6 +81448,17 @@ pub mod rag_embedding_model_config {
         VertexPredictionEndpoint(
             std::boxed::Box<crate::model::rag_embedding_model_config::VertexPredictionEndpoint>,
         ),
+    }
+
+    impl ModelConfig {
+        /// Initializes the enum to the [VertexPredictionEndpoint](Self::VertexPredictionEndpoint) branch.
+        pub fn from_vertex_prediction_endpoint(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::rag_embedding_model_config::VertexPredictionEndpoint>,
+            >,
+        ) -> Self {
+            Self::VertexPredictionEndpoint(value.into())
+        }
     }
 }
 
@@ -79903,6 +81733,33 @@ pub mod rag_vector_db_config {
         Pinecone(std::boxed::Box<crate::model::rag_vector_db_config::Pinecone>),
         /// The config for the Vertex Vector Search.
         VertexVectorSearch(std::boxed::Box<crate::model::rag_vector_db_config::VertexVectorSearch>),
+    }
+
+    impl VectorDb {
+        /// Initializes the enum to the [RagManagedDb](Self::RagManagedDb) branch.
+        pub fn from_rag_managed_db(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::rag_vector_db_config::RagManagedDb>,
+            >,
+        ) -> Self {
+            Self::RagManagedDb(value.into())
+        }
+        /// Initializes the enum to the [Pinecone](Self::Pinecone) branch.
+        pub fn from_pinecone(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::rag_vector_db_config::Pinecone>,
+            >,
+        ) -> Self {
+            Self::Pinecone(value.into())
+        }
+        /// Initializes the enum to the [VertexVectorSearch](Self::VertexVectorSearch) branch.
+        pub fn from_vertex_vector_search(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::rag_vector_db_config::VertexVectorSearch>,
+            >,
+        ) -> Self {
+            Self::VertexVectorSearch(value.into())
+        }
     }
 }
 
@@ -80244,6 +82101,15 @@ pub mod rag_corpus {
         /// Optional. Immutable. The config for the Vector DBs.
         VectorDbConfig(std::boxed::Box<crate::model::RagVectorDbConfig>),
     }
+
+    impl BackendConfig {
+        /// Initializes the enum to the [VectorDbConfig](Self::VectorDbConfig) branch.
+        pub fn from_vector_db_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RagVectorDbConfig>>,
+        ) -> Self {
+            Self::VectorDbConfig(value.into())
+        }
+    }
 }
 
 /// A RagFile contains user data for chunking, embedding and indexing.
@@ -80554,6 +82420,45 @@ pub mod rag_file {
         /// The RagFile is imported from a SharePoint source.
         SharePointSources(std::boxed::Box<crate::model::SharePointSources>),
     }
+
+    impl RagFileSource {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [GoogleDriveSource](Self::GoogleDriveSource) branch.
+        pub fn from_google_drive_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GoogleDriveSource>>,
+        ) -> Self {
+            Self::GoogleDriveSource(value.into())
+        }
+        /// Initializes the enum to the [DirectUploadSource](Self::DirectUploadSource) branch.
+        pub fn from_direct_upload_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DirectUploadSource>>,
+        ) -> Self {
+            Self::DirectUploadSource(value.into())
+        }
+        /// Initializes the enum to the [SlackSource](Self::SlackSource) branch.
+        pub fn from_slack_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SlackSource>>,
+        ) -> Self {
+            Self::SlackSource(value.into())
+        }
+        /// Initializes the enum to the [JiraSource](Self::JiraSource) branch.
+        pub fn from_jira_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::JiraSource>>,
+        ) -> Self {
+            Self::JiraSource(value.into())
+        }
+        /// Initializes the enum to the [SharePointSources](Self::SharePointSources) branch.
+        pub fn from_share_point_sources(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SharePointSources>>,
+        ) -> Self {
+            Self::SharePointSources(value.into())
+        }
+    }
 }
 
 /// Specifies the size and overlap of chunks for RagFiles.
@@ -80680,6 +82585,17 @@ pub mod rag_file_chunking_config {
         FixedLengthChunking(
             std::boxed::Box<crate::model::rag_file_chunking_config::FixedLengthChunking>,
         ),
+    }
+
+    impl ChunkingConfig {
+        /// Initializes the enum to the [FixedLengthChunking](Self::FixedLengthChunking) branch.
+        pub fn from_fixed_length_chunking(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::rag_file_chunking_config::FixedLengthChunking>,
+            >,
+        ) -> Self {
+            Self::FixedLengthChunking(value.into())
+        }
     }
 }
 
@@ -81081,6 +82997,39 @@ pub mod import_rag_files_config {
         SharePointSources(std::boxed::Box<crate::model::SharePointSources>),
     }
 
+    impl ImportSource {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [GoogleDriveSource](Self::GoogleDriveSource) branch.
+        pub fn from_google_drive_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GoogleDriveSource>>,
+        ) -> Self {
+            Self::GoogleDriveSource(value.into())
+        }
+        /// Initializes the enum to the [SlackSource](Self::SlackSource) branch.
+        pub fn from_slack_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SlackSource>>,
+        ) -> Self {
+            Self::SlackSource(value.into())
+        }
+        /// Initializes the enum to the [JiraSource](Self::JiraSource) branch.
+        pub fn from_jira_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::JiraSource>>,
+        ) -> Self {
+            Self::JiraSource(value.into())
+        }
+        /// Initializes the enum to the [SharePointSources](Self::SharePointSources) branch.
+        pub fn from_share_point_sources(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SharePointSources>>,
+        ) -> Self {
+            Self::SharePointSources(value.into())
+        }
+    }
+
     /// Optional. If provided, all partial failures are written to the sink.
     /// Deprecated. Prefer to use the `import_result_sink`.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
@@ -81098,6 +83047,21 @@ pub mod import_rag_files_config {
         /// existing table.
         /// Deprecated. Prefer to use `import_result_bq_sink`.
         PartialFailureBigquerySink(std::boxed::Box<crate::model::BigQueryDestination>),
+    }
+
+    impl PartialFailureSink {
+        /// Initializes the enum to the [PartialFailureGcsSink](Self::PartialFailureGcsSink) branch.
+        pub fn from_partial_failure_gcs_sink(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::PartialFailureGcsSink(value.into())
+        }
+        /// Initializes the enum to the [PartialFailureBigquerySink](Self::PartialFailureBigquerySink) branch.
+        pub fn from_partial_failure_bigquery_sink(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDestination>>,
+        ) -> Self {
+            Self::PartialFailureBigquerySink(value.into())
+        }
     }
 }
 
@@ -81524,6 +83488,21 @@ pub mod upload_rag_file_response {
         /// The error that occurred while processing the RagFile.
         Error(std::boxed::Box<rpc::model::Status>),
     }
+
+    impl Result {
+        /// Initializes the enum to the [RagFile](Self::RagFile) branch.
+        pub fn from_rag_file(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RagFile>>,
+        ) -> Self {
+            Self::RagFile(value.into())
+        }
+        /// Initializes the enum to the [Error](Self::Error) branch.
+        pub fn from_error(
+            value: impl std::convert::Into<std::boxed::Box<rpc::model::Status>>,
+        ) -> Self {
+            Self::Error(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -81722,6 +83701,21 @@ pub mod import_rag_files_response {
         PartialFailuresGcsPath(std::string::String),
         /// The BigQuery table into which the partial failures were written.
         PartialFailuresBigqueryTable(std::string::String),
+    }
+
+    impl PartialFailureSink {
+        /// Initializes the enum to the [PartialFailuresGcsPath](Self::PartialFailuresGcsPath) branch.
+        pub fn from_partial_failures_gcs_path(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::PartialFailuresGcsPath(value.into())
+        }
+        /// Initializes the enum to the [PartialFailuresBigqueryTable](Self::PartialFailuresBigqueryTable) branch.
+        pub fn from_partial_failures_bigquery_table(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::PartialFailuresBigqueryTable(value.into())
+        }
     }
 }
 
@@ -82184,6 +84178,13 @@ pub mod rag_query {
         /// Optional. The query in text format to get relevant contexts.
         Text(std::string::String),
     }
+
+    impl Query {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Text(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -82409,6 +84410,17 @@ pub mod retrieve_contexts_request {
     pub enum DataSource {
         /// The data source for Vertex RagStore.
         VertexRagStore(std::boxed::Box<crate::model::retrieve_contexts_request::VertexRagStore>),
+    }
+
+    impl DataSource {
+        /// Initializes the enum to the [VertexRagStore](Self::VertexRagStore) branch.
+        pub fn from_vertex_rag_store(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::retrieve_contexts_request::VertexRagStore>,
+            >,
+        ) -> Self {
+            Self::VertexRagStore(value.into())
+        }
     }
 }
 
@@ -82722,6 +84734,15 @@ pub mod augment_prompt_request {
     pub enum DataSource {
         /// Optional. Retrieves contexts from the Vertex RagStore.
         VertexRagStore(std::boxed::Box<crate::model::VertexRagStore>),
+    }
+
+    impl DataSource {
+        /// Initializes the enum to the [VertexRagStore](Self::VertexRagStore) branch.
+        pub fn from_vertex_rag_store(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VertexRagStore>>,
+        ) -> Self {
+            Self::VertexRagStore(value.into())
+        }
     }
 }
 

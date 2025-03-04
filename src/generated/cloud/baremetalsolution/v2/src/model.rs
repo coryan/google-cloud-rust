@@ -4306,6 +4306,15 @@ pub mod provisioning_quota {
         InstanceQuota(std::boxed::Box<crate::model::InstanceQuota>),
     }
 
+    impl Quota {
+        /// Initializes the enum to the [InstanceQuota](Self::InstanceQuota) branch.
+        pub fn from_instance_quota(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InstanceQuota>>,
+        ) -> Self {
+            Self::InstanceQuota(value.into())
+        }
+    }
+
     /// Available quantity based on asset type.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -4317,6 +4326,21 @@ pub mod provisioning_quota {
         NetworkBandwidth(i64),
         /// Storage size (GB).
         StorageGib(i64),
+    }
+
+    impl Availability {
+        /// Initializes the enum to the [ServerCount](Self::ServerCount) branch.
+        pub fn from_server_count(value: impl std::convert::Into<i64>) -> Self {
+            Self::ServerCount(value.into())
+        }
+        /// Initializes the enum to the [NetworkBandwidth](Self::NetworkBandwidth) branch.
+        pub fn from_network_bandwidth(value: impl std::convert::Into<i64>) -> Self {
+            Self::NetworkBandwidth(value.into())
+        }
+        /// Initializes the enum to the [StorageGib](Self::StorageGib) branch.
+        pub fn from_storage_gib(value: impl std::convert::Into<i64>) -> Self {
+            Self::StorageGib(value.into())
+        }
     }
 }
 
@@ -5118,6 +5142,17 @@ pub mod volume_config {
             MachineId(std::string::String),
             /// A CIDR range.
             Cidr(std::string::String),
+        }
+
+        impl Client {
+            /// Initializes the enum to the [MachineId](Self::MachineId) branch.
+            pub fn from_machine_id(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::MachineId(value.into())
+            }
+            /// Initializes the enum to the [Cidr](Self::Cidr) branch.
+            pub fn from_cidr(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Cidr(value.into())
+            }
         }
     }
 

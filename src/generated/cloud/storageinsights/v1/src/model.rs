@@ -1243,6 +1243,15 @@ pub mod object_metadata_report_options {
         StorageFilters(std::boxed::Box<crate::model::CloudStorageFilters>),
     }
 
+    impl Filter {
+        /// Initializes the enum to the [StorageFilters](Self::StorageFilters) branch.
+        pub fn from_storage_filters(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudStorageFilters>>,
+        ) -> Self {
+            Self::StorageFilters(value.into())
+        }
+    }
+
     /// Options on destination for storage systems.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -1250,6 +1259,17 @@ pub mod object_metadata_report_options {
     pub enum DestinationOptions {
         /// Cloud Storage as the storage system.
         StorageDestinationOptions(std::boxed::Box<crate::model::CloudStorageDestinationOptions>),
+    }
+
+    impl DestinationOptions {
+        /// Initializes the enum to the [StorageDestinationOptions](Self::StorageDestinationOptions) branch.
+        pub fn from_storage_destination_options(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::CloudStorageDestinationOptions>,
+            >,
+        ) -> Self {
+            Self::StorageDestinationOptions(value.into())
+        }
     }
 }
 
@@ -1496,6 +1516,21 @@ pub mod report_config {
         ParquetOptions(std::boxed::Box<crate::model::ParquetOptions>),
     }
 
+    impl ReportFormat {
+        /// Initializes the enum to the [CsvOptions](Self::CsvOptions) branch.
+        pub fn from_csv_options(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CSVOptions>>,
+        ) -> Self {
+            Self::CsvOptions(value.into())
+        }
+        /// Initializes the enum to the [ParquetOptions](Self::ParquetOptions) branch.
+        pub fn from_parquet_options(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ParquetOptions>>,
+        ) -> Self {
+            Self::ParquetOptions(value.into())
+        }
+    }
+
     /// Configuration options for report contents.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -1503,5 +1538,14 @@ pub mod report_config {
     pub enum ReportKind {
         /// Report for exporting object metadata.
         ObjectMetadataReportOptions(std::boxed::Box<crate::model::ObjectMetadataReportOptions>),
+    }
+
+    impl ReportKind {
+        /// Initializes the enum to the [ObjectMetadataReportOptions](Self::ObjectMetadataReportOptions) branch.
+        pub fn from_object_metadata_report_options(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ObjectMetadataReportOptions>>,
+        ) -> Self {
+            Self::ObjectMetadataReportOptions(value.into())
+        }
     }
 }

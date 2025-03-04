@@ -1118,6 +1118,17 @@ pub mod workstation_config {
             /// Specifies a Compute Engine instance as the host.
             GceInstance(std::boxed::Box<crate::model::workstation_config::host::GceInstance>),
         }
+
+        impl Config {
+            /// Initializes the enum to the [GceInstance](Self::GceInstance) branch.
+            pub fn from_gce_instance(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::workstation_config::host::GceInstance>,
+                >,
+            ) -> Self {
+                Self::GceInstance(value.into())
+            }
+        }
     }
 
     /// A directory to persist across workstation sessions.
@@ -1381,6 +1392,15 @@ pub mod workstation_config {
         pub enum DirectoryType {
             /// A PersistentDirectory backed by a Compute Engine persistent disk.
             GcePd(std::boxed::Box<crate::model::workstation_config::persistent_directory::GceRegionalPersistentDisk>),
+        }
+
+        impl DirectoryType {
+            /// Initializes the enum to the [GcePd](Self::GcePd) branch.
+            pub fn from_gce_pd(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::workstation_config::persistent_directory::GceRegionalPersistentDisk>>,
+            ) -> Self {
+                Self::GcePd(value.into())
+            }
         }
     }
 
@@ -3319,6 +3339,19 @@ pub mod generate_access_token_request {
         /// be at most 24 hours. If a value is not specified, the token's lifetime
         /// will be set to a default value of 1 hour.
         Ttl(std::boxed::Box<wkt::Duration>),
+    }
+
+    impl Expiration {
+        /// Initializes the enum to the [ExpireTime](Self::ExpireTime) branch.
+        pub fn from_expire_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::ExpireTime(value.into())
+        }
+        /// Initializes the enum to the [Ttl](Self::Ttl) branch.
+        pub fn from_ttl(value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>) -> Self {
+            Self::Ttl(value.into())
+        }
     }
 }
 

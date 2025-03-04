@@ -251,6 +251,19 @@ pub mod check_onboarding_status_response {
                 >,
             ),
         }
+
+        impl FindingType {
+            /// Initializes the enum to the [IamAccessDenied](Self::IamAccessDenied) branch.
+            pub fn from_iam_access_denied(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::check_onboarding_status_response::finding::IAMAccessDenied,
+                    >,
+                >,
+            ) -> Self {
+                Self::IamAccessDenied(value.into())
+            }
+        }
     }
 }
 
@@ -634,6 +647,29 @@ pub mod entitlement {
                 >,
             ),
         }
+
+        impl JustificationType {
+            /// Initializes the enum to the [NotMandatory](Self::NotMandatory) branch.
+            pub fn from_not_mandatory(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::entitlement::requester_justification_config::NotMandatory,
+                    >,
+                >,
+            ) -> Self {
+                Self::NotMandatory(value.into())
+            }
+            /// Initializes the enum to the [Unstructured](Self::Unstructured) branch.
+            pub fn from_unstructured(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::entitlement::requester_justification_config::Unstructured,
+                    >,
+                >,
+            ) -> Self {
+                Self::Unstructured(value.into())
+            }
+        }
     }
 
     /// `AdditionalNotificationTargets` includes email addresses to be notified.
@@ -853,6 +889,15 @@ pub mod approval_workflow {
         /// An approval workflow where users designated as approvers review and act
         /// on the grants.
         ManualApprovals(std::boxed::Box<crate::model::ManualApprovals>),
+    }
+
+    impl ApprovalWorkflow {
+        /// Initializes the enum to the [ManualApprovals](Self::ManualApprovals) branch.
+        pub fn from_manual_approvals(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ManualApprovals>>,
+        ) -> Self {
+            Self::ManualApprovals(value.into())
+        }
     }
 }
 
@@ -1175,6 +1220,17 @@ pub mod privileged_access {
     pub enum AccessType {
         /// Access to a Google Cloud resource through IAM.
         GcpIamAccess(std::boxed::Box<crate::model::privileged_access::GcpIamAccess>),
+    }
+
+    impl AccessType {
+        /// Initializes the enum to the [GcpIamAccess](Self::GcpIamAccess) branch.
+        pub fn from_gcp_iam_access(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::privileged_access::GcpIamAccess>,
+            >,
+        ) -> Self {
+            Self::GcpIamAccess(value.into())
+        }
     }
 }
 
@@ -2715,6 +2771,89 @@ pub mod grant {
                     std::boxed::Box<crate::model::grant::timeline::event::ExternallyModified>,
                 ),
             }
+
+            impl Event {
+                /// Initializes the enum to the [Requested](Self::Requested) branch.
+                pub fn from_requested(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::Requested>,
+                    >,
+                ) -> Self {
+                    Self::Requested(value.into())
+                }
+                /// Initializes the enum to the [Approved](Self::Approved) branch.
+                pub fn from_approved(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::Approved>,
+                    >,
+                ) -> Self {
+                    Self::Approved(value.into())
+                }
+                /// Initializes the enum to the [Denied](Self::Denied) branch.
+                pub fn from_denied(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::Denied>,
+                    >,
+                ) -> Self {
+                    Self::Denied(value.into())
+                }
+                /// Initializes the enum to the [Revoked](Self::Revoked) branch.
+                pub fn from_revoked(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::Revoked>,
+                    >,
+                ) -> Self {
+                    Self::Revoked(value.into())
+                }
+                /// Initializes the enum to the [Scheduled](Self::Scheduled) branch.
+                pub fn from_scheduled(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::Scheduled>,
+                    >,
+                ) -> Self {
+                    Self::Scheduled(value.into())
+                }
+                /// Initializes the enum to the [Activated](Self::Activated) branch.
+                pub fn from_activated(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::Activated>,
+                    >,
+                ) -> Self {
+                    Self::Activated(value.into())
+                }
+                /// Initializes the enum to the [ActivationFailed](Self::ActivationFailed) branch.
+                pub fn from_activation_failed(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::ActivationFailed>,
+                    >,
+                ) -> Self {
+                    Self::ActivationFailed(value.into())
+                }
+                /// Initializes the enum to the [Expired](Self::Expired) branch.
+                pub fn from_expired(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::Expired>,
+                    >,
+                ) -> Self {
+                    Self::Expired(value.into())
+                }
+                /// Initializes the enum to the [Ended](Self::Ended) branch.
+                pub fn from_ended(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::Ended>,
+                    >,
+                ) -> Self {
+                    Self::Ended(value.into())
+                }
+                /// Initializes the enum to the [ExternallyModified](Self::ExternallyModified) branch.
+                pub fn from_externally_modified(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::grant::timeline::event::ExternallyModified>,
+                    >,
+                ) -> Self {
+                    Self::ExternallyModified(value.into())
+                }
+            }
         }
     }
 
@@ -2914,6 +3053,15 @@ pub mod justification {
         /// A free form textual justification. The system only ensures that this
         /// is not empty. No other kind of validation is performed on the string.
         UnstructuredJustification(std::string::String),
+    }
+
+    impl Justification {
+        /// Initializes the enum to the [UnstructuredJustification](Self::UnstructuredJustification) branch.
+        pub fn from_unstructured_justification(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::UnstructuredJustification(value.into())
+        }
     }
 }
 

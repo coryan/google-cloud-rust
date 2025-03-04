@@ -499,6 +499,35 @@ pub mod auth_config {
         /// SSH Public Key.
         SshPublicKey(std::boxed::Box<crate::model::auth_config::SshPublicKey>),
     }
+
+    impl Type {
+        /// Initializes the enum to the [UserPassword](Self::UserPassword) branch.
+        pub fn from_user_password(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::auth_config::UserPassword>>,
+        ) -> Self {
+            Self::UserPassword(value.into())
+        }
+        /// Initializes the enum to the [Oauth2JwtBearer](Self::Oauth2JwtBearer) branch.
+        pub fn from_oauth2_jwt_bearer(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::auth_config::Oauth2JwtBearer>>,
+        ) -> Self {
+            Self::Oauth2JwtBearer(value.into())
+        }
+        /// Initializes the enum to the [Oauth2ClientCredentials](Self::Oauth2ClientCredentials) branch.
+        pub fn from_oauth2_client_credentials(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::auth_config::Oauth2ClientCredentials>,
+            >,
+        ) -> Self {
+            Self::Oauth2ClientCredentials(value.into())
+        }
+        /// Initializes the enum to the [SshPublicKey](Self::SshPublicKey) branch.
+        pub fn from_ssh_public_key(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::auth_config::SshPublicKey>>,
+        ) -> Self {
+            Self::SshPublicKey(value.into())
+        }
+    }
 }
 
 /// AuthConfigTemplate defines required field over an authentication type.
@@ -1143,6 +1172,27 @@ pub mod config_variable {
         StringValue(std::string::String),
         /// Value is a secret.
         SecretValue(std::boxed::Box<crate::model::Secret>),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [IntValue](Self::IntValue) branch.
+        pub fn from_int_value(value: impl std::convert::Into<i64>) -> Self {
+            Self::IntValue(value.into())
+        }
+        /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+        pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolValue(value.into())
+        }
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
+        /// Initializes the enum to the [SecretValue](Self::SecretValue) branch.
+        pub fn from_secret_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Secret>>,
+        ) -> Self {
+            Self::SecretValue(value.into())
+        }
     }
 }
 
@@ -3889,6 +3939,19 @@ pub mod egress_control_config {
         /// configuration.
         ExtractionRules(std::boxed::Box<crate::model::ExtractionRules>),
     }
+
+    impl OneofBackends {
+        /// Initializes the enum to the [Backends](Self::Backends) branch.
+        pub fn from_backends(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Backends(value.into())
+        }
+        /// Initializes the enum to the [ExtractionRules](Self::ExtractionRules) branch.
+        pub fn from_extraction_rules(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExtractionRules>>,
+        ) -> Self {
+            Self::ExtractionRules(value.into())
+        }
+    }
 }
 
 /// Extraction Rules to identity the backends from customer provided
@@ -4209,6 +4272,19 @@ pub mod destination {
         ServiceAttachment(std::string::String),
         /// For publicly routable host.
         Host(std::string::String),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [ServiceAttachment](Self::ServiceAttachment) branch.
+        pub fn from_service_attachment(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::ServiceAttachment(value.into())
+        }
+        /// Initializes the enum to the [Host](Self::Host) branch.
+        pub fn from_host(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Host(value.into())
+        }
     }
 }
 

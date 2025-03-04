@@ -388,6 +388,19 @@ pub mod secret {
         /// [google.cloud.secretmanager.v1.Secret]: crate::model::Secret
         Ttl(std::boxed::Box<wkt::Duration>),
     }
+
+    impl Expiration {
+        /// Initializes the enum to the [ExpireTime](Self::ExpireTime) branch.
+        pub fn from_expire_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::ExpireTime(value.into())
+        }
+        /// Initializes the enum to the [Ttl](Self::Ttl) branch.
+        pub fn from_ttl(value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>) -> Self {
+            Self::Ttl(value.into())
+        }
+    }
 }
 
 /// A secret version resource in the Secret Manager API.
@@ -921,6 +934,21 @@ pub mod replication {
         /// [google.cloud.secretmanager.v1.Secret]: crate::model::Secret
         UserManaged(std::boxed::Box<crate::model::replication::UserManaged>),
     }
+
+    impl Replication {
+        /// Initializes the enum to the [Automatic](Self::Automatic) branch.
+        pub fn from_automatic(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::replication::Automatic>>,
+        ) -> Self {
+            Self::Automatic(value.into())
+        }
+        /// Initializes the enum to the [UserManaged](Self::UserManaged) branch.
+        pub fn from_user_managed(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::replication::UserManaged>>,
+        ) -> Self {
+            Self::UserManaged(value.into())
+        }
+    }
 }
 
 /// Configuration for encrypting secret payloads using customer-managed
@@ -1271,6 +1299,25 @@ pub mod replication_status {
         /// [google.cloud.secretmanager.v1.Secret]: crate::model::Secret
         /// [google.cloud.secretmanager.v1.SecretVersion]: crate::model::SecretVersion
         UserManaged(std::boxed::Box<crate::model::replication_status::UserManagedStatus>),
+    }
+
+    impl ReplicationStatus {
+        /// Initializes the enum to the [Automatic](Self::Automatic) branch.
+        pub fn from_automatic(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::replication_status::AutomaticStatus>,
+            >,
+        ) -> Self {
+            Self::Automatic(value.into())
+        }
+        /// Initializes the enum to the [UserManaged](Self::UserManaged) branch.
+        pub fn from_user_managed(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::replication_status::UserManagedStatus>,
+            >,
+        ) -> Self {
+            Self::UserManaged(value.into())
+        }
     }
 }
 

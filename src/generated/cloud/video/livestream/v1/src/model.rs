@@ -189,6 +189,27 @@ pub mod elementary_stream {
         /// Encoding of a text stream. For example, closed captions or subtitles.
         TextStream(std::boxed::Box<crate::model::TextStream>),
     }
+
+    impl ElementaryStream {
+        /// Initializes the enum to the [VideoStream](Self::VideoStream) branch.
+        pub fn from_video_stream(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VideoStream>>,
+        ) -> Self {
+            Self::VideoStream(value.into())
+        }
+        /// Initializes the enum to the [AudioStream](Self::AudioStream) branch.
+        pub fn from_audio_stream(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AudioStream>>,
+        ) -> Self {
+            Self::AudioStream(value.into())
+        }
+        /// Initializes the enum to the [TextStream](Self::TextStream) branch.
+        pub fn from_text_stream(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TextStream>>,
+        ) -> Self {
+            Self::TextStream(value.into())
+        }
+    }
 }
 
 /// Multiplexing settings for output stream.
@@ -1164,6 +1185,19 @@ pub mod video_stream {
             /// [google.cloud.video.livestream.v1.SegmentSettings.segment_duration]: crate::model::SegmentSettings::segment_duration
             GopDuration(std::boxed::Box<wkt::Duration>),
         }
+
+        impl GopMode {
+            /// Initializes the enum to the [GopFrameCount](Self::GopFrameCount) branch.
+            pub fn from_gop_frame_count(value: impl std::convert::Into<i32>) -> Self {
+                Self::GopFrameCount(value.into())
+            }
+            /// Initializes the enum to the [GopDuration](Self::GopDuration) branch.
+            pub fn from_gop_duration(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+            ) -> Self {
+                Self::GopDuration(value.into())
+            }
+        }
     }
 
     /// Codec settings.
@@ -1173,6 +1207,17 @@ pub mod video_stream {
     pub enum CodecSettings {
         /// H264 codec settings.
         H264(std::boxed::Box<crate::model::video_stream::H264CodecSettings>),
+    }
+
+    impl CodecSettings {
+        /// Initializes the enum to the [H264](Self::H264) branch.
+        pub fn from_h264(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::video_stream::H264CodecSettings>,
+            >,
+        ) -> Self {
+            Self::H264(value.into())
+        }
     }
 }
 
@@ -1615,6 +1660,21 @@ pub mod timecode_config {
         UtcOffset(std::boxed::Box<wkt::Duration>),
         /// Time zone e.g. "America/Los_Angeles".
         TimeZone(std::boxed::Box<gtype::model::TimeZone>),
+    }
+
+    impl TimeOffset {
+        /// Initializes the enum to the [UtcOffset](Self::UtcOffset) branch.
+        pub fn from_utc_offset(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+        ) -> Self {
+            Self::UtcOffset(value.into())
+        }
+        /// Initializes the enum to the [TimeZone](Self::TimeZone) branch.
+        pub fn from_time_zone(
+            value: impl std::convert::Into<std::boxed::Box<gtype::model::TimeZone>>,
+        ) -> Self {
+            Self::TimeZone(value.into())
+        }
     }
 }
 
@@ -3640,6 +3700,45 @@ pub mod event {
         /// Unmutes the stream.
         Unmute(std::boxed::Box<crate::model::event::UnmuteTask>),
     }
+
+    impl Task {
+        /// Initializes the enum to the [InputSwitch](Self::InputSwitch) branch.
+        pub fn from_input_switch(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::event::InputSwitchTask>>,
+        ) -> Self {
+            Self::InputSwitch(value.into())
+        }
+        /// Initializes the enum to the [AdBreak](Self::AdBreak) branch.
+        pub fn from_ad_break(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::event::AdBreakTask>>,
+        ) -> Self {
+            Self::AdBreak(value.into())
+        }
+        /// Initializes the enum to the [ReturnToProgram](Self::ReturnToProgram) branch.
+        pub fn from_return_to_program(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::event::ReturnToProgramTask>>,
+        ) -> Self {
+            Self::ReturnToProgram(value.into())
+        }
+        /// Initializes the enum to the [Slate](Self::Slate) branch.
+        pub fn from_slate(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::event::SlateTask>>,
+        ) -> Self {
+            Self::Slate(value.into())
+        }
+        /// Initializes the enum to the [Mute](Self::Mute) branch.
+        pub fn from_mute(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::event::MuteTask>>,
+        ) -> Self {
+            Self::Mute(value.into())
+        }
+        /// Initializes the enum to the [Unmute](Self::Unmute) branch.
+        pub fn from_unmute(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::event::UnmuteTask>>,
+        ) -> Self {
+            Self::Unmute(value.into())
+        }
+    }
 }
 
 /// Clip is a sub-resource under channel. Each clip represents a clipping
@@ -3931,6 +4030,15 @@ pub mod clip {
         pub enum Kind {
             /// A slice in form of a tuple of Unix epoch time.
             TimeSlice(std::boxed::Box<crate::model::clip::TimeSlice>),
+        }
+
+        impl Kind {
+            /// Initializes the enum to the [TimeSlice](Self::TimeSlice) branch.
+            pub fn from_time_slice(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::clip::TimeSlice>>,
+            ) -> Self {
+                Self::TimeSlice(value.into())
+            }
         }
     }
 
@@ -4345,6 +4453,21 @@ pub mod asset {
         Video(std::boxed::Box<crate::model::asset::VideoAsset>),
         /// ImageAsset represents an image.
         Image(std::boxed::Box<crate::model::asset::ImageAsset>),
+    }
+
+    impl Resource {
+        /// Initializes the enum to the [Video](Self::Video) branch.
+        pub fn from_video(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::asset::VideoAsset>>,
+        ) -> Self {
+            Self::Video(value.into())
+        }
+        /// Initializes the enum to the [Image](Self::Image) branch.
+        pub fn from_image(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::asset::ImageAsset>>,
+        ) -> Self {
+            Self::Image(value.into())
+        }
     }
 }
 
@@ -4818,6 +4941,17 @@ pub mod encryption {
         SecretManagerKeySource(std::boxed::Box<crate::model::encryption::SecretManagerSource>),
     }
 
+    impl SecretSource {
+        /// Initializes the enum to the [SecretManagerKeySource](Self::SecretManagerKeySource) branch.
+        pub fn from_secret_manager_key_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::encryption::SecretManagerSource>,
+            >,
+        ) -> Self {
+            Self::SecretManagerKeySource(value.into())
+        }
+    }
+
     /// Encryption modes for HLS and MPEG-Dash.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -4829,6 +4963,31 @@ pub mod encryption {
         SampleAes(std::boxed::Box<crate::model::encryption::SampleAesEncryption>),
         /// Configuration for MPEG-Dash Common Encryption (MPEG-CENC).
         MpegCenc(std::boxed::Box<crate::model::encryption::MpegCommonEncryption>),
+    }
+
+    impl EncryptionMode {
+        /// Initializes the enum to the [Aes128](Self::Aes128) branch.
+        pub fn from_aes128(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::encryption::Aes128Encryption>>,
+        ) -> Self {
+            Self::Aes128(value.into())
+        }
+        /// Initializes the enum to the [SampleAes](Self::SampleAes) branch.
+        pub fn from_sample_aes(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::encryption::SampleAesEncryption>,
+            >,
+        ) -> Self {
+            Self::SampleAes(value.into())
+        }
+        /// Initializes the enum to the [MpegCenc](Self::MpegCenc) branch.
+        pub fn from_mpeg_cenc(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::encryption::MpegCommonEncryption>,
+            >,
+        ) -> Self {
+            Self::MpegCenc(value.into())
+        }
     }
 }
 

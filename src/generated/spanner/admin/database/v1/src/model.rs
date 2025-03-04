@@ -1829,6 +1829,15 @@ pub mod backup_schedule_spec {
         /// Cron style schedule specification.
         CronSpec(std::boxed::Box<crate::model::CrontabSpec>),
     }
+
+    impl ScheduleSpec {
+        /// Initializes the enum to the [CronSpec](Self::CronSpec) branch.
+        pub fn from_cron_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CrontabSpec>>,
+        ) -> Self {
+            Self::CronSpec(value.into())
+        }
+    }
 }
 
 /// BackupSchedule expresses the automated backup creation specification for a
@@ -2030,6 +2039,21 @@ pub mod backup_schedule {
         FullBackupSpec(std::boxed::Box<crate::model::FullBackupSpec>),
         /// The schedule creates incremental backup chains.
         IncrementalBackupSpec(std::boxed::Box<crate::model::IncrementalBackupSpec>),
+    }
+
+    impl BackupTypeSpec {
+        /// Initializes the enum to the [FullBackupSpec](Self::FullBackupSpec) branch.
+        pub fn from_full_backup_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FullBackupSpec>>,
+        ) -> Self {
+            Self::FullBackupSpec(value.into())
+        }
+        /// Initializes the enum to the [IncrementalBackupSpec](Self::IncrementalBackupSpec) branch.
+        pub fn from_incremental_backup_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IncrementalBackupSpec>>,
+        ) -> Self {
+            Self::IncrementalBackupSpec(value.into())
+        }
     }
 }
 
@@ -2729,6 +2753,15 @@ pub mod restore_info {
         /// Information about the backup used to restore the database. The backup
         /// may no longer exist.
         BackupInfo(std::boxed::Box<crate::model::BackupInfo>),
+    }
+
+    impl SourceInfo {
+        /// Initializes the enum to the [BackupInfo](Self::BackupInfo) branch.
+        pub fn from_backup_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BackupInfo>>,
+        ) -> Self {
+            Self::BackupInfo(value.into())
+        }
     }
 }
 
@@ -4161,6 +4194,13 @@ pub mod restore_database_request {
         /// `projects/<project>/instances/<instance>/backups/<backup>`.
         Backup(std::string::String),
     }
+
+    impl Source {
+        /// Initializes the enum to the [Backup](Self::Backup) branch.
+        pub fn from_backup(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Backup(value.into())
+        }
+    }
 }
 
 /// Encryption configuration for the restored database.
@@ -4484,6 +4524,15 @@ pub mod restore_database_metadata {
     pub enum SourceInfo {
         /// Information about the backup used to restore the database.
         BackupInfo(std::boxed::Box<crate::model::BackupInfo>),
+    }
+
+    impl SourceInfo {
+        /// Initializes the enum to the [BackupInfo](Self::BackupInfo) branch.
+        pub fn from_backup_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BackupInfo>>,
+        ) -> Self {
+            Self::BackupInfo(value.into())
+        }
     }
 }
 

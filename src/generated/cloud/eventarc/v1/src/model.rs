@@ -274,6 +274,13 @@ pub mod channel {
         /// `projects/{project}/topics/{topic_id}`.
         PubsubTopic(std::string::String),
     }
+
+    impl Transport {
+        /// Initializes the enum to the [PubsubTopic](Self::PubsubTopic) branch.
+        pub fn from_pubsub_topic(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PubsubTopic(value.into())
+        }
+    }
 }
 
 /// A representation of the ChannelConnection resource.
@@ -4633,6 +4640,33 @@ pub mod pipeline {
             /// Optional. JSON format.
             Json(std::boxed::Box<crate::model::pipeline::message_payload_format::JsonFormat>),
         }
+
+        impl Kind {
+            /// Initializes the enum to the [Protobuf](Self::Protobuf) branch.
+            pub fn from_protobuf(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::pipeline::message_payload_format::ProtobufFormat>,
+                >,
+            ) -> Self {
+                Self::Protobuf(value.into())
+            }
+            /// Initializes the enum to the [Avro](Self::Avro) branch.
+            pub fn from_avro(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::pipeline::message_payload_format::AvroFormat>,
+                >,
+            ) -> Self {
+                Self::Avro(value.into())
+            }
+            /// Initializes the enum to the [Json](Self::Json) branch.
+            pub fn from_json(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::pipeline::message_payload_format::JsonFormat>,
+                >,
+            ) -> Self {
+                Self::Json(value.into())
+            }
+        }
     }
 
     /// Represents a target of an invocation over HTTP.
@@ -5347,6 +5381,29 @@ pub mod pipeline {
                     >,
                 ),
             }
+
+            impl AuthenticationMethodDescriptor {
+                /// Initializes the enum to the [GoogleOidc](Self::GoogleOidc) branch.
+                pub fn from_google_oidc(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::pipeline::destination::authentication_config::OidcToken,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::GoogleOidc(value.into())
+                }
+                /// Initializes the enum to the [OauthToken](Self::OauthToken) branch.
+                pub fn from_oauth_token(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::pipeline::destination::authentication_config::OAuthToken,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::OauthToken(value.into())
+                }
+            }
         }
 
         /// The destination identifier to which the request should be routed to.
@@ -5374,6 +5431,29 @@ pub mod pipeline {
             /// be published. Format:
             /// `projects/{project}/locations/{location}/topics/{topic}`
             Topic(std::string::String),
+        }
+
+        impl DestinationDescriptor {
+            /// Initializes the enum to the [HttpEndpoint](Self::HttpEndpoint) branch.
+            pub fn from_http_endpoint(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::pipeline::destination::HttpEndpoint>,
+                >,
+            ) -> Self {
+                Self::HttpEndpoint(value.into())
+            }
+            /// Initializes the enum to the [Workflow](Self::Workflow) branch.
+            pub fn from_workflow(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Workflow(value.into())
+            }
+            /// Initializes the enum to the [MessageBus](Self::MessageBus) branch.
+            pub fn from_message_bus(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::MessageBus(value.into())
+            }
+            /// Initializes the enum to the [Topic](Self::Topic) branch.
+            pub fn from_topic(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Topic(value.into())
+            }
         }
     }
 
@@ -5567,6 +5647,17 @@ pub mod pipeline {
         pub enum MediationDescriptor {
             /// Optional. How the Pipeline is to transform messages
             Transformation(std::boxed::Box<crate::model::pipeline::mediation::Transformation>),
+        }
+
+        impl MediationDescriptor {
+            /// Initializes the enum to the [Transformation](Self::Transformation) branch.
+            pub fn from_transformation(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::pipeline::mediation::Transformation>,
+                >,
+            ) -> Self {
+                Self::Transformation(value.into())
+            }
         }
     }
 
@@ -6153,6 +6244,35 @@ pub mod destination {
         /// An HTTP endpoint destination described by an URI.
         HttpEndpoint(std::boxed::Box<crate::model::HttpEndpoint>),
     }
+
+    impl Descriptor {
+        /// Initializes the enum to the [CloudRun](Self::CloudRun) branch.
+        pub fn from_cloud_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudRun>>,
+        ) -> Self {
+            Self::CloudRun(value.into())
+        }
+        /// Initializes the enum to the [CloudFunction](Self::CloudFunction) branch.
+        pub fn from_cloud_function(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::CloudFunction(value.into())
+        }
+        /// Initializes the enum to the [Gke](Self::Gke) branch.
+        pub fn from_gke(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Gke>>,
+        ) -> Self {
+            Self::Gke(value.into())
+        }
+        /// Initializes the enum to the [Workflow](Self::Workflow) branch.
+        pub fn from_workflow(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Workflow(value.into())
+        }
+        /// Initializes the enum to the [HttpEndpoint](Self::HttpEndpoint) branch.
+        pub fn from_http_endpoint(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HttpEndpoint>>,
+        ) -> Self {
+            Self::HttpEndpoint(value.into())
+        }
+    }
 }
 
 /// Represents the transport intermediaries created for the trigger to
@@ -6226,6 +6346,15 @@ pub mod transport {
         /// The Pub/Sub topic and subscription used by Eventarc as a transport
         /// intermediary.
         Pubsub(std::boxed::Box<crate::model::Pubsub>),
+    }
+
+    impl Intermediary {
+        /// Initializes the enum to the [Pubsub](Self::Pubsub) branch.
+        pub fn from_pubsub(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Pubsub>>,
+        ) -> Self {
+            Self::Pubsub(value.into())
+        }
     }
 }
 

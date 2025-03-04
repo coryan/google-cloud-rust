@@ -468,6 +468,17 @@ pub mod instance {
             /// Output only. Describes ongoing update when instance state is UPDATING.
             UpdateInfo(std::boxed::Box<crate::model::instance::state_info::UpdateInfo>),
         }
+
+        impl Info {
+            /// Initializes the enum to the [UpdateInfo](Self::UpdateInfo) branch.
+            pub fn from_update_info(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::instance::state_info::UpdateInfo>,
+                >,
+            ) -> Self {
+                Self::UpdateInfo(value.into())
+            }
+        }
     }
 
     /// InstanceEndpoint consists of PSC connections that are created
@@ -626,6 +637,21 @@ pub mod instance {
             PscAutoConnection(std::boxed::Box<crate::model::PscAutoConnection>),
             /// Detailed information of a PSC connection that is created by the user.
             PscConnection(std::boxed::Box<crate::model::PscConnection>),
+        }
+
+        impl Connection {
+            /// Initializes the enum to the [PscAutoConnection](Self::PscAutoConnection) branch.
+            pub fn from_psc_auto_connection(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::PscAutoConnection>>,
+            ) -> Self {
+                Self::PscAutoConnection(value.into())
+            }
+            /// Initializes the enum to the [PscConnection](Self::PscConnection) branch.
+            pub fn from_psc_connection(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::PscConnection>>,
+            ) -> Self {
+                Self::PscConnection(value.into())
+            }
         }
     }
 
@@ -1031,6 +1057,13 @@ pub mod psc_auto_connection {
         /// Optional. Output only. port will only be set for Primary/Reader or
         /// Discovery endpoint.
         Port(i32),
+    }
+
+    impl Ports {
+        /// Initializes the enum to the [Port](Self::Port) branch.
+        pub fn from_port(value: impl std::convert::Into<i32>) -> Self {
+            Self::Port(value.into())
+        }
     }
 }
 
@@ -2217,6 +2250,17 @@ pub mod certificate_authority {
         ManagedServerCa(
             std::boxed::Box<crate::model::certificate_authority::ManagedCertificateAuthority>,
         ),
+    }
+
+    impl ServerCa {
+        /// Initializes the enum to the [ManagedServerCa](Self::ManagedServerCa) branch.
+        pub fn from_managed_server_ca(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::certificate_authority::ManagedCertificateAuthority>,
+            >,
+        ) -> Self {
+            Self::ManagedServerCa(value.into())
+        }
     }
 }
 

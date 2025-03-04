@@ -2824,6 +2824,19 @@ pub mod object_tracking_annotation {
         /// ObjectTrackAnnotation of the same track_id over time.
         TrackId(i64),
     }
+
+    impl TrackInfo {
+        /// Initializes the enum to the [Segment](Self::Segment) branch.
+        pub fn from_segment(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VideoSegment>>,
+        ) -> Self {
+            Self::Segment(value.into())
+        }
+        /// Initializes the enum to the [TrackId](Self::TrackId) branch.
+        pub fn from_track_id(value: impl std::convert::Into<i64>) -> Self {
+            Self::TrackId(value.into())
+        }
+    }
 }
 
 /// Annotation corresponding to one detected, tracked and recognized logo class.

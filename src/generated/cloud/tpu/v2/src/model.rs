@@ -1493,6 +1493,23 @@ pub mod queued_resource {
                     >,
                 ),
             }
+
+            impl NameStrategy {
+                /// Initializes the enum to the [NodeId](Self::NodeId) branch.
+                pub fn from_node_id(value: impl std::convert::Into<std::string::String>) -> Self {
+                    Self::NodeId(value.into())
+                }
+                /// Initializes the enum to the [MultisliceParams](Self::MultisliceParams) branch.
+                pub fn from_multislice_params(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::queued_resource::tpu::node_spec::MultisliceParams,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::MultisliceParams(value.into())
+                }
+            }
         }
     }
 
@@ -1767,6 +1784,39 @@ pub mod queued_resource {
             /// created.
             ValidInterval(std::boxed::Box<gtype::model::Interval>),
         }
+
+        impl StartTimingConstraints {
+            /// Initializes the enum to the [ValidUntilDuration](Self::ValidUntilDuration) branch.
+            pub fn from_valid_until_duration(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+            ) -> Self {
+                Self::ValidUntilDuration(value.into())
+            }
+            /// Initializes the enum to the [ValidUntilTime](Self::ValidUntilTime) branch.
+            pub fn from_valid_until_time(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+            ) -> Self {
+                Self::ValidUntilTime(value.into())
+            }
+            /// Initializes the enum to the [ValidAfterDuration](Self::ValidAfterDuration) branch.
+            pub fn from_valid_after_duration(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+            ) -> Self {
+                Self::ValidAfterDuration(value.into())
+            }
+            /// Initializes the enum to the [ValidAfterTime](Self::ValidAfterTime) branch.
+            pub fn from_valid_after_time(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+            ) -> Self {
+                Self::ValidAfterTime(value.into())
+            }
+            /// Initializes the enum to the [ValidInterval](Self::ValidInterval) branch.
+            pub fn from_valid_interval(
+                value: impl std::convert::Into<std::boxed::Box<gtype::model::Interval>>,
+            ) -> Self {
+                Self::ValidInterval(value.into())
+            }
+        }
     }
 
     /// Resource specification.
@@ -1778,6 +1828,15 @@ pub mod queued_resource {
         Tpu(std::boxed::Box<crate::model::queued_resource::Tpu>),
     }
 
+    impl Resource {
+        /// Initializes the enum to the [Tpu](Self::Tpu) branch.
+        pub fn from_tpu(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::queued_resource::Tpu>>,
+        ) -> Self {
+            Self::Tpu(value.into())
+        }
+    }
+
     /// Tier specifies the required tier.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -1787,6 +1846,21 @@ pub mod queued_resource {
         Spot(std::boxed::Box<crate::model::queued_resource::Spot>),
         /// Optional. The Guaranteed tier
         Guaranteed(std::boxed::Box<crate::model::queued_resource::Guaranteed>),
+    }
+
+    impl Tier {
+        /// Initializes the enum to the [Spot](Self::Spot) branch.
+        pub fn from_spot(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::queued_resource::Spot>>,
+        ) -> Self {
+            Self::Spot(value.into())
+        }
+        /// Initializes the enum to the [Guaranteed](Self::Guaranteed) branch.
+        pub fn from_guaranteed(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::queued_resource::Guaranteed>>,
+        ) -> Self {
+            Self::Guaranteed(value.into())
+        }
     }
 }
 
@@ -2433,6 +2507,73 @@ pub mod queued_resource_state {
         SuspendingData(std::boxed::Box<crate::model::queued_resource_state::SuspendingData>),
         /// Output only. Further data for the suspended state.
         SuspendedData(std::boxed::Box<crate::model::queued_resource_state::SuspendedData>),
+    }
+
+    impl StateData {
+        /// Initializes the enum to the [CreatingData](Self::CreatingData) branch.
+        pub fn from_creating_data(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::queued_resource_state::CreatingData>,
+            >,
+        ) -> Self {
+            Self::CreatingData(value.into())
+        }
+        /// Initializes the enum to the [AcceptedData](Self::AcceptedData) branch.
+        pub fn from_accepted_data(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::queued_resource_state::AcceptedData>,
+            >,
+        ) -> Self {
+            Self::AcceptedData(value.into())
+        }
+        /// Initializes the enum to the [ProvisioningData](Self::ProvisioningData) branch.
+        pub fn from_provisioning_data(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::queued_resource_state::ProvisioningData>,
+            >,
+        ) -> Self {
+            Self::ProvisioningData(value.into())
+        }
+        /// Initializes the enum to the [FailedData](Self::FailedData) branch.
+        pub fn from_failed_data(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::queued_resource_state::FailedData>,
+            >,
+        ) -> Self {
+            Self::FailedData(value.into())
+        }
+        /// Initializes the enum to the [DeletingData](Self::DeletingData) branch.
+        pub fn from_deleting_data(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::queued_resource_state::DeletingData>,
+            >,
+        ) -> Self {
+            Self::DeletingData(value.into())
+        }
+        /// Initializes the enum to the [ActiveData](Self::ActiveData) branch.
+        pub fn from_active_data(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::queued_resource_state::ActiveData>,
+            >,
+        ) -> Self {
+            Self::ActiveData(value.into())
+        }
+        /// Initializes the enum to the [SuspendingData](Self::SuspendingData) branch.
+        pub fn from_suspending_data(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::queued_resource_state::SuspendingData>,
+            >,
+        ) -> Self {
+            Self::SuspendingData(value.into())
+        }
+        /// Initializes the enum to the [SuspendedData](Self::SuspendedData) branch.
+        pub fn from_suspended_data(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::queued_resource_state::SuspendedData>,
+            >,
+        ) -> Self {
+            Self::SuspendedData(value.into())
+        }
     }
 }
 

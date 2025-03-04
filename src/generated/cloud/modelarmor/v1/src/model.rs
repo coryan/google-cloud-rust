@@ -1262,6 +1262,21 @@ pub mod sdp_filter_settings {
         /// Protection inspection and de-identification operations.
         AdvancedConfig(std::boxed::Box<crate::model::SdpAdvancedConfig>),
     }
+
+    impl SdpConfiguration {
+        /// Initializes the enum to the [BasicConfig](Self::BasicConfig) branch.
+        pub fn from_basic_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SdpBasicConfig>>,
+        ) -> Self {
+            Self::BasicConfig(value.into())
+        }
+        /// Initializes the enum to the [AdvancedConfig](Self::AdvancedConfig) branch.
+        pub fn from_advanced_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SdpAdvancedConfig>>,
+        ) -> Self {
+            Self::AdvancedConfig(value.into())
+        }
+    }
 }
 
 /// Sensitive Data Protection basic configuration.
@@ -1969,6 +1984,45 @@ pub mod filter_result {
         /// Virus scan results.
         VirusScanFilterResult(std::boxed::Box<crate::model::VirusScanFilterResult>),
     }
+
+    impl FilterResult {
+        /// Initializes the enum to the [RaiFilterResult](Self::RaiFilterResult) branch.
+        pub fn from_rai_filter_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RaiFilterResult>>,
+        ) -> Self {
+            Self::RaiFilterResult(value.into())
+        }
+        /// Initializes the enum to the [SdpFilterResult](Self::SdpFilterResult) branch.
+        pub fn from_sdp_filter_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SdpFilterResult>>,
+        ) -> Self {
+            Self::SdpFilterResult(value.into())
+        }
+        /// Initializes the enum to the [PiAndJailbreakFilterResult](Self::PiAndJailbreakFilterResult) branch.
+        pub fn from_pi_and_jailbreak_filter_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PiAndJailbreakFilterResult>>,
+        ) -> Self {
+            Self::PiAndJailbreakFilterResult(value.into())
+        }
+        /// Initializes the enum to the [MaliciousUriFilterResult](Self::MaliciousUriFilterResult) branch.
+        pub fn from_malicious_uri_filter_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MaliciousUriFilterResult>>,
+        ) -> Self {
+            Self::MaliciousUriFilterResult(value.into())
+        }
+        /// Initializes the enum to the [CsamFilterResult](Self::CsamFilterResult) branch.
+        pub fn from_csam_filter_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CsamFilterResult>>,
+        ) -> Self {
+            Self::CsamFilterResult(value.into())
+        }
+        /// Initializes the enum to the [VirusScanFilterResult](Self::VirusScanFilterResult) branch.
+        pub fn from_virus_scan_filter_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VirusScanFilterResult>>,
+        ) -> Self {
+            Self::VirusScanFilterResult(value.into())
+        }
+    }
 }
 
 /// Responsible AI Result.
@@ -2232,6 +2286,21 @@ pub mod sdp_filter_result {
         /// performed.
         DeidentifyResult(std::boxed::Box<crate::model::SdpDeidentifyResult>),
     }
+
+    impl Result {
+        /// Initializes the enum to the [InspectResult](Self::InspectResult) branch.
+        pub fn from_inspect_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SdpInspectResult>>,
+        ) -> Self {
+            Self::InspectResult(value.into())
+        }
+        /// Initializes the enum to the [DeidentifyResult](Self::DeidentifyResult) branch.
+        pub fn from_deidentify_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SdpDeidentifyResult>>,
+        ) -> Self {
+            Self::DeidentifyResult(value.into())
+        }
+    }
 }
 
 /// Sensitive Data Protection Inspection Result.
@@ -2423,6 +2492,19 @@ pub mod data_item {
         Text(std::string::String),
         /// Data provided in the form of bytes.
         ByteItem(std::boxed::Box<crate::model::ByteDataItem>),
+    }
+
+    impl DataItem {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [ByteItem](Self::ByteItem) branch.
+        pub fn from_byte_item(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ByteDataItem>>,
+        ) -> Self {
+            Self::ByteItem(value.into())
+        }
     }
 }
 

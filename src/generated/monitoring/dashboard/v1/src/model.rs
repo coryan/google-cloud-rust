@@ -1063,6 +1063,33 @@ pub mod dashboard {
         /// arranged vertically.
         ColumnLayout(std::boxed::Box<crate::model::ColumnLayout>),
     }
+
+    impl Layout {
+        /// Initializes the enum to the [GridLayout](Self::GridLayout) branch.
+        pub fn from_grid_layout(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GridLayout>>,
+        ) -> Self {
+            Self::GridLayout(value.into())
+        }
+        /// Initializes the enum to the [MosaicLayout](Self::MosaicLayout) branch.
+        pub fn from_mosaic_layout(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MosaicLayout>>,
+        ) -> Self {
+            Self::MosaicLayout(value.into())
+        }
+        /// Initializes the enum to the [RowLayout](Self::RowLayout) branch.
+        pub fn from_row_layout(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RowLayout>>,
+        ) -> Self {
+            Self::RowLayout(value.into())
+        }
+        /// Initializes the enum to the [ColumnLayout](Self::ColumnLayout) branch.
+        pub fn from_column_layout(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ColumnLayout>>,
+        ) -> Self {
+            Self::ColumnLayout(value.into())
+        }
+    }
 }
 
 /// A filter to reduce the amount of data charted in relevant widgets.
@@ -1224,6 +1251,13 @@ pub mod dashboard_filter {
     pub enum DefaultValue {
         /// A variable-length string value.
         StringValue(std::string::String),
+    }
+
+    impl DefaultValue {
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
     }
 }
 
@@ -2240,6 +2274,31 @@ pub mod time_series_query {
         /// A query used to fetch time series with PromQL.
         PrometheusQuery(std::string::String),
     }
+
+    impl Source {
+        /// Initializes the enum to the [TimeSeriesFilter](Self::TimeSeriesFilter) branch.
+        pub fn from_time_series_filter(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimeSeriesFilter>>,
+        ) -> Self {
+            Self::TimeSeriesFilter(value.into())
+        }
+        /// Initializes the enum to the [TimeSeriesFilterRatio](Self::TimeSeriesFilterRatio) branch.
+        pub fn from_time_series_filter_ratio(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimeSeriesFilterRatio>>,
+        ) -> Self {
+            Self::TimeSeriesFilterRatio(value.into())
+        }
+        /// Initializes the enum to the [TimeSeriesQueryLanguage](Self::TimeSeriesQueryLanguage) branch.
+        pub fn from_time_series_query_language(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::TimeSeriesQueryLanguage(value.into())
+        }
+        /// Initializes the enum to the [PrometheusQuery](Self::PrometheusQuery) branch.
+        pub fn from_prometheus_query(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PrometheusQuery(value.into())
+        }
+    }
 }
 
 /// A filter that defines a subset of time series data that is displayed in a
@@ -2402,6 +2461,21 @@ pub mod time_series_filter {
         /// Statistics based time series filter.
         /// Note: This field is deprecated and completely ignored by the API.
         StatisticalTimeSeriesFilter(std::boxed::Box<crate::model::StatisticalTimeSeriesFilter>),
+    }
+
+    impl OutputFilter {
+        /// Initializes the enum to the [PickTimeSeriesFilter](Self::PickTimeSeriesFilter) branch.
+        pub fn from_pick_time_series_filter(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PickTimeSeriesFilter>>,
+        ) -> Self {
+            Self::PickTimeSeriesFilter(value.into())
+        }
+        /// Initializes the enum to the [StatisticalTimeSeriesFilter](Self::StatisticalTimeSeriesFilter) branch.
+        pub fn from_statistical_time_series_filter(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StatisticalTimeSeriesFilter>>,
+        ) -> Self {
+            Self::StatisticalTimeSeriesFilter(value.into())
+        }
     }
 }
 
@@ -2620,6 +2694,21 @@ pub mod time_series_filter_ratio {
         /// Statistics based time series filter.
         /// Note: This field is deprecated and completely ignored by the API.
         StatisticalTimeSeriesFilter(std::boxed::Box<crate::model::StatisticalTimeSeriesFilter>),
+    }
+
+    impl OutputFilter {
+        /// Initializes the enum to the [PickTimeSeriesFilter](Self::PickTimeSeriesFilter) branch.
+        pub fn from_pick_time_series_filter(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PickTimeSeriesFilter>>,
+        ) -> Self {
+            Self::PickTimeSeriesFilter(value.into())
+        }
+        /// Initializes the enum to the [StatisticalTimeSeriesFilter](Self::StatisticalTimeSeriesFilter) branch.
+        pub fn from_statistical_time_series_filter(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StatisticalTimeSeriesFilter>>,
+        ) -> Self {
+            Self::StatisticalTimeSeriesFilter(value.into())
+        }
     }
 }
 
@@ -3312,6 +3401,27 @@ pub mod scorecard {
         /// Will cause the `Scorecard` to show only the value, with no indicator to
         /// its value relative to its thresholds.
         BlankView(std::boxed::Box<wkt::Empty>),
+    }
+
+    impl DataView {
+        /// Initializes the enum to the [GaugeView](Self::GaugeView) branch.
+        pub fn from_gauge_view(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::scorecard::GaugeView>>,
+        ) -> Self {
+            Self::GaugeView(value.into())
+        }
+        /// Initializes the enum to the [SparkChartView](Self::SparkChartView) branch.
+        pub fn from_spark_chart_view(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::scorecard::SparkChartView>>,
+        ) -> Self {
+            Self::SparkChartView(value.into())
+        }
+        /// Initializes the enum to the [BlankView](Self::BlankView) branch.
+        pub fn from_blank_view(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Empty>>,
+        ) -> Self {
+            Self::BlankView(value.into())
+        }
     }
 }
 
@@ -4565,6 +4675,85 @@ pub mod widget {
         SectionHeader(std::boxed::Box<crate::model::SectionHeader>),
         /// A widget that groups the other widgets by using a dropdown menu.
         SingleViewGroup(std::boxed::Box<crate::model::SingleViewGroup>),
+    }
+
+    impl Content {
+        /// Initializes the enum to the [XyChart](Self::XyChart) branch.
+        pub fn from_xy_chart(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::XyChart>>,
+        ) -> Self {
+            Self::XyChart(value.into())
+        }
+        /// Initializes the enum to the [Scorecard](Self::Scorecard) branch.
+        pub fn from_scorecard(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Scorecard>>,
+        ) -> Self {
+            Self::Scorecard(value.into())
+        }
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Text>>,
+        ) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [Blank](Self::Blank) branch.
+        pub fn from_blank(value: impl std::convert::Into<std::boxed::Box<wkt::Empty>>) -> Self {
+            Self::Blank(value.into())
+        }
+        /// Initializes the enum to the [AlertChart](Self::AlertChart) branch.
+        pub fn from_alert_chart(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AlertChart>>,
+        ) -> Self {
+            Self::AlertChart(value.into())
+        }
+        /// Initializes the enum to the [TimeSeriesTable](Self::TimeSeriesTable) branch.
+        pub fn from_time_series_table(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimeSeriesTable>>,
+        ) -> Self {
+            Self::TimeSeriesTable(value.into())
+        }
+        /// Initializes the enum to the [CollapsibleGroup](Self::CollapsibleGroup) branch.
+        pub fn from_collapsible_group(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CollapsibleGroup>>,
+        ) -> Self {
+            Self::CollapsibleGroup(value.into())
+        }
+        /// Initializes the enum to the [LogsPanel](Self::LogsPanel) branch.
+        pub fn from_logs_panel(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::LogsPanel>>,
+        ) -> Self {
+            Self::LogsPanel(value.into())
+        }
+        /// Initializes the enum to the [IncidentList](Self::IncidentList) branch.
+        pub fn from_incident_list(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IncidentList>>,
+        ) -> Self {
+            Self::IncidentList(value.into())
+        }
+        /// Initializes the enum to the [PieChart](Self::PieChart) branch.
+        pub fn from_pie_chart(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PieChart>>,
+        ) -> Self {
+            Self::PieChart(value.into())
+        }
+        /// Initializes the enum to the [ErrorReportingPanel](Self::ErrorReportingPanel) branch.
+        pub fn from_error_reporting_panel(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ErrorReportingPanel>>,
+        ) -> Self {
+            Self::ErrorReportingPanel(value.into())
+        }
+        /// Initializes the enum to the [SectionHeader](Self::SectionHeader) branch.
+        pub fn from_section_header(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SectionHeader>>,
+        ) -> Self {
+            Self::SectionHeader(value.into())
+        }
+        /// Initializes the enum to the [SingleViewGroup](Self::SingleViewGroup) branch.
+        pub fn from_single_view_group(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SingleViewGroup>>,
+        ) -> Self {
+            Self::SingleViewGroup(value.into())
+        }
     }
 }
 

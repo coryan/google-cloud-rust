@@ -3730,6 +3730,21 @@ pub mod management_config {
         /// management is a preview feature.
         FullManagementConfig(std::boxed::Box<crate::model::FullManagementConfig>),
     }
+
+    impl OneofConfig {
+        /// Initializes the enum to the [StandardManagementConfig](Self::StandardManagementConfig) branch.
+        pub fn from_standard_management_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StandardManagementConfig>>,
+        ) -> Self {
+            Self::StandardManagementConfig(value.into())
+        }
+        /// Initializes the enum to the [FullManagementConfig](Self::FullManagementConfig) branch.
+        pub fn from_full_management_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FullManagementConfig>>,
+        ) -> Self {
+            Self::FullManagementConfig(value.into())
+        }
+    }
 }
 
 /// Configuration of the standard (GKE) cluster management.

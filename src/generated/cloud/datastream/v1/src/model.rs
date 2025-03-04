@@ -369,6 +369,21 @@ pub mod discover_connection_profile_request {
         ConnectionProfileName(std::string::String),
     }
 
+    impl Target {
+        /// Initializes the enum to the [ConnectionProfile](Self::ConnectionProfile) branch.
+        pub fn from_connection_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ConnectionProfile>>,
+        ) -> Self {
+            Self::ConnectionProfile(value.into())
+        }
+        /// Initializes the enum to the [ConnectionProfileName](Self::ConnectionProfileName) branch.
+        pub fn from_connection_profile_name(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::ConnectionProfileName(value.into())
+        }
+    }
+
     /// The depth of the retrieved hierarchy of data objects.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -379,6 +394,17 @@ pub mod discover_connection_profile_request {
         FullHierarchy(bool),
         /// The number of hierarchy levels below the current level to be retrieved.
         HierarchyDepth(i32),
+    }
+
+    impl Hierarchy {
+        /// Initializes the enum to the [FullHierarchy](Self::FullHierarchy) branch.
+        pub fn from_full_hierarchy(value: impl std::convert::Into<bool>) -> Self {
+            Self::FullHierarchy(value.into())
+        }
+        /// Initializes the enum to the [HierarchyDepth](Self::HierarchyDepth) branch.
+        pub fn from_hierarchy_depth(value: impl std::convert::Into<i32>) -> Self {
+            Self::HierarchyDepth(value.into())
+        }
     }
 
     /// The data object to populate with child data objects and metadata.
@@ -394,6 +420,33 @@ pub mod discover_connection_profile_request {
         PostgresqlRdbms(std::boxed::Box<crate::model::PostgresqlRdbms>),
         /// SQLServer RDBMS to enrich with child data objects and metadata.
         SqlServerRdbms(std::boxed::Box<crate::model::SqlServerRdbms>),
+    }
+
+    impl DataObject {
+        /// Initializes the enum to the [OracleRdbms](Self::OracleRdbms) branch.
+        pub fn from_oracle_rdbms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OracleRdbms>>,
+        ) -> Self {
+            Self::OracleRdbms(value.into())
+        }
+        /// Initializes the enum to the [MysqlRdbms](Self::MysqlRdbms) branch.
+        pub fn from_mysql_rdbms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MysqlRdbms>>,
+        ) -> Self {
+            Self::MysqlRdbms(value.into())
+        }
+        /// Initializes the enum to the [PostgresqlRdbms](Self::PostgresqlRdbms) branch.
+        pub fn from_postgresql_rdbms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PostgresqlRdbms>>,
+        ) -> Self {
+            Self::PostgresqlRdbms(value.into())
+        }
+        /// Initializes the enum to the [SqlServerRdbms](Self::SqlServerRdbms) branch.
+        pub fn from_sql_server_rdbms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerRdbms>>,
+        ) -> Self {
+            Self::SqlServerRdbms(value.into())
+        }
     }
 }
 
@@ -580,6 +633,33 @@ pub mod discover_connection_profile_response {
         PostgresqlRdbms(std::boxed::Box<crate::model::PostgresqlRdbms>),
         /// Enriched SQLServer RDBMS object.
         SqlServerRdbms(std::boxed::Box<crate::model::SqlServerRdbms>),
+    }
+
+    impl DataObject {
+        /// Initializes the enum to the [OracleRdbms](Self::OracleRdbms) branch.
+        pub fn from_oracle_rdbms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OracleRdbms>>,
+        ) -> Self {
+            Self::OracleRdbms(value.into())
+        }
+        /// Initializes the enum to the [MysqlRdbms](Self::MysqlRdbms) branch.
+        pub fn from_mysql_rdbms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MysqlRdbms>>,
+        ) -> Self {
+            Self::MysqlRdbms(value.into())
+        }
+        /// Initializes the enum to the [PostgresqlRdbms](Self::PostgresqlRdbms) branch.
+        pub fn from_postgresql_rdbms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PostgresqlRdbms>>,
+        ) -> Self {
+            Self::PostgresqlRdbms(value.into())
+        }
+        /// Initializes the enum to the [SqlServerRdbms](Self::SqlServerRdbms) branch.
+        pub fn from_sql_server_rdbms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerRdbms>>,
+        ) -> Self {
+            Self::SqlServerRdbms(value.into())
+        }
     }
 }
 
@@ -3295,6 +3375,17 @@ pub mod forward_ssh_tunnel_connectivity {
         /// Input only. SSH private key.
         PrivateKey(std::string::String),
     }
+
+    impl AuthenticationMethod {
+        /// Initializes the enum to the [Password](Self::Password) branch.
+        pub fn from_password(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Password(value.into())
+        }
+        /// Initializes the enum to the [PrivateKey](Self::PrivateKey) branch.
+        pub fn from_private_key(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PrivateKey(value.into())
+        }
+    }
 }
 
 /// The VPC Peering configuration is used to create VPC peering between
@@ -4018,6 +4109,25 @@ pub mod postgresql_ssl_config {
             std::boxed::Box<crate::model::postgresql_ssl_config::ServerAndClientVerification>,
         ),
     }
+
+    impl EncryptionSetting {
+        /// Initializes the enum to the [ServerVerification](Self::ServerVerification) branch.
+        pub fn from_server_verification(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::postgresql_ssl_config::ServerVerification>,
+            >,
+        ) -> Self {
+            Self::ServerVerification(value.into())
+        }
+        /// Initializes the enum to the [ServerAndClientVerification](Self::ServerAndClientVerification) branch.
+        pub fn from_server_and_client_verification(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::postgresql_ssl_config::ServerAndClientVerification>,
+            >,
+        ) -> Self {
+            Self::ServerAndClientVerification(value.into())
+        }
+    }
 }
 
 /// A set of reusable connection configurations to be used as a source or
@@ -4440,6 +4550,45 @@ pub mod connection_profile {
         SqlServerProfile(std::boxed::Box<crate::model::SqlServerProfile>),
     }
 
+    impl Profile {
+        /// Initializes the enum to the [OracleProfile](Self::OracleProfile) branch.
+        pub fn from_oracle_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OracleProfile>>,
+        ) -> Self {
+            Self::OracleProfile(value.into())
+        }
+        /// Initializes the enum to the [GcsProfile](Self::GcsProfile) branch.
+        pub fn from_gcs_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsProfile>>,
+        ) -> Self {
+            Self::GcsProfile(value.into())
+        }
+        /// Initializes the enum to the [MysqlProfile](Self::MysqlProfile) branch.
+        pub fn from_mysql_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MysqlProfile>>,
+        ) -> Self {
+            Self::MysqlProfile(value.into())
+        }
+        /// Initializes the enum to the [BigqueryProfile](Self::BigqueryProfile) branch.
+        pub fn from_bigquery_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryProfile>>,
+        ) -> Self {
+            Self::BigqueryProfile(value.into())
+        }
+        /// Initializes the enum to the [PostgresqlProfile](Self::PostgresqlProfile) branch.
+        pub fn from_postgresql_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PostgresqlProfile>>,
+        ) -> Self {
+            Self::PostgresqlProfile(value.into())
+        }
+        /// Initializes the enum to the [SqlServerProfile](Self::SqlServerProfile) branch.
+        pub fn from_sql_server_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerProfile>>,
+        ) -> Self {
+            Self::SqlServerProfile(value.into())
+        }
+    }
+
     /// Connectivity options used to establish a connection to the profile.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -4451,6 +4600,27 @@ pub mod connection_profile {
         ForwardSshConnectivity(std::boxed::Box<crate::model::ForwardSshTunnelConnectivity>),
         /// Private connectivity.
         PrivateConnectivity(std::boxed::Box<crate::model::PrivateConnectivity>),
+    }
+
+    impl Connectivity {
+        /// Initializes the enum to the [StaticServiceIpConnectivity](Self::StaticServiceIpConnectivity) branch.
+        pub fn from_static_service_ip_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StaticServiceIpConnectivity>>,
+        ) -> Self {
+            Self::StaticServiceIpConnectivity(value.into())
+        }
+        /// Initializes the enum to the [ForwardSshConnectivity](Self::ForwardSshConnectivity) branch.
+        pub fn from_forward_ssh_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ForwardSshTunnelConnectivity>>,
+        ) -> Self {
+            Self::ForwardSshConnectivity(value.into())
+        }
+        /// Initializes the enum to the [PrivateConnectivity](Self::PrivateConnectivity) branch.
+        pub fn from_private_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PrivateConnectivity>>,
+        ) -> Self {
+            Self::PrivateConnectivity(value.into())
+        }
     }
 }
 
@@ -5183,6 +5353,25 @@ pub mod oracle_source_config {
                 >,
             ),
         }
+
+        impl LogFileAccess {
+            /// Initializes the enum to the [OracleAsmLogFileAccess](Self::OracleAsmLogFileAccess) branch.
+            pub fn from_oracle_asm_log_file_access(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::oracle_source_config::binary_log_parser::OracleAsmLogFileAccess>>,
+            ) -> Self {
+                Self::OracleAsmLogFileAccess(value.into())
+            }
+            /// Initializes the enum to the [LogFileDirectories](Self::LogFileDirectories) branch.
+            pub fn from_log_file_directories(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::oracle_source_config::binary_log_parser::LogFileDirectories,
+                    >,
+                >,
+            ) -> Self {
+                Self::LogFileDirectories(value.into())
+            }
+        }
     }
 
     /// The configuration for handle Oracle large objects.
@@ -5196,6 +5385,25 @@ pub mod oracle_source_config {
         StreamLargeObjects(std::boxed::Box<crate::model::oracle_source_config::StreamLargeObjects>),
     }
 
+    impl LargeObjectsHandling {
+        /// Initializes the enum to the [DropLargeObjects](Self::DropLargeObjects) branch.
+        pub fn from_drop_large_objects(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::oracle_source_config::DropLargeObjects>,
+            >,
+        ) -> Self {
+            Self::DropLargeObjects(value.into())
+        }
+        /// Initializes the enum to the [StreamLargeObjects](Self::StreamLargeObjects) branch.
+        pub fn from_stream_large_objects(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::oracle_source_config::StreamLargeObjects>,
+            >,
+        ) -> Self {
+            Self::StreamLargeObjects(value.into())
+        }
+    }
+
     /// Configuration to select the CDC method.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -5205,6 +5413,25 @@ pub mod oracle_source_config {
         LogMiner(std::boxed::Box<crate::model::oracle_source_config::LogMiner>),
         /// Use Binary Log Parser.
         BinaryLogParser(std::boxed::Box<crate::model::oracle_source_config::BinaryLogParser>),
+    }
+
+    impl CdcMethod {
+        /// Initializes the enum to the [LogMiner](Self::LogMiner) branch.
+        pub fn from_log_miner(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::oracle_source_config::LogMiner>,
+            >,
+        ) -> Self {
+            Self::LogMiner(value.into())
+        }
+        /// Initializes the enum to the [BinaryLogParser](Self::BinaryLogParser) branch.
+        pub fn from_binary_log_parser(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::oracle_source_config::BinaryLogParser>,
+            >,
+        ) -> Self {
+            Self::BinaryLogParser(value.into())
+        }
     }
 }
 
@@ -5888,6 +6115,21 @@ pub mod sql_server_source_config {
         /// CDC reader reads from change tables.
         ChangeTables(std::boxed::Box<crate::model::SqlServerChangeTables>),
     }
+
+    impl CdcMethod {
+        /// Initializes the enum to the [TransactionLogs](Self::TransactionLogs) branch.
+        pub fn from_transaction_logs(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerTransactionLogs>>,
+        ) -> Self {
+            Self::TransactionLogs(value.into())
+        }
+        /// Initializes the enum to the [ChangeTables](Self::ChangeTables) branch.
+        pub fn from_change_tables(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerChangeTables>>,
+        ) -> Self {
+            Self::ChangeTables(value.into())
+        }
+    }
 }
 
 /// Configuration to use Transaction Logs CDC read method.
@@ -6356,6 +6598,23 @@ pub mod mysql_source_config {
         /// Use GTID based replication.
         Gtid(std::boxed::Box<crate::model::mysql_source_config::Gtid>),
     }
+
+    impl CdcMethod {
+        /// Initializes the enum to the [BinaryLogPosition](Self::BinaryLogPosition) branch.
+        pub fn from_binary_log_position(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::mysql_source_config::BinaryLogPosition>,
+            >,
+        ) -> Self {
+            Self::BinaryLogPosition(value.into())
+        }
+        /// Initializes the enum to the [Gtid](Self::Gtid) branch.
+        pub fn from_gtid(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::mysql_source_config::Gtid>>,
+        ) -> Self {
+            Self::Gtid(value.into())
+        }
+    }
 }
 
 /// The configuration of the stream source.
@@ -6552,6 +6811,33 @@ pub mod source_config {
         PostgresqlSourceConfig(std::boxed::Box<crate::model::PostgresqlSourceConfig>),
         /// SQLServer data source configuration.
         SqlServerSourceConfig(std::boxed::Box<crate::model::SqlServerSourceConfig>),
+    }
+
+    impl SourceStreamConfig {
+        /// Initializes the enum to the [OracleSourceConfig](Self::OracleSourceConfig) branch.
+        pub fn from_oracle_source_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OracleSourceConfig>>,
+        ) -> Self {
+            Self::OracleSourceConfig(value.into())
+        }
+        /// Initializes the enum to the [MysqlSourceConfig](Self::MysqlSourceConfig) branch.
+        pub fn from_mysql_source_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MysqlSourceConfig>>,
+        ) -> Self {
+            Self::MysqlSourceConfig(value.into())
+        }
+        /// Initializes the enum to the [PostgresqlSourceConfig](Self::PostgresqlSourceConfig) branch.
+        pub fn from_postgresql_source_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PostgresqlSourceConfig>>,
+        ) -> Self {
+            Self::PostgresqlSourceConfig(value.into())
+        }
+        /// Initializes the enum to the [SqlServerSourceConfig](Self::SqlServerSourceConfig) branch.
+        pub fn from_sql_server_source_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerSourceConfig>>,
+        ) -> Self {
+            Self::SqlServerSourceConfig(value.into())
+        }
     }
 }
 
@@ -6859,6 +7145,21 @@ pub mod gcs_destination_config {
         AvroFileFormat(std::boxed::Box<crate::model::AvroFileFormat>),
         /// JSON file format configuration.
         JsonFileFormat(std::boxed::Box<crate::model::JsonFileFormat>),
+    }
+
+    impl FileFormat {
+        /// Initializes the enum to the [AvroFileFormat](Self::AvroFileFormat) branch.
+        pub fn from_avro_file_format(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AvroFileFormat>>,
+        ) -> Self {
+            Self::AvroFileFormat(value.into())
+        }
+        /// Initializes the enum to the [JsonFileFormat](Self::JsonFileFormat) branch.
+        pub fn from_json_file_format(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::JsonFileFormat>>,
+        ) -> Self {
+            Self::JsonFileFormat(value.into())
+        }
     }
 }
 
@@ -7270,6 +7571,27 @@ pub mod big_query_destination_config {
         ),
     }
 
+    impl DatasetConfig {
+        /// Initializes the enum to the [SingleTargetDataset](Self::SingleTargetDataset) branch.
+        pub fn from_single_target_dataset(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::big_query_destination_config::SingleTargetDataset>,
+            >,
+        ) -> Self {
+            Self::SingleTargetDataset(value.into())
+        }
+        /// Initializes the enum to the [SourceHierarchyDatasets](Self::SourceHierarchyDatasets) branch.
+        pub fn from_source_hierarchy_datasets(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::big_query_destination_config::SourceHierarchyDatasets,
+                >,
+            >,
+        ) -> Self {
+            Self::SourceHierarchyDatasets(value.into())
+        }
+    }
+
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
     #[non_exhaustive]
@@ -7278,6 +7600,25 @@ pub mod big_query_destination_config {
         Merge(std::boxed::Box<crate::model::big_query_destination_config::Merge>),
         /// Append only mode
         AppendOnly(std::boxed::Box<crate::model::big_query_destination_config::AppendOnly>),
+    }
+
+    impl WriteMode {
+        /// Initializes the enum to the [Merge](Self::Merge) branch.
+        pub fn from_merge(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::big_query_destination_config::Merge>,
+            >,
+        ) -> Self {
+            Self::Merge(value.into())
+        }
+        /// Initializes the enum to the [AppendOnly](Self::AppendOnly) branch.
+        pub fn from_append_only(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::big_query_destination_config::AppendOnly>,
+            >,
+        ) -> Self {
+            Self::AppendOnly(value.into())
+        }
     }
 }
 
@@ -7414,6 +7755,21 @@ pub mod destination_config {
         GcsDestinationConfig(std::boxed::Box<crate::model::GcsDestinationConfig>),
         /// BigQuery destination configuration.
         BigqueryDestinationConfig(std::boxed::Box<crate::model::BigQueryDestinationConfig>),
+    }
+
+    impl DestinationStreamConfig {
+        /// Initializes the enum to the [GcsDestinationConfig](Self::GcsDestinationConfig) branch.
+        pub fn from_gcs_destination_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestinationConfig>>,
+        ) -> Self {
+            Self::GcsDestinationConfig(value.into())
+        }
+        /// Initializes the enum to the [BigqueryDestinationConfig](Self::BigqueryDestinationConfig) branch.
+        pub fn from_bigquery_destination_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDestinationConfig>>,
+        ) -> Self {
+            Self::BigqueryDestinationConfig(value.into())
+        }
     }
 }
 
@@ -7849,6 +8205,33 @@ pub mod stream {
             /// SQLServer data source objects to avoid backfilling
             SqlServerExcludedObjects(std::boxed::Box<crate::model::SqlServerRdbms>),
         }
+
+        impl ExcludedObjects {
+            /// Initializes the enum to the [OracleExcludedObjects](Self::OracleExcludedObjects) branch.
+            pub fn from_oracle_excluded_objects(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::OracleRdbms>>,
+            ) -> Self {
+                Self::OracleExcludedObjects(value.into())
+            }
+            /// Initializes the enum to the [MysqlExcludedObjects](Self::MysqlExcludedObjects) branch.
+            pub fn from_mysql_excluded_objects(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::MysqlRdbms>>,
+            ) -> Self {
+                Self::MysqlExcludedObjects(value.into())
+            }
+            /// Initializes the enum to the [PostgresqlExcludedObjects](Self::PostgresqlExcludedObjects) branch.
+            pub fn from_postgresql_excluded_objects(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::PostgresqlRdbms>>,
+            ) -> Self {
+                Self::PostgresqlExcludedObjects(value.into())
+            }
+            /// Initializes the enum to the [SqlServerExcludedObjects](Self::SqlServerExcludedObjects) branch.
+            pub fn from_sql_server_excluded_objects(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerRdbms>>,
+            ) -> Self {
+                Self::SqlServerExcludedObjects(value.into())
+            }
+        }
     }
 
     /// Backfill strategy to disable automatic backfill for the Stream's objects.
@@ -7944,6 +8327,21 @@ pub mod stream {
         BackfillAll(std::boxed::Box<crate::model::stream::BackfillAllStrategy>),
         /// Do not automatically backfill any objects.
         BackfillNone(std::boxed::Box<crate::model::stream::BackfillNoneStrategy>),
+    }
+
+    impl BackfillStrategy {
+        /// Initializes the enum to the [BackfillAll](Self::BackfillAll) branch.
+        pub fn from_backfill_all(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::stream::BackfillAllStrategy>>,
+        ) -> Self {
+            Self::BackfillAll(value.into())
+        }
+        /// Initializes the enum to the [BackfillNone](Self::BackfillNone) branch.
+        pub fn from_backfill_none(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::stream::BackfillNoneStrategy>>,
+        ) -> Self {
+            Self::BackfillNone(value.into())
+        }
     }
 }
 
@@ -8422,6 +8820,41 @@ pub mod source_object_identifier {
         SqlServerIdentifier(
             std::boxed::Box<crate::model::source_object_identifier::SqlServerObjectIdentifier>,
         ),
+    }
+
+    impl SourceIdentifier {
+        /// Initializes the enum to the [OracleIdentifier](Self::OracleIdentifier) branch.
+        pub fn from_oracle_identifier(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::source_object_identifier::OracleObjectIdentifier>,
+            >,
+        ) -> Self {
+            Self::OracleIdentifier(value.into())
+        }
+        /// Initializes the enum to the [MysqlIdentifier](Self::MysqlIdentifier) branch.
+        pub fn from_mysql_identifier(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::source_object_identifier::MysqlObjectIdentifier>,
+            >,
+        ) -> Self {
+            Self::MysqlIdentifier(value.into())
+        }
+        /// Initializes the enum to the [PostgresqlIdentifier](Self::PostgresqlIdentifier) branch.
+        pub fn from_postgresql_identifier(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::source_object_identifier::PostgresqlObjectIdentifier>,
+            >,
+        ) -> Self {
+            Self::PostgresqlIdentifier(value.into())
+        }
+        /// Initializes the enum to the [SqlServerIdentifier](Self::SqlServerIdentifier) branch.
+        pub fn from_sql_server_identifier(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::source_object_identifier::SqlServerObjectIdentifier>,
+            >,
+        ) -> Self {
+            Self::SqlServerIdentifier(value.into())
+        }
     }
 }
 
@@ -9297,6 +9730,27 @@ pub mod cdc_strategy {
             /// SqlServer LSN to start replicating from.
             SqlServerLsnPosition(std::boxed::Box<crate::model::SqlServerLsnPosition>),
         }
+
+        impl Position {
+            /// Initializes the enum to the [MysqlLogPosition](Self::MysqlLogPosition) branch.
+            pub fn from_mysql_log_position(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::MysqlLogPosition>>,
+            ) -> Self {
+                Self::MysqlLogPosition(value.into())
+            }
+            /// Initializes the enum to the [OracleScnPosition](Self::OracleScnPosition) branch.
+            pub fn from_oracle_scn_position(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::OracleScnPosition>>,
+            ) -> Self {
+                Self::OracleScnPosition(value.into())
+            }
+            /// Initializes the enum to the [SqlServerLsnPosition](Self::SqlServerLsnPosition) branch.
+            pub fn from_sql_server_lsn_position(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerLsnPosition>>,
+            ) -> Self {
+                Self::SqlServerLsnPosition(value.into())
+            }
+        }
     }
 
     /// The position to start reading from when starting, resuming, or recovering
@@ -9317,6 +9771,33 @@ pub mod cdc_strategy {
         ),
         /// Optional. Start replicating from a specific position in the source.
         SpecificStartPosition(std::boxed::Box<crate::model::cdc_strategy::SpecificStartPosition>),
+    }
+
+    impl StartPosition {
+        /// Initializes the enum to the [MostRecentStartPosition](Self::MostRecentStartPosition) branch.
+        pub fn from_most_recent_start_position(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::cdc_strategy::MostRecentStartPosition>,
+            >,
+        ) -> Self {
+            Self::MostRecentStartPosition(value.into())
+        }
+        /// Initializes the enum to the [NextAvailableStartPosition](Self::NextAvailableStartPosition) branch.
+        pub fn from_next_available_start_position(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::cdc_strategy::NextAvailableStartPosition>,
+            >,
+        ) -> Self {
+            Self::NextAvailableStartPosition(value.into())
+        }
+        /// Initializes the enum to the [SpecificStartPosition](Self::SpecificStartPosition) branch.
+        pub fn from_specific_start_position(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::cdc_strategy::SpecificStartPosition>,
+            >,
+        ) -> Self {
+            Self::SpecificStartPosition(value.into())
+        }
     }
 }
 

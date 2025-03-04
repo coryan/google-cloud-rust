@@ -1445,6 +1445,13 @@ pub mod aws_s_3_data {
         /// This network is shared between other users of Storage Transfer Service.
         ManagedPrivateNetwork(bool),
     }
+
+    impl PrivateNetwork {
+        /// Initializes the enum to the [ManagedPrivateNetwork](Self::ManagedPrivateNetwork) branch.
+        pub fn from_managed_private_network(value: impl std::convert::Into<bool>) -> Self {
+            Self::ManagedPrivateNetwork(value.into())
+        }
+    }
 }
 
 /// An AzureBlobStorageData resource can be a data source, but not a data sink.
@@ -1823,6 +1830,15 @@ pub mod aws_s_3_compatible_data {
     pub enum DataProvider {
         /// A S3 compatible metadata.
         S3Metadata(std::boxed::Box<crate::model::S3CompatibleMetadata>),
+    }
+
+    impl DataProvider {
+        /// Initializes the enum to the [S3Metadata](Self::S3Metadata) branch.
+        pub fn from_s3_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::S3CompatibleMetadata>>,
+        ) -> Self {
+            Self::S3Metadata(value.into())
+        }
     }
 }
 
@@ -2875,6 +2891,21 @@ pub mod transfer_spec {
         PosixDataSink(std::boxed::Box<crate::model::PosixFilesystem>),
     }
 
+    impl DataSink {
+        /// Initializes the enum to the [GcsDataSink](Self::GcsDataSink) branch.
+        pub fn from_gcs_data_sink(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsData>>,
+        ) -> Self {
+            Self::GcsDataSink(value.into())
+        }
+        /// Initializes the enum to the [PosixDataSink](Self::PosixDataSink) branch.
+        pub fn from_posix_data_sink(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PosixFilesystem>>,
+        ) -> Self {
+            Self::PosixDataSink(value.into())
+        }
+    }
+
     /// The read source of the data.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -2896,6 +2927,51 @@ pub mod transfer_spec {
         HdfsDataSource(std::boxed::Box<crate::model::HdfsData>),
     }
 
+    impl DataSource {
+        /// Initializes the enum to the [GcsDataSource](Self::GcsDataSource) branch.
+        pub fn from_gcs_data_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsData>>,
+        ) -> Self {
+            Self::GcsDataSource(value.into())
+        }
+        /// Initializes the enum to the [AwsS3DataSource](Self::AwsS3DataSource) branch.
+        pub fn from_aws_s3_data_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsS3Data>>,
+        ) -> Self {
+            Self::AwsS3DataSource(value.into())
+        }
+        /// Initializes the enum to the [HttpDataSource](Self::HttpDataSource) branch.
+        pub fn from_http_data_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HttpData>>,
+        ) -> Self {
+            Self::HttpDataSource(value.into())
+        }
+        /// Initializes the enum to the [PosixDataSource](Self::PosixDataSource) branch.
+        pub fn from_posix_data_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PosixFilesystem>>,
+        ) -> Self {
+            Self::PosixDataSource(value.into())
+        }
+        /// Initializes the enum to the [AzureBlobStorageDataSource](Self::AzureBlobStorageDataSource) branch.
+        pub fn from_azure_blob_storage_data_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AzureBlobStorageData>>,
+        ) -> Self {
+            Self::AzureBlobStorageDataSource(value.into())
+        }
+        /// Initializes the enum to the [AwsS3CompatibleDataSource](Self::AwsS3CompatibleDataSource) branch.
+        pub fn from_aws_s3_compatible_data_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsS3CompatibleData>>,
+        ) -> Self {
+            Self::AwsS3CompatibleDataSource(value.into())
+        }
+        /// Initializes the enum to the [HdfsDataSource](Self::HdfsDataSource) branch.
+        pub fn from_hdfs_data_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HdfsData>>,
+        ) -> Self {
+            Self::HdfsDataSource(value.into())
+        }
+    }
+
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
     #[non_exhaustive]
@@ -2907,6 +2983,15 @@ pub mod transfer_spec {
         /// systems](https://cloud.google.com/storage-transfer/docs/file-to-file) for
         /// more information.
         GcsIntermediateDataLocation(std::boxed::Box<crate::model::GcsData>),
+    }
+
+    impl IntermediateDataLocation {
+        /// Initializes the enum to the [GcsIntermediateDataLocation](Self::GcsIntermediateDataLocation) branch.
+        pub fn from_gcs_intermediate_data_location(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsData>>,
+        ) -> Self {
+            Self::GcsIntermediateDataLocation(value.into())
+        }
     }
 }
 
@@ -3073,6 +3158,15 @@ pub mod replication_spec {
         GcsDataSource(std::boxed::Box<crate::model::GcsData>),
     }
 
+    impl DataSource {
+        /// Initializes the enum to the [GcsDataSource](Self::GcsDataSource) branch.
+        pub fn from_gcs_data_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsData>>,
+        ) -> Self {
+            Self::GcsDataSource(value.into())
+        }
+    }
+
     /// The destination for replicated objects.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -3080,6 +3174,15 @@ pub mod replication_spec {
     pub enum DataSink {
         /// The Cloud Storage bucket to which to replicate objects.
         GcsDataSink(std::boxed::Box<crate::model::GcsData>),
+    }
+
+    impl DataSink {
+        /// Initializes the enum to the [GcsDataSink](Self::GcsDataSink) branch.
+        pub fn from_gcs_data_sink(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsData>>,
+        ) -> Self {
+            Self::GcsDataSink(value.into())
+        }
     }
 }
 

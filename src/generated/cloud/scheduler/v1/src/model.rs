@@ -858,6 +858,27 @@ pub mod job {
         /// HTTP target.
         HttpTarget(std::boxed::Box<crate::model::HttpTarget>),
     }
+
+    impl Target {
+        /// Initializes the enum to the [PubsubTarget](Self::PubsubTarget) branch.
+        pub fn from_pubsub_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PubsubTarget>>,
+        ) -> Self {
+            Self::PubsubTarget(value.into())
+        }
+        /// Initializes the enum to the [AppEngineHttpTarget](Self::AppEngineHttpTarget) branch.
+        pub fn from_app_engine_http_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AppEngineHttpTarget>>,
+        ) -> Self {
+            Self::AppEngineHttpTarget(value.into())
+        }
+        /// Initializes the enum to the [HttpTarget](Self::HttpTarget) branch.
+        pub fn from_http_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HttpTarget>>,
+        ) -> Self {
+            Self::HttpTarget(value.into())
+        }
+    }
 }
 
 /// Settings that determine the retry behavior.
@@ -1238,6 +1259,21 @@ pub mod http_target {
         /// calling Cloud Run, or endpoints where you intend to validate the token
         /// yourself.
         OidcToken(std::boxed::Box<crate::model::OidcToken>),
+    }
+
+    impl AuthorizationHeader {
+        /// Initializes the enum to the [OauthToken](Self::OauthToken) branch.
+        pub fn from_oauth_token(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OAuthToken>>,
+        ) -> Self {
+            Self::OauthToken(value.into())
+        }
+        /// Initializes the enum to the [OidcToken](Self::OidcToken) branch.
+        pub fn from_oidc_token(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OidcToken>>,
+        ) -> Self {
+            Self::OidcToken(value.into())
+        }
     }
 }
 

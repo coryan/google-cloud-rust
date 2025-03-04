@@ -1026,6 +1026,21 @@ pub mod import_adaptive_mt_file_request {
         /// Google Cloud Storage file source.
         GcsInputSource(std::boxed::Box<crate::model::GcsInputSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [FileInputSource](Self::FileInputSource) branch.
+        pub fn from_file_input_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FileInputSource>>,
+        ) -> Self {
+            Self::FileInputSource(value.into())
+        }
+        /// Initializes the enum to the [GcsInputSource](Self::GcsInputSource) branch.
+        pub fn from_gcs_input_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsInputSource>>,
+        ) -> Self {
+            Self::GcsInputSource(value.into())
+        }
+    }
 }
 
 /// The response for importing an AdaptiveMtFile
@@ -1543,6 +1558,15 @@ pub mod dataset_input_config {
             /// Google Cloud Storage file source.
             GcsSource(std::boxed::Box<crate::model::GcsInputSource>),
         }
+
+        impl Source {
+            /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+            pub fn from_gcs_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::GcsInputSource>>,
+            ) -> Self {
+                Self::GcsSource(value.into())
+            }
+        }
     }
 }
 
@@ -1736,6 +1760,15 @@ pub mod dataset_output_config {
     pub enum Destination {
         /// Google Cloud Storage destination to write the output.
         GcsDestination(std::boxed::Box<crate::model::GcsOutputDestination>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsOutputDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
     }
 }
 
@@ -3385,6 +3418,25 @@ pub mod glossary_entry {
         /// Used for an equivalent term sets glossary.
         TermsSet(std::boxed::Box<crate::model::glossary_entry::GlossaryTermsSet>),
     }
+
+    impl Data {
+        /// Initializes the enum to the [TermsPair](Self::TermsPair) branch.
+        pub fn from_terms_pair(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::glossary_entry::GlossaryTermsPair>,
+            >,
+        ) -> Self {
+            Self::TermsPair(value.into())
+        }
+        /// Initializes the enum to the [TermsSet](Self::TermsSet) branch.
+        pub fn from_terms_set(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::glossary_entry::GlossaryTermsSet>,
+            >,
+        ) -> Self {
+            Self::TermsSet(value.into())
+        }
+    }
 }
 
 /// Represents a single glossary term
@@ -4075,6 +4127,13 @@ pub mod detect_language_request {
         /// The content of the input stored as a string.
         Content(std::string::String),
     }
+
+    impl Source {
+        /// Initializes the enum to the [Content](Self::Content) branch.
+        pub fn from_content(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Content(value.into())
+        }
+    }
 }
 
 /// The response message for language detection.
@@ -4457,6 +4516,15 @@ pub mod input_config {
         /// treated as a single large chunk of text.
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// The Google Cloud Storage location for the output content.
@@ -4644,6 +4712,15 @@ pub mod output_config {
         /// `gs://translation_test/a_b_c_'trg'_glossary_errors.[extension]`
         GcsDestination(std::boxed::Box<crate::model::GcsDestination>),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
+    }
 }
 
 /// A document translation request input config.
@@ -4780,6 +4857,19 @@ pub mod document_input_config {
         /// Google Cloud Storage location. This must be a single file.
         /// For example: gs://example_bucket/example_file.pdf
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [Content](Self::Content) branch.
+        pub fn from_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::Content(value.into())
+        }
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
     }
 }
 
@@ -4933,6 +5023,15 @@ pub mod document_output_config {
         /// document translation, no output will be stored in the Cloud Storage
         /// bucket.
         GcsDestination(std::boxed::Box<crate::model::GcsDestination>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
     }
 }
 
@@ -5793,6 +5892,15 @@ pub mod glossary_input_config {
         ///   [glossaries](https://cloud.google.com/translate/docs/advanced/glossary).
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// Represents a glossary built from user-provided data.
@@ -6057,6 +6165,21 @@ pub mod glossary {
         LanguagePair(std::boxed::Box<crate::model::glossary::LanguageCodePair>),
         /// Used with equivalent term set glossaries.
         LanguageCodesSet(std::boxed::Box<crate::model::glossary::LanguageCodesSet>),
+    }
+
+    impl Languages {
+        /// Initializes the enum to the [LanguagePair](Self::LanguagePair) branch.
+        pub fn from_language_pair(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::glossary::LanguageCodePair>>,
+        ) -> Self {
+            Self::LanguagePair(value.into())
+        }
+        /// Initializes the enum to the [LanguageCodesSet](Self::LanguageCodesSet) branch.
+        pub fn from_language_codes_set(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::glossary::LanguageCodesSet>>,
+        ) -> Self {
+            Self::LanguageCodesSet(value.into())
+        }
     }
 }
 
@@ -7314,6 +7437,15 @@ pub mod batch_document_input_config {
         /// The max file size to support for all input documents is 1GB.
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// Output configuration for BatchTranslateDocument request.
@@ -7442,6 +7574,15 @@ pub mod batch_document_output_config {
         /// `gs://translation_test/a_b_c_[trg]_glossary_translation.txt`. The error
         /// output is a txt file containing error details.
         GcsDestination(std::boxed::Box<crate::model::GcsDestination>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
     }
 }
 

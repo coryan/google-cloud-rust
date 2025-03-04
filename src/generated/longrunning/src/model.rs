@@ -178,6 +178,19 @@ pub mod operation {
         /// `TakeSnapshotResponse`.
         Response(std::boxed::Box<wkt::Any>),
     }
+
+    impl Result {
+        /// Initializes the enum to the [Error](Self::Error) branch.
+        pub fn from_error(
+            value: impl std::convert::Into<std::boxed::Box<rpc::model::Status>>,
+        ) -> Self {
+            Self::Error(value.into())
+        }
+        /// Initializes the enum to the [Response](Self::Response) branch.
+        pub fn from_response(value: impl std::convert::Into<std::boxed::Box<wkt::Any>>) -> Self {
+            Self::Response(value.into())
+        }
+    }
 }
 
 /// The request message for

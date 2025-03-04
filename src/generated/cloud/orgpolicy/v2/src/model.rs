@@ -340,6 +340,21 @@ pub mod constraint {
         /// Defines this constraint as being a BooleanConstraint.
         BooleanConstraint(std::boxed::Box<crate::model::constraint::BooleanConstraint>),
     }
+
+    impl ConstraintType {
+        /// Initializes the enum to the [ListConstraint](Self::ListConstraint) branch.
+        pub fn from_list_constraint(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::constraint::ListConstraint>>,
+        ) -> Self {
+            Self::ListConstraint(value.into())
+        }
+        /// Initializes the enum to the [BooleanConstraint](Self::BooleanConstraint) branch.
+        pub fn from_boolean_constraint(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::constraint::BooleanConstraint>>,
+        ) -> Self {
+            Self::BooleanConstraint(value.into())
+        }
+    }
 }
 
 /// A custom constraint defined by customers which can *only* be applied to the
@@ -1096,6 +1111,29 @@ pub mod policy_spec {
             /// configuration is acceptable.
             /// This field can be set only in policies for boolean constraints.
             Enforce(bool),
+        }
+
+        impl Kind {
+            /// Initializes the enum to the [Values](Self::Values) branch.
+            pub fn from_values(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::policy_spec::policy_rule::StringValues>,
+                >,
+            ) -> Self {
+                Self::Values(value.into())
+            }
+            /// Initializes the enum to the [AllowAll](Self::AllowAll) branch.
+            pub fn from_allow_all(value: impl std::convert::Into<bool>) -> Self {
+                Self::AllowAll(value.into())
+            }
+            /// Initializes the enum to the [DenyAll](Self::DenyAll) branch.
+            pub fn from_deny_all(value: impl std::convert::Into<bool>) -> Self {
+                Self::DenyAll(value.into())
+            }
+            /// Initializes the enum to the [Enforce](Self::Enforce) branch.
+            pub fn from_enforce(value: impl std::convert::Into<bool>) -> Self {
+                Self::Enforce(value.into())
+            }
         }
     }
 }

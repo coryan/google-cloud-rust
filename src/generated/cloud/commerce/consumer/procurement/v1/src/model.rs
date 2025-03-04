@@ -206,6 +206,25 @@ pub mod assignment_protocol {
         /// Allow automatic assignments triggered by data plane operations.
         AutoAssignmentType(std::boxed::Box<crate::model::assignment_protocol::AutoAssignmentType>),
     }
+
+    impl AssignmentType {
+        /// Initializes the enum to the [ManualAssignmentType](Self::ManualAssignmentType) branch.
+        pub fn from_manual_assignment_type(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::assignment_protocol::ManualAssignmentType>,
+            >,
+        ) -> Self {
+            Self::ManualAssignmentType(value.into())
+        }
+        /// Initializes the enum to the [AutoAssignmentType](Self::AutoAssignmentType) branch.
+        pub fn from_auto_assignment_type(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::assignment_protocol::AutoAssignmentType>,
+            >,
+        ) -> Self {
+            Self::AutoAssignmentType(value.into())
+        }
+    }
 }
 
 /// A license pool represents a pool of licenses that can be assigned to users.
@@ -1249,6 +1268,21 @@ pub mod parameter {
             StringValue(std::string::String),
             /// Represents a double value.
             DoubleValue(f64),
+        }
+
+        impl Kind {
+            /// Initializes the enum to the [Int64Value](Self::Int64Value) branch.
+            pub fn from_int64_value(value: impl std::convert::Into<i64>) -> Self {
+                Self::Int64Value(value.into())
+            }
+            /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+            pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::StringValue(value.into())
+            }
+            /// Initializes the enum to the [DoubleValue](Self::DoubleValue) branch.
+            pub fn from_double_value(value: impl std::convert::Into<f64>) -> Self {
+                Self::DoubleValue(value.into())
+            }
         }
     }
 }

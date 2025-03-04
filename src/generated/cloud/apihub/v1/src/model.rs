@@ -2492,6 +2492,45 @@ pub mod api_hub_resource {
         /// display_name and description fields are populated in search results.
         Version(std::boxed::Box<crate::model::Version>),
     }
+
+    impl Resource {
+        /// Initializes the enum to the [Api](Self::Api) branch.
+        pub fn from_api(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Api>>,
+        ) -> Self {
+            Self::Api(value.into())
+        }
+        /// Initializes the enum to the [Operation](Self::Operation) branch.
+        pub fn from_operation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ApiOperation>>,
+        ) -> Self {
+            Self::Operation(value.into())
+        }
+        /// Initializes the enum to the [Deployment](Self::Deployment) branch.
+        pub fn from_deployment(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Deployment>>,
+        ) -> Self {
+            Self::Deployment(value.into())
+        }
+        /// Initializes the enum to the [Spec](Self::Spec) branch.
+        pub fn from_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Spec>>,
+        ) -> Self {
+            Self::Spec(value.into())
+        }
+        /// Initializes the enum to the [Definition](Self::Definition) branch.
+        pub fn from_definition(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Definition>>,
+        ) -> Self {
+            Self::Definition(value.into())
+        }
+        /// Initializes the enum to the [Version](Self::Version) branch.
+        pub fn from_version(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Version>>,
+        ) -> Self {
+            Self::Version(value.into())
+        }
+    }
 }
 
 /// Represents the search results.
@@ -4571,6 +4610,15 @@ pub mod definition {
         /// Output only. The value of a schema definition.
         Schema(std::boxed::Box<crate::model::Schema>),
     }
+
+    impl Value {
+        /// Initializes the enum to the [Schema](Self::Schema) branch.
+        pub fn from_schema(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Schema>>,
+        ) -> Self {
+            Self::Schema(value.into())
+        }
+    }
 }
 
 /// An attribute in the API Hub.
@@ -5099,6 +5147,15 @@ pub mod spec_details {
         /// [google.cloud.apihub.v1.ApiHub.ListApiOperations]: crate::client::ApiHub::list_api_operations
         OpenApiSpecDetails(std::boxed::Box<crate::model::OpenApiSpecDetails>),
     }
+
+    impl Details {
+        /// Initializes the enum to the [OpenApiSpecDetails](Self::OpenApiSpecDetails) branch.
+        pub fn from_open_api_spec_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OpenApiSpecDetails>>,
+        ) -> Self {
+            Self::OpenApiSpecDetails(value.into())
+        }
+    }
 }
 
 /// OpenApiSpecDetails contains the details parsed from an OpenAPI spec in
@@ -5326,6 +5383,15 @@ pub mod operation_details {
     pub enum Operation {
         /// The HTTP Operation.
         HttpOperation(std::boxed::Box<crate::model::HttpOperation>),
+    }
+
+    impl Operation {
+        /// Initializes the enum to the [HttpOperation](Self::HttpOperation) branch.
+        pub fn from_http_operation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HttpOperation>>,
+        ) -> Self {
+            Self::HttpOperation(value.into())
+        }
     }
 }
 
@@ -5817,6 +5883,33 @@ pub mod attribute_values {
         /// type is JSON.
         JsonValues(std::boxed::Box<crate::model::attribute_values::StringAttributeValues>),
     }
+
+    impl Value {
+        /// Initializes the enum to the [EnumValues](Self::EnumValues) branch.
+        pub fn from_enum_values(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::attribute_values::EnumAttributeValues>,
+            >,
+        ) -> Self {
+            Self::EnumValues(value.into())
+        }
+        /// Initializes the enum to the [StringValues](Self::StringValues) branch.
+        pub fn from_string_values(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::attribute_values::StringAttributeValues>,
+            >,
+        ) -> Self {
+            Self::StringValues(value.into())
+        }
+        /// Initializes the enum to the [JsonValues](Self::JsonValues) branch.
+        pub fn from_json_values(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::attribute_values::StringAttributeValues>,
+            >,
+        ) -> Self {
+            Self::JsonValues(value.into())
+        }
+    }
 }
 
 /// A dependency resource defined in the API hub describes a dependency directed
@@ -6195,6 +6288,21 @@ pub mod dependency_entity_reference {
         /// Format:
         /// `projects/{project}/locations/{location}/externalApis/{external_api}`
         ExternalApiResourceName(std::string::String),
+    }
+
+    impl Identifier {
+        /// Initializes the enum to the [OperationResourceName](Self::OperationResourceName) branch.
+        pub fn from_operation_resource_name(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::OperationResourceName(value.into())
+        }
+        /// Initializes the enum to the [ExternalApiResourceName](Self::ExternalApiResourceName) branch.
+        pub fn from_external_api_resource_name(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::ExternalApiResourceName(value.into())
+        }
     }
 }
 

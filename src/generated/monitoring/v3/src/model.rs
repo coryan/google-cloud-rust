@@ -868,6 +868,17 @@ pub mod alert_policy {
                 /// predicate for the condition to be triggered.
                 Percent(f64),
             }
+
+            impl Type {
+                /// Initializes the enum to the [Count](Self::Count) branch.
+                pub fn from_count(value: impl std::convert::Into<i32>) -> Self {
+                    Self::Count(value.into())
+                }
+                /// Initializes the enum to the [Percent](Self::Percent) branch.
+                pub fn from_percent(value: impl std::convert::Into<f64>) -> Self {
+                    Self::Percent(value.into())
+                }
+            }
         }
 
         /// A condition type that compares a collection of time series
@@ -2086,6 +2097,39 @@ pub mod alert_policy {
                 Daily(std::boxed::Box<crate::model::alert_policy::condition::sql_condition::Daily>),
             }
 
+            impl Schedule {
+                /// Initializes the enum to the [Minutes](Self::Minutes) branch.
+                pub fn from_minutes(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::alert_policy::condition::sql_condition::Minutes,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::Minutes(value.into())
+                }
+                /// Initializes the enum to the [Hourly](Self::Hourly) branch.
+                pub fn from_hourly(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::alert_policy::condition::sql_condition::Hourly,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::Hourly(value.into())
+                }
+                /// Initializes the enum to the [Daily](Self::Daily) branch.
+                pub fn from_daily(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::alert_policy::condition::sql_condition::Daily,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::Daily(value.into())
+                }
+            }
+
             /// The test to be run against the SQL result set.
             #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
             #[serde(rename_all = "camelCase")]
@@ -2103,6 +2147,29 @@ pub mod alert_policy {
                         crate::model::alert_policy::condition::sql_condition::BooleanTest,
                     >,
                 ),
+            }
+
+            impl Evaluate {
+                /// Initializes the enum to the [RowCountTest](Self::RowCountTest) branch.
+                pub fn from_row_count_test(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::alert_policy::condition::sql_condition::RowCountTest,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::RowCountTest(value.into())
+                }
+                /// Initializes the enum to the [BooleanTest](Self::BooleanTest) branch.
+                pub fn from_boolean_test(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::alert_policy::condition::sql_condition::BooleanTest,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::BooleanTest(value.into())
+                }
             }
         }
 
@@ -2190,6 +2257,61 @@ pub mod alert_policy {
             ),
             /// A condition that periodically evaluates a SQL query result.
             ConditionSql(std::boxed::Box<crate::model::alert_policy::condition::SqlCondition>),
+        }
+
+        impl Condition {
+            /// Initializes the enum to the [ConditionThreshold](Self::ConditionThreshold) branch.
+            pub fn from_condition_threshold(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::alert_policy::condition::MetricThreshold>,
+                >,
+            ) -> Self {
+                Self::ConditionThreshold(value.into())
+            }
+            /// Initializes the enum to the [ConditionAbsent](Self::ConditionAbsent) branch.
+            pub fn from_condition_absent(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::alert_policy::condition::MetricAbsence>,
+                >,
+            ) -> Self {
+                Self::ConditionAbsent(value.into())
+            }
+            /// Initializes the enum to the [ConditionMatchedLog](Self::ConditionMatchedLog) branch.
+            pub fn from_condition_matched_log(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::alert_policy::condition::LogMatch>,
+                >,
+            ) -> Self {
+                Self::ConditionMatchedLog(value.into())
+            }
+            /// Initializes the enum to the [ConditionMonitoringQueryLanguage](Self::ConditionMonitoringQueryLanguage) branch.
+            pub fn from_condition_monitoring_query_language(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::alert_policy::condition::MonitoringQueryLanguageCondition,
+                    >,
+                >,
+            ) -> Self {
+                Self::ConditionMonitoringQueryLanguage(value.into())
+            }
+            /// Initializes the enum to the [ConditionPrometheusQueryLanguage](Self::ConditionPrometheusQueryLanguage) branch.
+            pub fn from_condition_prometheus_query_language(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::alert_policy::condition::PrometheusQueryLanguageCondition,
+                    >,
+                >,
+            ) -> Self {
+                Self::ConditionPrometheusQueryLanguage(value.into())
+            }
+            /// Initializes the enum to the [ConditionSql](Self::ConditionSql) branch.
+            pub fn from_condition_sql(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::alert_policy::condition::SqlCondition>,
+                >,
+            ) -> Self {
+                Self::ConditionSql(value.into())
+            }
         }
     }
 
@@ -3068,6 +3190,31 @@ pub mod typed_value {
         StringValue(std::string::String),
         /// A distribution value.
         DistributionValue(std::boxed::Box<api::model::Distribution>),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+        pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolValue(value.into())
+        }
+        /// Initializes the enum to the [Int64Value](Self::Int64Value) branch.
+        pub fn from_int64_value(value: impl std::convert::Into<i64>) -> Self {
+            Self::Int64Value(value.into())
+        }
+        /// Initializes the enum to the [DoubleValue](Self::DoubleValue) branch.
+        pub fn from_double_value(value: impl std::convert::Into<f64>) -> Self {
+            Self::DoubleValue(value.into())
+        }
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
+        /// Initializes the enum to the [DistributionValue](Self::DistributionValue) branch.
+        pub fn from_distribution_value(
+            value: impl std::convert::Into<std::boxed::Box<api::model::Distribution>>,
+        ) -> Self {
+            Self::DistributionValue(value.into())
+        }
     }
 }
 
@@ -3991,6 +4138,25 @@ pub mod list_groups_request {
         /// the results returned by the `children_of_group` filter, and includes
         /// children-of-children, and so forth.
         DescendantsOfGroup(std::string::String),
+    }
+
+    impl Filter {
+        /// Initializes the enum to the [ChildrenOfGroup](Self::ChildrenOfGroup) branch.
+        pub fn from_children_of_group(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::ChildrenOfGroup(value.into())
+        }
+        /// Initializes the enum to the [AncestorsOfGroup](Self::AncestorsOfGroup) branch.
+        pub fn from_ancestors_of_group(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::AncestorsOfGroup(value.into())
+        }
+        /// Initializes the enum to the [DescendantsOfGroup](Self::DescendantsOfGroup) branch.
+        pub fn from_descendants_of_group(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::DescendantsOfGroup(value.into())
+        }
     }
 }
 
@@ -4947,6 +5113,21 @@ pub mod label_value {
         Int64Value(i64),
         /// A string label value.
         StringValue(std::string::String),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+        pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolValue(value.into())
+        }
+        /// Initializes the enum to the [Int64Value](Self::Int64Value) branch.
+        pub fn from_int64_value(value: impl std::convert::Into<i64>) -> Self {
+            Self::Int64Value(value.into())
+        }
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
     }
 }
 
@@ -8528,6 +8709,71 @@ pub mod service {
         /// Type used for GKE Services (the Kubernetes concept of a service).
         GkeService(std::boxed::Box<crate::model::service::GkeService>),
     }
+
+    impl Identifier {
+        /// Initializes the enum to the [Custom](Self::Custom) branch.
+        pub fn from_custom(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::service::Custom>>,
+        ) -> Self {
+            Self::Custom(value.into())
+        }
+        /// Initializes the enum to the [AppEngine](Self::AppEngine) branch.
+        pub fn from_app_engine(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::service::AppEngine>>,
+        ) -> Self {
+            Self::AppEngine(value.into())
+        }
+        /// Initializes the enum to the [CloudEndpoints](Self::CloudEndpoints) branch.
+        pub fn from_cloud_endpoints(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::service::CloudEndpoints>>,
+        ) -> Self {
+            Self::CloudEndpoints(value.into())
+        }
+        /// Initializes the enum to the [ClusterIstio](Self::ClusterIstio) branch.
+        pub fn from_cluster_istio(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::service::ClusterIstio>>,
+        ) -> Self {
+            Self::ClusterIstio(value.into())
+        }
+        /// Initializes the enum to the [MeshIstio](Self::MeshIstio) branch.
+        pub fn from_mesh_istio(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::service::MeshIstio>>,
+        ) -> Self {
+            Self::MeshIstio(value.into())
+        }
+        /// Initializes the enum to the [IstioCanonicalService](Self::IstioCanonicalService) branch.
+        pub fn from_istio_canonical_service(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::service::IstioCanonicalService>,
+            >,
+        ) -> Self {
+            Self::IstioCanonicalService(value.into())
+        }
+        /// Initializes the enum to the [CloudRun](Self::CloudRun) branch.
+        pub fn from_cloud_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::service::CloudRun>>,
+        ) -> Self {
+            Self::CloudRun(value.into())
+        }
+        /// Initializes the enum to the [GkeNamespace](Self::GkeNamespace) branch.
+        pub fn from_gke_namespace(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::service::GkeNamespace>>,
+        ) -> Self {
+            Self::GkeNamespace(value.into())
+        }
+        /// Initializes the enum to the [GkeWorkload](Self::GkeWorkload) branch.
+        pub fn from_gke_workload(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::service::GkeWorkload>>,
+        ) -> Self {
+            Self::GkeWorkload(value.into())
+        }
+        /// Initializes the enum to the [GkeService](Self::GkeService) branch.
+        pub fn from_gke_service(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::service::GkeService>>,
+        ) -> Self {
+            Self::GkeService(value.into())
+        }
+    }
 }
 
 /// A Service-Level Objective (SLO) describes a level of desired good service. It
@@ -8764,6 +9010,21 @@ pub mod service_level_objective {
         /// `MONTH` are supported.
         CalendarPeriod(gtype::model::CalendarPeriod),
     }
+
+    impl Period {
+        /// Initializes the enum to the [RollingPeriod](Self::RollingPeriod) branch.
+        pub fn from_rolling_period(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+        ) -> Self {
+            Self::RollingPeriod(value.into())
+        }
+        /// Initializes the enum to the [CalendarPeriod](Self::CalendarPeriod) branch.
+        pub fn from_calendar_period(
+            value: impl std::convert::Into<gtype::model::CalendarPeriod>,
+        ) -> Self {
+            Self::CalendarPeriod(value.into())
+        }
+    }
 }
 
 /// A Service-Level Indicator (SLI) describes the "performance" of a service. For
@@ -8924,6 +9185,27 @@ pub mod service_level_indicator {
         RequestBased(std::boxed::Box<crate::model::RequestBasedSli>),
         /// Windows-based SLIs
         WindowsBased(std::boxed::Box<crate::model::WindowsBasedSli>),
+    }
+
+    impl Type {
+        /// Initializes the enum to the [BasicSli](Self::BasicSli) branch.
+        pub fn from_basic_sli(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BasicSli>>,
+        ) -> Self {
+            Self::BasicSli(value.into())
+        }
+        /// Initializes the enum to the [RequestBased](Self::RequestBased) branch.
+        pub fn from_request_based(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RequestBasedSli>>,
+        ) -> Self {
+            Self::RequestBased(value.into())
+        }
+        /// Initializes the enum to the [WindowsBased](Self::WindowsBased) branch.
+        pub fn from_windows_based(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::WindowsBasedSli>>,
+        ) -> Self {
+            Self::WindowsBased(value.into())
+        }
     }
 }
 
@@ -9150,6 +9432,23 @@ pub mod basic_sli {
         /// that are fast enough with respect to `latency.threshold`.
         Latency(std::boxed::Box<crate::model::basic_sli::LatencyCriteria>),
     }
+
+    impl SliCriteria {
+        /// Initializes the enum to the [Availability](Self::Availability) branch.
+        pub fn from_availability(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::basic_sli::AvailabilityCriteria>,
+            >,
+        ) -> Self {
+            Self::Availability(value.into())
+        }
+        /// Initializes the enum to the [Latency](Self::Latency) branch.
+        pub fn from_latency(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::basic_sli::LatencyCriteria>>,
+        ) -> Self {
+            Self::Latency(value.into())
+        }
+    }
 }
 
 /// Range of numerical values within `min` and `max`.
@@ -9306,6 +9605,21 @@ pub mod request_based_sli {
         /// `total_service` is the total count of all values aggregated in the
         /// `Distribution`.
         DistributionCut(std::boxed::Box<crate::model::DistributionCut>),
+    }
+
+    impl Method {
+        /// Initializes the enum to the [GoodTotalRatio](Self::GoodTotalRatio) branch.
+        pub fn from_good_total_ratio(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimeSeriesRatio>>,
+        ) -> Self {
+            Self::GoodTotalRatio(value.into())
+        }
+        /// Initializes the enum to the [DistributionCut](Self::DistributionCut) branch.
+        pub fn from_distribution_cut(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DistributionCut>>,
+        ) -> Self {
+            Self::DistributionCut(value.into())
+        }
     }
 }
 
@@ -9742,6 +10056,21 @@ pub mod windows_based_sli {
             /// `BasicSli` to evaluate to judge window quality.
             BasicSliPerformance(std::boxed::Box<crate::model::BasicSli>),
         }
+
+        impl Type {
+            /// Initializes the enum to the [Performance](Self::Performance) branch.
+            pub fn from_performance(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::RequestBasedSli>>,
+            ) -> Self {
+                Self::Performance(value.into())
+            }
+            /// Initializes the enum to the [BasicSliPerformance](Self::BasicSliPerformance) branch.
+            pub fn from_basic_sli_performance(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::BasicSli>>,
+            ) -> Self {
+                Self::BasicSliPerformance(value.into())
+            }
+        }
     }
 
     /// A `MetricRange` is used when each window is good when the value x of a
@@ -9810,6 +10139,39 @@ pub mod windows_based_sli {
         /// A window is good if the metric's value is in a good range, summed across
         /// returned streams.
         MetricSumInRange(std::boxed::Box<crate::model::windows_based_sli::MetricRange>),
+    }
+
+    impl WindowCriterion {
+        /// Initializes the enum to the [GoodBadMetricFilter](Self::GoodBadMetricFilter) branch.
+        pub fn from_good_bad_metric_filter(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::GoodBadMetricFilter(value.into())
+        }
+        /// Initializes the enum to the [GoodTotalRatioThreshold](Self::GoodTotalRatioThreshold) branch.
+        pub fn from_good_total_ratio_threshold(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::windows_based_sli::PerformanceThreshold>,
+            >,
+        ) -> Self {
+            Self::GoodTotalRatioThreshold(value.into())
+        }
+        /// Initializes the enum to the [MetricMeanInRange](Self::MetricMeanInRange) branch.
+        pub fn from_metric_mean_in_range(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::windows_based_sli::MetricRange>,
+            >,
+        ) -> Self {
+            Self::MetricMeanInRange(value.into())
+        }
+        /// Initializes the enum to the [MetricSumInRange](Self::MetricSumInRange) branch.
+        pub fn from_metric_sum_in_range(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::windows_based_sli::MetricRange>,
+            >,
+        ) -> Self {
+            Self::MetricSumInRange(value.into())
+        }
     }
 }
 
@@ -11262,6 +11624,17 @@ pub mod synthetic_monitor_target {
             std::boxed::Box<crate::model::synthetic_monitor_target::CloudFunctionV2Target>,
         ),
     }
+
+    impl Target {
+        /// Initializes the enum to the [CloudFunctionV2](Self::CloudFunctionV2) branch.
+        pub fn from_cloud_function_v2(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::synthetic_monitor_target::CloudFunctionV2Target>,
+            >,
+        ) -> Self {
+            Self::CloudFunctionV2(value.into())
+        }
+    }
 }
 
 /// This message configures which resources and services to monitor for
@@ -12230,6 +12603,19 @@ pub mod uptime_check_config {
                 /// A class of status codes to accept.
                 StatusClass(crate::model::uptime_check_config::http_check::response_status_code::StatusClass),
             }
+
+            impl StatusCode {
+                /// Initializes the enum to the [StatusValue](Self::StatusValue) branch.
+                pub fn from_status_value(value: impl std::convert::Into<i32>) -> Self {
+                    Self::StatusValue(value.into())
+                }
+                /// Initializes the enum to the [StatusClass](Self::StatusClass) branch.
+                pub fn from_status_class(
+                    value: impl std::convert::Into<crate::model::uptime_check_config::http_check::response_status_code::StatusClass>,
+                ) -> Self {
+                    Self::StatusClass(value.into())
+                }
+            }
         }
 
         /// Contains information needed for generating either an
@@ -12418,6 +12804,19 @@ pub mod uptime_check_config {
                     crate::model::uptime_check_config::http_check::ServiceAgentAuthentication,
                 >,
             ),
+        }
+
+        impl AuthMethod {
+            /// Initializes the enum to the [ServiceAgentAuthentication](Self::ServiceAgentAuthentication) branch.
+            pub fn from_service_agent_authentication(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::uptime_check_config::http_check::ServiceAgentAuthentication,
+                    >,
+                >,
+            ) -> Self {
+                Self::ServiceAgentAuthentication(value.into())
+            }
         }
     }
 
@@ -12774,6 +13173,19 @@ pub mod uptime_check_config {
                 >,
             ),
         }
+
+        impl AdditionalMatcherInfo {
+            /// Initializes the enum to the [JsonPathMatcher](Self::JsonPathMatcher) branch.
+            pub fn from_json_path_matcher(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::uptime_check_config::content_matcher::JsonPathMatcher,
+                    >,
+                >,
+            ) -> Self {
+                Self::JsonPathMatcher(value.into())
+            }
+        }
     }
 
     /// What kind of checkers are available to be used by the check.
@@ -12848,6 +13260,29 @@ pub mod uptime_check_config {
         SyntheticMonitor(std::boxed::Box<crate::model::SyntheticMonitorTarget>),
     }
 
+    impl Resource {
+        /// Initializes the enum to the [MonitoredResource](Self::MonitoredResource) branch.
+        pub fn from_monitored_resource(
+            value: impl std::convert::Into<std::boxed::Box<api::model::MonitoredResource>>,
+        ) -> Self {
+            Self::MonitoredResource(value.into())
+        }
+        /// Initializes the enum to the [ResourceGroup](Self::ResourceGroup) branch.
+        pub fn from_resource_group(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::uptime_check_config::ResourceGroup>,
+            >,
+        ) -> Self {
+            Self::ResourceGroup(value.into())
+        }
+        /// Initializes the enum to the [SyntheticMonitor](Self::SyntheticMonitor) branch.
+        pub fn from_synthetic_monitor(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SyntheticMonitorTarget>>,
+        ) -> Self {
+            Self::SyntheticMonitor(value.into())
+        }
+    }
+
     /// The type of Uptime check request.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -12857,6 +13292,23 @@ pub mod uptime_check_config {
         HttpCheck(std::boxed::Box<crate::model::uptime_check_config::HttpCheck>),
         /// Contains information needed to make a TCP check.
         TcpCheck(std::boxed::Box<crate::model::uptime_check_config::TcpCheck>),
+    }
+
+    impl CheckRequestType {
+        /// Initializes the enum to the [HttpCheck](Self::HttpCheck) branch.
+        pub fn from_http_check(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::uptime_check_config::HttpCheck>,
+            >,
+        ) -> Self {
+            Self::HttpCheck(value.into())
+        }
+        /// Initializes the enum to the [TcpCheck](Self::TcpCheck) branch.
+        pub fn from_tcp_check(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::uptime_check_config::TcpCheck>>,
+        ) -> Self {
+            Self::TcpCheck(value.into())
+        }
     }
 }
 

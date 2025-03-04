@@ -556,6 +556,13 @@ pub mod data_policy {
         PolicyTag(std::string::String),
     }
 
+    impl MatchingLabel {
+        /// Initializes the enum to the [PolicyTag](Self::PolicyTag) branch.
+        pub fn from_policy_tag(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PolicyTag(value.into())
+        }
+    }
+
     /// The policy that is bound to this data policy.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -563,6 +570,15 @@ pub mod data_policy {
     pub enum Policy {
         /// The data masking policy that specifies the data masking rule to use.
         DataMaskingPolicy(std::boxed::Box<crate::model::DataMaskingPolicy>),
+    }
+
+    impl Policy {
+        /// Initializes the enum to the [DataMaskingPolicy](Self::DataMaskingPolicy) branch.
+        pub fn from_data_masking_policy(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DataMaskingPolicy>>,
+        ) -> Self {
+            Self::DataMaskingPolicy(value.into())
+        }
     }
 }
 
@@ -787,5 +803,18 @@ pub mod data_masking_policy {
         /// routine, in the format of
         /// `projects/{project_number}/datasets/{dataset_id}/routines/{routine_id}`.
         Routine(std::string::String),
+    }
+
+    impl MaskingExpression {
+        /// Initializes the enum to the [PredefinedExpression](Self::PredefinedExpression) branch.
+        pub fn from_predefined_expression(
+            value: impl std::convert::Into<crate::model::data_masking_policy::PredefinedExpression>,
+        ) -> Self {
+            Self::PredefinedExpression(value.into())
+        }
+        /// Initializes the enum to the [Routine](Self::Routine) branch.
+        pub fn from_routine(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Routine(value.into())
+        }
     }
 }

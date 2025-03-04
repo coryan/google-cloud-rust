@@ -2982,6 +2982,13 @@ pub mod sql_instances_verify_external_sync_settings_request {
         /// Optional. MySQL-specific settings for start external sync.
         MysqlSyncConfig(std::boxed::Box<crate::model::MySqlSyncConfig>),
     }
+
+    impl SyncConfig {
+        /// Initializes the enum to the [MysqlSyncConfig](Self::MysqlSyncConfig) branch.
+        pub fn from_mysql_sync_config(value: impl std::convert::Into<std::boxed::Box<crate::model::MySqlSyncConfig>>) -> Self {
+            Self::MysqlSyncConfig(value.into())
+        }
+    }
 }
 
 /// Instance start external sync request.
@@ -3110,6 +3117,13 @@ pub mod sql_instances_start_external_sync_request {
     pub enum SyncConfig {
         /// MySQL-specific settings for start external sync.
         MysqlSyncConfig(std::boxed::Box<crate::model::MySqlSyncConfig>),
+    }
+
+    impl SyncConfig {
+        /// Initializes the enum to the [MysqlSyncConfig](Self::MysqlSyncConfig) branch.
+        pub fn from_mysql_sync_config(value: impl std::convert::Into<std::boxed::Box<crate::model::MySqlSyncConfig>>) -> Self {
+            Self::MysqlSyncConfig(value.into())
+        }
     }
 }
 
@@ -6965,6 +6979,13 @@ pub mod database {
     #[non_exhaustive]
     pub enum DatabaseDetails {
         SqlserverDatabaseDetails(std::boxed::Box<crate::model::SqlServerDatabaseDetails>),
+    }
+
+    impl DatabaseDetails {
+        /// Initializes the enum to the [SqlserverDatabaseDetails](Self::SqlserverDatabaseDetails) branch.
+        pub fn from_sqlserver_database_details(value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerDatabaseDetails>>) -> Self {
+            Self::SqlserverDatabaseDetails(value.into())
+        }
     }
 }
 
@@ -11839,6 +11860,13 @@ pub mod user {
     #[non_exhaustive]
     pub enum UserDetails {
         SqlserverUserDetails(std::boxed::Box<crate::model::SqlServerUserDetails>),
+    }
+
+    impl UserDetails {
+        /// Initializes the enum to the [SqlserverUserDetails](Self::SqlserverUserDetails) branch.
+        pub fn from_sqlserver_user_details(value: impl std::convert::Into<std::boxed::Box<crate::model::SqlServerUserDetails>>) -> Self {
+            Self::SqlserverUserDetails(value.into())
+        }
     }
 }
 

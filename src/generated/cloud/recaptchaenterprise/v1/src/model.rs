@@ -690,6 +690,17 @@ pub mod endpoint_verification_info {
         /// in E.164 format.
         PhoneNumber(std::string::String),
     }
+
+    impl Endpoint {
+        /// Initializes the enum to the [EmailAddress](Self::EmailAddress) branch.
+        pub fn from_email_address(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::EmailAddress(value.into())
+        }
+        /// Initializes the enum to the [PhoneNumber](Self::PhoneNumber) branch.
+        pub fn from_phone_number(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PhoneNumber(value.into())
+        }
+    }
 }
 
 /// Information about account verification, used for identity verification.
@@ -2072,6 +2083,21 @@ pub mod user_id {
         /// and `account_id` that are provided. Can be a unique login handle or
         /// display name for a user.
         Username(std::string::String),
+    }
+
+    impl IdOneof {
+        /// Initializes the enum to the [Email](Self::Email) branch.
+        pub fn from_email(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Email(value.into())
+        }
+        /// Initializes the enum to the [PhoneNumber](Self::PhoneNumber) branch.
+        pub fn from_phone_number(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PhoneNumber(value.into())
+        }
+        /// Initializes the enum to the [Username](Self::Username) branch.
+        pub fn from_username(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Username(value.into())
+        }
     }
 }
 
@@ -4080,6 +4106,33 @@ pub mod key {
         /// Settings for keys that can be used by reCAPTCHA Express.
         ExpressSettings(std::boxed::Box<crate::model::ExpressKeySettings>),
     }
+
+    impl PlatformSettings {
+        /// Initializes the enum to the [WebSettings](Self::WebSettings) branch.
+        pub fn from_web_settings(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::WebKeySettings>>,
+        ) -> Self {
+            Self::WebSettings(value.into())
+        }
+        /// Initializes the enum to the [AndroidSettings](Self::AndroidSettings) branch.
+        pub fn from_android_settings(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AndroidKeySettings>>,
+        ) -> Self {
+            Self::AndroidSettings(value.into())
+        }
+        /// Initializes the enum to the [IosSettings](Self::IosSettings) branch.
+        pub fn from_ios_settings(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IOSKeySettings>>,
+        ) -> Self {
+            Self::IosSettings(value.into())
+        }
+        /// Initializes the enum to the [ExpressSettings](Self::ExpressSettings) branch.
+        pub fn from_express_settings(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExpressKeySettings>>,
+        ) -> Self {
+            Self::ExpressSettings(value.into())
+        }
+    }
 }
 
 /// Options for user acceptance testing.
@@ -5184,6 +5237,53 @@ pub mod firewall_action {
         /// This action sets a custom header but allow the request to continue
         /// to the customer backend.
         SetHeader(std::boxed::Box<crate::model::firewall_action::SetHeaderAction>),
+    }
+
+    impl FirewallActionOneof {
+        /// Initializes the enum to the [Allow](Self::Allow) branch.
+        pub fn from_allow(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::firewall_action::AllowAction>>,
+        ) -> Self {
+            Self::Allow(value.into())
+        }
+        /// Initializes the enum to the [Block](Self::Block) branch.
+        pub fn from_block(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::firewall_action::BlockAction>>,
+        ) -> Self {
+            Self::Block(value.into())
+        }
+        /// Initializes the enum to the [IncludeRecaptchaScript](Self::IncludeRecaptchaScript) branch.
+        pub fn from_include_recaptcha_script(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::firewall_action::IncludeRecaptchaScriptAction>,
+            >,
+        ) -> Self {
+            Self::IncludeRecaptchaScript(value.into())
+        }
+        /// Initializes the enum to the [Redirect](Self::Redirect) branch.
+        pub fn from_redirect(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::firewall_action::RedirectAction>,
+            >,
+        ) -> Self {
+            Self::Redirect(value.into())
+        }
+        /// Initializes the enum to the [Substitute](Self::Substitute) branch.
+        pub fn from_substitute(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::firewall_action::SubstituteAction>,
+            >,
+        ) -> Self {
+            Self::Substitute(value.into())
+        }
+        /// Initializes the enum to the [SetHeader](Self::SetHeader) branch.
+        pub fn from_set_header(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::firewall_action::SetHeaderAction>,
+            >,
+        ) -> Self {
+            Self::SetHeader(value.into())
+        }
     }
 }
 

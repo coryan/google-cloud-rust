@@ -440,6 +440,15 @@ pub mod policy_rule {
         /// A rule for a deny policy.
         DenyRule(std::boxed::Box<crate::model::DenyRule>),
     }
+
+    impl Kind {
+        /// Initializes the enum to the [DenyRule](Self::DenyRule) branch.
+        pub fn from_deny_rule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DenyRule>>,
+        ) -> Self {
+            Self::DenyRule(value.into())
+        }
+    }
 }
 
 /// Request message for `ListPolicies`.

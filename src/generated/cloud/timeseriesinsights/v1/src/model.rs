@@ -480,6 +480,25 @@ pub mod event_dimension {
         /// Double representation.
         DoubleVal(f64),
     }
+
+    impl Value {
+        /// Initializes the enum to the [StringVal](Self::StringVal) branch.
+        pub fn from_string_val(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringVal(value.into())
+        }
+        /// Initializes the enum to the [LongVal](Self::LongVal) branch.
+        pub fn from_long_val(value: impl std::convert::Into<i64>) -> Self {
+            Self::LongVal(value.into())
+        }
+        /// Initializes the enum to the [BoolVal](Self::BoolVal) branch.
+        pub fn from_bool_val(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolVal(value.into())
+        }
+        /// Initializes the enum to the [DoubleVal](Self::DoubleVal) branch.
+        pub fn from_double_val(value: impl std::convert::Into<f64>) -> Self {
+            Self::DoubleVal(value.into())
+        }
+    }
 }
 
 /// Represents an entry in a data source.
@@ -955,6 +974,17 @@ pub mod pinned_dimension {
         /// [google.cloud.timeseriesinsights.v1.EventDimension]: crate::model::EventDimension
         /// [google.cloud.timeseriesinsights.v1.EventDimension.bool_val]: crate::model::EventDimension::value
         BoolVal(bool),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [StringVal](Self::StringVal) branch.
+        pub fn from_string_val(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringVal(value.into())
+        }
+        /// Initializes the enum to the [BoolVal](Self::BoolVal) branch.
+        pub fn from_bool_val(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolVal(value.into())
+        }
     }
 }
 

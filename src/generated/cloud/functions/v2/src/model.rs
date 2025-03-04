@@ -636,6 +636,21 @@ pub mod repo_source {
         /// Explicit commit SHA to build.
         CommitSha(std::string::String),
     }
+
+    impl Revision {
+        /// Initializes the enum to the [BranchName](Self::BranchName) branch.
+        pub fn from_branch_name(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::BranchName(value.into())
+        }
+        /// Initializes the enum to the [TagName](Self::TagName) branch.
+        pub fn from_tag_name(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TagName(value.into())
+        }
+        /// Initializes the enum to the [CommitSha](Self::CommitSha) branch.
+        pub fn from_commit_sha(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::CommitSha(value.into())
+        }
+    }
 }
 
 /// The location of the function source code.
@@ -767,6 +782,25 @@ pub mod source {
         /// only for GCF 1st Gen function.
         /// Example: <https://github.com/>\<user\>/\<repo\>/blob/\<commit\>/\<path-to-code\>
         GitUri(std::string::String),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [StorageSource](Self::StorageSource) branch.
+        pub fn from_storage_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StorageSource>>,
+        ) -> Self {
+            Self::StorageSource(value.into())
+        }
+        /// Initializes the enum to the [RepoSource](Self::RepoSource) branch.
+        pub fn from_repo_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RepoSource>>,
+        ) -> Self {
+            Self::RepoSource(value.into())
+        }
+        /// Initializes the enum to the [GitUri](Self::GitUri) branch.
+        pub fn from_git_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GitUri(value.into())
+        }
     }
 }
 
@@ -1152,6 +1186,21 @@ pub mod build_config {
     pub enum RuntimeUpdatePolicy {
         AutomaticUpdatePolicy(std::boxed::Box<crate::model::AutomaticUpdatePolicy>),
         OnDeployUpdatePolicy(std::boxed::Box<crate::model::OnDeployUpdatePolicy>),
+    }
+
+    impl RuntimeUpdatePolicy {
+        /// Initializes the enum to the [AutomaticUpdatePolicy](Self::AutomaticUpdatePolicy) branch.
+        pub fn from_automatic_update_policy(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AutomaticUpdatePolicy>>,
+        ) -> Self {
+            Self::AutomaticUpdatePolicy(value.into())
+        }
+        /// Initializes the enum to the [OnDeployUpdatePolicy](Self::OnDeployUpdatePolicy) branch.
+        pub fn from_on_deploy_update_policy(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OnDeployUpdatePolicy>>,
+        ) -> Self {
+            Self::OnDeployUpdatePolicy(value.into())
+        }
     }
 }
 

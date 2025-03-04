@@ -1775,6 +1775,21 @@ pub mod http_request {
         /// yourself.
         OidcToken(std::boxed::Box<crate::model::OidcToken>),
     }
+
+    impl AuthorizationHeader {
+        /// Initializes the enum to the [OauthToken](Self::OauthToken) branch.
+        pub fn from_oauth_token(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OAuthToken>>,
+        ) -> Self {
+            Self::OauthToken(value.into())
+        }
+        /// Initializes the enum to the [OidcToken](Self::OidcToken) branch.
+        pub fn from_oidc_token(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OidcToken>>,
+        ) -> Self {
+            Self::OidcToken(value.into())
+        }
+    }
 }
 
 /// App Engine HTTP request.
@@ -2619,6 +2634,21 @@ pub mod task {
         ///
         /// [google.cloud.tasks.v2.HttpRequest]: crate::model::HttpRequest
         HttpRequest(std::boxed::Box<crate::model::HttpRequest>),
+    }
+
+    impl MessageType {
+        /// Initializes the enum to the [AppEngineHttpRequest](Self::AppEngineHttpRequest) branch.
+        pub fn from_app_engine_http_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AppEngineHttpRequest>>,
+        ) -> Self {
+            Self::AppEngineHttpRequest(value.into())
+        }
+        /// Initializes the enum to the [HttpRequest](Self::HttpRequest) branch.
+        pub fn from_http_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HttpRequest>>,
+        ) -> Self {
+            Self::HttpRequest(value.into())
+        }
     }
 }
 

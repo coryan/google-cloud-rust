@@ -1623,6 +1623,21 @@ pub mod access_level {
         /// A `CustomLevel` written in the Common Expression Language.
         Custom(std::boxed::Box<crate::model::CustomLevel>),
     }
+
+    impl Level {
+        /// Initializes the enum to the [Basic](Self::Basic) branch.
+        pub fn from_basic(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BasicLevel>>,
+        ) -> Self {
+            Self::Basic(value.into())
+        }
+        /// Initializes the enum to the [Custom](Self::Custom) branch.
+        pub fn from_custom(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CustomLevel>>,
+        ) -> Self {
+            Self::Custom(value.into())
+        }
+    }
 }
 
 /// `BasicLevel` is an `AccessLevel` using a set of recommended features.
@@ -2755,6 +2770,17 @@ pub mod service_perimeter_config {
             /// [google.identity.accesscontextmanager.v1.ServicePerimeterConfig.ApiOperation].
             Permission(std::string::String),
         }
+
+        impl Kind {
+            /// Initializes the enum to the [Method](Self::Method) branch.
+            pub fn from_method(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Method(value.into())
+            }
+            /// Initializes the enum to the [Permission](Self::Permission) branch.
+            pub fn from_permission(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Permission(value.into())
+            }
+        }
     }
 
     /// Identification for an API Operation.
@@ -2950,6 +2976,17 @@ pub mod service_perimeter_config {
             /// organization that the perimeter is defined in. `*` is not allowed, the
             /// case of allowing all Google Cloud resources only is not supported.
             Resource(std::string::String),
+        }
+
+        impl Source {
+            /// Initializes the enum to the [AccessLevel](Self::AccessLevel) branch.
+            pub fn from_access_level(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::AccessLevel(value.into())
+            }
+            /// Initializes the enum to the [Resource](Self::Resource) branch.
+            pub fn from_resource(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Resource(value.into())
+            }
         }
     }
 

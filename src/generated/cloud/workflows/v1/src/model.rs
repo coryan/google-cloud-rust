@@ -488,6 +488,13 @@ pub mod workflow {
         /// Workflow code to be executed. The size limit is 128KB.
         SourceContents(std::string::String),
     }
+
+    impl SourceCode {
+        /// Initializes the enum to the [SourceContents](Self::SourceContents) branch.
+        pub fn from_source_contents(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::SourceContents(value.into())
+        }
+    }
 }
 
 /// Request for the

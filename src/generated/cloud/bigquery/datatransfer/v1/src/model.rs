@@ -1962,6 +1962,23 @@ pub mod start_manual_transfer_runs_request {
         /// values.
         RequestedRunTime(std::boxed::Box<wkt::Timestamp>),
     }
+
+    impl Time {
+        /// Initializes the enum to the [RequestedTimeRange](Self::RequestedTimeRange) branch.
+        pub fn from_requested_time_range(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::start_manual_transfer_runs_request::TimeRange>,
+            >,
+        ) -> Self {
+            Self::RequestedTimeRange(value.into())
+        }
+        /// Initializes the enum to the [RequestedRunTime](Self::RequestedRunTime) branch.
+        pub fn from_requested_run_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::RequestedRunTime(value.into())
+        }
+    }
 }
 
 /// A response to start manual transfer runs.
@@ -2339,6 +2356,27 @@ pub mod schedule_options_v_2 {
         /// Event driven transfer schedule options. If set, the transfer will be
         /// scheduled upon events arrial.
         EventDrivenSchedule(std::boxed::Box<crate::model::EventDrivenSchedule>),
+    }
+
+    impl Schedule {
+        /// Initializes the enum to the [TimeBasedSchedule](Self::TimeBasedSchedule) branch.
+        pub fn from_time_based_schedule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimeBasedSchedule>>,
+        ) -> Self {
+            Self::TimeBasedSchedule(value.into())
+        }
+        /// Initializes the enum to the [ManualSchedule](Self::ManualSchedule) branch.
+        pub fn from_manual_schedule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ManualSchedule>>,
+        ) -> Self {
+            Self::ManualSchedule(value.into())
+        }
+        /// Initializes the enum to the [EventDrivenSchedule](Self::EventDrivenSchedule) branch.
+        pub fn from_event_driven_schedule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EventDrivenSchedule>>,
+        ) -> Self {
+            Self::EventDrivenSchedule(value.into())
+        }
     }
 }
 
@@ -2848,6 +2886,15 @@ pub mod transfer_config {
         /// The BigQuery target dataset id.
         DestinationDatasetId(std::string::String),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [DestinationDatasetId](Self::DestinationDatasetId) branch.
+        pub fn from_destination_dataset_id(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::DestinationDatasetId(value.into())
+        }
+    }
 }
 
 /// Represents the encryption configuration for a transfer.
@@ -3144,6 +3191,15 @@ pub mod transfer_run {
     pub enum Destination {
         /// Output only. The BigQuery target dataset id.
         DestinationDatasetId(std::string::String),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [DestinationDatasetId](Self::DestinationDatasetId) branch.
+        pub fn from_destination_dataset_id(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::DestinationDatasetId(value.into())
+        }
     }
 }
 

@@ -1105,6 +1105,15 @@ pub mod import_data_request {
         SourceGcsBucket(std::boxed::Box<crate::model::SourceGcsBucket>),
     }
 
+    impl Source {
+        /// Initializes the enum to the [SourceGcsBucket](Self::SourceGcsBucket) branch.
+        pub fn from_source_gcs_bucket(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SourceGcsBucket>>,
+        ) -> Self {
+            Self::SourceGcsBucket(value.into())
+        }
+    }
+
     /// The Parallelstore instance into which to import data.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -1112,6 +1121,15 @@ pub mod import_data_request {
     pub enum Destination {
         /// Parallelstore destination.
         DestinationParallelstore(std::boxed::Box<crate::model::DestinationParallelstore>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [DestinationParallelstore](Self::DestinationParallelstore) branch.
+        pub fn from_destination_parallelstore(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DestinationParallelstore>>,
+        ) -> Self {
+            Self::DestinationParallelstore(value.into())
+        }
     }
 }
 
@@ -1293,6 +1311,15 @@ pub mod export_data_request {
         SourceParallelstore(std::boxed::Box<crate::model::SourceParallelstore>),
     }
 
+    impl Source {
+        /// Initializes the enum to the [SourceParallelstore](Self::SourceParallelstore) branch.
+        pub fn from_source_parallelstore(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SourceParallelstore>>,
+        ) -> Self {
+            Self::SourceParallelstore(value.into())
+        }
+    }
+
     /// The Cloud Storage bucket to export to.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -1300,6 +1327,15 @@ pub mod export_data_request {
     pub enum Destination {
         /// Cloud Storage destination.
         DestinationGcsBucket(std::boxed::Box<crate::model::DestinationGcsBucket>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [DestinationGcsBucket](Self::DestinationGcsBucket) branch.
+        pub fn from_destination_gcs_bucket(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DestinationGcsBucket>>,
+        ) -> Self {
+            Self::DestinationGcsBucket(value.into())
+        }
     }
 }
 
@@ -1912,6 +1948,21 @@ pub mod transfer_operation_metadata {
         SourceGcsBucket(std::boxed::Box<crate::model::SourceGcsBucket>),
     }
 
+    impl Source {
+        /// Initializes the enum to the [SourceParallelstore](Self::SourceParallelstore) branch.
+        pub fn from_source_parallelstore(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SourceParallelstore>>,
+        ) -> Self {
+            Self::SourceParallelstore(value.into())
+        }
+        /// Initializes the enum to the [SourceGcsBucket](Self::SourceGcsBucket) branch.
+        pub fn from_source_gcs_bucket(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SourceGcsBucket>>,
+        ) -> Self {
+            Self::SourceGcsBucket(value.into())
+        }
+    }
+
     /// The destination of transfer operation.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -1921,6 +1972,21 @@ pub mod transfer_operation_metadata {
         DestinationGcsBucket(std::boxed::Box<crate::model::DestinationGcsBucket>),
         /// Output only. Parallelstore destination.
         DestinationParallelstore(std::boxed::Box<crate::model::DestinationParallelstore>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [DestinationGcsBucket](Self::DestinationGcsBucket) branch.
+        pub fn from_destination_gcs_bucket(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DestinationGcsBucket>>,
+        ) -> Self {
+            Self::DestinationGcsBucket(value.into())
+        }
+        /// Initializes the enum to the [DestinationParallelstore](Self::DestinationParallelstore) branch.
+        pub fn from_destination_parallelstore(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DestinationParallelstore>>,
+        ) -> Self {
+            Self::DestinationParallelstore(value.into())
+        }
     }
 }
 

@@ -464,6 +464,15 @@ pub mod authorization_policy {
                     /// header's port specifier.
                     RegexMatch(std::string::String),
                 }
+
+                impl Type {
+                    /// Initializes the enum to the [RegexMatch](Self::RegexMatch) branch.
+                    pub fn from_regex_match(
+                        value: impl std::convert::Into<std::string::String>,
+                    ) -> Self {
+                        Self::RegexMatch(value.into())
+                    }
+                }
             }
         }
     }
@@ -1910,6 +1919,21 @@ pub mod validation_ca {
         /// information.
         CertificateProviderInstance(std::boxed::Box<crate::model::CertificateProviderInstance>),
     }
+
+    impl Type {
+        /// Initializes the enum to the [GrpcEndpoint](Self::GrpcEndpoint) branch.
+        pub fn from_grpc_endpoint(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GrpcEndpoint>>,
+        ) -> Self {
+            Self::GrpcEndpoint(value.into())
+        }
+        /// Initializes the enum to the [CertificateProviderInstance](Self::CertificateProviderInstance) branch.
+        pub fn from_certificate_provider_instance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CertificateProviderInstance>>,
+        ) -> Self {
+            Self::CertificateProviderInstance(value.into())
+        }
+    }
 }
 
 /// Specification of a TLS certificate provider instance. Workloads may have one
@@ -2062,5 +2086,20 @@ pub mod certificate_provider {
         /// the data plane, which will be used to load necessary credential
         /// information.
         CertificateProviderInstance(std::boxed::Box<crate::model::CertificateProviderInstance>),
+    }
+
+    impl Type {
+        /// Initializes the enum to the [GrpcEndpoint](Self::GrpcEndpoint) branch.
+        pub fn from_grpc_endpoint(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GrpcEndpoint>>,
+        ) -> Self {
+            Self::GrpcEndpoint(value.into())
+        }
+        /// Initializes the enum to the [CertificateProviderInstance](Self::CertificateProviderInstance) branch.
+        pub fn from_certificate_provider_instance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CertificateProviderInstance>>,
+        ) -> Self {
+            Self::CertificateProviderInstance(value.into())
+        }
     }
 }

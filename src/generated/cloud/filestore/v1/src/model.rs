@@ -348,6 +348,13 @@ pub mod file_share_config {
         /// that this file share has been restored from.
         SourceBackup(std::string::String),
     }
+
+    impl Source {
+        /// Initializes the enum to the [SourceBackup](Self::SourceBackup) branch.
+        pub fn from_source_backup(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::SourceBackup(value.into())
+        }
+    }
 }
 
 /// NFS export options specifications.
@@ -1139,6 +1146,13 @@ pub mod restore_instance_request {
         /// The resource name of the backup, in the format
         /// `projects/{project_number}/locations/{location_id}/backups/{backup_id}`.
         SourceBackup(std::string::String),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [SourceBackup](Self::SourceBackup) branch.
+        pub fn from_source_backup(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::SourceBackup(value.into())
+        }
     }
 }
 

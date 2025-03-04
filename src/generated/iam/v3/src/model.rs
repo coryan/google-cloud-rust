@@ -441,6 +441,13 @@ pub mod policy_binding {
             ///   `//iam.googleapis.com/locations/global/workspace/WORKSPACE_ID`
             PrincipalSet(std::string::String),
         }
+
+        impl Target {
+            /// Initializes the enum to the [PrincipalSet](Self::PrincipalSet) branch.
+            pub fn from_principal_set(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::PrincipalSet(value.into())
+            }
+        }
     }
 
     /// Different policy kinds supported in this binding.

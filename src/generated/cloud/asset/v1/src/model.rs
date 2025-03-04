@@ -1003,6 +1003,21 @@ pub mod output_config {
         /// Protobuf as columns in BigQuery.
         BigqueryDestination(std::boxed::Box<crate::model::BigQueryDestination>),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
+        /// Initializes the enum to the [BigqueryDestination](Self::BigqueryDestination) branch.
+        pub fn from_bigquery_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDestination>>,
+        ) -> Self {
+            Self::BigqueryDestination(value.into())
+        }
+    }
 }
 
 /// Output result of export assets.
@@ -1078,6 +1093,15 @@ pub mod output_result {
     pub enum Result {
         /// Export result on Cloud Storage.
         GcsResult(std::boxed::Box<crate::model::GcsOutputResult>),
+    }
+
+    impl Result {
+        /// Initializes the enum to the [GcsResult](Self::GcsResult) branch.
+        pub fn from_gcs_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsOutputResult>>,
+        ) -> Self {
+            Self::GcsResult(value.into())
+        }
     }
 }
 
@@ -1225,6 +1249,17 @@ pub mod gcs_destination {
         /// returned if file with the same name "gs://bucket_name/object_name_prefix"
         /// already exists.
         UriPrefix(std::string::String),
+    }
+
+    impl ObjectUri {
+        /// Initializes the enum to the [Uri](Self::Uri) branch.
+        pub fn from_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Uri(value.into())
+        }
+        /// Initializes the enum to the [UriPrefix](Self::UriPrefix) branch.
+        pub fn from_uri_prefix(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::UriPrefix(value.into())
+        }
     }
 }
 
@@ -1553,6 +1588,15 @@ pub mod feed_output_config {
     pub enum Destination {
         /// Destination on Pub/Sub.
         PubsubDestination(std::boxed::Box<crate::model::PubsubDestination>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [PubsubDestination](Self::PubsubDestination) branch.
+        pub fn from_pubsub_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PubsubDestination>>,
+        ) -> Self {
+            Self::PubsubDestination(value.into())
+        }
     }
 }
 
@@ -2775,6 +2819,15 @@ pub mod iam_policy_analysis_query {
             /// INVALID_ARGUMENT error will be returned.
             AccessTime(std::boxed::Box<wkt::Timestamp>),
         }
+
+        impl TimeContext {
+            /// Initializes the enum to the [AccessTime](Self::AccessTime) branch.
+            pub fn from_access_time(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+            ) -> Self {
+                Self::AccessTime(value.into())
+            }
+        }
     }
 }
 
@@ -3336,6 +3389,27 @@ pub mod iam_policy_analysis_output_config {
             std::boxed::Box<crate::model::iam_policy_analysis_output_config::BigQueryDestination>,
         ),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::iam_policy_analysis_output_config::GcsDestination>,
+            >,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
+        /// Initializes the enum to the [BigqueryDestination](Self::BigqueryDestination) branch.
+        pub fn from_bigquery_destination(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::iam_policy_analysis_output_config::BigQueryDestination,
+                >,
+            >,
+        ) -> Self {
+            Self::BigqueryDestination(value.into())
+        }
+    }
 }
 
 /// A request message for
@@ -3659,6 +3733,15 @@ pub mod saved_query {
             /// [google.cloud.asset.v1.AssetService.AnalyzeIamPolicy]: crate::client::AssetService::analyze_iam_policy
             /// [google.cloud.asset.v1.AssetService.AnalyzeIamPolicyLongrunning]: crate::client::AssetService::analyze_iam_policy_longrunning
             IamPolicyAnalysisQuery(std::boxed::Box<crate::model::IamPolicyAnalysisQuery>),
+        }
+
+        impl QueryContent {
+            /// Initializes the enum to the [IamPolicyAnalysisQuery](Self::IamPolicyAnalysisQuery) branch.
+            pub fn from_iam_policy_analysis_query(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::IamPolicyAnalysisQuery>>,
+            ) -> Self {
+                Self::IamPolicyAnalysisQuery(value.into())
+            }
         }
     }
 }
@@ -4239,6 +4322,21 @@ pub mod move_analysis {
         /// Description of error encountered when performing the analysis.
         Error(std::boxed::Box<rpc::model::Status>),
     }
+
+    impl Result {
+        /// Initializes the enum to the [Analysis](Self::Analysis) branch.
+        pub fn from_analysis(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MoveAnalysisResult>>,
+        ) -> Self {
+            Self::Analysis(value.into())
+        }
+        /// Initializes the enum to the [Error](Self::Error) branch.
+        pub fn from_error(
+            value: impl std::convert::Into<std::boxed::Box<rpc::model::Status>>,
+        ) -> Self {
+            Self::Error(value.into())
+        }
+    }
 }
 
 /// An analysis result including blockers and warnings.
@@ -4697,6 +4795,17 @@ pub mod query_assets_request {
         JobReference(std::string::String),
     }
 
+    impl Query {
+        /// Initializes the enum to the [Statement](Self::Statement) branch.
+        pub fn from_statement(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Statement(value.into())
+        }
+        /// Initializes the enum to the [JobReference](Self::JobReference) branch.
+        pub fn from_job_reference(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::JobReference(value.into())
+        }
+    }
+
     /// Specifies what time period or point in time to query asset metadata at.
     ///
     /// * unset - query asset metadata as it is right now
@@ -4716,6 +4825,21 @@ pub mod query_assets_request {
         /// Optional. Queries cloud assets as they appeared at the specified point in
         /// time.
         ReadTime(std::boxed::Box<wkt::Timestamp>),
+    }
+
+    impl Time {
+        /// Initializes the enum to the [ReadTimeWindow](Self::ReadTimeWindow) branch.
+        pub fn from_read_time_window(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimeWindow>>,
+        ) -> Self {
+            Self::ReadTimeWindow(value.into())
+        }
+        /// Initializes the enum to the [ReadTime](Self::ReadTime) branch.
+        pub fn from_read_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::ReadTime(value.into())
+        }
     }
 }
 
@@ -4883,6 +5007,27 @@ pub mod query_assets_response {
         /// an API response on the fly, the query result will be saved in a specific
         /// output.
         OutputConfig(std::boxed::Box<crate::model::QueryAssetsOutputConfig>),
+    }
+
+    impl Response {
+        /// Initializes the enum to the [Error](Self::Error) branch.
+        pub fn from_error(
+            value: impl std::convert::Into<std::boxed::Box<rpc::model::Status>>,
+        ) -> Self {
+            Self::Error(value.into())
+        }
+        /// Initializes the enum to the [QueryResult](Self::QueryResult) branch.
+        pub fn from_query_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::QueryResult>>,
+        ) -> Self {
+            Self::QueryResult(value.into())
+        }
+        /// Initializes the enum to the [OutputConfig](Self::OutputConfig) branch.
+        pub fn from_output_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::QueryAssetsOutputConfig>>,
+        ) -> Self {
+            Self::OutputConfig(value.into())
+        }
     }
 }
 
@@ -5700,6 +5845,29 @@ pub mod analyzer_org_policy {
             /// This field can be set only in Policies for boolean constraints.
             Enforce(bool),
         }
+
+        impl Kind {
+            /// Initializes the enum to the [Values](Self::Values) branch.
+            pub fn from_values(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::analyzer_org_policy::rule::StringValues>,
+                >,
+            ) -> Self {
+                Self::Values(value.into())
+            }
+            /// Initializes the enum to the [AllowAll](Self::AllowAll) branch.
+            pub fn from_allow_all(value: impl std::convert::Into<bool>) -> Self {
+                Self::AllowAll(value.into())
+            }
+            /// Initializes the enum to the [DenyAll](Self::DenyAll) branch.
+            pub fn from_deny_all(value: impl std::convert::Into<bool>) -> Self {
+                Self::DenyAll(value.into())
+            }
+            /// Initializes the enum to the [Enforce](Self::Enforce) branch.
+            pub fn from_enforce(value: impl std::convert::Into<bool>) -> Self {
+                Self::Enforce(value.into())
+            }
+        }
     }
 }
 
@@ -6131,6 +6299,29 @@ pub mod analyzer_org_policy_constraint {
                 >,
             ),
         }
+
+        impl ConstraintType {
+            /// Initializes the enum to the [ListConstraint](Self::ListConstraint) branch.
+            pub fn from_list_constraint(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::analyzer_org_policy_constraint::constraint::ListConstraint,
+                    >,
+                >,
+            ) -> Self {
+                Self::ListConstraint(value.into())
+            }
+            /// Initializes the enum to the [BooleanConstraint](Self::BooleanConstraint) branch.
+            pub fn from_boolean_constraint(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::analyzer_org_policy_constraint::constraint::BooleanConstraint,
+                    >,
+                >,
+            ) -> Self {
+                Self::BooleanConstraint(value.into())
+            }
+        }
     }
 
     /// The definition of a custom constraint.
@@ -6367,6 +6558,25 @@ pub mod analyzer_org_policy_constraint {
         CustomConstraint(
             std::boxed::Box<crate::model::analyzer_org_policy_constraint::CustomConstraint>,
         ),
+    }
+
+    impl ConstraintDefinition {
+        /// Initializes the enum to the [GoogleDefinedConstraint](Self::GoogleDefinedConstraint) branch.
+        pub fn from_google_defined_constraint(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::analyzer_org_policy_constraint::Constraint>,
+            >,
+        ) -> Self {
+            Self::GoogleDefinedConstraint(value.into())
+        }
+        /// Initializes the enum to the [CustomConstraint](Self::CustomConstraint) branch.
+        pub fn from_custom_constraint(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::analyzer_org_policy_constraint::CustomConstraint>,
+            >,
+        ) -> Self {
+            Self::CustomConstraint(value.into())
+        }
     }
 }
 
@@ -7623,6 +7833,25 @@ pub mod analyze_org_policy_governed_assets_response {
                 >,
             ),
         }
+
+        impl GovernedAsset {
+            /// Initializes the enum to the [GovernedResource](Self::GovernedResource) branch.
+            pub fn from_governed_resource(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::analyze_org_policy_governed_assets_response::GovernedResource,
+                    >,
+                >,
+            ) -> Self {
+                Self::GovernedResource(value.into())
+            }
+            /// Initializes the enum to the [GovernedIamPolicy](Self::GovernedIamPolicy) branch.
+            pub fn from_governed_iam_policy(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::analyze_org_policy_governed_assets_response::GovernedIamPolicy>>,
+            ) -> Self {
+                Self::GovernedIamPolicy(value.into())
+            }
+        }
     }
 }
 
@@ -8138,6 +8367,31 @@ pub mod asset {
         /// Also refer to the [service perimeter user
         /// guide](https://cloud.google.com/vpc-service-controls/docs/overview).
         ServicePerimeter(std::boxed::Box<accesscontextmanager_v1::model::ServicePerimeter>),
+    }
+
+    impl AccessContextPolicy {
+        /// Initializes the enum to the [AccessPolicy](Self::AccessPolicy) branch.
+        pub fn from_access_policy(
+            value: impl std::convert::Into<
+                std::boxed::Box<accesscontextmanager_v1::model::AccessPolicy>,
+            >,
+        ) -> Self {
+            Self::AccessPolicy(value.into())
+        }
+        /// Initializes the enum to the [AccessLevel](Self::AccessLevel) branch.
+        pub fn from_access_level(
+            value: impl std::convert::Into<std::boxed::Box<accesscontextmanager_v1::model::AccessLevel>>,
+        ) -> Self {
+            Self::AccessLevel(value.into())
+        }
+        /// Initializes the enum to the [ServicePerimeter](Self::ServicePerimeter) branch.
+        pub fn from_service_perimeter(
+            value: impl std::convert::Into<
+                std::boxed::Box<accesscontextmanager_v1::model::ServicePerimeter>,
+            >,
+        ) -> Self {
+            Self::ServicePerimeter(value.into())
+        }
     }
 }
 
@@ -10093,6 +10347,17 @@ pub mod iam_policy_analysis_result {
             Role(std::string::String),
             /// The permission.
             Permission(std::string::String),
+        }
+
+        impl OneofAccess {
+            /// Initializes the enum to the [Role](Self::Role) branch.
+            pub fn from_role(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Role(value.into())
+            }
+            /// Initializes the enum to the [Permission](Self::Permission) branch.
+            pub fn from_permission(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Permission(value.into())
+            }
         }
     }
 

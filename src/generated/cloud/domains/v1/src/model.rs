@@ -1044,6 +1044,23 @@ pub mod dns_settings {
         /// [Google Domains](https://domains.google/).
         GoogleDomainsDns(std::boxed::Box<crate::model::dns_settings::GoogleDomainsDns>),
     }
+
+    impl DnsProvider {
+        /// Initializes the enum to the [CustomDns](Self::CustomDns) branch.
+        pub fn from_custom_dns(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::dns_settings::CustomDns>>,
+        ) -> Self {
+            Self::CustomDns(value.into())
+        }
+        /// Initializes the enum to the [GoogleDomainsDns](Self::GoogleDomainsDns) branch.
+        pub fn from_google_domains_dns(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::dns_settings::GoogleDomainsDns>,
+            >,
+        ) -> Self {
+            Self::GoogleDomainsDns(value.into())
+        }
+    }
 }
 
 /// Defines the contact information associated with a `Registration`.

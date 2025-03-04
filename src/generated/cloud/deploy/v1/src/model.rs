@@ -412,6 +412,15 @@ pub mod delivery_pipeline {
         /// `DeliveryPipeline`.
         SerialPipeline(std::boxed::Box<crate::model::SerialPipeline>),
     }
+
+    impl Pipeline {
+        /// Initializes the enum to the [SerialPipeline](Self::SerialPipeline) branch.
+        pub fn from_serial_pipeline(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SerialPipeline>>,
+        ) -> Self {
+            Self::SerialPipeline(value.into())
+        }
+    }
 }
 
 /// SerialPipeline defines a sequential set of stages for a `DeliveryPipeline`.
@@ -682,6 +691,21 @@ pub mod strategy {
         /// based deployments to a Target.
         Canary(std::boxed::Box<crate::model::Canary>),
     }
+
+    impl DeploymentStrategy {
+        /// Initializes the enum to the [Standard](Self::Standard) branch.
+        pub fn from_standard(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Standard>>,
+        ) -> Self {
+            Self::Standard(value.into())
+        }
+        /// Initializes the enum to the [Canary](Self::Canary) branch.
+        pub fn from_canary(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Canary>>,
+        ) -> Self {
+            Self::Canary(value.into())
+        }
+    }
 }
 
 /// Predeploy contains the predeploy job configuration information.
@@ -933,6 +957,21 @@ pub mod canary {
         /// allows customizing at the phase level where a phase represents each of
         /// the percentage deployments.
         CustomCanaryDeployment(std::boxed::Box<crate::model::CustomCanaryDeployment>),
+    }
+
+    impl Mode {
+        /// Initializes the enum to the [CanaryDeployment](Self::CanaryDeployment) branch.
+        pub fn from_canary_deployment(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CanaryDeployment>>,
+        ) -> Self {
+            Self::CanaryDeployment(value.into())
+        }
+        /// Initializes the enum to the [CustomCanaryDeployment](Self::CustomCanaryDeployment) branch.
+        pub fn from_custom_canary_deployment(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CustomCanaryDeployment>>,
+        ) -> Self {
+            Self::CustomCanaryDeployment(value.into())
+        }
     }
 }
 
@@ -1518,6 +1557,25 @@ pub mod kubernetes_config {
         /// Optional. Kubernetes Service networking configuration.
         ServiceNetworking(std::boxed::Box<crate::model::kubernetes_config::ServiceNetworking>),
     }
+
+    impl ServiceDefinition {
+        /// Initializes the enum to the [GatewayServiceMesh](Self::GatewayServiceMesh) branch.
+        pub fn from_gateway_service_mesh(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::kubernetes_config::GatewayServiceMesh>,
+            >,
+        ) -> Self {
+            Self::GatewayServiceMesh(value.into())
+        }
+        /// Initializes the enum to the [ServiceNetworking](Self::ServiceNetworking) branch.
+        pub fn from_service_networking(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::kubernetes_config::ServiceNetworking>,
+            >,
+        ) -> Self {
+            Self::ServiceNetworking(value.into())
+        }
+    }
 }
 
 /// CloudRunConfig contains the Cloud Run runtime configuration.
@@ -1710,6 +1768,21 @@ pub mod runtime_config {
         Kubernetes(std::boxed::Box<crate::model::KubernetesConfig>),
         /// Optional. Cloud Run runtime configuration.
         CloudRun(std::boxed::Box<crate::model::CloudRunConfig>),
+    }
+
+    impl RuntimeConfig {
+        /// Initializes the enum to the [Kubernetes](Self::Kubernetes) branch.
+        pub fn from_kubernetes(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::KubernetesConfig>>,
+        ) -> Self {
+            Self::Kubernetes(value.into())
+        }
+        /// Initializes the enum to the [CloudRun](Self::CloudRun) branch.
+        pub fn from_cloud_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudRunConfig>>,
+        ) -> Self {
+            Self::CloudRun(value.into())
+        }
     }
 }
 
@@ -2971,6 +3044,39 @@ pub mod target {
         /// Optional. Information specifying a Custom Target.
         CustomTarget(std::boxed::Box<crate::model::CustomTarget>),
     }
+
+    impl DeploymentTarget {
+        /// Initializes the enum to the [Gke](Self::Gke) branch.
+        pub fn from_gke(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GkeCluster>>,
+        ) -> Self {
+            Self::Gke(value.into())
+        }
+        /// Initializes the enum to the [AnthosCluster](Self::AnthosCluster) branch.
+        pub fn from_anthos_cluster(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AnthosCluster>>,
+        ) -> Self {
+            Self::AnthosCluster(value.into())
+        }
+        /// Initializes the enum to the [Run](Self::Run) branch.
+        pub fn from_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudRunLocation>>,
+        ) -> Self {
+            Self::Run(value.into())
+        }
+        /// Initializes the enum to the [MultiTarget](Self::MultiTarget) branch.
+        pub fn from_multi_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MultiTarget>>,
+        ) -> Self {
+            Self::MultiTarget(value.into())
+        }
+        /// Initializes the enum to the [CustomTarget](Self::CustomTarget) branch.
+        pub fn from_custom_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CustomTarget>>,
+        ) -> Self {
+            Self::CustomTarget(value.into())
+        }
+    }
 }
 
 /// Configuration of the environment to use when calling Skaffold.
@@ -3219,6 +3325,21 @@ pub mod execution_config {
         DefaultPool(std::boxed::Box<crate::model::DefaultPool>),
         /// Optional. Use private Cloud Build pool.
         PrivatePool(std::boxed::Box<crate::model::PrivatePool>),
+    }
+
+    impl ExecutionEnvironment {
+        /// Initializes the enum to the [DefaultPool](Self::DefaultPool) branch.
+        pub fn from_default_pool(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DefaultPool>>,
+        ) -> Self {
+            Self::DefaultPool(value.into())
+        }
+        /// Initializes the enum to the [PrivatePool](Self::PrivatePool) branch.
+        pub fn from_private_pool(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PrivatePool>>,
+        ) -> Self {
+            Self::PrivatePool(value.into())
+        }
     }
 }
 
@@ -4229,6 +4350,15 @@ pub mod custom_target_type {
         /// Skaffold custom actions.
         CustomActions(std::boxed::Box<crate::model::CustomTargetSkaffoldActions>),
     }
+
+    impl Definition {
+        /// Initializes the enum to the [CustomActions](Self::CustomActions) branch.
+        pub fn from_custom_actions(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CustomTargetSkaffoldActions>>,
+        ) -> Self {
+            Self::CustomActions(value.into())
+        }
+    }
 }
 
 /// CustomTargetSkaffoldActions represents the `CustomTargetType` configuration
@@ -4597,6 +4727,33 @@ pub mod skaffold_modules {
         GoogleCloudBuildRepo(
             std::boxed::Box<crate::model::skaffold_modules::SkaffoldGCBRepoSource>,
         ),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [Git](Self::Git) branch.
+        pub fn from_git(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::skaffold_modules::SkaffoldGitSource>,
+            >,
+        ) -> Self {
+            Self::Git(value.into())
+        }
+        /// Initializes the enum to the [GoogleCloudStorage](Self::GoogleCloudStorage) branch.
+        pub fn from_google_cloud_storage(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::skaffold_modules::SkaffoldGCSSource>,
+            >,
+        ) -> Self {
+            Self::GoogleCloudStorage(value.into())
+        }
+        /// Initializes the enum to the [GoogleCloudBuildRepo](Self::GoogleCloudBuildRepo) branch.
+        pub fn from_google_cloud_build_repo(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::skaffold_modules::SkaffoldGCBRepoSource>,
+            >,
+        ) -> Self {
+            Self::GoogleCloudBuildRepo(value.into())
+        }
     }
 }
 
@@ -5514,6 +5671,15 @@ pub mod policy_rule {
     pub enum Rule {
         /// Optional. Rollout restrictions.
         RolloutRestriction(std::boxed::Box<crate::model::RolloutRestriction>),
+    }
+
+    impl Rule {
+        /// Initializes the enum to the [RolloutRestriction](Self::RolloutRestriction) branch.
+        pub fn from_rollout_restriction(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RolloutRestriction>>,
+        ) -> Self {
+            Self::RolloutRestriction(value.into())
+        }
     }
 }
 
@@ -7384,6 +7550,13 @@ pub mod target_artifact {
         /// paths are relative to this location.
         ArtifactUri(std::string::String),
     }
+
+    impl Uri {
+        /// Initializes the enum to the [ArtifactUri](Self::ArtifactUri) branch.
+        pub fn from_artifact_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::ArtifactUri(value.into())
+        }
+    }
 }
 
 /// The artifacts produced by a deploy operation.
@@ -8830,6 +9003,21 @@ pub mod phase {
         /// Output only. ChildRollout job composition.
         ChildRolloutJobs(std::boxed::Box<crate::model::ChildRolloutJobs>),
     }
+
+    impl Jobs {
+        /// Initializes the enum to the [DeploymentJobs](Self::DeploymentJobs) branch.
+        pub fn from_deployment_jobs(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DeploymentJobs>>,
+        ) -> Self {
+            Self::DeploymentJobs(value.into())
+        }
+        /// Initializes the enum to the [ChildRolloutJobs](Self::ChildRolloutJobs) branch.
+        pub fn from_child_rollout_jobs(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ChildRolloutJobs>>,
+        ) -> Self {
+            Self::ChildRolloutJobs(value.into())
+        }
+    }
 }
 
 /// Deployment job composition.
@@ -9269,6 +9457,45 @@ pub mod job {
         CreateChildRolloutJob(std::boxed::Box<crate::model::CreateChildRolloutJob>),
         /// Output only. An advanceChildRollout Job.
         AdvanceChildRolloutJob(std::boxed::Box<crate::model::AdvanceChildRolloutJob>),
+    }
+
+    impl JobType {
+        /// Initializes the enum to the [DeployJob](Self::DeployJob) branch.
+        pub fn from_deploy_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DeployJob>>,
+        ) -> Self {
+            Self::DeployJob(value.into())
+        }
+        /// Initializes the enum to the [VerifyJob](Self::VerifyJob) branch.
+        pub fn from_verify_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VerifyJob>>,
+        ) -> Self {
+            Self::VerifyJob(value.into())
+        }
+        /// Initializes the enum to the [PredeployJob](Self::PredeployJob) branch.
+        pub fn from_predeploy_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PredeployJob>>,
+        ) -> Self {
+            Self::PredeployJob(value.into())
+        }
+        /// Initializes the enum to the [PostdeployJob](Self::PostdeployJob) branch.
+        pub fn from_postdeploy_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PostdeployJob>>,
+        ) -> Self {
+            Self::PostdeployJob(value.into())
+        }
+        /// Initializes the enum to the [CreateChildRolloutJob](Self::CreateChildRolloutJob) branch.
+        pub fn from_create_child_rollout_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CreateChildRolloutJob>>,
+        ) -> Self {
+            Self::CreateChildRolloutJob(value.into())
+        }
+        /// Initializes the enum to the [AdvanceChildRolloutJob](Self::AdvanceChildRolloutJob) branch.
+        pub fn from_advance_child_rollout_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AdvanceChildRolloutJob>>,
+        ) -> Self {
+            Self::AdvanceChildRolloutJob(value.into())
+        }
     }
 }
 
@@ -10637,6 +10864,45 @@ pub mod job_run {
         CreateChildRolloutJobRun(std::boxed::Box<crate::model::CreateChildRolloutJobRun>),
         /// Output only. Information specific to an advanceChildRollout `JobRun`
         AdvanceChildRolloutJobRun(std::boxed::Box<crate::model::AdvanceChildRolloutJobRun>),
+    }
+
+    impl JobRun {
+        /// Initializes the enum to the [DeployJobRun](Self::DeployJobRun) branch.
+        pub fn from_deploy_job_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DeployJobRun>>,
+        ) -> Self {
+            Self::DeployJobRun(value.into())
+        }
+        /// Initializes the enum to the [VerifyJobRun](Self::VerifyJobRun) branch.
+        pub fn from_verify_job_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VerifyJobRun>>,
+        ) -> Self {
+            Self::VerifyJobRun(value.into())
+        }
+        /// Initializes the enum to the [PredeployJobRun](Self::PredeployJobRun) branch.
+        pub fn from_predeploy_job_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PredeployJobRun>>,
+        ) -> Self {
+            Self::PredeployJobRun(value.into())
+        }
+        /// Initializes the enum to the [PostdeployJobRun](Self::PostdeployJobRun) branch.
+        pub fn from_postdeploy_job_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PostdeployJobRun>>,
+        ) -> Self {
+            Self::PostdeployJobRun(value.into())
+        }
+        /// Initializes the enum to the [CreateChildRolloutJobRun](Self::CreateChildRolloutJobRun) branch.
+        pub fn from_create_child_rollout_job_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CreateChildRolloutJobRun>>,
+        ) -> Self {
+            Self::CreateChildRolloutJobRun(value.into())
+        }
+        /// Initializes the enum to the [AdvanceChildRolloutJobRun](Self::AdvanceChildRolloutJobRun) branch.
+        pub fn from_advance_child_rollout_job_run(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AdvanceChildRolloutJobRun>>,
+        ) -> Self {
+            Self::AdvanceChildRolloutJobRun(value.into())
+        }
     }
 }
 
@@ -12088,6 +12354,33 @@ pub mod automation_rule {
         /// configured schedule.
         TimedPromoteReleaseRule(std::boxed::Box<crate::model::TimedPromoteReleaseRule>),
     }
+
+    impl Rule {
+        /// Initializes the enum to the [PromoteReleaseRule](Self::PromoteReleaseRule) branch.
+        pub fn from_promote_release_rule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PromoteReleaseRule>>,
+        ) -> Self {
+            Self::PromoteReleaseRule(value.into())
+        }
+        /// Initializes the enum to the [AdvanceRolloutRule](Self::AdvanceRolloutRule) branch.
+        pub fn from_advance_rollout_rule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AdvanceRolloutRule>>,
+        ) -> Self {
+            Self::AdvanceRolloutRule(value.into())
+        }
+        /// Initializes the enum to the [RepairRolloutRule](Self::RepairRolloutRule) branch.
+        pub fn from_repair_rollout_rule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RepairRolloutRule>>,
+        ) -> Self {
+            Self::RepairRolloutRule(value.into())
+        }
+        /// Initializes the enum to the [TimedPromoteReleaseRule](Self::TimedPromoteReleaseRule) branch.
+        pub fn from_timed_promote_release_rule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimedPromoteReleaseRule>>,
+        ) -> Self {
+            Self::TimedPromoteReleaseRule(value.into())
+        }
+    }
 }
 
 /// The `TimedPromoteReleaseRule` will automatically promote a release from the
@@ -12571,6 +12864,21 @@ pub mod repair_phase_config {
         /// Optional. Rolls back a `Rollout`.
         Rollback(std::boxed::Box<crate::model::Rollback>),
     }
+
+    impl RepairPhase {
+        /// Initializes the enum to the [Retry](Self::Retry) branch.
+        pub fn from_retry(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Retry>>,
+        ) -> Self {
+            Self::Retry(value.into())
+        }
+        /// Initializes the enum to the [Rollback](Self::Rollback) branch.
+        pub fn from_rollback(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Rollback>>,
+        ) -> Self {
+            Self::Rollback(value.into())
+        }
+    }
 }
 
 /// Retries the failed job.
@@ -12774,6 +13082,15 @@ pub mod automation_rule_condition {
         /// Optional. TimedPromoteReleaseCondition contains rule conditions specific
         /// to a an Automation with a timed promote release rule defined.
         TimedPromoteReleaseCondition(std::boxed::Box<crate::model::TimedPromoteReleaseCondition>),
+    }
+
+    impl RuleTypeCondition {
+        /// Initializes the enum to the [TimedPromoteReleaseCondition](Self::TimedPromoteReleaseCondition) branch.
+        pub fn from_timed_promote_release_condition(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimedPromoteReleaseCondition>>,
+        ) -> Self {
+            Self::TimedPromoteReleaseCondition(value.into())
+        }
     }
 }
 
@@ -13737,6 +14054,33 @@ pub mod automation_run {
         /// Timed Promote Release rule.
         TimedPromoteReleaseOperation(std::boxed::Box<crate::model::TimedPromoteReleaseOperation>),
     }
+
+    impl Operation {
+        /// Initializes the enum to the [PromoteReleaseOperation](Self::PromoteReleaseOperation) branch.
+        pub fn from_promote_release_operation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PromoteReleaseOperation>>,
+        ) -> Self {
+            Self::PromoteReleaseOperation(value.into())
+        }
+        /// Initializes the enum to the [AdvanceRolloutOperation](Self::AdvanceRolloutOperation) branch.
+        pub fn from_advance_rollout_operation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AdvanceRolloutOperation>>,
+        ) -> Self {
+            Self::AdvanceRolloutOperation(value.into())
+        }
+        /// Initializes the enum to the [RepairRolloutOperation](Self::RepairRolloutOperation) branch.
+        pub fn from_repair_rollout_operation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RepairRolloutOperation>>,
+        ) -> Self {
+            Self::RepairRolloutOperation(value.into())
+        }
+        /// Initializes the enum to the [TimedPromoteReleaseOperation](Self::TimedPromoteReleaseOperation) branch.
+        pub fn from_timed_promote_release_operation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimedPromoteReleaseOperation>>,
+        ) -> Self {
+            Self::TimedPromoteReleaseOperation(value.into())
+        }
+    }
 }
 
 /// Contains the information of an automated promote-release operation.
@@ -14096,6 +14440,21 @@ pub mod repair_phase {
         Retry(std::boxed::Box<crate::model::RetryPhase>),
         /// Output only. Rollback attempt for rollback repair mode .
         Rollback(std::boxed::Box<crate::model::RollbackAttempt>),
+    }
+
+    impl RepairPhase {
+        /// Initializes the enum to the [Retry](Self::Retry) branch.
+        pub fn from_retry(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RetryPhase>>,
+        ) -> Self {
+            Self::Retry(value.into())
+        }
+        /// Initializes the enum to the [Rollback](Self::Rollback) branch.
+        pub fn from_rollback(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RollbackAttempt>>,
+        ) -> Self {
+            Self::Rollback(value.into())
+        }
     }
 }
 

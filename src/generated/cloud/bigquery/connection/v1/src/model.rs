@@ -641,6 +641,51 @@ pub mod connection {
         /// for your Salesforce DataCloud connection.
         SalesforceDataCloud(std::boxed::Box<crate::model::SalesforceDataCloudProperties>),
     }
+
+    impl Properties {
+        /// Initializes the enum to the [CloudSql](Self::CloudSql) branch.
+        pub fn from_cloud_sql(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudSqlProperties>>,
+        ) -> Self {
+            Self::CloudSql(value.into())
+        }
+        /// Initializes the enum to the [Aws](Self::Aws) branch.
+        pub fn from_aws(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsProperties>>,
+        ) -> Self {
+            Self::Aws(value.into())
+        }
+        /// Initializes the enum to the [Azure](Self::Azure) branch.
+        pub fn from_azure(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AzureProperties>>,
+        ) -> Self {
+            Self::Azure(value.into())
+        }
+        /// Initializes the enum to the [CloudSpanner](Self::CloudSpanner) branch.
+        pub fn from_cloud_spanner(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudSpannerProperties>>,
+        ) -> Self {
+            Self::CloudSpanner(value.into())
+        }
+        /// Initializes the enum to the [CloudResource](Self::CloudResource) branch.
+        pub fn from_cloud_resource(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudResourceProperties>>,
+        ) -> Self {
+            Self::CloudResource(value.into())
+        }
+        /// Initializes the enum to the [Spark](Self::Spark) branch.
+        pub fn from_spark(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkProperties>>,
+        ) -> Self {
+            Self::Spark(value.into())
+        }
+        /// Initializes the enum to the [SalesforceDataCloud](Self::SalesforceDataCloud) branch.
+        pub fn from_salesforce_data_cloud(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SalesforceDataCloudProperties>>,
+        ) -> Self {
+            Self::SalesforceDataCloud(value.into())
+        }
+    }
 }
 
 /// Connection properties specific to the Cloud SQL.
@@ -1028,6 +1073,21 @@ pub mod aws_properties {
         /// Authentication using Google owned service account to assume into
         /// customer's AWS IAM Role.
         AccessRole(std::boxed::Box<crate::model::AwsAccessRole>),
+    }
+
+    impl AuthenticationMethod {
+        /// Initializes the enum to the [CrossAccountRole](Self::CrossAccountRole) branch.
+        pub fn from_cross_account_role(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsCrossAccountRole>>,
+        ) -> Self {
+            Self::CrossAccountRole(value.into())
+        }
+        /// Initializes the enum to the [AccessRole](Self::AccessRole) branch.
+        pub fn from_access_role(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsAccessRole>>,
+        ) -> Self {
+            Self::AccessRole(value.into())
+        }
     }
 }
 

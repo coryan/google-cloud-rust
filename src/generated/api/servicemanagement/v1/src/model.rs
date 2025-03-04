@@ -912,6 +912,25 @@ pub mod rollout {
         /// Readonly.
         DeleteServiceStrategy(std::boxed::Box<crate::model::rollout::DeleteServiceStrategy>),
     }
+
+    impl Strategy {
+        /// Initializes the enum to the [TrafficPercentStrategy](Self::TrafficPercentStrategy) branch.
+        pub fn from_traffic_percent_strategy(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::rollout::TrafficPercentStrategy>,
+            >,
+        ) -> Self {
+            Self::TrafficPercentStrategy(value.into())
+        }
+        /// Initializes the enum to the [DeleteServiceStrategy](Self::DeleteServiceStrategy) branch.
+        pub fn from_delete_service_strategy(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::rollout::DeleteServiceStrategy>,
+            >,
+        ) -> Self {
+            Self::DeleteServiceStrategy(value.into())
+        }
+    }
 }
 
 /// Request message for `ListServices` method.

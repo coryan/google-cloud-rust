@@ -3261,6 +3261,69 @@ pub mod rule {
         /// Remove an attribute as a facet in the request (if present).
         RemoveFacetAction(std::boxed::Box<crate::model::rule::RemoveFacetAction>),
     }
+
+    impl Action {
+        /// Initializes the enum to the [BoostAction](Self::BoostAction) branch.
+        pub fn from_boost_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::BoostAction>>,
+        ) -> Self {
+            Self::BoostAction(value.into())
+        }
+        /// Initializes the enum to the [RedirectAction](Self::RedirectAction) branch.
+        pub fn from_redirect_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::RedirectAction>>,
+        ) -> Self {
+            Self::RedirectAction(value.into())
+        }
+        /// Initializes the enum to the [OnewaySynonymsAction](Self::OnewaySynonymsAction) branch.
+        pub fn from_oneway_synonyms_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::OnewaySynonymsAction>>,
+        ) -> Self {
+            Self::OnewaySynonymsAction(value.into())
+        }
+        /// Initializes the enum to the [DoNotAssociateAction](Self::DoNotAssociateAction) branch.
+        pub fn from_do_not_associate_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::DoNotAssociateAction>>,
+        ) -> Self {
+            Self::DoNotAssociateAction(value.into())
+        }
+        /// Initializes the enum to the [ReplacementAction](Self::ReplacementAction) branch.
+        pub fn from_replacement_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::ReplacementAction>>,
+        ) -> Self {
+            Self::ReplacementAction(value.into())
+        }
+        /// Initializes the enum to the [IgnoreAction](Self::IgnoreAction) branch.
+        pub fn from_ignore_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::IgnoreAction>>,
+        ) -> Self {
+            Self::IgnoreAction(value.into())
+        }
+        /// Initializes the enum to the [FilterAction](Self::FilterAction) branch.
+        pub fn from_filter_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::FilterAction>>,
+        ) -> Self {
+            Self::FilterAction(value.into())
+        }
+        /// Initializes the enum to the [TwowaySynonymsAction](Self::TwowaySynonymsAction) branch.
+        pub fn from_twoway_synonyms_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::TwowaySynonymsAction>>,
+        ) -> Self {
+            Self::TwowaySynonymsAction(value.into())
+        }
+        /// Initializes the enum to the [ForceReturnFacetAction](Self::ForceReturnFacetAction) branch.
+        pub fn from_force_return_facet_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::ForceReturnFacetAction>>,
+        ) -> Self {
+            Self::ForceReturnFacetAction(value.into())
+        }
+        /// Initializes the enum to the [RemoveFacetAction](Self::RemoveFacetAction) branch.
+        pub fn from_remove_facet_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::rule::RemoveFacetAction>>,
+        ) -> Self {
+            Self::RemoveFacetAction(value.into())
+        }
+    }
 }
 
 /// An intended audience of the [Product][google.cloud.retail.v2.Product] for
@@ -3846,6 +3909,17 @@ pub mod interval {
         ExclusiveMinimum(f64),
     }
 
+    impl Min {
+        /// Initializes the enum to the [Minimum](Self::Minimum) branch.
+        pub fn from_minimum(value: impl std::convert::Into<f64>) -> Self {
+            Self::Minimum(value.into())
+        }
+        /// Initializes the enum to the [ExclusiveMinimum](Self::ExclusiveMinimum) branch.
+        pub fn from_exclusive_minimum(value: impl std::convert::Into<f64>) -> Self {
+            Self::ExclusiveMinimum(value.into())
+        }
+    }
+
     /// The upper bound of the interval. If neither of the max fields are set, then
     /// the upper bound is positive infinity.
     ///
@@ -3859,6 +3933,17 @@ pub mod interval {
         Maximum(f64),
         /// Exclusive upper bound.
         ExclusiveMaximum(f64),
+    }
+
+    impl Max {
+        /// Initializes the enum to the [Maximum](Self::Maximum) branch.
+        pub fn from_maximum(value: impl std::convert::Into<f64>) -> Self {
+            Self::Maximum(value.into())
+        }
+        /// Initializes the enum to the [ExclusiveMaximum](Self::ExclusiveMaximum) branch.
+        pub fn from_exclusive_maximum(value: impl std::convert::Into<f64>) -> Self {
+            Self::ExclusiveMaximum(value.into())
+        }
     }
 }
 
@@ -5029,6 +5114,15 @@ pub mod control {
         /// For example: Boost "gShoe" when query full matches "Running Shoes".
         Rule(std::boxed::Box<crate::model::Rule>),
     }
+
+    impl Control {
+        /// Initializes the enum to the [Rule](Self::Rule) branch.
+        pub fn from_rule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Rule>>,
+        ) -> Self {
+            Self::Rule(value.into())
+        }
+    }
 }
 
 /// Request for CreateControl method.
@@ -5534,6 +5628,23 @@ pub mod output_config {
         /// The BigQuery location where the output is to be written to.
         BigqueryDestination(std::boxed::Box<crate::model::output_config::BigQueryDestination>),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::output_config::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
+        /// Initializes the enum to the [BigqueryDestination](Self::BigqueryDestination) branch.
+        pub fn from_bigquery_destination(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::output_config::BigQueryDestination>,
+            >,
+        ) -> Self {
+            Self::BigqueryDestination(value.into())
+        }
+    }
 }
 
 /// Configuration of destination for Export related errors.
@@ -5610,6 +5721,13 @@ pub mod export_errors_config {
         /// this bucket, one per line, as a JSON-encoded
         /// `google.rpc.Status` message.
         GcsPrefix(std::string::String),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsPrefix](Self::GcsPrefix) branch.
+        pub fn from_gcs_prefix(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsPrefix(value.into())
+        }
     }
 }
 
@@ -6594,6 +6712,15 @@ pub mod big_query_source {
         /// [google.cloud.retail.v2.ImportProductsRequest]: crate::model::ImportProductsRequest
         PartitionDate(std::boxed::Box<gtype::model::Date>),
     }
+
+    impl Partition {
+        /// Initializes the enum to the [PartitionDate](Self::PartitionDate) branch.
+        pub fn from_partition_date(
+            value: impl std::convert::Into<std::boxed::Box<gtype::model::Date>>,
+        ) -> Self {
+            Self::PartitionDate(value.into())
+        }
+    }
 }
 
 /// The inline source for the input config for ImportProducts method.
@@ -6742,6 +6869,13 @@ pub mod import_errors_config {
         /// sharded files in this directory, one per line, as a JSON-encoded
         /// `google.rpc.Status` message.
         GcsPrefix(std::string::String),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsPrefix](Self::GcsPrefix) branch.
+        pub fn from_gcs_prefix(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsPrefix(value.into())
+        }
     }
 }
 
@@ -7202,6 +7336,27 @@ pub mod product_input_config {
         /// BigQuery input source.
         BigQuerySource(std::boxed::Box<crate::model::BigQuerySource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [ProductInlineSource](Self::ProductInlineSource) branch.
+        pub fn from_product_inline_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ProductInlineSource>>,
+        ) -> Self {
+            Self::ProductInlineSource(value.into())
+        }
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [BigQuerySource](Self::BigQuerySource) branch.
+        pub fn from_big_query_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+        ) -> Self {
+            Self::BigQuerySource(value.into())
+        }
+    }
 }
 
 /// The input config source for user events.
@@ -7347,6 +7502,27 @@ pub mod user_event_input_config {
         /// Required. BigQuery input source.
         BigQuerySource(std::boxed::Box<crate::model::BigQuerySource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [UserEventInlineSource](Self::UserEventInlineSource) branch.
+        pub fn from_user_event_inline_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UserEventInlineSource>>,
+        ) -> Self {
+            Self::UserEventInlineSource(value.into())
+        }
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [BigQuerySource](Self::BigQuerySource) branch.
+        pub fn from_big_query_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+        ) -> Self {
+            Self::BigQuerySource(value.into())
+        }
+    }
 }
 
 /// The input config source for completion data.
@@ -7451,6 +7627,15 @@ pub mod completion_data_input_config {
         /// cloud-retail-customer-data-access@system.gserviceaccount.com before
         /// using this feature otherwise an error is thrown.
         BigQuerySource(std::boxed::Box<crate::model::BigQuerySource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [BigQuerySource](Self::BigQuerySource) branch.
+        pub fn from_big_query_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+        ) -> Self {
+            Self::BigQuerySource(value.into())
+        }
     }
 }
 
@@ -8207,6 +8392,17 @@ pub mod model {
             FrequentlyBoughtTogetherConfig(
                 std::boxed::Box<crate::model::model::FrequentlyBoughtTogetherFeaturesConfig>,
             ),
+        }
+
+        impl TypeDedicatedConfig {
+            /// Initializes the enum to the [FrequentlyBoughtTogetherConfig](Self::FrequentlyBoughtTogetherConfig) branch.
+            pub fn from_frequently_bought_together_config(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::model::FrequentlyBoughtTogetherFeaturesConfig>,
+                >,
+            ) -> Self {
+                Self::FrequentlyBoughtTogetherConfig(value.into())
+            }
         }
     }
 
@@ -10400,6 +10596,19 @@ pub mod product {
         /// [google.cloud.retail.v2.SearchService.Search]: crate::client::SearchService::search
         Ttl(std::boxed::Box<wkt::Duration>),
     }
+
+    impl Expiration {
+        /// Initializes the enum to the [ExpireTime](Self::ExpireTime) branch.
+        pub fn from_expire_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::ExpireTime(value.into())
+        }
+        /// Initializes the enum to the [Ttl](Self::Ttl) branch.
+        pub fn from_ttl(value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>) -> Self {
+            Self::Ttl(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -12352,6 +12561,21 @@ pub mod tile {
         /// The product attribute key-numeric interval.
         ProductAttributeInterval(std::boxed::Box<crate::model::ProductAttributeInterval>),
     }
+
+    impl ProductAttribute {
+        /// Initializes the enum to the [ProductAttributeValue](Self::ProductAttributeValue) branch.
+        pub fn from_product_attribute_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ProductAttributeValue>>,
+        ) -> Self {
+            Self::ProductAttributeValue(value.into())
+        }
+        /// Initializes the enum to the [ProductAttributeInterval](Self::ProductAttributeInterval) branch.
+        pub fn from_product_attribute_interval(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ProductAttributeInterval>>,
+        ) -> Self {
+            Self::ProductAttributeInterval(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -14081,6 +14305,21 @@ pub mod search_request {
                 /// [ConversationalSearchResult.suggested_answers][].
                 SelectedAnswer(std::boxed::Box<crate::model::search_request::conversational_search_spec::user_answer::SelectedAnswer>),
             }
+
+            impl Type {
+                /// Initializes the enum to the [TextAnswer](Self::TextAnswer) branch.
+                pub fn from_text_answer(
+                    value: impl std::convert::Into<std::string::String>,
+                ) -> Self {
+                    Self::TextAnswer(value.into())
+                }
+                /// Initializes the enum to the [SelectedAnswer](Self::SelectedAnswer) branch.
+                pub fn from_selected_answer(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::search_request::conversational_search_spec::user_answer::SelectedAnswer>>,
+                ) -> Self {
+                    Self::SelectedAnswer(value.into())
+                }
+            }
         }
     }
 
@@ -14877,6 +15116,19 @@ pub mod search_response {
                 /// Interval value for a facet, such as [10, 20) for facet "price".
                 Interval(std::boxed::Box<crate::model::Interval>),
             }
+
+            impl FacetValue {
+                /// Initializes the enum to the [Value](Self::Value) branch.
+                pub fn from_value(value: impl std::convert::Into<std::string::String>) -> Self {
+                    Self::Value(value.into())
+                }
+                /// Initializes the enum to the [Interval](Self::Interval) branch.
+                pub fn from_interval(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::Interval>>,
+                ) -> Self {
+                    Self::Interval(value.into())
+                }
+            }
         }
     }
 
@@ -15328,6 +15580,17 @@ pub mod experiment_info {
         ServingConfigExperiment(
             std::boxed::Box<crate::model::experiment_info::ServingConfigExperiment>,
         ),
+    }
+
+    impl ExperimentMetadata {
+        /// Initializes the enum to the [ServingConfigExperiment](Self::ServingConfigExperiment) branch.
+        pub fn from_serving_config_experiment(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::experiment_info::ServingConfigExperiment>,
+            >,
+        ) -> Self {
+            Self::ServingConfigExperiment(value.into())
+        }
     }
 }
 
@@ -17113,6 +17376,13 @@ pub mod collect_user_event_request {
         /// The prebuilt rule name that can convert a specific type of raw_json.
         /// For example: "ga4_bq" rule for the GA4 user event schema.
         PrebuiltRule(std::string::String),
+    }
+
+    impl ConversionRule {
+        /// Initializes the enum to the [PrebuiltRule](Self::PrebuiltRule) branch.
+        pub fn from_prebuilt_rule(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PrebuiltRule(value.into())
+        }
     }
 }
 

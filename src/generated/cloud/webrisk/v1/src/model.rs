@@ -1168,6 +1168,19 @@ pub mod threat_info {
             /// Enum representation of confidence.
             Level(crate::model::threat_info::confidence::ConfidenceLevel),
         }
+
+        impl Value {
+            /// Initializes the enum to the [Score](Self::Score) branch.
+            pub fn from_score(value: impl std::convert::Into<f32>) -> Self {
+                Self::Score(value.into())
+            }
+            /// Initializes the enum to the [Level](Self::Level) branch.
+            pub fn from_level(
+                value: impl std::convert::Into<crate::model::threat_info::confidence::ConfidenceLevel>,
+            ) -> Self {
+                Self::Level(value.into())
+            }
+        }
     }
 
     /// Context about why the URI is unsafe.

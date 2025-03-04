@@ -845,6 +845,33 @@ pub mod restrictions {
         /// The iOS apps that are allowed to use the key.
         IosKeyRestrictions(std::boxed::Box<crate::model::IosKeyRestrictions>),
     }
+
+    impl ClientRestrictions {
+        /// Initializes the enum to the [BrowserKeyRestrictions](Self::BrowserKeyRestrictions) branch.
+        pub fn from_browser_key_restrictions(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BrowserKeyRestrictions>>,
+        ) -> Self {
+            Self::BrowserKeyRestrictions(value.into())
+        }
+        /// Initializes the enum to the [ServerKeyRestrictions](Self::ServerKeyRestrictions) branch.
+        pub fn from_server_key_restrictions(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ServerKeyRestrictions>>,
+        ) -> Self {
+            Self::ServerKeyRestrictions(value.into())
+        }
+        /// Initializes the enum to the [AndroidKeyRestrictions](Self::AndroidKeyRestrictions) branch.
+        pub fn from_android_key_restrictions(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AndroidKeyRestrictions>>,
+        ) -> Self {
+            Self::AndroidKeyRestrictions(value.into())
+        }
+        /// Initializes the enum to the [IosKeyRestrictions](Self::IosKeyRestrictions) branch.
+        pub fn from_ios_key_restrictions(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IosKeyRestrictions>>,
+        ) -> Self {
+            Self::IosKeyRestrictions(value.into())
+        }
+    }
 }
 
 /// The HTTP referrers (websites) that are allowed to use the key.

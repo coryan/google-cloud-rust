@@ -563,6 +563,21 @@ pub mod certificate_authority {
             /// [ProtectionLevel][google.cloud.kms.v1.ProtectionLevel] as `HSM`.
             Algorithm(crate::model::certificate_authority::SignHashAlgorithm),
         }
+
+        impl KeyVersion {
+            /// Initializes the enum to the [CloudKmsKeyVersion](Self::CloudKmsKeyVersion) branch.
+            pub fn from_cloud_kms_key_version(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::CloudKmsKeyVersion(value.into())
+            }
+            /// Initializes the enum to the [Algorithm](Self::Algorithm) branch.
+            pub fn from_algorithm(
+                value: impl std::convert::Into<crate::model::certificate_authority::SignHashAlgorithm>,
+            ) -> Self {
+                Self::Algorithm(value.into())
+            }
+        }
     }
 
     /// The type of a
@@ -1531,6 +1546,29 @@ pub mod ca_pool {
                     >,
                 ),
             }
+
+            impl KeyType {
+                /// Initializes the enum to the [Rsa](Self::Rsa) branch.
+                pub fn from_rsa(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::ca_pool::issuance_policy::allowed_key_type::RsaKeyType,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::Rsa(value.into())
+                }
+                /// Initializes the enum to the [EllipticCurve](Self::EllipticCurve) branch.
+                pub fn from_elliptic_curve(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::ca_pool::issuance_policy::allowed_key_type::EcKeyType,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::EllipticCurve(value.into())
+                }
+            }
         }
 
         /// [IssuanceModes][google.cloud.security.privateca.v1.CaPool.IssuancePolicy.IssuanceModes]
@@ -2293,6 +2331,19 @@ pub mod certificate {
         /// X.509 or ASN.1.
         Config(std::boxed::Box<crate::model::CertificateConfig>),
     }
+
+    impl CertificateConfig {
+        /// Initializes the enum to the [PemCsr](Self::PemCsr) branch.
+        pub fn from_pem_csr(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PemCsr(value.into())
+        }
+        /// Initializes the enum to the [Config](Self::Config) branch.
+        pub fn from_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CertificateConfig>>,
+        ) -> Self {
+            Self::Config(value.into())
+        }
+    }
 }
 
 /// A
@@ -3025,6 +3076,23 @@ pub mod subordinate_config {
         ///
         /// [google.cloud.security.privateca.v1.CertificateAuthority]: crate::model::CertificateAuthority
         PemIssuerChain(std::boxed::Box<crate::model::subordinate_config::SubordinateConfigChain>),
+    }
+
+    impl SubordinateConfig {
+        /// Initializes the enum to the [CertificateAuthority](Self::CertificateAuthority) branch.
+        pub fn from_certificate_authority(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::CertificateAuthority(value.into())
+        }
+        /// Initializes the enum to the [PemIssuerChain](Self::PemIssuerChain) branch.
+        pub fn from_pem_issuer_chain(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::subordinate_config::SubordinateConfigChain>,
+            >,
+        ) -> Self {
+            Self::PemIssuerChain(value.into())
+        }
     }
 }
 

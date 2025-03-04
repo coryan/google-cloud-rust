@@ -451,6 +451,25 @@ pub mod log_entry {
         /// expressed as a JSON object.
         JsonPayload(std::boxed::Box<wkt::Struct>),
     }
+
+    impl Payload {
+        /// Initializes the enum to the [ProtoPayload](Self::ProtoPayload) branch.
+        pub fn from_proto_payload(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Any>>,
+        ) -> Self {
+            Self::ProtoPayload(value.into())
+        }
+        /// Initializes the enum to the [TextPayload](Self::TextPayload) branch.
+        pub fn from_text_payload(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TextPayload(value.into())
+        }
+        /// Initializes the enum to the [JsonPayload](Self::JsonPayload) branch.
+        pub fn from_json_payload(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Struct>>,
+        ) -> Self {
+            Self::JsonPayload(value.into())
+        }
+    }
 }
 
 /// Additional information about a potentially long-running operation with which
@@ -2176,6 +2195,15 @@ pub mod log_sink {
     pub enum Options {
         /// Optional. Options that affect sinks exporting data to BigQuery.
         BigqueryOptions(std::boxed::Box<crate::model::BigQueryOptions>),
+    }
+
+    impl Options {
+        /// Initializes the enum to the [BigqueryOptions](Self::BigqueryOptions) branch.
+        pub fn from_bigquery_options(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryOptions>>,
+        ) -> Self {
+            Self::BigqueryOptions(value.into())
+        }
     }
 }
 
@@ -4994,6 +5022,21 @@ pub mod bucket_metadata {
         /// LongRunningUpdateBucket RPC request.
         UpdateBucketRequest(std::boxed::Box<crate::model::UpdateBucketRequest>),
     }
+
+    impl Request {
+        /// Initializes the enum to the [CreateBucketRequest](Self::CreateBucketRequest) branch.
+        pub fn from_create_bucket_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CreateBucketRequest>>,
+        ) -> Self {
+            Self::CreateBucketRequest(value.into())
+        }
+        /// Initializes the enum to the [UpdateBucketRequest](Self::UpdateBucketRequest) branch.
+        pub fn from_update_bucket_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UpdateBucketRequest>>,
+        ) -> Self {
+            Self::UpdateBucketRequest(value.into())
+        }
+    }
 }
 
 /// Metadata for long running Link operations.
@@ -5141,6 +5184,21 @@ pub mod link_metadata {
         CreateLinkRequest(std::boxed::Box<crate::model::CreateLinkRequest>),
         /// DeleteLink RPC request.
         DeleteLinkRequest(std::boxed::Box<crate::model::DeleteLinkRequest>),
+    }
+
+    impl Request {
+        /// Initializes the enum to the [CreateLinkRequest](Self::CreateLinkRequest) branch.
+        pub fn from_create_link_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CreateLinkRequest>>,
+        ) -> Self {
+            Self::CreateLinkRequest(value.into())
+        }
+        /// Initializes the enum to the [DeleteLinkRequest](Self::DeleteLinkRequest) branch.
+        pub fn from_delete_link_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DeleteLinkRequest>>,
+        ) -> Self {
+            Self::DeleteLinkRequest(value.into())
+        }
     }
 }
 

@@ -938,6 +938,17 @@ pub mod agent {
                 std::boxed::Box<crate::model::agent::git_integration_settings::GithubSettings>,
             ),
         }
+
+        impl GitSettings {
+            /// Initializes the enum to the [GithubSettings](Self::GithubSettings) branch.
+            pub fn from_github_settings(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::agent::git_integration_settings::GithubSettings>,
+                >,
+            ) -> Self {
+                Self::GithubSettings(value.into())
+            }
+        }
     }
 
     /// Settings for Gen App Builder.
@@ -1721,6 +1732,21 @@ pub mod export_agent_response {
         /// [google.cloud.dialogflow.cx.v3.ExportAgentRequest]: crate::model::ExportAgentRequest
         CommitSha(std::string::String),
     }
+
+    impl Agent {
+        /// Initializes the enum to the [AgentUri](Self::AgentUri) branch.
+        pub fn from_agent_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::AgentUri(value.into())
+        }
+        /// Initializes the enum to the [AgentContent](Self::AgentContent) branch.
+        pub fn from_agent_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::AgentContent(value.into())
+        }
+        /// Initializes the enum to the [CommitSha](Self::CommitSha) branch.
+        pub fn from_commit_sha(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::CommitSha(value.into())
+        }
+    }
 }
 
 /// The request message for
@@ -1967,6 +1993,25 @@ pub mod restore_agent_request {
         AgentContent(bytes::Bytes),
         /// Setting for restoring from a git branch
         GitSource(std::boxed::Box<crate::model::restore_agent_request::GitSource>),
+    }
+
+    impl Agent {
+        /// Initializes the enum to the [AgentUri](Self::AgentUri) branch.
+        pub fn from_agent_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::AgentUri(value.into())
+        }
+        /// Initializes the enum to the [AgentContent](Self::AgentContent) branch.
+        pub fn from_agent_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::AgentContent(value.into())
+        }
+        /// Initializes the enum to the [GitSource](Self::GitSource) branch.
+        pub fn from_git_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::restore_agent_request::GitSource>,
+            >,
+        ) -> Self {
+            Self::GitSource(value.into())
+        }
     }
 }
 
@@ -4783,6 +4828,17 @@ pub mod export_entity_types_request {
         /// Optional. The option to return the serialized entity types inline.
         EntityTypesContentInline(bool),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [EntityTypesUri](Self::EntityTypesUri) branch.
+        pub fn from_entity_types_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::EntityTypesUri(value.into())
+        }
+        /// Initializes the enum to the [EntityTypesContentInline](Self::EntityTypesContentInline) branch.
+        pub fn from_entity_types_content_inline(value: impl std::convert::Into<bool>) -> Self {
+            Self::EntityTypesContentInline(value.into())
+        }
+    }
 }
 
 /// The response message for
@@ -4911,6 +4967,19 @@ pub mod export_entity_types_response {
         ///
         /// [google.cloud.dialogflow.cx.v3.ExportEntityTypesRequest]: crate::model::ExportEntityTypesRequest
         EntityTypesContent(std::boxed::Box<crate::model::InlineDestination>),
+    }
+
+    impl ExportedEntityTypes {
+        /// Initializes the enum to the [EntityTypesUri](Self::EntityTypesUri) branch.
+        pub fn from_entity_types_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::EntityTypesUri(value.into())
+        }
+        /// Initializes the enum to the [EntityTypesContent](Self::EntityTypesContent) branch.
+        pub fn from_entity_types_content(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InlineDestination>>,
+        ) -> Self {
+            Self::EntityTypesContent(value.into())
+        }
     }
 }
 
@@ -5163,6 +5232,19 @@ pub mod import_entity_types_request {
         EntityTypesUri(std::string::String),
         /// Uncompressed byte content of entity types.
         EntityTypesContent(std::boxed::Box<crate::model::InlineSource>),
+    }
+
+    impl EntityTypes {
+        /// Initializes the enum to the [EntityTypesUri](Self::EntityTypesUri) branch.
+        pub fn from_entity_types_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::EntityTypesUri(value.into())
+        }
+        /// Initializes the enum to the [EntityTypesContent](Self::EntityTypesContent) branch.
+        pub fn from_entity_types_content(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InlineSource>>,
+        ) -> Self {
+            Self::EntityTypesContent(value.into())
+        }
     }
 }
 
@@ -7168,6 +7250,15 @@ pub mod experiment {
             /// The flow versions as the variants of this experiment.
             VersionVariants(std::boxed::Box<crate::model::VersionVariants>),
         }
+
+        impl Variants {
+            /// Initializes the enum to the [VersionVariants](Self::VersionVariants) branch.
+            pub fn from_version_variants(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::VersionVariants>>,
+            ) -> Self {
+                Self::VersionVariants(value.into())
+            }
+        }
     }
 
     /// The inference result which includes an objective metric to optimize and the
@@ -7430,6 +7521,17 @@ pub mod experiment {
                 Ratio(f64),
                 /// Count value of a metric.
                 Count(f64),
+            }
+
+            impl Value {
+                /// Initializes the enum to the [Ratio](Self::Ratio) branch.
+                pub fn from_ratio(value: impl std::convert::Into<f64>) -> Self {
+                    Self::Ratio(value.into())
+                }
+                /// Initializes the enum to the [Count](Self::Count) branch.
+                pub fn from_count(value: impl std::convert::Into<f64>) -> Self {
+                    Self::Count(value.into())
+                }
             }
         }
 
@@ -7824,6 +7926,15 @@ pub mod variants_history {
     pub enum Variants {
         /// The flow versions as the variants.
         VersionVariants(std::boxed::Box<crate::model::VersionVariants>),
+    }
+
+    impl Variants {
+        /// Initializes the enum to the [VersionVariants](Self::VersionVariants) branch.
+        pub fn from_version_variants(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VersionVariants>>,
+        ) -> Self {
+            Self::VersionVariants(value.into())
+        }
     }
 }
 
@@ -9577,6 +9688,17 @@ pub mod import_flow_request {
         /// Uncompressed raw byte content for flow.
         FlowContent(bytes::Bytes),
     }
+
+    impl Flow {
+        /// Initializes the enum to the [FlowUri](Self::FlowUri) branch.
+        pub fn from_flow_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::FlowUri(value.into())
+        }
+        /// Initializes the enum to the [FlowContent](Self::FlowContent) branch.
+        pub fn from_flow_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::FlowContent(value.into())
+        }
+    }
 }
 
 /// The flow import strategy used for resource conflict resolution associated
@@ -9814,6 +9936,17 @@ pub mod export_flow_response {
         FlowUri(std::string::String),
         /// Uncompressed raw byte content for flow.
         FlowContent(bytes::Bytes),
+    }
+
+    impl Flow {
+        /// Initializes the enum to the [FlowUri](Self::FlowUri) branch.
+        pub fn from_flow_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::FlowUri(value.into())
+        }
+        /// Initializes the enum to the [FlowContent](Self::FlowContent) branch.
+        pub fn from_flow_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::FlowContent(value.into())
+        }
     }
 }
 
@@ -10246,6 +10379,23 @@ pub mod fulfillment {
                     Message(std::boxed::Box<crate::model::ResponseMessage>),
                     /// Additional cases to be evaluated.
                     AdditionalCases(std::boxed::Box<crate::model::fulfillment::ConditionalCases>),
+                }
+
+                impl CasesOrMessage {
+                    /// Initializes the enum to the [Message](Self::Message) branch.
+                    pub fn from_message(
+                        value: impl std::convert::Into<std::boxed::Box<crate::model::ResponseMessage>>,
+                    ) -> Self {
+                        Self::Message(value.into())
+                    }
+                    /// Initializes the enum to the [AdditionalCases](Self::AdditionalCases) branch.
+                    pub fn from_additional_cases(
+                        value: impl std::convert::Into<
+                            std::boxed::Box<crate::model::fulfillment::ConditionalCases>,
+                        >,
+                    ) -> Self {
+                        Self::AdditionalCases(value.into())
+                    }
                 }
             }
         }
@@ -12169,6 +12319,19 @@ pub mod import_intents_request {
         /// Uncompressed byte content of intents.
         IntentsContent(std::boxed::Box<crate::model::InlineSource>),
     }
+
+    impl Intents {
+        /// Initializes the enum to the [IntentsUri](Self::IntentsUri) branch.
+        pub fn from_intents_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::IntentsUri(value.into())
+        }
+        /// Initializes the enum to the [IntentsContent](Self::IntentsContent) branch.
+        pub fn from_intents_content(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InlineSource>>,
+        ) -> Self {
+            Self::IntentsContent(value.into())
+        }
+    }
 }
 
 /// The response message for
@@ -12509,6 +12672,17 @@ pub mod export_intents_request {
         /// Optional. The option to return the serialized intents inline.
         IntentsContentInline(bool),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [IntentsUri](Self::IntentsUri) branch.
+        pub fn from_intents_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::IntentsUri(value.into())
+        }
+        /// Initializes the enum to the [IntentsContentInline](Self::IntentsContentInline) branch.
+        pub fn from_intents_content_inline(value: impl std::convert::Into<bool>) -> Self {
+            Self::IntentsContentInline(value.into())
+        }
+    }
 }
 
 /// The response message for
@@ -12627,6 +12801,19 @@ pub mod export_intents_response {
         ///
         /// [google.cloud.dialogflow.cx.v3.ExportIntentsRequest]: crate::model::ExportIntentsRequest
         IntentsContent(std::boxed::Box<crate::model::InlineDestination>),
+    }
+
+    impl Intents {
+        /// Initializes the enum to the [IntentsUri](Self::IntentsUri) branch.
+        pub fn from_intents_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::IntentsUri(value.into())
+        }
+        /// Initializes the enum to the [IntentsContent](Self::IntentsContent) branch.
+        pub fn from_intents_content(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InlineDestination>>,
+        ) -> Self {
+            Self::IntentsContent(value.into())
+        }
     }
 }
 
@@ -13307,6 +13494,17 @@ pub mod event_handler {
         /// `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>`.
         TargetFlow(std::string::String),
     }
+
+    impl Target {
+        /// Initializes the enum to the [TargetPage](Self::TargetPage) branch.
+        pub fn from_target_page(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TargetPage(value.into())
+        }
+        /// Initializes the enum to the [TargetFlow](Self::TargetFlow) branch.
+        pub fn from_target_flow(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TargetFlow(value.into())
+        }
+    }
 }
 
 /// A transition route specifies a [intent][google.cloud.dialogflow.cx.v3.Intent]
@@ -13513,6 +13711,17 @@ pub mod transition_route {
         /// Format:
         /// `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>`.
         TargetFlow(std::string::String),
+    }
+
+    impl Target {
+        /// Initializes the enum to the [TargetPage](Self::TargetPage) branch.
+        pub fn from_target_page(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TargetPage(value.into())
+        }
+        /// Initializes the enum to the [TargetFlow](Self::TargetFlow) branch.
+        pub fn from_target_flow(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TargetFlow(value.into())
+        }
     }
 }
 
@@ -14102,6 +14311,17 @@ pub mod knowledge_connector_settings {
         /// Format:
         /// `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>`.
         TargetFlow(std::string::String),
+    }
+
+    impl Target {
+        /// Initializes the enum to the [TargetPage](Self::TargetPage) branch.
+        pub fn from_target_page(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TargetPage(value.into())
+        }
+        /// Initializes the enum to the [TargetFlow](Self::TargetFlow) branch.
+        pub fn from_target_flow(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TargetFlow(value.into())
+        }
     }
 }
 
@@ -14767,6 +14987,17 @@ pub mod response_message {
             /// [SSML](/speech/text-to-speech/docs/ssml).
             Ssml(std::string::String),
         }
+
+        impl Source {
+            /// Initializes the enum to the [Text](Self::Text) branch.
+            pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Text(value.into())
+            }
+            /// Initializes the enum to the [Ssml](Self::Ssml) branch.
+            pub fn from_ssml(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Ssml(value.into())
+            }
+        }
     }
 
     /// Indicates that interaction with the Dialogflow agent has ended.
@@ -15001,6 +15232,17 @@ pub mod response_message {
                 /// client. Dialogflow does not impose any validation on it.
                 Uri(std::string::String),
             }
+
+            impl Content {
+                /// Initializes the enum to the [Audio](Self::Audio) branch.
+                pub fn from_audio(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+                    Self::Audio(value.into())
+                }
+                /// Initializes the enum to the [Uri](Self::Uri) branch.
+                pub fn from_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+                    Self::Uri(value.into())
+                }
+            }
         }
     }
 
@@ -15087,6 +15329,13 @@ pub mod response_message {
             /// Transfer the call to a phone number
             /// in [E.164 format](https://en.wikipedia.org/wiki/E.164).
             PhoneNumber(std::string::String),
+        }
+
+        impl Endpoint {
+            /// Initializes the enum to the [PhoneNumber](Self::PhoneNumber) branch.
+            pub fn from_phone_number(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::PhoneNumber(value.into())
+            }
         }
     }
 
@@ -15219,6 +15468,79 @@ pub mod response_message {
         /// Represents info card for knowledge answers, to be better rendered in
         /// Dialogflow Messenger.
         KnowledgeInfoCard(std::boxed::Box<crate::model::response_message::KnowledgeInfoCard>),
+    }
+
+    impl Message {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::response_message::Text>>,
+        ) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [Payload](Self::Payload) branch.
+        pub fn from_payload(value: impl std::convert::Into<std::boxed::Box<wkt::Struct>>) -> Self {
+            Self::Payload(value.into())
+        }
+        /// Initializes the enum to the [ConversationSuccess](Self::ConversationSuccess) branch.
+        pub fn from_conversation_success(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::response_message::ConversationSuccess>,
+            >,
+        ) -> Self {
+            Self::ConversationSuccess(value.into())
+        }
+        /// Initializes the enum to the [OutputAudioText](Self::OutputAudioText) branch.
+        pub fn from_output_audio_text(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::response_message::OutputAudioText>,
+            >,
+        ) -> Self {
+            Self::OutputAudioText(value.into())
+        }
+        /// Initializes the enum to the [LiveAgentHandoff](Self::LiveAgentHandoff) branch.
+        pub fn from_live_agent_handoff(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::response_message::LiveAgentHandoff>,
+            >,
+        ) -> Self {
+            Self::LiveAgentHandoff(value.into())
+        }
+        /// Initializes the enum to the [EndInteraction](Self::EndInteraction) branch.
+        pub fn from_end_interaction(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::response_message::EndInteraction>,
+            >,
+        ) -> Self {
+            Self::EndInteraction(value.into())
+        }
+        /// Initializes the enum to the [PlayAudio](Self::PlayAudio) branch.
+        pub fn from_play_audio(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::response_message::PlayAudio>>,
+        ) -> Self {
+            Self::PlayAudio(value.into())
+        }
+        /// Initializes the enum to the [MixedAudio](Self::MixedAudio) branch.
+        pub fn from_mixed_audio(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::response_message::MixedAudio>>,
+        ) -> Self {
+            Self::MixedAudio(value.into())
+        }
+        /// Initializes the enum to the [TelephonyTransferCall](Self::TelephonyTransferCall) branch.
+        pub fn from_telephony_transfer_call(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::response_message::TelephonyTransferCall>,
+            >,
+        ) -> Self {
+            Self::TelephonyTransferCall(value.into())
+        }
+        /// Initializes the enum to the [KnowledgeInfoCard](Self::KnowledgeInfoCard) branch.
+        pub fn from_knowledge_info_card(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::response_message::KnowledgeInfoCard>,
+            >,
+        ) -> Self {
+            Self::KnowledgeInfoCard(value.into())
+        }
     }
 }
 
@@ -16229,6 +16551,19 @@ pub mod security_settings {
         ///
         /// [google.cloud.dialogflow.cx.v3.SecuritySettings.RetentionStrategy]: crate::model::security_settings::RetentionStrategy
         RetentionStrategy(crate::model::security_settings::RetentionStrategy),
+    }
+
+    impl DataRetention {
+        /// Initializes the enum to the [RetentionWindowDays](Self::RetentionWindowDays) branch.
+        pub fn from_retention_window_days(value: impl std::convert::Into<i32>) -> Self {
+            Self::RetentionWindowDays(value.into())
+        }
+        /// Initializes the enum to the [RetentionStrategy](Self::RetentionStrategy) branch.
+        pub fn from_retention_strategy(
+            value: impl std::convert::Into<crate::model::security_settings::RetentionStrategy>,
+        ) -> Self {
+            Self::RetentionStrategy(value.into())
+        }
     }
 }
 
@@ -17262,6 +17597,21 @@ pub mod streaming_detect_intent_response {
         RecognitionResult(std::boxed::Box<crate::model::StreamingRecognitionResult>),
         /// The response from detect intent.
         DetectIntentResponse(std::boxed::Box<crate::model::DetectIntentResponse>),
+    }
+
+    impl Response {
+        /// Initializes the enum to the [RecognitionResult](Self::RecognitionResult) branch.
+        pub fn from_recognition_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StreamingRecognitionResult>>,
+        ) -> Self {
+            Self::RecognitionResult(value.into())
+        }
+        /// Initializes the enum to the [DetectIntentResponse](Self::DetectIntentResponse) branch.
+        pub fn from_detect_intent_response(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DetectIntentResponse>>,
+        ) -> Self {
+            Self::DetectIntentResponse(value.into())
+        }
     }
 }
 
@@ -18525,6 +18875,39 @@ pub mod query_input {
         /// The DTMF event to be handled.
         Dtmf(std::boxed::Box<crate::model::DtmfInput>),
     }
+
+    impl Input {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TextInput>>,
+        ) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [Intent](Self::Intent) branch.
+        pub fn from_intent(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IntentInput>>,
+        ) -> Self {
+            Self::Intent(value.into())
+        }
+        /// Initializes the enum to the [Audio](Self::Audio) branch.
+        pub fn from_audio(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AudioInput>>,
+        ) -> Self {
+            Self::Audio(value.into())
+        }
+        /// Initializes the enum to the [Event](Self::Event) branch.
+        pub fn from_event(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EventInput>>,
+        ) -> Self {
+            Self::Event(value.into())
+        }
+        /// Initializes the enum to the [Dtmf](Self::Dtmf) branch.
+        pub fn from_dtmf(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DtmfInput>>,
+        ) -> Self {
+            Self::Dtmf(value.into())
+        }
+    }
 }
 
 /// Represents the result of a conversational query.
@@ -19045,6 +19428,31 @@ pub mod query_result {
         ///
         /// [google.cloud.dialogflow.cx.v3.DtmfInput]: crate::model::DtmfInput
         Dtmf(std::boxed::Box<crate::model::DtmfInput>),
+    }
+
+    impl Query {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [TriggerIntent](Self::TriggerIntent) branch.
+        pub fn from_trigger_intent(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TriggerIntent(value.into())
+        }
+        /// Initializes the enum to the [Transcript](Self::Transcript) branch.
+        pub fn from_transcript(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Transcript(value.into())
+        }
+        /// Initializes the enum to the [TriggerEvent](Self::TriggerEvent) branch.
+        pub fn from_trigger_event(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TriggerEvent(value.into())
+        }
+        /// Initializes the enum to the [Dtmf](Self::Dtmf) branch.
+        pub fn from_dtmf(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DtmfInput>>,
+        ) -> Self {
+            Self::Dtmf(value.into())
+        }
     }
 }
 
@@ -19692,6 +20100,25 @@ pub mod match_intent_response {
         ///
         /// [google.cloud.dialogflow.cx.v3.EventInput]: crate::model::EventInput
         TriggerEvent(std::string::String),
+    }
+
+    impl Query {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [TriggerIntent](Self::TriggerIntent) branch.
+        pub fn from_trigger_intent(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TriggerIntent(value.into())
+        }
+        /// Initializes the enum to the [Transcript](Self::Transcript) branch.
+        pub fn from_transcript(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Transcript(value.into())
+        }
+        /// Initializes the enum to the [TriggerEvent](Self::TriggerEvent) branch.
+        pub fn from_trigger_event(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TriggerEvent(value.into())
+        }
     }
 }
 
@@ -21137,6 +21564,21 @@ pub mod transition_coverage {
             /// [google.cloud.dialogflow.cx.v3.Flow]: crate::model::Flow
             Flow(std::boxed::Box<crate::model::Flow>),
         }
+
+        impl Kind {
+            /// Initializes the enum to the [Page](Self::Page) branch.
+            pub fn from_page(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::Page>>,
+            ) -> Self {
+                Self::Page(value.into())
+            }
+            /// Initializes the enum to the [Flow](Self::Flow) branch.
+            pub fn from_flow(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::Flow>>,
+            ) -> Self {
+                Self::Flow(value.into())
+            }
+        }
     }
 
     /// A transition in a page.
@@ -21306,6 +21748,21 @@ pub mod transition_coverage {
             TransitionRoute(std::boxed::Box<crate::model::TransitionRoute>),
             /// Event handler.
             EventHandler(std::boxed::Box<crate::model::EventHandler>),
+        }
+
+        impl Detail {
+            /// Initializes the enum to the [TransitionRoute](Self::TransitionRoute) branch.
+            pub fn from_transition_route(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::TransitionRoute>>,
+            ) -> Self {
+                Self::TransitionRoute(value.into())
+            }
+            /// Initializes the enum to the [EventHandler](Self::EventHandler) branch.
+            pub fn from_event_handler(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::EventHandler>>,
+            ) -> Self {
+                Self::EventHandler(value.into())
+            }
         }
     }
 }
@@ -21826,6 +22283,27 @@ pub mod calculate_coverage_response {
         TransitionCoverage(std::boxed::Box<crate::model::TransitionCoverage>),
         /// Transition route group coverage.
         RouteGroupCoverage(std::boxed::Box<crate::model::TransitionRouteGroupCoverage>),
+    }
+
+    impl CoverageType {
+        /// Initializes the enum to the [IntentCoverage](Self::IntentCoverage) branch.
+        pub fn from_intent_coverage(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IntentCoverage>>,
+        ) -> Self {
+            Self::IntentCoverage(value.into())
+        }
+        /// Initializes the enum to the [TransitionCoverage](Self::TransitionCoverage) branch.
+        pub fn from_transition_coverage(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TransitionCoverage>>,
+        ) -> Self {
+            Self::TransitionCoverage(value.into())
+        }
+        /// Initializes the enum to the [RouteGroupCoverage](Self::RouteGroupCoverage) branch.
+        pub fn from_route_group_coverage(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TransitionRouteGroupCoverage>>,
+        ) -> Self {
+            Self::RouteGroupCoverage(value.into())
+        }
     }
 }
 
@@ -22610,6 +23088,17 @@ pub mod import_test_cases_request {
         /// Uncompressed raw byte content for test cases.
         Content(bytes::Bytes),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsUri](Self::GcsUri) branch.
+        pub fn from_gcs_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsUri(value.into())
+        }
+        /// Initializes the enum to the [Content](Self::Content) branch.
+        pub fn from_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::Content(value.into())
+        }
+    }
 }
 
 /// The response message for
@@ -22907,6 +23396,13 @@ pub mod export_test_cases_request {
         /// control](https://cloud.google.com/dialogflow/cx/docs/concept/access-control#storage).
         GcsUri(std::string::String),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsUri](Self::GcsUri) branch.
+        pub fn from_gcs_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsUri(value.into())
+        }
+    }
 }
 
 /// The response message for
@@ -23016,6 +23512,17 @@ pub mod export_test_cases_response {
         GcsUri(std::string::String),
         /// Uncompressed raw byte content for test cases.
         Content(bytes::Bytes),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsUri](Self::GcsUri) branch.
+        pub fn from_gcs_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsUri(value.into())
+        }
+        /// Initializes the enum to the [Content](Self::Content) branch.
+        pub fn from_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::Content(value.into())
+        }
     }
 }
 
@@ -25237,6 +25744,23 @@ pub mod webhook {
         /// Directory](https://cloud.google.com/service-directory) service.
         ServiceDirectory(std::boxed::Box<crate::model::webhook::ServiceDirectoryConfig>),
     }
+
+    impl Webhook {
+        /// Initializes the enum to the [GenericWebService](Self::GenericWebService) branch.
+        pub fn from_generic_web_service(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::webhook::GenericWebService>>,
+        ) -> Self {
+            Self::GenericWebService(value.into())
+        }
+        /// Initializes the enum to the [ServiceDirectory](Self::ServiceDirectory) branch.
+        pub fn from_service_directory(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::webhook::ServiceDirectoryConfig>,
+            >,
+        ) -> Self {
+            Self::ServiceDirectory(value.into())
+        }
+    }
 }
 
 /// The request message for
@@ -26097,6 +26621,29 @@ pub mod webhook_request {
         /// [google.cloud.dialogflow.cx.v3.DtmfInput]: crate::model::DtmfInput
         DtmfDigits(std::string::String),
     }
+
+    impl Query {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [TriggerIntent](Self::TriggerIntent) branch.
+        pub fn from_trigger_intent(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TriggerIntent(value.into())
+        }
+        /// Initializes the enum to the [Transcript](Self::Transcript) branch.
+        pub fn from_transcript(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Transcript(value.into())
+        }
+        /// Initializes the enum to the [TriggerEvent](Self::TriggerEvent) branch.
+        pub fn from_trigger_event(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TriggerEvent(value.into())
+        }
+        /// Initializes the enum to the [DtmfDigits](Self::DtmfDigits) branch.
+        pub fn from_dtmf_digits(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::DtmfDigits(value.into())
+        }
+    }
 }
 
 /// The response message for a webhook call.
@@ -26369,6 +26916,17 @@ pub mod webhook_response {
         /// Format:
         /// `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>`.
         TargetFlow(std::string::String),
+    }
+
+    impl Transition {
+        /// Initializes the enum to the [TargetPage](Self::TargetPage) branch.
+        pub fn from_target_page(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TargetPage(value.into())
+        }
+        /// Initializes the enum to the [TargetFlow](Self::TargetFlow) branch.
+        pub fn from_target_flow(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TargetFlow(value.into())
+        }
     }
 }
 

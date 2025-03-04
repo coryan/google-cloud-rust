@@ -513,6 +513,21 @@ pub mod repo_source {
         /// Explicit commit SHA to build.
         CommitSha(std::string::String),
     }
+
+    impl Revision {
+        /// Initializes the enum to the [BranchName](Self::BranchName) branch.
+        pub fn from_branch_name(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::BranchName(value.into())
+        }
+        /// Initializes the enum to the [TagName](Self::TagName) branch.
+        pub fn from_tag_name(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TagName(value.into())
+        }
+        /// Initializes the enum to the [CommitSha](Self::CommitSha) branch.
+        pub fn from_commit_sha(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::CommitSha(value.into())
+        }
+    }
 }
 
 /// Location of the source manifest in Cloud Storage.
@@ -733,6 +748,33 @@ pub mod source {
         /// This feature is in Preview; see description
         /// [here](https://github.com/GoogleCloudPlatform/cloud-builders/tree/master/gcs-fetcher).
         StorageSourceManifest(std::boxed::Box<crate::model::StorageSourceManifest>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [StorageSource](Self::StorageSource) branch.
+        pub fn from_storage_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StorageSource>>,
+        ) -> Self {
+            Self::StorageSource(value.into())
+        }
+        /// Initializes the enum to the [RepoSource](Self::RepoSource) branch.
+        pub fn from_repo_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RepoSource>>,
+        ) -> Self {
+            Self::RepoSource(value.into())
+        }
+        /// Initializes the enum to the [GitSource](Self::GitSource) branch.
+        pub fn from_git_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitSource>>,
+        ) -> Self {
+            Self::GitSource(value.into())
+        }
+        /// Initializes the enum to the [StorageSourceManifest](Self::StorageSourceManifest) branch.
+        pub fn from_storage_source_manifest(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StorageSourceManifest>>,
+        ) -> Self {
+            Self::StorageSourceManifest(value.into())
+        }
     }
 }
 
@@ -2601,6 +2643,19 @@ pub mod dependency {
             /// `projects/*/locations/*/connections/*/gitRepositoryLink/*`
             DeveloperConnect(std::string::String),
         }
+
+        impl Repotype {
+            /// Initializes the enum to the [Url](Self::Url) branch.
+            pub fn from_url(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Url(value.into())
+            }
+            /// Initializes the enum to the [DeveloperConnect](Self::DeveloperConnect) branch.
+            pub fn from_developer_connect(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::DeveloperConnect(value.into())
+            }
+        }
     }
 
     /// The type of dependency to fetch.
@@ -2613,6 +2668,21 @@ pub mod dependency {
         Empty(bool),
         /// Represents a git repository as a build dependency.
         GitSource(std::boxed::Box<crate::model::dependency::GitSourceDependency>),
+    }
+
+    impl Dep {
+        /// Initializes the enum to the [Empty](Self::Empty) branch.
+        pub fn from_empty(value: impl std::convert::Into<bool>) -> Self {
+            Self::Empty(value.into())
+        }
+        /// Initializes the enum to the [GitSource](Self::GitSource) branch.
+        pub fn from_git_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::dependency::GitSourceDependency>,
+            >,
+        ) -> Self {
+            Self::GitSource(value.into())
+        }
     }
 }
 
@@ -4453,6 +4523,13 @@ pub mod git_repo_source {
         Repository(std::string::String),
     }
 
+    impl Source {
+        /// Initializes the enum to the [Repository](Self::Repository) branch.
+        pub fn from_repository(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Repository(value.into())
+        }
+    }
+
     /// The resource name of the enterprise config that should be applied
     /// to this source.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
@@ -4464,6 +4541,15 @@ pub mod git_repo_source {
         /// `projects/{project}/locations/{location}/githubEnterpriseConfigs/{id}`.
         /// `projects/{project}/githubEnterpriseConfigs/{id}`.
         GithubEnterpriseConfig(std::string::String),
+    }
+
+    impl EnterpriseConfig {
+        /// Initializes the enum to the [GithubEnterpriseConfig](Self::GithubEnterpriseConfig) branch.
+        pub fn from_github_enterprise_config(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::GithubEnterpriseConfig(value.into())
+        }
     }
 }
 
@@ -4685,6 +4771,13 @@ pub mod git_file_source {
         Repository(std::string::String),
     }
 
+    impl Source {
+        /// Initializes the enum to the [Repository](Self::Repository) branch.
+        pub fn from_repository(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Repository(value.into())
+        }
+    }
+
     /// The resource name of the enterprise config that should be applied
     /// to this source.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
@@ -4696,6 +4789,15 @@ pub mod git_file_source {
         /// `projects/{project}/locations/{location}/githubEnterpriseConfigs/{id}`.
         /// `projects/{project}/githubEnterpriseConfigs/{id}`.
         GithubEnterpriseConfig(std::string::String),
+    }
+
+    impl EnterpriseConfig {
+        /// Initializes the enum to the [GithubEnterpriseConfig](Self::GithubEnterpriseConfig) branch.
+        pub fn from_github_enterprise_config(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::GithubEnterpriseConfig(value.into())
+        }
     }
 }
 
@@ -5147,6 +5249,29 @@ pub mod build_trigger {
         /// The file source describing the local or remote Build template.
         GitFileSource(std::boxed::Box<crate::model::GitFileSource>),
     }
+
+    impl BuildTemplate {
+        /// Initializes the enum to the [Autodetect](Self::Autodetect) branch.
+        pub fn from_autodetect(value: impl std::convert::Into<bool>) -> Self {
+            Self::Autodetect(value.into())
+        }
+        /// Initializes the enum to the [Build](Self::Build) branch.
+        pub fn from_build(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Build>>,
+        ) -> Self {
+            Self::Build(value.into())
+        }
+        /// Initializes the enum to the [Filename](Self::Filename) branch.
+        pub fn from_filename(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Filename(value.into())
+        }
+        /// Initializes the enum to the [GitFileSource](Self::GitFileSource) branch.
+        pub fn from_git_file_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitFileSource>>,
+        ) -> Self {
+            Self::GitFileSource(value.into())
+        }
+    }
 }
 
 /// The configuration of a trigger that creates a build whenever an event from
@@ -5327,6 +5452,21 @@ pub mod repository_event_config {
         /// Filter to match changes in refs like branches, tags.
         Push(std::boxed::Box<crate::model::PushFilter>),
     }
+
+    impl Filter {
+        /// Initializes the enum to the [PullRequest](Self::PullRequest) branch.
+        pub fn from_pull_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PullRequestFilter>>,
+        ) -> Self {
+            Self::PullRequest(value.into())
+        }
+        /// Initializes the enum to the [Push](Self::Push) branch.
+        pub fn from_push(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PushFilter>>,
+        ) -> Self {
+            Self::Push(value.into())
+        }
+    }
 }
 
 /// GitHubEventsConfig describes the configuration of a trigger that creates a
@@ -5470,6 +5610,21 @@ pub mod git_hub_events_config {
         PullRequest(std::boxed::Box<crate::model::PullRequestFilter>),
         /// filter to match changes in refs like branches, tags.
         Push(std::boxed::Box<crate::model::PushFilter>),
+    }
+
+    impl Event {
+        /// Initializes the enum to the [PullRequest](Self::PullRequest) branch.
+        pub fn from_pull_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PullRequestFilter>>,
+        ) -> Self {
+            Self::PullRequest(value.into())
+        }
+        /// Initializes the enum to the [Push](Self::Push) branch.
+        pub fn from_push(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PushFilter>>,
+        ) -> Self {
+            Self::Push(value.into())
+        }
     }
 }
 
@@ -5722,6 +5877,13 @@ pub mod webhook_config {
         /// Required. Resource name for the secret required as a URL parameter.
         Secret(std::string::String),
     }
+
+    impl AuthMethod {
+        /// Initializes the enum to the [Secret](Self::Secret) branch.
+        pub fn from_secret(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Secret(value.into())
+        }
+    }
 }
 
 /// PullRequestFilter contains filter properties for matching GitHub Pull
@@ -5892,6 +6054,13 @@ pub mod pull_request_filter {
         /// RE2 and described at <https://github.com/google/re2/wiki/Syntax>
         Branch(std::string::String),
     }
+
+    impl GitRef {
+        /// Initializes the enum to the [Branch](Self::Branch) branch.
+        pub fn from_branch(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Branch(value.into())
+        }
+    }
 }
 
 /// Push contains filter properties for matching GitHub git pushes.
@@ -6003,6 +6172,17 @@ pub mod push_filter {
         /// The syntax of the regular expressions accepted is the syntax accepted by
         /// RE2 and described at <https://github.com/google/re2/wiki/Syntax>
         Tag(std::string::String),
+    }
+
+    impl GitRef {
+        /// Initializes the enum to the [Branch](Self::Branch) branch.
+        pub fn from_branch(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Branch(value.into())
+        }
+        /// Initializes the enum to the [Tag](Self::Tag) branch.
+        pub fn from_tag(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Tag(value.into())
+        }
     }
 }
 
@@ -7486,6 +7666,15 @@ pub mod worker_pool {
     pub enum Config {
         /// Legacy Private Pool configuration.
         PrivatePoolV1Config(std::boxed::Box<crate::model::PrivatePoolV1Config>),
+    }
+
+    impl Config {
+        /// Initializes the enum to the [PrivatePoolV1Config](Self::PrivatePoolV1Config) branch.
+        pub fn from_private_pool_v1_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PrivatePoolV1Config>>,
+        ) -> Self {
+            Self::PrivatePoolV1Config(value.into())
+        }
     }
 }
 

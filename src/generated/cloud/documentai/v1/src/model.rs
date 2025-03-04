@@ -2975,6 +2975,45 @@ pub mod document {
                 /// Float value.
                 FloatValue(f32),
             }
+
+            impl StructuredValue {
+                /// Initializes the enum to the [MoneyValue](Self::MoneyValue) branch.
+                pub fn from_money_value(
+                    value: impl std::convert::Into<std::boxed::Box<gtype::model::Money>>,
+                ) -> Self {
+                    Self::MoneyValue(value.into())
+                }
+                /// Initializes the enum to the [DateValue](Self::DateValue) branch.
+                pub fn from_date_value(
+                    value: impl std::convert::Into<std::boxed::Box<gtype::model::Date>>,
+                ) -> Self {
+                    Self::DateValue(value.into())
+                }
+                /// Initializes the enum to the [DatetimeValue](Self::DatetimeValue) branch.
+                pub fn from_datetime_value(
+                    value: impl std::convert::Into<std::boxed::Box<gtype::model::DateTime>>,
+                ) -> Self {
+                    Self::DatetimeValue(value.into())
+                }
+                /// Initializes the enum to the [AddressValue](Self::AddressValue) branch.
+                pub fn from_address_value(
+                    value: impl std::convert::Into<std::boxed::Box<gtype::model::PostalAddress>>,
+                ) -> Self {
+                    Self::AddressValue(value.into())
+                }
+                /// Initializes the enum to the [BooleanValue](Self::BooleanValue) branch.
+                pub fn from_boolean_value(value: impl std::convert::Into<bool>) -> Self {
+                    Self::BooleanValue(value.into())
+                }
+                /// Initializes the enum to the [IntegerValue](Self::IntegerValue) branch.
+                pub fn from_integer_value(value: impl std::convert::Into<i32>) -> Self {
+                    Self::IntegerValue(value.into())
+                }
+                /// Initializes the enum to the [FloatValue](Self::FloatValue) branch.
+                pub fn from_float_value(value: impl std::convert::Into<f32>) -> Self {
+                    Self::FloatValue(value.into())
+                }
+            }
         }
     }
 
@@ -3778,6 +3817,17 @@ pub mod document {
             /// resource name.
             Processor(std::string::String),
         }
+
+        impl Source {
+            /// Initializes the enum to the [Agent](Self::Agent) branch.
+            pub fn from_agent(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Agent(value.into())
+            }
+            /// Initializes the enum to the [Processor](Self::Processor) branch.
+            pub fn from_processor(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Processor(value.into())
+            }
+        }
     }
 
     /// This message is used for text changes aka. OCR corrections.
@@ -4408,6 +4458,27 @@ pub mod document {
                 /// Block consisting of list content/structure.
                 ListBlock(std::boxed::Box<crate::model::document::document_layout::document_layout_block::LayoutListBlock>),
             }
+
+            impl Block {
+                /// Initializes the enum to the [TextBlock](Self::TextBlock) branch.
+                pub fn from_text_block(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::document::document_layout::document_layout_block::LayoutTextBlock>>,
+                ) -> Self {
+                    Self::TextBlock(value.into())
+                }
+                /// Initializes the enum to the [TableBlock](Self::TableBlock) branch.
+                pub fn from_table_block(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::document::document_layout::document_layout_block::LayoutTableBlock>>,
+                ) -> Self {
+                    Self::TableBlock(value.into())
+                }
+                /// Initializes the enum to the [ListBlock](Self::ListBlock) branch.
+                pub fn from_list_block(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::document::document_layout::document_layout_block::LayoutListBlock>>,
+                ) -> Self {
+                    Self::ListBlock(value.into())
+                }
+            }
         }
     }
 
@@ -4728,6 +4799,17 @@ pub mod document {
         /// representation, whereas JSON representations use base64.
         Content(bytes::Bytes),
     }
+
+    impl Source {
+        /// Initializes the enum to the [Uri](Self::Uri) branch.
+        pub fn from_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Uri(value.into())
+        }
+        /// Initializes the enum to the [Content](Self::Content) branch.
+        pub fn from_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::Content(value.into())
+        }
+    }
 }
 
 /// Payload message of raw document content (bytes).
@@ -4998,6 +5080,21 @@ pub mod batch_documents_input_config {
         /// The set of documents individually specified on Cloud Storage.
         GcsDocuments(std::boxed::Box<crate::model::GcsDocuments>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsPrefix](Self::GcsPrefix) branch.
+        pub fn from_gcs_prefix(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsPrefix>>,
+        ) -> Self {
+            Self::GcsPrefix(value.into())
+        }
+        /// Initializes the enum to the [GcsDocuments](Self::GcsDocuments) branch.
+        pub fn from_gcs_documents(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDocuments>>,
+        ) -> Self {
+            Self::GcsDocuments(value.into())
+        }
+    }
 }
 
 /// Config that controls the output of documents. All documents will be written
@@ -5188,6 +5285,17 @@ pub mod document_output_config {
     pub enum Destination {
         /// Output config to write the results to Cloud Storage.
         GcsOutputConfig(std::boxed::Box<crate::model::document_output_config::GcsOutputConfig>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsOutputConfig](Self::GcsOutputConfig) branch.
+        pub fn from_gcs_output_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::document_output_config::GcsOutputConfig>,
+            >,
+        ) -> Self {
+            Self::GcsOutputConfig(value.into())
+        }
     }
 }
 
@@ -5732,6 +5840,25 @@ pub mod process_options {
         /// Only process certain pages from the end, same as above.
         FromEnd(i32),
     }
+
+    impl PageRange {
+        /// Initializes the enum to the [IndividualPageSelector](Self::IndividualPageSelector) branch.
+        pub fn from_individual_page_selector(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::process_options::IndividualPageSelector>,
+            >,
+        ) -> Self {
+            Self::IndividualPageSelector(value.into())
+        }
+        /// Initializes the enum to the [FromStart](Self::FromStart) branch.
+        pub fn from_from_start(value: impl std::convert::Into<i32>) -> Self {
+            Self::FromStart(value.into())
+        }
+        /// Initializes the enum to the [FromEnd](Self::FromEnd) branch.
+        pub fn from_from_end(value: impl std::convert::Into<i32>) -> Self {
+            Self::FromEnd(value.into())
+        }
+    }
 }
 
 /// Request message for the
@@ -5968,6 +6095,27 @@ pub mod process_request {
         RawDocument(std::boxed::Box<crate::model::RawDocument>),
         /// A raw document on Google Cloud Storage.
         GcsDocument(std::boxed::Box<crate::model::GcsDocument>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [InlineDocument](Self::InlineDocument) branch.
+        pub fn from_inline_document(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Document>>,
+        ) -> Self {
+            Self::InlineDocument(value.into())
+        }
+        /// Initializes the enum to the [RawDocument](Self::RawDocument) branch.
+        pub fn from_raw_document(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RawDocument>>,
+        ) -> Self {
+            Self::RawDocument(value.into())
+        }
+        /// Initializes the enum to the [GcsDocument](Self::GcsDocument) branch.
+        pub fn from_gcs_document(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDocument>>,
+        ) -> Self {
+            Self::GcsDocument(value.into())
+        }
     }
 }
 
@@ -8116,6 +8264,29 @@ pub mod train_processor_version_request {
             >,
         ),
     }
+
+    impl ProcessorFlags {
+        /// Initializes the enum to the [CustomDocumentExtractionOptions](Self::CustomDocumentExtractionOptions) branch.
+        pub fn from_custom_document_extraction_options(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::train_processor_version_request::CustomDocumentExtractionOptions,
+                >,
+            >,
+        ) -> Self {
+            Self::CustomDocumentExtractionOptions(value.into())
+        }
+        /// Initializes the enum to the [FoundationModelTuningOptions](Self::FoundationModelTuningOptions) branch.
+        pub fn from_foundation_model_tuning_options(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::train_processor_version_request::FoundationModelTuningOptions,
+                >,
+            >,
+        ) -> Self {
+            Self::FoundationModelTuningOptions(value.into())
+        }
+    }
 }
 
 /// The response for
@@ -8472,6 +8643,15 @@ pub mod review_document_request {
     pub enum Source {
         /// An inline document proto.
         InlineDocument(std::boxed::Box<crate::model::Document>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [InlineDocument](Self::InlineDocument) branch.
+        pub fn from_inline_document(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Document>>,
+        ) -> Self {
+            Self::InlineDocument(value.into())
+        }
     }
 }
 
@@ -9313,6 +9493,17 @@ pub mod document_schema {
             /// field and specify a list of all possible values in a value ontology
             /// file.
             EnumValues(std::boxed::Box<crate::model::document_schema::entity_type::EnumValues>),
+        }
+
+        impl ValueSource {
+            /// Initializes the enum to the [EnumValues](Self::EnumValues) branch.
+            pub fn from_enum_values(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::document_schema::entity_type::EnumValues>,
+                >,
+            ) -> Self {
+                Self::EnumValues(value.into())
+            }
         }
     }
 
@@ -10733,6 +10924,25 @@ pub mod processor_version {
                     crate::model::processor_version::gen_ai_model_info::CustomGenAiModelInfo,
                 >,
             ),
+        }
+
+        impl ModelInfo {
+            /// Initializes the enum to the [FoundationGenAiModelInfo](Self::FoundationGenAiModelInfo) branch.
+            pub fn from_foundation_gen_ai_model_info(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::processor_version::gen_ai_model_info::FoundationGenAiModelInfo>>,
+            ) -> Self {
+                Self::FoundationGenAiModelInfo(value.into())
+            }
+            /// Initializes the enum to the [CustomGenAiModelInfo](Self::CustomGenAiModelInfo) branch.
+            pub fn from_custom_gen_ai_model_info(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::processor_version::gen_ai_model_info::CustomGenAiModelInfo,
+                    >,
+                >,
+            ) -> Self {
+                Self::CustomGenAiModelInfo(value.into())
+            }
         }
     }
 

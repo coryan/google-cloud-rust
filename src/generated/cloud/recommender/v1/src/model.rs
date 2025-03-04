@@ -1210,6 +1210,19 @@ pub mod operation {
         /// 'path' field. Either this or `value` will be set for 'test' operation.
         ValueMatcher(std::boxed::Box<crate::model::ValueMatcher>),
     }
+
+    impl PathValue {
+        /// Initializes the enum to the [Value](Self::Value) branch.
+        pub fn from_value(value: impl std::convert::Into<std::boxed::Box<wkt::Value>>) -> Self {
+            Self::Value(value.into())
+        }
+        /// Initializes the enum to the [ValueMatcher](Self::ValueMatcher) branch.
+        pub fn from_value_matcher(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ValueMatcher>>,
+        ) -> Self {
+            Self::ValueMatcher(value.into())
+        }
+    }
 }
 
 /// Contains various matching options for values for a GCP resource field.
@@ -1283,6 +1296,13 @@ pub mod value_matcher {
         /// Google RE2 syntax (<https://github.com/google/re2/wiki/Syntax>), so to be
         /// used with RE2::FullMatch
         MatchesPattern(std::string::String),
+    }
+
+    impl MatchVariant {
+        /// Initializes the enum to the [MatchesPattern](Self::MatchesPattern) branch.
+        pub fn from_matches_pattern(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::MatchesPattern(value.into())
+        }
     }
 }
 
@@ -1767,6 +1787,33 @@ pub mod impact {
         SustainabilityProjection(std::boxed::Box<crate::model::SustainabilityProjection>),
         /// Use with CategoryType.RELIABILITY
         ReliabilityProjection(std::boxed::Box<crate::model::ReliabilityProjection>),
+    }
+
+    impl Projection {
+        /// Initializes the enum to the [CostProjection](Self::CostProjection) branch.
+        pub fn from_cost_projection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CostProjection>>,
+        ) -> Self {
+            Self::CostProjection(value.into())
+        }
+        /// Initializes the enum to the [SecurityProjection](Self::SecurityProjection) branch.
+        pub fn from_security_projection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SecurityProjection>>,
+        ) -> Self {
+            Self::SecurityProjection(value.into())
+        }
+        /// Initializes the enum to the [SustainabilityProjection](Self::SustainabilityProjection) branch.
+        pub fn from_sustainability_projection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SustainabilityProjection>>,
+        ) -> Self {
+            Self::SustainabilityProjection(value.into())
+        }
+        /// Initializes the enum to the [ReliabilityProjection](Self::ReliabilityProjection) branch.
+        pub fn from_reliability_projection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ReliabilityProjection>>,
+        ) -> Self {
+            Self::ReliabilityProjection(value.into())
+        }
     }
 }
 

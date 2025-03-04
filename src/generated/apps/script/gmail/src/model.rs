@@ -246,6 +246,17 @@ pub mod universal_action {
         /// guide](/gmail/add-ons/how-tos/universal-actions) for details.
         RunFunction(std::string::String),
     }
+
+    impl ActionType {
+        /// Initializes the enum to the [OpenLink](Self::OpenLink) branch.
+        pub fn from_open_link(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::OpenLink(value.into())
+        }
+        /// Initializes the enum to the [RunFunction](Self::RunFunction) branch.
+        pub fn from_run_function(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::RunFunction(value.into())
+        }
+    }
 }
 
 /// A trigger that activates when user is composing an email.
@@ -442,6 +453,15 @@ pub mod contextual_trigger {
     pub enum Trigger {
         /// UnconditionalTriggers are executed when any mail message is opened.
         Unconditional(std::boxed::Box<crate::model::UnconditionalTrigger>),
+    }
+
+    impl Trigger {
+        /// Initializes the enum to the [Unconditional](Self::Unconditional) branch.
+        pub fn from_unconditional(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UnconditionalTrigger>>,
+        ) -> Self {
+            Self::Unconditional(value.into())
+        }
     }
 }
 

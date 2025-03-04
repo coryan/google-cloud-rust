@@ -332,6 +332,21 @@ pub mod signature_info {
         /// The resource name of the customer CryptoKeyVersion used for signing.
         CustomerKmsKeyVersion(std::string::String),
     }
+
+    impl VerificationInfo {
+        /// Initializes the enum to the [GooglePublicKeyPem](Self::GooglePublicKeyPem) branch.
+        pub fn from_google_public_key_pem(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::GooglePublicKeyPem(value.into())
+        }
+        /// Initializes the enum to the [CustomerKmsKeyVersion](Self::CustomerKmsKeyVersion) branch.
+        pub fn from_customer_kms_key_version(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::CustomerKmsKeyVersion(value.into())
+        }
+    }
 }
 
 /// A decision that has been made to approve access to a resource.
@@ -692,6 +707,21 @@ pub mod approval_request {
         Approve(std::boxed::Box<crate::model::ApproveDecision>),
         /// The request was dismissed.
         Dismiss(std::boxed::Box<crate::model::DismissDecision>),
+    }
+
+    impl Decision {
+        /// Initializes the enum to the [Approve](Self::Approve) branch.
+        pub fn from_approve(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ApproveDecision>>,
+        ) -> Self {
+            Self::Approve(value.into())
+        }
+        /// Initializes the enum to the [Dismiss](Self::Dismiss) branch.
+        pub fn from_dismiss(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DismissDecision>>,
+        ) -> Self {
+            Self::Dismiss(value.into())
+        }
     }
 }
 

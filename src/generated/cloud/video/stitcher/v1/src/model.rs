@@ -460,6 +460,27 @@ pub mod cdn_key {
         /// The configuration for a Media CDN key.
         MediaCdnKey(std::boxed::Box<crate::model::MediaCdnKey>),
     }
+
+    impl CdnKeyConfig {
+        /// Initializes the enum to the [GoogleCdnKey](Self::GoogleCdnKey) branch.
+        pub fn from_google_cdn_key(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GoogleCdnKey>>,
+        ) -> Self {
+            Self::GoogleCdnKey(value.into())
+        }
+        /// Initializes the enum to the [AkamaiCdnKey](Self::AkamaiCdnKey) branch.
+        pub fn from_akamai_cdn_key(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AkamaiCdnKey>>,
+        ) -> Self {
+            Self::AkamaiCdnKey(value.into())
+        }
+        /// Initializes the enum to the [MediaCdnKey](Self::MediaCdnKey) branch.
+        pub fn from_media_cdn_key(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MediaCdnKey>>,
+        ) -> Self {
+            Self::MediaCdnKey(value.into())
+        }
+    }
 }
 
 /// Configuration for a Google Cloud CDN key.
@@ -968,6 +989,27 @@ pub mod companion {
         StaticAdResource(std::boxed::Box<crate::model::StaticAdResource>),
         /// The HTML ad resource associated with the companion ad.
         HtmlAdResource(std::boxed::Box<crate::model::HtmlAdResource>),
+    }
+
+    impl AdResource {
+        /// Initializes the enum to the [IframeAdResource](Self::IframeAdResource) branch.
+        pub fn from_iframe_ad_resource(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IframeAdResource>>,
+        ) -> Self {
+            Self::IframeAdResource(value.into())
+        }
+        /// Initializes the enum to the [StaticAdResource](Self::StaticAdResource) branch.
+        pub fn from_static_ad_resource(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StaticAdResource>>,
+        ) -> Self {
+            Self::StaticAdResource(value.into())
+        }
+        /// Initializes the enum to the [HtmlAdResource](Self::HtmlAdResource) branch.
+        pub fn from_html_ad_resource(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HtmlAdResource>>,
+        ) -> Self {
+            Self::HtmlAdResource(value.into())
+        }
     }
 }
 

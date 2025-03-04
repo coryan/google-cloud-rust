@@ -119,6 +119,15 @@ pub mod input_config {
         /// single file.
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// The desired output location.
@@ -213,6 +222,15 @@ pub mod output_config {
     pub enum Destination {
         /// The Google Cloud Storage location to write the output to.
         GcsDestination(std::boxed::Box<crate::model::GcsDestination>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
     }
 }
 
@@ -4603,6 +4621,19 @@ pub mod waypoint {
         /// The POI Place ID associated with the waypoint.
         PlaceId(std::string::String),
     }
+
+    impl LocationType {
+        /// Initializes the enum to the [Location](Self::Location) branch.
+        pub fn from_location(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Location>>,
+        ) -> Self {
+            Self::Location(value.into())
+        }
+        /// Initializes the enum to the [PlaceId](Self::PlaceId) branch.
+        pub fn from_place_id(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PlaceId(value.into())
+        }
+    }
 }
 
 /// Encapsulates a location (a geographic point, and an optional heading).
@@ -7208,6 +7239,17 @@ pub mod optimize_tours_validation_error {
             Index(i32),
             /// Key if the field is a map.
             Key(std::string::String),
+        }
+
+        impl IndexOrKey {
+            /// Initializes the enum to the [Index](Self::Index) branch.
+            pub fn from_index(value: impl std::convert::Into<i32>) -> Self {
+                Self::Index(value.into())
+            }
+            /// Initializes the enum to the [Key](Self::Key) branch.
+            pub fn from_key(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Key(value.into())
+            }
         }
     }
 }

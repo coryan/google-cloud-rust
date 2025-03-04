@@ -2273,6 +2273,15 @@ pub mod containerd_config {
                 /// Google Secret Manager (GCP) certificate configuration.
                 GcpSecretManagerCertificateConfig(std::boxed::Box<crate::model::containerd_config::private_registry_access_config::certificate_authority_domain_config::GCPSecretManagerCertificateConfig>),
             }
+
+            impl CertificateConfig {
+                /// Initializes the enum to the [GcpSecretManagerCertificateConfig](Self::GcpSecretManagerCertificateConfig) branch.
+                pub fn from_gcp_secret_manager_certificate_config(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::containerd_config::private_registry_access_config::certificate_authority_domain_config::GCPSecretManagerCertificateConfig>>,
+                ) -> Self {
+                    Self::GcpSecretManagerCertificateConfig(value.into())
+                }
+            }
         }
     }
 }
@@ -8117,6 +8126,21 @@ pub mod operation_progress {
             /// For metrics with custom values (ratios, visual progress, etc.).
             StringValue(std::string::String),
         }
+
+        impl Value {
+            /// Initializes the enum to the [IntValue](Self::IntValue) branch.
+            pub fn from_int_value(value: impl std::convert::Into<i64>) -> Self {
+                Self::IntValue(value.into())
+            }
+            /// Initializes the enum to the [DoubleValue](Self::DoubleValue) branch.
+            pub fn from_double_value(value: impl std::convert::Into<f64>) -> Self {
+                Self::DoubleValue(value.into())
+            }
+            /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+            pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::StringValue(value.into())
+            }
+        }
     }
 }
 
@@ -10647,6 +10671,17 @@ pub mod blue_green_settings {
             /// Number of blue nodes to drain in a batch.
             BatchNodeCount(i32),
         }
+
+        impl UpdateBatchSize {
+            /// Initializes the enum to the [BatchPercentage](Self::BatchPercentage) branch.
+            pub fn from_batch_percentage(value: impl std::convert::Into<f32>) -> Self {
+                Self::BatchPercentage(value.into())
+            }
+            /// Initializes the enum to the [BatchNodeCount](Self::BatchNodeCount) branch.
+            pub fn from_batch_node_count(value: impl std::convert::Into<i32>) -> Self {
+                Self::BatchNodeCount(value.into())
+            }
+        }
     }
 
     /// The rollout policy controls the general rollout progress of blue-green.
@@ -10658,6 +10693,17 @@ pub mod blue_green_settings {
         StandardRolloutPolicy(
             std::boxed::Box<crate::model::blue_green_settings::StandardRolloutPolicy>,
         ),
+    }
+
+    impl RolloutPolicy {
+        /// Initializes the enum to the [StandardRolloutPolicy](Self::StandardRolloutPolicy) branch.
+        pub fn from_standard_rollout_policy(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::blue_green_settings::StandardRolloutPolicy>,
+            >,
+        ) -> Self {
+            Self::StandardRolloutPolicy(value.into())
+        }
     }
 }
 
@@ -11831,6 +11877,21 @@ pub mod maintenance_window {
         /// maintenance windows are set, maintenance can occur at any time.
         RecurringWindow(std::boxed::Box<crate::model::RecurringTimeWindow>),
     }
+
+    impl Policy {
+        /// Initializes the enum to the [DailyMaintenanceWindow](Self::DailyMaintenanceWindow) branch.
+        pub fn from_daily_maintenance_window(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DailyMaintenanceWindow>>,
+        ) -> Self {
+            Self::DailyMaintenanceWindow(value.into())
+        }
+        /// Initializes the enum to the [RecurringWindow](Self::RecurringWindow) branch.
+        pub fn from_recurring_window(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RecurringTimeWindow>>,
+        ) -> Self {
+            Self::RecurringWindow(value.into())
+        }
+    }
 }
 
 /// Represents an arbitrary window of time.
@@ -11937,6 +11998,15 @@ pub mod time_window {
         /// MaintenanceExclusionOptions provides maintenance exclusion related
         /// options.
         MaintenanceExclusionOptions(std::boxed::Box<crate::model::MaintenanceExclusionOptions>),
+    }
+
+    impl Options {
+        /// Initializes the enum to the [MaintenanceExclusionOptions](Self::MaintenanceExclusionOptions) branch.
+        pub fn from_maintenance_exclusion_options(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MaintenanceExclusionOptions>>,
+        ) -> Self {
+            Self::MaintenanceExclusionOptions(value.into())
+        }
     }
 }
 

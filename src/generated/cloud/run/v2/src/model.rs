@@ -391,6 +391,15 @@ pub mod submit_build_request {
         StorageSource(std::boxed::Box<crate::model::StorageSource>),
     }
 
+    impl Source {
+        /// Initializes the enum to the [StorageSource](Self::StorageSource) branch.
+        pub fn from_storage_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StorageSource>>,
+        ) -> Self {
+            Self::StorageSource(value.into())
+        }
+    }
+
     /// Build type must be one of the following.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -400,6 +409,25 @@ pub mod submit_build_request {
         BuildpackBuild(std::boxed::Box<crate::model::submit_build_request::BuildpacksBuild>),
         /// Build the source using Docker. This means the source has a Dockerfile.
         DockerBuild(std::boxed::Box<crate::model::submit_build_request::DockerBuild>),
+    }
+
+    impl BuildType {
+        /// Initializes the enum to the [BuildpackBuild](Self::BuildpackBuild) branch.
+        pub fn from_buildpack_build(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::submit_build_request::BuildpacksBuild>,
+            >,
+        ) -> Self {
+            Self::BuildpackBuild(value.into())
+        }
+        /// Initializes the enum to the [DockerBuild](Self::DockerBuild) branch.
+        pub fn from_docker_build(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::submit_build_request::DockerBuild>,
+            >,
+        ) -> Self {
+            Self::DockerBuild(value.into())
+        }
     }
 }
 
@@ -1031,6 +1059,27 @@ pub mod condition {
         RevisionReason(crate::model::condition::RevisionReason),
         /// Output only. A reason for the execution condition.
         ExecutionReason(crate::model::condition::ExecutionReason),
+    }
+
+    impl Reasons {
+        /// Initializes the enum to the [Reason](Self::Reason) branch.
+        pub fn from_reason(
+            value: impl std::convert::Into<crate::model::condition::CommonReason>,
+        ) -> Self {
+            Self::Reason(value.into())
+        }
+        /// Initializes the enum to the [RevisionReason](Self::RevisionReason) branch.
+        pub fn from_revision_reason(
+            value: impl std::convert::Into<crate::model::condition::RevisionReason>,
+        ) -> Self {
+            Self::RevisionReason(value.into())
+        }
+        /// Initializes the enum to the [ExecutionReason](Self::ExecutionReason) branch.
+        pub fn from_execution_reason(
+            value: impl std::convert::Into<crate::model::condition::ExecutionReason>,
+        ) -> Self {
+            Self::ExecutionReason(value.into())
+        }
     }
 }
 
@@ -2741,6 +2790,21 @@ pub mod job {
         /// The sum of job name and token length must be fewer than 63 characters.
         RunExecutionToken(std::string::String),
     }
+
+    impl CreateExecution {
+        /// Initializes the enum to the [StartExecutionToken](Self::StartExecutionToken) branch.
+        pub fn from_start_execution_token(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::StartExecutionToken(value.into())
+        }
+        /// Initializes the enum to the [RunExecutionToken](Self::RunExecutionToken) branch.
+        pub fn from_run_execution_token(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::RunExecutionToken(value.into())
+        }
+    }
 }
 
 /// Reference to an Execution. Use /Executions.GetExecution with the given name
@@ -3273,6 +3337,19 @@ pub mod env_var {
         /// Source for the environment variable's value.
         ValueSource(std::boxed::Box<crate::model::EnvVarSource>),
     }
+
+    impl Values {
+        /// Initializes the enum to the [Value](Self::Value) branch.
+        pub fn from_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Value(value.into())
+        }
+        /// Initializes the enum to the [ValueSource](Self::ValueSource) branch.
+        pub fn from_value_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EnvVarSource>>,
+        ) -> Self {
+            Self::ValueSource(value.into())
+        }
+    }
 }
 
 /// EnvVarSource represents a source for the value of an EnvVar.
@@ -3635,6 +3712,39 @@ pub mod volume {
         Nfs(std::boxed::Box<crate::model::NFSVolumeSource>),
         /// Persistent storage backed by a Google Cloud Storage bucket.
         Gcs(std::boxed::Box<crate::model::GCSVolumeSource>),
+    }
+
+    impl VolumeType {
+        /// Initializes the enum to the [Secret](Self::Secret) branch.
+        pub fn from_secret(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SecretVolumeSource>>,
+        ) -> Self {
+            Self::Secret(value.into())
+        }
+        /// Initializes the enum to the [CloudSqlInstance](Self::CloudSqlInstance) branch.
+        pub fn from_cloud_sql_instance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudSqlInstance>>,
+        ) -> Self {
+            Self::CloudSqlInstance(value.into())
+        }
+        /// Initializes the enum to the [EmptyDir](Self::EmptyDir) branch.
+        pub fn from_empty_dir(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EmptyDirVolumeSource>>,
+        ) -> Self {
+            Self::EmptyDir(value.into())
+        }
+        /// Initializes the enum to the [Nfs](Self::Nfs) branch.
+        pub fn from_nfs(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::NFSVolumeSource>>,
+        ) -> Self {
+            Self::Nfs(value.into())
+        }
+        /// Initializes the enum to the [Gcs](Self::Gcs) branch.
+        pub fn from_gcs(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GCSVolumeSource>>,
+        ) -> Self {
+            Self::Gcs(value.into())
+        }
     }
 }
 
@@ -4197,6 +4307,27 @@ pub mod probe {
         /// Optional. GRPC specifies an action involving a gRPC port.
         /// Exactly one of httpGet, tcpSocket, or grpc must be specified.
         Grpc(std::boxed::Box<crate::model::GRPCAction>),
+    }
+
+    impl ProbeType {
+        /// Initializes the enum to the [HttpGet](Self::HttpGet) branch.
+        pub fn from_http_get(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HTTPGetAction>>,
+        ) -> Self {
+            Self::HttpGet(value.into())
+        }
+        /// Initializes the enum to the [TcpSocket](Self::TcpSocket) branch.
+        pub fn from_tcp_socket(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TCPSocketAction>>,
+        ) -> Self {
+            Self::TcpSocket(value.into())
+        }
+        /// Initializes the enum to the [Grpc](Self::Grpc) branch.
+        pub fn from_grpc(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GRPCAction>>,
+        ) -> Self {
+            Self::Grpc(value.into())
+        }
     }
 }
 
@@ -7016,6 +7147,13 @@ pub mod task_template {
         /// Defaults to 3.
         MaxRetries(i32),
     }
+
+    impl Retries {
+        /// Initializes the enum to the [MaxRetries](Self::MaxRetries) branch.
+        pub fn from_max_retries(value: impl std::convert::Into<i32>) -> Self {
+            Self::MaxRetries(value.into())
+        }
+    }
 }
 
 /// Holds a single traffic routing entry for the Service. Allocations can be done
@@ -7441,6 +7579,17 @@ pub mod binary_authorization {
         /// Optional. The path to a binary authorization policy.
         /// Format: `projects/{project}/platforms/cloudRun/{policy-name}`
         Policy(std::string::String),
+    }
+
+    impl BinauthzMethod {
+        /// Initializes the enum to the [UseDefault](Self::UseDefault) branch.
+        pub fn from_use_default(value: impl std::convert::Into<bool>) -> Self {
+            Self::UseDefault(value.into())
+        }
+        /// Initializes the enum to the [Policy](Self::Policy) branch.
+        pub fn from_policy(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Policy(value.into())
+        }
     }
 }
 

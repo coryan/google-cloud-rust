@@ -672,6 +672,23 @@ pub mod synthesis_input {
         /// multi-speaker synthesis.
         MultiSpeakerMarkup(std::boxed::Box<crate::model::MultiSpeakerMarkup>),
     }
+
+    impl InputSource {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [Ssml](Self::Ssml) branch.
+        pub fn from_ssml(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Ssml(value.into())
+        }
+        /// Initializes the enum to the [MultiSpeakerMarkup](Self::MultiSpeakerMarkup) branch.
+        pub fn from_multi_speaker_markup(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MultiSpeakerMarkup>>,
+        ) -> Self {
+            Self::MultiSpeakerMarkup(value.into())
+        }
+    }
 }
 
 /// Description of which voice to use for a synthesis request.
@@ -1208,6 +1225,13 @@ pub mod streaming_synthesis_input {
         /// input text however they please.
         Text(std::string::String),
     }
+
+    impl InputSource {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Text(value.into())
+        }
+    }
 }
 
 /// Request message for the `StreamingSynthesize` method. Multiple
@@ -1333,6 +1357,21 @@ pub mod streaming_synthesize_request {
         /// Input to synthesize. Specified in all messages but the first in a
         /// `StreamingSynthesize` call.
         Input(std::boxed::Box<crate::model::StreamingSynthesisInput>),
+    }
+
+    impl StreamingRequest {
+        /// Initializes the enum to the [StreamingConfig](Self::StreamingConfig) branch.
+        pub fn from_streaming_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StreamingSynthesizeConfig>>,
+        ) -> Self {
+            Self::StreamingConfig(value.into())
+        }
+        /// Initializes the enum to the [Input](Self::Input) branch.
+        pub fn from_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StreamingSynthesisInput>>,
+        ) -> Self {
+            Self::Input(value.into())
+        }
     }
 }
 

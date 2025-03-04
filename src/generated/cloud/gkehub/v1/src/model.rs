@@ -509,6 +509,17 @@ pub mod common_feature_spec {
         /// Multicluster Ingress-specific spec.
         Multiclusteringress(std::boxed::Box<gkehub_multiclusteringress_v1::model::FeatureSpec>),
     }
+
+    impl FeatureSpec {
+        /// Initializes the enum to the [Multiclusteringress](Self::Multiclusteringress) branch.
+        pub fn from_multiclusteringress(
+            value: impl std::convert::Into<
+                std::boxed::Box<gkehub_multiclusteringress_v1::model::FeatureSpec>,
+            >,
+        ) -> Self {
+            Self::Multiclusteringress(value.into())
+        }
+    }
 }
 
 /// CommonFeatureState contains Hub-wide Feature status information.
@@ -622,6 +633,17 @@ pub mod membership_feature_spec {
         /// Config Management-specific spec.
         Configmanagement(std::boxed::Box<gkehub_configmanagement_v1::model::MembershipSpec>),
     }
+
+    impl FeatureSpec {
+        /// Initializes the enum to the [Configmanagement](Self::Configmanagement) branch.
+        pub fn from_configmanagement(
+            value: impl std::convert::Into<
+                std::boxed::Box<gkehub_configmanagement_v1::model::MembershipSpec>,
+            >,
+        ) -> Self {
+            Self::Configmanagement(value.into())
+        }
+    }
 }
 
 /// MembershipFeatureState contains Feature status information for a single
@@ -717,6 +739,17 @@ pub mod membership_feature_state {
     pub enum FeatureState {
         /// Config Management-specific state.
         Configmanagement(std::boxed::Box<gkehub_configmanagement_v1::model::MembershipState>),
+    }
+
+    impl FeatureState {
+        /// Initializes the enum to the [Configmanagement](Self::Configmanagement) branch.
+        pub fn from_configmanagement(
+            value: impl std::convert::Into<
+                std::boxed::Box<gkehub_configmanagement_v1::model::MembershipState>,
+            >,
+        ) -> Self {
+            Self::Configmanagement(value.into())
+        }
     }
 }
 
@@ -969,6 +1002,15 @@ pub mod membership {
     pub enum Type {
         /// Optional. Endpoint information to reach this member.
         Endpoint(std::boxed::Box<crate::model::MembershipEndpoint>),
+    }
+
+    impl Type {
+        /// Initializes the enum to the [Endpoint](Self::Endpoint) branch.
+        pub fn from_endpoint(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MembershipEndpoint>>,
+        ) -> Self {
+            Self::Endpoint(value.into())
+        }
     }
 }
 

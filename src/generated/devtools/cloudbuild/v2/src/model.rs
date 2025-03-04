@@ -547,6 +547,39 @@ pub mod connection {
         /// Configuration for connections to Bitbucket Cloud.
         BitbucketCloudConfig(std::boxed::Box<crate::model::BitbucketCloudConfig>),
     }
+
+    impl ConnectionConfig {
+        /// Initializes the enum to the [GithubConfig](Self::GithubConfig) branch.
+        pub fn from_github_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitHubConfig>>,
+        ) -> Self {
+            Self::GithubConfig(value.into())
+        }
+        /// Initializes the enum to the [GithubEnterpriseConfig](Self::GithubEnterpriseConfig) branch.
+        pub fn from_github_enterprise_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitHubEnterpriseConfig>>,
+        ) -> Self {
+            Self::GithubEnterpriseConfig(value.into())
+        }
+        /// Initializes the enum to the [GitlabConfig](Self::GitlabConfig) branch.
+        pub fn from_gitlab_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitLabConfig>>,
+        ) -> Self {
+            Self::GitlabConfig(value.into())
+        }
+        /// Initializes the enum to the [BitbucketDataCenterConfig](Self::BitbucketDataCenterConfig) branch.
+        pub fn from_bitbucket_data_center_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BitbucketDataCenterConfig>>,
+        ) -> Self {
+            Self::BitbucketDataCenterConfig(value.into())
+        }
+        /// Initializes the enum to the [BitbucketCloudConfig](Self::BitbucketCloudConfig) branch.
+        pub fn from_bitbucket_cloud_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BitbucketCloudConfig>>,
+        ) -> Self {
+            Self::BitbucketCloudConfig(value.into())
+        }
+    }
 }
 
 /// Describes stage and necessary actions to be taken by the

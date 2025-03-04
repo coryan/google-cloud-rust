@@ -1488,6 +1488,15 @@ pub mod scan_config {
                 /// account is added in Identity-Aware-Proxy (IAP) access policies.
                 IapTestServiceAccountInfo(std::boxed::Box<crate::model::scan_config::authentication::iap_credential::IapTestServiceAccountInfo>),
             }
+
+            impl IapCredentials {
+                /// Initializes the enum to the [IapTestServiceAccountInfo](Self::IapTestServiceAccountInfo) branch.
+                pub fn from_iap_test_service_account_info(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::scan_config::authentication::iap_credential::IapTestServiceAccountInfo>>,
+                ) -> Self {
+                    Self::IapTestServiceAccountInfo(value.into())
+                }
+            }
         }
 
         /// Required.
@@ -1508,6 +1517,33 @@ pub mod scan_config {
             IapCredential(
                 std::boxed::Box<crate::model::scan_config::authentication::IapCredential>,
             ),
+        }
+
+        impl Authentication {
+            /// Initializes the enum to the [GoogleAccount](Self::GoogleAccount) branch.
+            pub fn from_google_account(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::scan_config::authentication::GoogleAccount>,
+                >,
+            ) -> Self {
+                Self::GoogleAccount(value.into())
+            }
+            /// Initializes the enum to the [CustomAccount](Self::CustomAccount) branch.
+            pub fn from_custom_account(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::scan_config::authentication::CustomAccount>,
+                >,
+            ) -> Self {
+                Self::CustomAccount(value.into())
+            }
+            /// Initializes the enum to the [IapCredential](Self::IapCredential) branch.
+            pub fn from_iap_credential(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::scan_config::authentication::IapCredential>,
+                >,
+            ) -> Self {
+                Self::IapCredential(value.into())
+            }
         }
     }
 

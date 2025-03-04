@@ -1623,6 +1623,13 @@ pub mod restore_table_request {
         /// `projects/<project>/instances/<instance>/clusters/<cluster>/backups/<backup>`.
         Backup(std::string::String),
     }
+
+    impl Source {
+        /// Initializes the enum to the [Backup](Self::Backup) branch.
+        pub fn from_backup(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Backup(value.into())
+        }
+    }
 }
 
 /// Metadata type for the long-running operation returned by
@@ -1775,6 +1782,15 @@ pub mod restore_table_metadata {
     #[non_exhaustive]
     pub enum SourceInfo {
         BackupInfo(std::boxed::Box<crate::model::BackupInfo>),
+    }
+
+    impl SourceInfo {
+        /// Initializes the enum to the [BackupInfo](Self::BackupInfo) branch.
+        pub fn from_backup_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BackupInfo>>,
+        ) -> Self {
+            Self::BackupInfo(value.into())
+        }
     }
 }
 
@@ -2125,6 +2141,17 @@ pub mod drop_row_range_request {
         RowKeyPrefix(bytes::Bytes),
         /// Delete all rows in the table. Setting this to false is a no-op.
         DeleteAllDataFromTable(bool),
+    }
+
+    impl Target {
+        /// Initializes the enum to the [RowKeyPrefix](Self::RowKeyPrefix) branch.
+        pub fn from_row_key_prefix(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::RowKeyPrefix(value.into())
+        }
+        /// Initializes the enum to the [DeleteAllDataFromTable](Self::DeleteAllDataFromTable) branch.
+        pub fn from_delete_all_data_from_table(value: impl std::convert::Into<bool>) -> Self {
+            Self::DeleteAllDataFromTable(value.into())
+        }
     }
 }
 
@@ -2783,6 +2810,25 @@ pub mod modify_column_families_request {
             /// family exists.
             Drop(bool),
         }
+
+        impl Mod {
+            /// Initializes the enum to the [Create](Self::Create) branch.
+            pub fn from_create(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::ColumnFamily>>,
+            ) -> Self {
+                Self::Create(value.into())
+            }
+            /// Initializes the enum to the [Update](Self::Update) branch.
+            pub fn from_update(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::ColumnFamily>>,
+            ) -> Self {
+                Self::Update(value.into())
+            }
+            /// Initializes the enum to the [Drop](Self::Drop) branch.
+            pub fn from_drop(value: impl std::convert::Into<bool>) -> Self {
+                Self::Drop(value.into())
+            }
+        }
     }
 }
 
@@ -3001,6 +3047,21 @@ pub mod check_consistency_request {
         /// can see all writes committed before the token was created, but only if
         /// the read and write target the same cluster.
         DataBoostReadLocalWrites(std::boxed::Box<crate::model::DataBoostReadLocalWrites>),
+    }
+
+    impl Mode {
+        /// Initializes the enum to the [StandardReadRemoteWrites](Self::StandardReadRemoteWrites) branch.
+        pub fn from_standard_read_remote_writes(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StandardReadRemoteWrites>>,
+        ) -> Self {
+            Self::StandardReadRemoteWrites(value.into())
+        }
+        /// Initializes the enum to the [DataBoostReadLocalWrites](Self::DataBoostReadLocalWrites) branch.
+        pub fn from_data_boost_read_local_writes(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DataBoostReadLocalWrites>>,
+        ) -> Self {
+            Self::DataBoostReadLocalWrites(value.into())
+        }
     }
 }
 
@@ -5350,6 +5411,15 @@ pub mod cluster {
         /// Configuration for this cluster.
         ClusterConfig(std::boxed::Box<crate::model::cluster::ClusterConfig>),
     }
+
+    impl Config {
+        /// Initializes the enum to the [ClusterConfig](Self::ClusterConfig) branch.
+        pub fn from_cluster_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::cluster::ClusterConfig>>,
+        ) -> Self {
+            Self::ClusterConfig(value.into())
+        }
+    }
 }
 
 /// A configuration object describing how Cloud Bigtable should treat traffic
@@ -5760,6 +5830,19 @@ pub mod app_profile {
                 >,
             ),
         }
+
+        impl Affinity {
+            /// Initializes the enum to the [RowAffinity](Self::RowAffinity) branch.
+            pub fn from_row_affinity(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::app_profile::multi_cluster_routing_use_any::RowAffinity,
+                    >,
+                >,
+            ) -> Self {
+                Self::RowAffinity(value.into())
+            }
+        }
     }
 
     /// Unconditionally routes all read/write requests to a specific cluster.
@@ -5994,6 +6077,25 @@ pub mod app_profile {
         SingleClusterRouting(std::boxed::Box<crate::model::app_profile::SingleClusterRouting>),
     }
 
+    impl RoutingPolicy {
+        /// Initializes the enum to the [MultiClusterRoutingUseAny](Self::MultiClusterRoutingUseAny) branch.
+        pub fn from_multi_cluster_routing_use_any(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::app_profile::MultiClusterRoutingUseAny>,
+            >,
+        ) -> Self {
+            Self::MultiClusterRoutingUseAny(value.into())
+        }
+        /// Initializes the enum to the [SingleClusterRouting](Self::SingleClusterRouting) branch.
+        pub fn from_single_cluster_routing(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::app_profile::SingleClusterRouting>,
+            >,
+        ) -> Self {
+            Self::SingleClusterRouting(value.into())
+        }
+    }
+
     /// Options for isolating this app profile's traffic from other use cases.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -6012,6 +6114,31 @@ pub mod app_profile {
         DataBoostIsolationReadOnly(
             std::boxed::Box<crate::model::app_profile::DataBoostIsolationReadOnly>,
         ),
+    }
+
+    impl Isolation {
+        /// Initializes the enum to the [Priority](Self::Priority) branch.
+        pub fn from_priority(
+            value: impl std::convert::Into<crate::model::app_profile::Priority>,
+        ) -> Self {
+            Self::Priority(value.into())
+        }
+        /// Initializes the enum to the [StandardIsolation](Self::StandardIsolation) branch.
+        pub fn from_standard_isolation(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::app_profile::StandardIsolation>,
+            >,
+        ) -> Self {
+            Self::StandardIsolation(value.into())
+        }
+        /// Initializes the enum to the [DataBoostIsolationReadOnly](Self::DataBoostIsolationReadOnly) branch.
+        pub fn from_data_boost_isolation_read_only(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::app_profile::DataBoostIsolationReadOnly>,
+            >,
+        ) -> Self {
+            Self::DataBoostIsolationReadOnly(value.into())
+        }
     }
 }
 
@@ -6204,6 +6331,15 @@ pub mod restore_info {
         /// Information about the backup used to restore the table. The backup
         /// may no longer exist.
         BackupInfo(std::boxed::Box<crate::model::BackupInfo>),
+    }
+
+    impl SourceInfo {
+        /// Initializes the enum to the [BackupInfo](Self::BackupInfo) branch.
+        pub fn from_backup_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BackupInfo>>,
+        ) -> Self {
+            Self::BackupInfo(value.into())
+        }
     }
 }
 
@@ -6697,6 +6833,15 @@ pub mod table {
         /// Otherwise, automated backups are disabled.
         AutomatedBackupPolicy(std::boxed::Box<crate::model::table::AutomatedBackupPolicy>),
     }
+
+    impl AutomatedBackupConfig {
+        /// Initializes the enum to the [AutomatedBackupPolicy](Self::AutomatedBackupPolicy) branch.
+        pub fn from_automated_backup_policy(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::table::AutomatedBackupPolicy>>,
+        ) -> Self {
+            Self::AutomatedBackupPolicy(value.into())
+        }
+    }
 }
 
 /// AuthorizedViews represent subsets of a particular Cloud Bigtable table. Users
@@ -6972,6 +7117,15 @@ pub mod authorized_view {
     pub enum AuthorizedView {
         /// An AuthorizedView permitting access to an explicit subset of a Table.
         SubsetView(std::boxed::Box<crate::model::authorized_view::SubsetView>),
+    }
+
+    impl AuthorizedView {
+        /// Initializes the enum to the [SubsetView](Self::SubsetView) branch.
+        pub fn from_subset_view(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::authorized_view::SubsetView>>,
+        ) -> Self {
+            Self::SubsetView(value.into())
+        }
     }
 }
 
@@ -7252,6 +7406,31 @@ pub mod gc_rule {
         Intersection(std::boxed::Box<crate::model::gc_rule::Intersection>),
         /// Delete cells that would be deleted by any nested rule.
         Union(std::boxed::Box<crate::model::gc_rule::Union>),
+    }
+
+    impl Rule {
+        /// Initializes the enum to the [MaxNumVersions](Self::MaxNumVersions) branch.
+        pub fn from_max_num_versions(value: impl std::convert::Into<i32>) -> Self {
+            Self::MaxNumVersions(value.into())
+        }
+        /// Initializes the enum to the [MaxAge](Self::MaxAge) branch.
+        pub fn from_max_age(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+        ) -> Self {
+            Self::MaxAge(value.into())
+        }
+        /// Initializes the enum to the [Intersection](Self::Intersection) branch.
+        pub fn from_intersection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::gc_rule::Intersection>>,
+        ) -> Self {
+            Self::Intersection(value.into())
+        }
+        /// Initializes the enum to the [Union](Self::Union) branch.
+        pub fn from_union(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::gc_rule::Union>>,
+        ) -> Self {
+            Self::Union(value.into())
+        }
     }
 }
 
@@ -8418,6 +8597,17 @@ pub mod r#type {
                 /// Use `Raw` encoding.
                 Raw(std::boxed::Box<crate::model::r#type::bytes::encoding::Raw>),
             }
+
+            impl Encoding {
+                /// Initializes the enum to the [Raw](Self::Raw) branch.
+                pub fn from_raw(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::r#type::bytes::encoding::Raw>,
+                    >,
+                ) -> Self {
+                    Self::Raw(value.into())
+                }
+            }
         }
     }
 
@@ -8629,6 +8819,25 @@ pub mod r#type {
                 /// Use `Utf8Bytes` encoding.
                 Utf8Bytes(std::boxed::Box<crate::model::r#type::string::encoding::Utf8Bytes>),
             }
+
+            impl Encoding {
+                /// Initializes the enum to the [Utf8Raw](Self::Utf8Raw) branch.
+                pub fn from_utf8_raw(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::r#type::string::encoding::Utf8Raw>,
+                    >,
+                ) -> Self {
+                    Self::Utf8Raw(value.into())
+                }
+                /// Initializes the enum to the [Utf8Bytes](Self::Utf8Bytes) branch.
+                pub fn from_utf8_bytes(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::r#type::string::encoding::Utf8Bytes>,
+                    >,
+                ) -> Self {
+                    Self::Utf8Bytes(value.into())
+                }
+            }
         }
     }
 
@@ -8800,6 +9009,17 @@ pub mod r#type {
                 BigEndianBytes(
                     std::boxed::Box<crate::model::r#type::int_64::encoding::BigEndianBytes>,
                 ),
+            }
+
+            impl Encoding {
+                /// Initializes the enum to the [BigEndianBytes](Self::BigEndianBytes) branch.
+                pub fn from_big_endian_bytes(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::r#type::int_64::encoding::BigEndianBytes>,
+                    >,
+                ) -> Self {
+                    Self::BigEndianBytes(value.into())
+                }
             }
         }
     }
@@ -9394,6 +9614,37 @@ pub mod r#type {
             /// Min aggregator.
             Min(std::boxed::Box<crate::model::r#type::aggregate::Min>),
         }
+
+        impl Aggregator {
+            /// Initializes the enum to the [Sum](Self::Sum) branch.
+            pub fn from_sum(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::aggregate::Sum>>,
+            ) -> Self {
+                Self::Sum(value.into())
+            }
+            /// Initializes the enum to the [HllppUniqueCount](Self::HllppUniqueCount) branch.
+            pub fn from_hllpp_unique_count(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::r#type::aggregate::HyperLogLogPlusPlusUniqueCount,
+                    >,
+                >,
+            ) -> Self {
+                Self::HllppUniqueCount(value.into())
+            }
+            /// Initializes the enum to the [Max](Self::Max) branch.
+            pub fn from_max(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::aggregate::Max>>,
+            ) -> Self {
+                Self::Max(value.into())
+            }
+            /// Initializes the enum to the [Min](Self::Min) branch.
+            pub fn from_min(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::aggregate::Min>>,
+            ) -> Self {
+                Self::Min(value.into())
+            }
+        }
     }
 
     /// The kind of type that this represents.
@@ -9425,6 +9676,81 @@ pub mod r#type {
         ArrayType(std::boxed::Box<crate::model::r#type::Array>),
         /// Map
         MapType(std::boxed::Box<crate::model::r#type::Map>),
+    }
+
+    impl Kind {
+        /// Initializes the enum to the [BytesType](Self::BytesType) branch.
+        pub fn from_bytes_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Bytes>>,
+        ) -> Self {
+            Self::BytesType(value.into())
+        }
+        /// Initializes the enum to the [StringType](Self::StringType) branch.
+        pub fn from_string_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::String>>,
+        ) -> Self {
+            Self::StringType(value.into())
+        }
+        /// Initializes the enum to the [Int64Type](Self::Int64Type) branch.
+        pub fn from_int64_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Int64>>,
+        ) -> Self {
+            Self::Int64Type(value.into())
+        }
+        /// Initializes the enum to the [Float32Type](Self::Float32Type) branch.
+        pub fn from_float32_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Float32>>,
+        ) -> Self {
+            Self::Float32Type(value.into())
+        }
+        /// Initializes the enum to the [Float64Type](Self::Float64Type) branch.
+        pub fn from_float64_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Float64>>,
+        ) -> Self {
+            Self::Float64Type(value.into())
+        }
+        /// Initializes the enum to the [BoolType](Self::BoolType) branch.
+        pub fn from_bool_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Bool>>,
+        ) -> Self {
+            Self::BoolType(value.into())
+        }
+        /// Initializes the enum to the [TimestampType](Self::TimestampType) branch.
+        pub fn from_timestamp_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Timestamp>>,
+        ) -> Self {
+            Self::TimestampType(value.into())
+        }
+        /// Initializes the enum to the [DateType](Self::DateType) branch.
+        pub fn from_date_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Date>>,
+        ) -> Self {
+            Self::DateType(value.into())
+        }
+        /// Initializes the enum to the [AggregateType](Self::AggregateType) branch.
+        pub fn from_aggregate_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Aggregate>>,
+        ) -> Self {
+            Self::AggregateType(value.into())
+        }
+        /// Initializes the enum to the [StructType](Self::StructType) branch.
+        pub fn from_struct_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Struct>>,
+        ) -> Self {
+            Self::StructType(value.into())
+        }
+        /// Initializes the enum to the [ArrayType](Self::ArrayType) branch.
+        pub fn from_array_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Array>>,
+        ) -> Self {
+            Self::ArrayType(value.into())
+        }
+        /// Initializes the enum to the [MapType](Self::MapType) branch.
+        pub fn from_map_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::r#type::Map>>,
+        ) -> Self {
+            Self::MapType(value.into())
+        }
     }
 }
 

@@ -870,6 +870,13 @@ pub mod export_backup_request {
         /// Google Cloud Storage bucket, like "my-bucket".
         GcsBucket(std::string::String),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsBucket](Self::GcsBucket) branch.
+        pub fn from_gcs_bucket(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsBucket(value.into())
+        }
+    }
 }
 
 /// Request for [BackupCluster].
@@ -1549,6 +1556,17 @@ pub mod cluster {
             /// Describes ongoing update on the cluster when cluster state is UPDATING.
             UpdateInfo(std::boxed::Box<crate::model::cluster::state_info::UpdateInfo>),
         }
+
+        impl Info {
+            /// Initializes the enum to the [UpdateInfo](Self::UpdateInfo) branch.
+            pub fn from_update_info(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::cluster::state_info::UpdateInfo>,
+                >,
+            ) -> Self {
+                Self::UpdateInfo(value.into())
+            }
+        }
     }
 
     /// Backups stored in Cloud Storage buckets.
@@ -1681,6 +1699,21 @@ pub mod cluster {
         GcsSource(std::boxed::Box<crate::model::cluster::GcsBackupSource>),
         /// Optional. Backups generated and managed by memorystore service.
         ManagedBackupSource(std::boxed::Box<crate::model::cluster::ManagedBackupSource>),
+    }
+
+    impl ImportSources {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::cluster::GcsBackupSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [ManagedBackupSource](Self::ManagedBackupSource) branch.
+        pub fn from_managed_backup_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::cluster::ManagedBackupSource>>,
+        ) -> Self {
+            Self::ManagedBackupSource(value.into())
+        }
     }
 }
 
@@ -1877,6 +1910,17 @@ pub mod automated_backup_config {
         FixedFrequencySchedule(
             std::boxed::Box<crate::model::automated_backup_config::FixedFrequencySchedule>,
         ),
+    }
+
+    impl Schedule {
+        /// Initializes the enum to the [FixedFrequencySchedule](Self::FixedFrequencySchedule) branch.
+        pub fn from_fixed_frequency_schedule(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::automated_backup_config::FixedFrequencySchedule>,
+            >,
+        ) -> Self {
+            Self::FixedFrequencySchedule(value.into())
+        }
     }
 }
 
@@ -3110,6 +3154,21 @@ pub mod connection_detail {
         /// who owns the cluster.
         PscConnection(std::boxed::Box<crate::model::PscConnection>),
     }
+
+    impl Connection {
+        /// Initializes the enum to the [PscAutoConnection](Self::PscAutoConnection) branch.
+        pub fn from_psc_auto_connection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PscAutoConnection>>,
+        ) -> Self {
+            Self::PscAutoConnection(value.into())
+        }
+        /// Initializes the enum to the [PscConnection](Self::PscConnection) branch.
+        pub fn from_psc_connection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PscConnection>>,
+        ) -> Self {
+            Self::PscConnection(value.into())
+        }
+    }
 }
 
 /// Details of consumer resources in a PSC connection that is created through
@@ -3504,6 +3563,17 @@ pub mod certificate_authority {
         ManagedServerCa(
             std::boxed::Box<crate::model::certificate_authority::ManagedCertificateAuthority>,
         ),
+    }
+
+    impl ServerCa {
+        /// Initializes the enum to the [ManagedServerCa](Self::ManagedServerCa) branch.
+        pub fn from_managed_server_ca(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::certificate_authority::ManagedCertificateAuthority>,
+            >,
+        ) -> Self {
+            Self::ManagedServerCa(value.into())
+        }
     }
 }
 

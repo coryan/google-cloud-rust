@@ -1500,6 +1500,15 @@ pub mod backup_rule {
         /// window of time.
         StandardSchedule(std::boxed::Box<crate::model::StandardSchedule>),
     }
+
+    impl BackupScheduleOneof {
+        /// Initializes the enum to the [StandardSchedule](Self::StandardSchedule) branch.
+        pub fn from_standard_schedule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StandardSchedule>>,
+        ) -> Self {
+            Self::StandardSchedule(value.into())
+        }
+    }
 }
 
 /// `StandardSchedule` defines a schedule that run within the confines of a
@@ -3545,6 +3554,23 @@ pub mod data_source {
             std::boxed::Box<crate::model::DataSourceBackupApplianceApplication>,
         ),
     }
+
+    impl SourceResource {
+        /// Initializes the enum to the [DataSourceGcpResource](Self::DataSourceGcpResource) branch.
+        pub fn from_data_source_gcp_resource(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DataSourceGcpResource>>,
+        ) -> Self {
+            Self::DataSourceGcpResource(value.into())
+        }
+        /// Initializes the enum to the [DataSourceBackupApplianceApplication](Self::DataSourceBackupApplianceApplication) branch.
+        pub fn from_data_source_backup_appliance_application(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::DataSourceBackupApplianceApplication>,
+            >,
+        ) -> Self {
+            Self::DataSourceBackupApplianceApplication(value.into())
+        }
+    }
 }
 
 /// BackupConfigInfo has information about how the resource is configured
@@ -3755,6 +3781,21 @@ pub mod backup_config_info {
         GcpBackupConfig(std::boxed::Box<crate::model::GcpBackupConfig>),
         /// Configuration for an application backed up by a Backup Appliance.
         BackupApplianceBackupConfig(std::boxed::Box<crate::model::BackupApplianceBackupConfig>),
+    }
+
+    impl BackupConfig {
+        /// Initializes the enum to the [GcpBackupConfig](Self::GcpBackupConfig) branch.
+        pub fn from_gcp_backup_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcpBackupConfig>>,
+        ) -> Self {
+            Self::GcpBackupConfig(value.into())
+        }
+        /// Initializes the enum to the [BackupApplianceBackupConfig](Self::BackupApplianceBackupConfig) branch.
+        pub fn from_backup_appliance_backup_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BackupApplianceBackupConfig>>,
+        ) -> Self {
+            Self::BackupApplianceBackupConfig(value.into())
+        }
     }
 }
 
@@ -4050,6 +4091,17 @@ pub mod data_source_gcp_resource {
             std::boxed::Box<crate::model::ComputeInstanceDataSourceProperties>,
         ),
     }
+
+    impl GcpResourceProperties {
+        /// Initializes the enum to the [ComputeInstanceDatasourceProperties](Self::ComputeInstanceDatasourceProperties) branch.
+        pub fn from_compute_instance_datasource_properties(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::ComputeInstanceDataSourceProperties>,
+            >,
+        ) -> Self {
+            Self::ComputeInstanceDatasourceProperties(value.into())
+        }
+    }
 }
 
 /// BackupApplianceApplication describes a Source Resource when it is an
@@ -4344,6 +4396,21 @@ pub mod backup_appliance_lock_info {
         /// The SLA on the backup/recovery appliance that owns the lock.
         SlaId(i64),
     }
+
+    impl LockSource {
+        /// Initializes the enum to the [JobName](Self::JobName) branch.
+        pub fn from_job_name(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::JobName(value.into())
+        }
+        /// Initializes the enum to the [BackupImage](Self::BackupImage) branch.
+        pub fn from_backup_image(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::BackupImage(value.into())
+        }
+        /// Initializes the enum to the [SlaId](Self::SlaId) branch.
+        pub fn from_sla_id(value: impl std::convert::Into<i64>) -> Self {
+            Self::SlaId(value.into())
+        }
+    }
 }
 
 /// BackupLock represents a single lock on a Backup resource.  An unexpired
@@ -4475,6 +4542,21 @@ pub mod backup_lock {
         /// Output only. Contains metadata about the lock exist for Google Cloud
         /// native backups.
         ServiceLockInfo(std::boxed::Box<crate::model::ServiceLockInfo>),
+    }
+
+    impl ClientLockInfo {
+        /// Initializes the enum to the [BackupApplianceLockInfo](Self::BackupApplianceLockInfo) branch.
+        pub fn from_backup_appliance_lock_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BackupApplianceLockInfo>>,
+        ) -> Self {
+            Self::BackupApplianceLockInfo(value.into())
+        }
+        /// Initializes the enum to the [ServiceLockInfo](Self::ServiceLockInfo) branch.
+        pub fn from_service_lock_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ServiceLockInfo>>,
+        ) -> Self {
+            Self::ServiceLockInfo(value.into())
+        }
     }
 }
 
@@ -4965,6 +5047,25 @@ pub mod backup {
         ),
     }
 
+    impl BackupProperties {
+        /// Initializes the enum to the [ComputeInstanceBackupProperties](Self::ComputeInstanceBackupProperties) branch.
+        pub fn from_compute_instance_backup_properties(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::ComputeInstanceBackupProperties>,
+            >,
+        ) -> Self {
+            Self::ComputeInstanceBackupProperties(value.into())
+        }
+        /// Initializes the enum to the [BackupApplianceBackupProperties](Self::BackupApplianceBackupProperties) branch.
+        pub fn from_backup_appliance_backup_properties(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::BackupApplianceBackupProperties>,
+            >,
+        ) -> Self {
+            Self::BackupApplianceBackupProperties(value.into())
+        }
+    }
+
     /// Configuration Info has the resource format-specific configuration.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -4972,6 +5073,15 @@ pub mod backup {
     pub enum PlanInfo {
         /// Output only. Configuration for a Google Cloud resource.
         GcpBackupPlanInfo(std::boxed::Box<crate::model::backup::GCPBackupPlanInfo>),
+    }
+
+    impl PlanInfo {
+        /// Initializes the enum to the [GcpBackupPlanInfo](Self::GcpBackupPlanInfo) branch.
+        pub fn from_gcp_backup_plan_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::backup::GCPBackupPlanInfo>>,
+        ) -> Self {
+            Self::GcpBackupPlanInfo(value.into())
+        }
     }
 }
 
@@ -6371,6 +6481,17 @@ pub mod restore_backup_request {
         ),
     }
 
+    impl TargetEnvironment {
+        /// Initializes the enum to the [ComputeInstanceTargetEnvironment](Self::ComputeInstanceTargetEnvironment) branch.
+        pub fn from_compute_instance_target_environment(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::ComputeInstanceTargetEnvironment>,
+            >,
+        ) -> Self {
+            Self::ComputeInstanceTargetEnvironment(value.into())
+        }
+    }
+
     /// The property overrides for the instance being restored.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -6380,6 +6501,17 @@ pub mod restore_backup_request {
         ComputeInstanceRestoreProperties(
             std::boxed::Box<crate::model::ComputeInstanceRestoreProperties>,
         ),
+    }
+
+    impl InstanceProperties {
+        /// Initializes the enum to the [ComputeInstanceRestoreProperties](Self::ComputeInstanceRestoreProperties) branch.
+        pub fn from_compute_instance_restore_properties(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::ComputeInstanceRestoreProperties>,
+            >,
+        ) -> Self {
+            Self::ComputeInstanceRestoreProperties(value.into())
+        }
     }
 }
 
@@ -6494,6 +6626,15 @@ pub mod target_resource {
     pub enum TargetResourceInfo {
         /// Details of the native Google Cloud resource created as part of restore.
         GcpResource(std::boxed::Box<crate::model::GcpResource>),
+    }
+
+    impl TargetResourceInfo {
+        /// Initializes the enum to the [GcpResource](Self::GcpResource) branch.
+        pub fn from_gcp_resource(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcpResource>>,
+        ) -> Self {
+            Self::GcpResource(value.into())
+        }
     }
 }
 
@@ -7782,6 +7923,21 @@ pub mod customer_encryption_key {
         /// Optional. The name of the encryption key that is stored in Google Cloud
         /// KMS.
         KmsKeyName(std::string::String),
+    }
+
+    impl Key {
+        /// Initializes the enum to the [RawKey](Self::RawKey) branch.
+        pub fn from_raw_key(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::RawKey(value.into())
+        }
+        /// Initializes the enum to the [RsaEncryptedKey](Self::RsaEncryptedKey) branch.
+        pub fn from_rsa_encrypted_key(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::RsaEncryptedKey(value.into())
+        }
+        /// Initializes the enum to the [KmsKeyName](Self::KmsKeyName) branch.
+        pub fn from_kms_key_name(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::KmsKeyName(value.into())
+        }
     }
 }
 

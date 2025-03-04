@@ -2138,6 +2138,15 @@ pub mod crypto_key {
         /// [google.cloud.kms.v1.CryptoKey.rotation_period]: crate::model::CryptoKey::rotation_schedule
         RotationPeriod(std::boxed::Box<wkt::Duration>),
     }
+
+    impl RotationSchedule {
+        /// Initializes the enum to the [RotationPeriod](Self::RotationPeriod) branch.
+        pub fn from_rotation_period(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+        ) -> Self {
+            Self::RotationPeriod(value.into())
+        }
+    }
 }
 
 /// A [CryptoKeyVersionTemplate][google.cloud.kms.v1.CryptoKeyVersionTemplate]
@@ -5347,6 +5356,13 @@ pub mod import_crypto_key_version_request {
         /// [google.cloud.kms.v1.ImportCryptoKeyVersionRequest.wrapped_key]: crate::model::ImportCryptoKeyVersionRequest::wrapped_key
         RsaAesWrappedKey(bytes::Bytes),
     }
+
+    impl WrappedKeyMaterial {
+        /// Initializes the enum to the [RsaAesWrappedKey](Self::RsaAesWrappedKey) branch.
+        pub fn from_rsa_aes_wrapped_key(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::RsaAesWrappedKey(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -8200,6 +8216,21 @@ pub mod digest {
         Sha384(bytes::Bytes),
         /// A message digest produced with the SHA-512 algorithm.
         Sha512(bytes::Bytes),
+    }
+
+    impl Digest {
+        /// Initializes the enum to the [Sha256](Self::Sha256) branch.
+        pub fn from_sha256(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::Sha256(value.into())
+        }
+        /// Initializes the enum to the [Sha384](Self::Sha384) branch.
+        pub fn from_sha384(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::Sha384(value.into())
+        }
+        /// Initializes the enum to the [Sha512](Self::Sha512) branch.
+        pub fn from_sha512(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::Sha512(value.into())
+        }
     }
 }
 

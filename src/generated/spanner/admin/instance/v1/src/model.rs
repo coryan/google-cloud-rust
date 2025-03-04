@@ -818,6 +818,17 @@ pub mod replica_compute_capacity {
         /// state `READY`.
         ProcessingUnits(i32),
     }
+
+    impl ComputeCapacity {
+        /// Initializes the enum to the [NodeCount](Self::NodeCount) branch.
+        pub fn from_node_count(value: impl std::convert::Into<i32>) -> Self {
+            Self::NodeCount(value.into())
+        }
+        /// Initializes the enum to the [ProcessingUnits](Self::ProcessingUnits) branch.
+        pub fn from_processing_units(value: impl std::convert::Into<i32>) -> Self {
+            Self::ProcessingUnits(value.into())
+        }
+    }
 }
 
 /// Autoscaling configuration for an instance.
@@ -1083,6 +1094,17 @@ pub mod autoscaling_config {
             MinProcessingUnits(i32),
         }
 
+        impl MinLimit {
+            /// Initializes the enum to the [MinNodes](Self::MinNodes) branch.
+            pub fn from_min_nodes(value: impl std::convert::Into<i32>) -> Self {
+                Self::MinNodes(value.into())
+            }
+            /// Initializes the enum to the [MinProcessingUnits](Self::MinProcessingUnits) branch.
+            pub fn from_min_processing_units(value: impl std::convert::Into<i32>) -> Self {
+                Self::MinProcessingUnits(value.into())
+            }
+        }
+
         /// The maximum compute capacity for the instance. The maximum compute
         /// capacity should be less than or equal to 10X the minimum compute
         /// capacity.
@@ -1097,6 +1119,17 @@ pub mod autoscaling_config {
             /// this number should be multiples of 1000 and be greater than or equal to
             /// min_processing_units.
             MaxProcessingUnits(i32),
+        }
+
+        impl MaxLimit {
+            /// Initializes the enum to the [MaxNodes](Self::MaxNodes) branch.
+            pub fn from_max_nodes(value: impl std::convert::Into<i32>) -> Self {
+                Self::MaxNodes(value.into())
+            }
+            /// Initializes the enum to the [MaxProcessingUnits](Self::MaxProcessingUnits) branch.
+            pub fn from_max_processing_units(value: impl std::convert::Into<i32>) -> Self {
+                Self::MaxProcessingUnits(value.into())
+            }
         }
     }
 
@@ -3444,6 +3477,17 @@ pub mod instance_partition {
         /// This might be zero in API responses for instance partitions that are not
         /// yet in the `READY` state.
         ProcessingUnits(i32),
+    }
+
+    impl ComputeCapacity {
+        /// Initializes the enum to the [NodeCount](Self::NodeCount) branch.
+        pub fn from_node_count(value: impl std::convert::Into<i32>) -> Self {
+            Self::NodeCount(value.into())
+        }
+        /// Initializes the enum to the [ProcessingUnits](Self::ProcessingUnits) branch.
+        pub fn from_processing_units(value: impl std::convert::Into<i32>) -> Self {
+            Self::ProcessingUnits(value.into())
+        }
     }
 }
 

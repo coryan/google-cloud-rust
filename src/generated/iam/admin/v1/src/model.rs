@@ -2793,6 +2793,15 @@ pub mod lint_policy_request {
         /// [google.iam.v1.Binding.condition] [google.iam.v1.Binding.condition] object to be linted.
         Condition(std::boxed::Box<gtype::model::Expr>),
     }
+
+    impl LintObject {
+        /// Initializes the enum to the [Condition](Self::Condition) branch.
+        pub fn from_condition(
+            value: impl std::convert::Into<std::boxed::Box<gtype::model::Expr>>,
+        ) -> Self {
+            Self::Condition(value.into())
+        }
+    }
 }
 
 /// Structured response of a single validation unit.

@@ -768,6 +768,17 @@ pub mod export_agent_response {
         /// Zip compressed raw byte content for agent.
         AgentContent(bytes::Bytes),
     }
+
+    impl Agent {
+        /// Initializes the enum to the [AgentUri](Self::AgentUri) branch.
+        pub fn from_agent_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::AgentUri(value.into())
+        }
+        /// Initializes the enum to the [AgentContent](Self::AgentContent) branch.
+        pub fn from_agent_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::AgentContent(value.into())
+        }
+    }
 }
 
 /// The request message for
@@ -888,6 +899,17 @@ pub mod import_agent_request {
         /// Zip compressed raw byte content for agent.
         AgentContent(bytes::Bytes),
     }
+
+    impl Agent {
+        /// Initializes the enum to the [AgentUri](Self::AgentUri) branch.
+        pub fn from_agent_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::AgentUri(value.into())
+        }
+        /// Initializes the enum to the [AgentContent](Self::AgentContent) branch.
+        pub fn from_agent_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::AgentContent(value.into())
+        }
+    }
 }
 
 /// The request message for
@@ -1007,6 +1029,17 @@ pub mod restore_agent_request {
         AgentUri(std::string::String),
         /// Zip compressed raw byte content for agent.
         AgentContent(bytes::Bytes),
+    }
+
+    impl Agent {
+        /// Initializes the enum to the [AgentUri](Self::AgentUri) branch.
+        pub fn from_agent_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::AgentUri(value.into())
+        }
+        /// Initializes the enum to the [AgentContent](Self::AgentContent) branch.
+        pub fn from_agent_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::AgentContent(value.into())
+        }
     }
 }
 
@@ -1197,6 +1230,15 @@ pub mod answer_record {
     pub enum Record {
         /// Output only. The record for human agent assistant.
         AgentAssistantRecord(std::boxed::Box<crate::model::AgentAssistantRecord>),
+    }
+
+    impl Record {
+        /// Initializes the enum to the [AgentAssistantRecord](Self::AgentAssistantRecord) branch.
+        pub fn from_agent_assistant_record(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AgentAssistantRecord>>,
+        ) -> Self {
+            Self::AgentAssistantRecord(value.into())
+        }
     }
 }
 
@@ -1579,6 +1621,15 @@ pub mod answer_feedback {
     pub enum DetailFeedback {
         /// Detail feedback of agent assist suggestions.
         AgentAssistantDetailFeedback(std::boxed::Box<crate::model::AgentAssistantFeedback>),
+    }
+
+    impl DetailFeedback {
+        /// Initializes the enum to the [AgentAssistantDetailFeedback](Self::AgentAssistantDetailFeedback) branch.
+        pub fn from_agent_assistant_detail_feedback(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AgentAssistantFeedback>>,
+        ) -> Self {
+            Self::AgentAssistantDetailFeedback(value.into())
+        }
     }
 }
 
@@ -2182,6 +2233,27 @@ pub mod agent_assistant_record {
         FaqAnswer(std::boxed::Box<crate::model::FaqAnswer>),
         /// Output only. Dialogflow assist answer.
         DialogflowAssistAnswer(std::boxed::Box<crate::model::DialogflowAssistAnswer>),
+    }
+
+    impl Answer {
+        /// Initializes the enum to the [ArticleSuggestionAnswer](Self::ArticleSuggestionAnswer) branch.
+        pub fn from_article_suggestion_answer(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ArticleAnswer>>,
+        ) -> Self {
+            Self::ArticleSuggestionAnswer(value.into())
+        }
+        /// Initializes the enum to the [FaqAnswer](Self::FaqAnswer) branch.
+        pub fn from_faq_answer(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FaqAnswer>>,
+        ) -> Self {
+            Self::FaqAnswer(value.into())
+        }
+        /// Initializes the enum to the [DialogflowAssistAnswer](Self::DialogflowAssistAnswer) branch.
+        pub fn from_dialogflow_assist_answer(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DialogflowAssistAnswer>>,
+        ) -> Self {
+            Self::DialogflowAssistAnswer(value.into())
+        }
     }
 }
 
@@ -4688,6 +4760,19 @@ pub mod generate_stateless_suggestion_request {
         /// `projects/<Project ID>/locations/<Location ID>/generators/<Generator ID>`
         GeneratorName(std::string::String),
     }
+
+    impl GeneratorResource {
+        /// Initializes the enum to the [Generator](Self::Generator) branch.
+        pub fn from_generator(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Generator>>,
+        ) -> Self {
+            Self::Generator(value.into())
+        }
+        /// Initializes the enum to the [GeneratorName](Self::GeneratorName) branch.
+        pub fn from_generator_name(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GeneratorName(value.into())
+        }
+    }
 }
 
 /// The response message for
@@ -5804,6 +5889,15 @@ pub mod input_config {
         /// matched JSON files, which will be read as one conversation per file.
         GcsSource(std::boxed::Box<crate::model::GcsSources>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSources>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// Represents a conversation dataset that a user imports raw data into.
@@ -6615,6 +6709,21 @@ pub mod conversation_event {
         /// Payload of NEW_RECOGNITION_RESULT event.
         NewRecognitionResultPayload(std::boxed::Box<crate::model::StreamingRecognitionResult>),
     }
+
+    impl Payload {
+        /// Initializes the enum to the [NewMessagePayload](Self::NewMessagePayload) branch.
+        pub fn from_new_message_payload(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Message>>,
+        ) -> Self {
+            Self::NewMessagePayload(value.into())
+        }
+        /// Initializes the enum to the [NewRecognitionResultPayload](Self::NewRecognitionResultPayload) branch.
+        pub fn from_new_recognition_result_payload(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StreamingRecognitionResult>>,
+        ) -> Self {
+            Self::NewRecognitionResultPayload(value.into())
+        }
+    }
 }
 
 /// Represents a conversation model.
@@ -6947,6 +7056,23 @@ pub mod conversation_model {
         /// Metadata for smart reply models.
         SmartReplyModelMetadata(std::boxed::Box<crate::model::SmartReplyModelMetadata>),
     }
+
+    impl ModelMetadata {
+        /// Initializes the enum to the [ArticleSuggestionModelMetadata](Self::ArticleSuggestionModelMetadata) branch.
+        pub fn from_article_suggestion_model_metadata(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::ArticleSuggestionModelMetadata>,
+            >,
+        ) -> Self {
+            Self::ArticleSuggestionModelMetadata(value.into())
+        }
+        /// Initializes the enum to the [SmartReplyModelMetadata](Self::SmartReplyModelMetadata) branch.
+        pub fn from_smart_reply_model_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SmartReplyModelMetadata>>,
+        ) -> Self {
+            Self::SmartReplyModelMetadata(value.into())
+        }
+    }
 }
 
 /// Represents evaluation result of a conversation model.
@@ -7106,6 +7232,15 @@ pub mod conversation_model_evaluation {
     pub enum Metrics {
         /// Output only. Only available when model is for smart reply.
         SmartReplyMetrics(std::boxed::Box<crate::model::SmartReplyMetrics>),
+    }
+
+    impl Metrics {
+        /// Initializes the enum to the [SmartReplyMetrics](Self::SmartReplyMetrics) branch.
+        pub fn from_smart_reply_metrics(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SmartReplyMetrics>>,
+        ) -> Self {
+            Self::SmartReplyMetrics(value.into())
+        }
     }
 }
 
@@ -7333,6 +7468,25 @@ pub mod evaluation_config {
         SmartReplyConfig(std::boxed::Box<crate::model::evaluation_config::SmartReplyConfig>),
         /// Configuration for smart compose model evalution.
         SmartComposeConfig(std::boxed::Box<crate::model::evaluation_config::SmartComposeConfig>),
+    }
+
+    impl ModelSpecificConfig {
+        /// Initializes the enum to the [SmartReplyConfig](Self::SmartReplyConfig) branch.
+        pub fn from_smart_reply_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::evaluation_config::SmartReplyConfig>,
+            >,
+        ) -> Self {
+            Self::SmartReplyConfig(value.into())
+        }
+        /// Initializes the enum to the [SmartComposeConfig](Self::SmartComposeConfig) branch.
+        pub fn from_smart_compose_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::evaluation_config::SmartComposeConfig>,
+            >,
+        ) -> Self {
+            Self::SmartComposeConfig(value.into())
+        }
     }
 }
 
@@ -10011,6 +10165,27 @@ pub mod human_agent_assistant_config {
             /// Query from Dialogflow agent. It is used by DIALOGFLOW_ASSIST.
             DialogflowQuerySource(std::boxed::Box<crate::model::human_agent_assistant_config::suggestion_query_config::DialogflowQuerySource>),
         }
+
+        impl QuerySource {
+            /// Initializes the enum to the [KnowledgeBaseQuerySource](Self::KnowledgeBaseQuerySource) branch.
+            pub fn from_knowledge_base_query_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::human_agent_assistant_config::suggestion_query_config::KnowledgeBaseQuerySource>>,
+            ) -> Self {
+                Self::KnowledgeBaseQuerySource(value.into())
+            }
+            /// Initializes the enum to the [DocumentQuerySource](Self::DocumentQuerySource) branch.
+            pub fn from_document_query_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::human_agent_assistant_config::suggestion_query_config::DocumentQuerySource>>,
+            ) -> Self {
+                Self::DocumentQuerySource(value.into())
+            }
+            /// Initializes the enum to the [DialogflowQuerySource](Self::DialogflowQuerySource) branch.
+            pub fn from_dialogflow_query_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::human_agent_assistant_config::suggestion_query_config::DialogflowQuerySource>>,
+            ) -> Self {
+                Self::DialogflowQuerySource(value.into())
+            }
+        }
     }
 
     /// Custom conversation models used in agent assist feature.
@@ -10402,6 +10577,27 @@ pub mod human_agent_handoff_config {
         SalesforceLiveAgentConfig(
             std::boxed::Box<crate::model::human_agent_handoff_config::SalesforceLiveAgentConfig>,
         ),
+    }
+
+    impl AgentService {
+        /// Initializes the enum to the [LivePersonConfig](Self::LivePersonConfig) branch.
+        pub fn from_live_person_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::human_agent_handoff_config::LivePersonConfig>,
+            >,
+        ) -> Self {
+            Self::LivePersonConfig(value.into())
+        }
+        /// Initializes the enum to the [SalesforceLiveAgentConfig](Self::SalesforceLiveAgentConfig) branch.
+        pub fn from_salesforce_live_agent_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::human_agent_handoff_config::SalesforceLiveAgentConfig,
+                >,
+            >,
+        ) -> Self {
+            Self::SalesforceLiveAgentConfig(value.into())
+        }
     }
 }
 
@@ -11315,6 +11511,17 @@ pub mod document {
         /// EXTRACTIVE_QA and FAQ knowledge types.
         RawContent(bytes::Bytes),
     }
+
+    impl Source {
+        /// Initializes the enum to the [ContentUri](Self::ContentUri) branch.
+        pub fn from_content_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::ContentUri(value.into())
+        }
+        /// Initializes the enum to the [RawContent](Self::RawContent) branch.
+        pub fn from_raw_content(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::RawContent(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -11679,6 +11886,15 @@ pub mod import_documents_request {
         /// `gs://<bucket-name>/<object-path>/*.<extension>`.
         GcsSource(std::boxed::Box<crate::model::GcsSources>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSources>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// The template used for importing documents.
@@ -11990,6 +12206,13 @@ pub mod reload_document_request {
         /// the form `gs://<bucket-name>/<object-name>`.
         ContentUri(std::string::String),
     }
+
+    impl Source {
+        /// Initializes the enum to the [ContentUri](Self::ContentUri) branch.
+        pub fn from_content_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::ContentUri(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -12105,6 +12328,15 @@ pub mod export_document_request {
     pub enum Destination {
         /// Cloud Storage file path to export the document.
         GcsDestination(std::boxed::Box<crate::model::GcsDestination>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
     }
 }
 
@@ -12290,6 +12522,15 @@ pub mod knowledge_operation_metadata {
     pub enum OperationMetadata {
         /// Metadata for the Export Data Operation such as the destination of export.
         ExportOperationMetadata(std::boxed::Box<crate::model::ExportOperationMetadata>),
+    }
+
+    impl OperationMetadata {
+        /// Initializes the enum to the [ExportOperationMetadata](Self::ExportOperationMetadata) branch.
+        pub fn from_export_operation_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExportOperationMetadata>>,
+        ) -> Self {
+            Self::ExportOperationMetadata(value.into())
+        }
     }
 }
 
@@ -13224,6 +13465,21 @@ pub mod batch_update_entity_types_request {
         EntityTypeBatchUri(std::string::String),
         /// The collection of entity types to update or create.
         EntityTypeBatchInline(std::boxed::Box<crate::model::EntityTypeBatch>),
+    }
+
+    impl EntityTypeBatch {
+        /// Initializes the enum to the [EntityTypeBatchUri](Self::EntityTypeBatchUri) branch.
+        pub fn from_entity_type_batch_uri(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::EntityTypeBatchUri(value.into())
+        }
+        /// Initializes the enum to the [EntityTypeBatchInline](Self::EntityTypeBatchInline) branch.
+        pub fn from_entity_type_batch_inline(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EntityTypeBatch>>,
+        ) -> Self {
+            Self::EntityTypeBatchInline(value.into())
+        }
     }
 }
 
@@ -14639,6 +14895,17 @@ pub mod fulfillment {
         /// Configuration for a generic web service.
         GenericWebService(std::boxed::Box<crate::model::fulfillment::GenericWebService>),
     }
+
+    impl Fulfillment {
+        /// Initializes the enum to the [GenericWebService](Self::GenericWebService) branch.
+        pub fn from_generic_web_service(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::fulfillment::GenericWebService>,
+            >,
+        ) -> Self {
+            Self::GenericWebService(value.into())
+        }
+    }
 }
 
 /// The request message for
@@ -15385,6 +15652,15 @@ pub mod few_shot_example {
         /// Summarization sections.
         SummarizationSectionList(std::boxed::Box<crate::model::SummarizationSectionList>),
     }
+
+    impl InstructionList {
+        /// Initializes the enum to the [SummarizationSectionList](Self::SummarizationSectionList) branch.
+        pub fn from_summarization_section_list(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SummarizationSectionList>>,
+        ) -> Self {
+            Self::SummarizationSectionList(value.into())
+        }
+    }
 }
 
 /// The parameters of inference.
@@ -15825,6 +16101,15 @@ pub mod generator {
         /// Input of prebuilt Summarization feature.
         SummarizationContext(std::boxed::Box<crate::model::SummarizationContext>),
     }
+
+    impl Context {
+        /// Initializes the enum to the [SummarizationContext](Self::SummarizationContext) branch.
+        pub fn from_summarization_context(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SummarizationContext>>,
+        ) -> Self {
+            Self::SummarizationContext(value.into())
+        }
+    }
 }
 
 /// Suggested summary of the conversation.
@@ -15984,6 +16269,15 @@ pub mod generator_suggestion {
     pub enum Suggestion {
         /// Optional. Suggested summary.
         SummarySuggestion(std::boxed::Box<crate::model::SummarySuggestion>),
+    }
+
+    impl Suggestion {
+        /// Initializes the enum to the [SummarySuggestion](Self::SummarySuggestion) branch.
+        pub fn from_summary_suggestion(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SummarySuggestion>>,
+        ) -> Self {
+            Self::SummarySuggestion(value.into())
+        }
     }
 }
 
@@ -18353,6 +18647,25 @@ pub mod intent {
                     /// Optional. Icon to display above media content.
                     Icon(std::boxed::Box<crate::model::intent::message::Image>),
                 }
+
+                impl Image {
+                    /// Initializes the enum to the [LargeImage](Self::LargeImage) branch.
+                    pub fn from_large_image(
+                        value: impl std::convert::Into<
+                            std::boxed::Box<crate::model::intent::message::Image>,
+                        >,
+                    ) -> Self {
+                        Self::LargeImage(value.into())
+                    }
+                    /// Initializes the enum to the [Icon](Self::Icon) branch.
+                    pub fn from_icon(
+                        value: impl std::convert::Into<
+                            std::boxed::Box<crate::model::intent::message::Image>,
+                        >,
+                    ) -> Self {
+                        Self::Icon(value.into())
+                    }
+                }
             }
 
             /// Format of response media type.
@@ -19090,6 +19403,113 @@ pub mod intent {
             /// The media content card for Actions on Google.
             MediaContent(std::boxed::Box<crate::model::intent::message::MediaContent>),
         }
+
+        impl Message {
+            /// Initializes the enum to the [Text](Self::Text) branch.
+            pub fn from_text(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::intent::message::Text>>,
+            ) -> Self {
+                Self::Text(value.into())
+            }
+            /// Initializes the enum to the [Image](Self::Image) branch.
+            pub fn from_image(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::intent::message::Image>>,
+            ) -> Self {
+                Self::Image(value.into())
+            }
+            /// Initializes the enum to the [QuickReplies](Self::QuickReplies) branch.
+            pub fn from_quick_replies(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::QuickReplies>,
+                >,
+            ) -> Self {
+                Self::QuickReplies(value.into())
+            }
+            /// Initializes the enum to the [Card](Self::Card) branch.
+            pub fn from_card(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::intent::message::Card>>,
+            ) -> Self {
+                Self::Card(value.into())
+            }
+            /// Initializes the enum to the [Payload](Self::Payload) branch.
+            pub fn from_payload(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Struct>>,
+            ) -> Self {
+                Self::Payload(value.into())
+            }
+            /// Initializes the enum to the [SimpleResponses](Self::SimpleResponses) branch.
+            pub fn from_simple_responses(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::SimpleResponses>,
+                >,
+            ) -> Self {
+                Self::SimpleResponses(value.into())
+            }
+            /// Initializes the enum to the [BasicCard](Self::BasicCard) branch.
+            pub fn from_basic_card(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::BasicCard>,
+                >,
+            ) -> Self {
+                Self::BasicCard(value.into())
+            }
+            /// Initializes the enum to the [Suggestions](Self::Suggestions) branch.
+            pub fn from_suggestions(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::Suggestions>,
+                >,
+            ) -> Self {
+                Self::Suggestions(value.into())
+            }
+            /// Initializes the enum to the [LinkOutSuggestion](Self::LinkOutSuggestion) branch.
+            pub fn from_link_out_suggestion(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::LinkOutSuggestion>,
+                >,
+            ) -> Self {
+                Self::LinkOutSuggestion(value.into())
+            }
+            /// Initializes the enum to the [ListSelect](Self::ListSelect) branch.
+            pub fn from_list_select(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::ListSelect>,
+                >,
+            ) -> Self {
+                Self::ListSelect(value.into())
+            }
+            /// Initializes the enum to the [CarouselSelect](Self::CarouselSelect) branch.
+            pub fn from_carousel_select(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::CarouselSelect>,
+                >,
+            ) -> Self {
+                Self::CarouselSelect(value.into())
+            }
+            /// Initializes the enum to the [BrowseCarouselCard](Self::BrowseCarouselCard) branch.
+            pub fn from_browse_carousel_card(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::BrowseCarouselCard>,
+                >,
+            ) -> Self {
+                Self::BrowseCarouselCard(value.into())
+            }
+            /// Initializes the enum to the [TableCard](Self::TableCard) branch.
+            pub fn from_table_card(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::TableCard>,
+                >,
+            ) -> Self {
+                Self::TableCard(value.into())
+            }
+            /// Initializes the enum to the [MediaContent](Self::MediaContent) branch.
+            pub fn from_media_content(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::intent::message::MediaContent>,
+                >,
+            ) -> Self {
+                Self::MediaContent(value.into())
+            }
+        }
     }
 
     /// Represents a single followup intent in the chain.
@@ -19734,6 +20154,19 @@ pub mod batch_update_intents_request {
         IntentBatchUri(std::string::String),
         /// The collection of intents to update or create.
         IntentBatchInline(std::boxed::Box<crate::model::IntentBatch>),
+    }
+
+    impl IntentBatch {
+        /// Initializes the enum to the [IntentBatchUri](Self::IntentBatchUri) branch.
+        pub fn from_intent_batch_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::IntentBatchUri(value.into())
+        }
+        /// Initializes the enum to the [IntentBatchInline](Self::IntentBatchInline) branch.
+        pub fn from_intent_batch_inline(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IntentBatch>>,
+        ) -> Self {
+            Self::IntentBatchInline(value.into())
+        }
     }
 }
 
@@ -21064,6 +21497,27 @@ pub mod analyze_content_request {
         /// An input representing the selection of a suggestion.
         SuggestionInput(std::boxed::Box<crate::model::SuggestionInput>),
     }
+
+    impl Input {
+        /// Initializes the enum to the [TextInput](Self::TextInput) branch.
+        pub fn from_text_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TextInput>>,
+        ) -> Self {
+            Self::TextInput(value.into())
+        }
+        /// Initializes the enum to the [EventInput](Self::EventInput) branch.
+        pub fn from_event_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EventInput>>,
+        ) -> Self {
+            Self::EventInput(value.into())
+        }
+        /// Initializes the enum to the [SuggestionInput](Self::SuggestionInput) branch.
+        pub fn from_suggestion_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SuggestionInput>>,
+        ) -> Self {
+            Self::SuggestionInput(value.into())
+        }
+    }
 }
 
 /// The message in the response that indicates the parameters of DTMF.
@@ -21655,6 +22109,21 @@ pub mod streaming_analyze_content_request {
         TextConfig(std::boxed::Box<crate::model::InputTextConfig>),
     }
 
+    impl Config {
+        /// Initializes the enum to the [AudioConfig](Self::AudioConfig) branch.
+        pub fn from_audio_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InputAudioConfig>>,
+        ) -> Self {
+            Self::AudioConfig(value.into())
+        }
+        /// Initializes the enum to the [TextConfig](Self::TextConfig) branch.
+        pub fn from_text_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InputTextConfig>>,
+        ) -> Self {
+            Self::TextConfig(value.into())
+        }
+    }
+
     /// The input.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -21674,6 +22143,23 @@ pub mod streaming_analyze_content_request {
         /// This input is ignored if the previous response indicated that DTMF input
         /// is not accepted.
         InputDtmf(std::boxed::Box<crate::model::TelephonyDtmfEvents>),
+    }
+
+    impl Input {
+        /// Initializes the enum to the [InputAudio](Self::InputAudio) branch.
+        pub fn from_input_audio(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::InputAudio(value.into())
+        }
+        /// Initializes the enum to the [InputText](Self::InputText) branch.
+        pub fn from_input_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::InputText(value.into())
+        }
+        /// Initializes the enum to the [InputDtmf](Self::InputDtmf) branch.
+        pub fn from_input_dtmf(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TelephonyDtmfEvents>>,
+        ) -> Self {
+            Self::InputDtmf(value.into())
+        }
     }
 }
 
@@ -22816,6 +23302,13 @@ pub mod intent_suggestion {
         /// [google.cloud.dialogflow.v2.Intent]: crate::model::Intent
         IntentV2(std::string::String),
     }
+
+    impl Intent {
+        /// Initializes the enum to the [IntentV2](Self::IntentV2) branch.
+        pub fn from_intent_v2(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::IntentV2(value.into())
+        }
+    }
 }
 
 /// Represents a Dialogflow assist answer.
@@ -22940,6 +23433,21 @@ pub mod dialogflow_assist_answer {
         QueryResult(std::boxed::Box<crate::model::QueryResult>),
         /// An intent suggestion generated from conversation.
         IntentSuggestion(std::boxed::Box<crate::model::IntentSuggestion>),
+    }
+
+    impl Result {
+        /// Initializes the enum to the [QueryResult](Self::QueryResult) branch.
+        pub fn from_query_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::QueryResult>>,
+        ) -> Self {
+            Self::QueryResult(value.into())
+        }
+        /// Initializes the enum to the [IntentSuggestion](Self::IntentSuggestion) branch.
+        pub fn from_intent_suggestion(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IntentSuggestion>>,
+        ) -> Self {
+            Self::IntentSuggestion(value.into())
+        }
     }
 }
 
@@ -23173,6 +23681,41 @@ pub mod suggestion_result {
         SuggestFaqAnswersResponse(std::boxed::Box<crate::model::SuggestFaqAnswersResponse>),
         /// SuggestSmartRepliesResponse if request is for SMART_REPLY.
         SuggestSmartRepliesResponse(std::boxed::Box<crate::model::SuggestSmartRepliesResponse>),
+    }
+
+    impl SuggestionResponse {
+        /// Initializes the enum to the [Error](Self::Error) branch.
+        pub fn from_error(
+            value: impl std::convert::Into<std::boxed::Box<rpc::model::Status>>,
+        ) -> Self {
+            Self::Error(value.into())
+        }
+        /// Initializes the enum to the [SuggestArticlesResponse](Self::SuggestArticlesResponse) branch.
+        pub fn from_suggest_articles_response(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SuggestArticlesResponse>>,
+        ) -> Self {
+            Self::SuggestArticlesResponse(value.into())
+        }
+        /// Initializes the enum to the [SuggestKnowledgeAssistResponse](Self::SuggestKnowledgeAssistResponse) branch.
+        pub fn from_suggest_knowledge_assist_response(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::SuggestKnowledgeAssistResponse>,
+            >,
+        ) -> Self {
+            Self::SuggestKnowledgeAssistResponse(value.into())
+        }
+        /// Initializes the enum to the [SuggestFaqAnswersResponse](Self::SuggestFaqAnswersResponse) branch.
+        pub fn from_suggest_faq_answers_response(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SuggestFaqAnswersResponse>>,
+        ) -> Self {
+            Self::SuggestFaqAnswersResponse(value.into())
+        }
+        /// Initializes the enum to the [SuggestSmartRepliesResponse](Self::SuggestSmartRepliesResponse) branch.
+        pub fn from_suggest_smart_replies_response(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SuggestSmartRepliesResponse>>,
+        ) -> Self {
+            Self::SuggestSmartRepliesResponse(value.into())
+        }
     }
 }
 
@@ -23938,6 +24481,29 @@ pub mod knowledge_assist_answer {
                 >,
             ),
         }
+
+        impl Source {
+            /// Initializes the enum to the [FaqSource](Self::FaqSource) branch.
+            pub fn from_faq_source(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::knowledge_assist_answer::knowledge_answer::FaqSource,
+                    >,
+                >,
+            ) -> Self {
+                Self::FaqSource(value.into())
+            }
+            /// Initializes the enum to the [GenerativeSource](Self::GenerativeSource) branch.
+            pub fn from_generative_source(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::knowledge_assist_answer::knowledge_answer::GenerativeSource,
+                    >,
+                >,
+            ) -> Self {
+                Self::GenerativeSource(value.into())
+            }
+        }
     }
 }
 
@@ -24468,6 +25034,27 @@ pub mod query_input {
         Text(std::boxed::Box<crate::model::TextInput>),
         /// The event to be processed.
         Event(std::boxed::Box<crate::model::EventInput>),
+    }
+
+    impl Input {
+        /// Initializes the enum to the [AudioConfig](Self::AudioConfig) branch.
+        pub fn from_audio_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InputAudioConfig>>,
+        ) -> Self {
+            Self::AudioConfig(value.into())
+        }
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TextInput>>,
+        ) -> Self {
+            Self::Text(value.into())
+        }
+        /// Initializes the enum to the [Event](Self::Event) branch.
+        pub fn from_event(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EventInput>>,
+        ) -> Self {
+            Self::Event(value.into())
+        }
     }
 }
 

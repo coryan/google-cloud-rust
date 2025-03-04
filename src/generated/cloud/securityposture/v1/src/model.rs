@@ -267,6 +267,27 @@ pub mod policy_rule {
         /// This field can be set only in policies for boolean constraints.
         Enforce(bool),
     }
+
+    impl Kind {
+        /// Initializes the enum to the [Values](Self::Values) branch.
+        pub fn from_values(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::policy_rule::StringValues>>,
+        ) -> Self {
+            Self::Values(value.into())
+        }
+        /// Initializes the enum to the [AllowAll](Self::AllowAll) branch.
+        pub fn from_allow_all(value: impl std::convert::Into<bool>) -> Self {
+            Self::AllowAll(value.into())
+        }
+        /// Initializes the enum to the [DenyAll](Self::DenyAll) branch.
+        pub fn from_deny_all(value: impl std::convert::Into<bool>) -> Self {
+            Self::DenyAll(value.into())
+        }
+        /// Initializes the enum to the [Enforce](Self::Enforce) branch.
+        pub fn from_enforce(value: impl std::convert::Into<bool>) -> Self {
+            Self::Enforce(value.into())
+        }
+    }
 }
 
 /// A custom constraint defined by customers which can *only* be applied to the
@@ -1265,6 +1286,35 @@ pub mod constraint {
         OrgPolicyConstraint(std::boxed::Box<crate::model::OrgPolicyConstraint>),
         /// Optional. Org Policy custom constraint.
         OrgPolicyConstraintCustom(std::boxed::Box<crate::model::OrgPolicyConstraintCustom>),
+    }
+
+    impl Implementation {
+        /// Initializes the enum to the [SecurityHealthAnalyticsModule](Self::SecurityHealthAnalyticsModule) branch.
+        pub fn from_security_health_analytics_module(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SecurityHealthAnalyticsModule>>,
+        ) -> Self {
+            Self::SecurityHealthAnalyticsModule(value.into())
+        }
+        /// Initializes the enum to the [SecurityHealthAnalyticsCustomModule](Self::SecurityHealthAnalyticsCustomModule) branch.
+        pub fn from_security_health_analytics_custom_module(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::SecurityHealthAnalyticsCustomModule>,
+            >,
+        ) -> Self {
+            Self::SecurityHealthAnalyticsCustomModule(value.into())
+        }
+        /// Initializes the enum to the [OrgPolicyConstraint](Self::OrgPolicyConstraint) branch.
+        pub fn from_org_policy_constraint(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OrgPolicyConstraint>>,
+        ) -> Self {
+            Self::OrgPolicyConstraint(value.into())
+        }
+        /// Initializes the enum to the [OrgPolicyConstraintCustom](Self::OrgPolicyConstraintCustom) branch.
+        pub fn from_org_policy_constraint_custom(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OrgPolicyConstraintCustom>>,
+        ) -> Self {
+            Self::OrgPolicyConstraintCustom(value.into())
+        }
     }
 }
 

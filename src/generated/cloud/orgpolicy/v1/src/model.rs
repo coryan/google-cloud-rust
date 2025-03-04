@@ -613,4 +613,25 @@ pub mod policy {
         /// `Constraint` type.
         RestoreDefault(std::boxed::Box<crate::model::policy::RestoreDefault>),
     }
+
+    impl PolicyType {
+        /// Initializes the enum to the [ListPolicy](Self::ListPolicy) branch.
+        pub fn from_list_policy(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::policy::ListPolicy>>,
+        ) -> Self {
+            Self::ListPolicy(value.into())
+        }
+        /// Initializes the enum to the [BooleanPolicy](Self::BooleanPolicy) branch.
+        pub fn from_boolean_policy(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::policy::BooleanPolicy>>,
+        ) -> Self {
+            Self::BooleanPolicy(value.into())
+        }
+        /// Initializes the enum to the [RestoreDefault](Self::RestoreDefault) branch.
+        pub fn from_restore_default(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::policy::RestoreDefault>>,
+        ) -> Self {
+            Self::RestoreDefault(value.into())
+        }
+    }
 }

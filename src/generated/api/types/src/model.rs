@@ -302,6 +302,21 @@ pub mod jwt_location {
         /// Specifies cookie name to extract JWT token.
         Cookie(std::string::String),
     }
+
+    impl In {
+        /// Initializes the enum to the [Header](Self::Header) branch.
+        pub fn from_header(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Header(value.into())
+        }
+        /// Initializes the enum to the [Query](Self::Query) branch.
+        pub fn from_query(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Query(value.into())
+        }
+        /// Initializes the enum to the [Cookie](Self::Cookie) branch.
+        pub fn from_cookie(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Cookie(value.into())
+        }
+    }
 }
 
 /// Configuration for an authentication provider, including support for
@@ -980,6 +995,17 @@ pub mod backend_rule {
         /// used to carry the original token and is expected by the backend, this
         /// field must be set to true to preserve the header.
         DisableAuth(bool),
+    }
+
+    impl Authentication {
+        /// Initializes the enum to the [JwtAudience](Self::JwtAudience) branch.
+        pub fn from_jwt_audience(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::JwtAudience(value.into())
+        }
+        /// Initializes the enum to the [DisableAuth](Self::DisableAuth) branch.
+        pub fn from_disable_auth(value: impl std::convert::Into<bool>) -> Self {
+            Self::DisableAuth(value.into())
+        }
     }
 }
 
@@ -3296,6 +3322,33 @@ pub mod distribution {
             /// The explicit buckets.
             ExplicitBuckets(std::boxed::Box<crate::model::distribution::bucket_options::Explicit>),
         }
+
+        impl Options {
+            /// Initializes the enum to the [LinearBuckets](Self::LinearBuckets) branch.
+            pub fn from_linear_buckets(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::distribution::bucket_options::Linear>,
+                >,
+            ) -> Self {
+                Self::LinearBuckets(value.into())
+            }
+            /// Initializes the enum to the [ExponentialBuckets](Self::ExponentialBuckets) branch.
+            pub fn from_exponential_buckets(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::distribution::bucket_options::Exponential>,
+                >,
+            ) -> Self {
+                Self::ExponentialBuckets(value.into())
+            }
+            /// Initializes the enum to the [ExplicitBuckets](Self::ExplicitBuckets) branch.
+            pub fn from_explicit_buckets(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::distribution::bucket_options::Explicit>,
+                >,
+            ) -> Self {
+                Self::ExplicitBuckets(value.into())
+            }
+        }
     }
 
     /// Exemplars are example points that may be used to annotate aggregated
@@ -4488,6 +4541,35 @@ pub mod http_rule {
         /// HTTP method unspecified for this rule. The wild-card rule is useful
         /// for services that provide content to Web (HTML) clients.
         Custom(std::boxed::Box<crate::model::CustomHttpPattern>),
+    }
+
+    impl Pattern {
+        /// Initializes the enum to the [Get](Self::Get) branch.
+        pub fn from_get(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Get(value.into())
+        }
+        /// Initializes the enum to the [Put](Self::Put) branch.
+        pub fn from_put(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Put(value.into())
+        }
+        /// Initializes the enum to the [Post](Self::Post) branch.
+        pub fn from_post(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Post(value.into())
+        }
+        /// Initializes the enum to the [Delete](Self::Delete) branch.
+        pub fn from_delete(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Delete(value.into())
+        }
+        /// Initializes the enum to the [Patch](Self::Patch) branch.
+        pub fn from_patch(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Patch(value.into())
+        }
+        /// Initializes the enum to the [Custom](Self::Custom) branch.
+        pub fn from_custom(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CustomHttpPattern>>,
+        ) -> Self {
+            Self::Custom(value.into())
+        }
     }
 }
 

@@ -573,6 +573,15 @@ pub mod service {
         /// software as the metastore service.
         HiveMetastoreConfig(std::boxed::Box<crate::model::HiveMetastoreConfig>),
     }
+
+    impl MetastoreConfig {
+        /// Initializes the enum to the [HiveMetastoreConfig](Self::HiveMetastoreConfig) branch.
+        pub fn from_hive_metastore_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HiveMetastoreConfig>>,
+        ) -> Self {
+            Self::HiveMetastoreConfig(value.into())
+        }
+    }
 }
 
 /// Maintenance window. This specifies when Dataproc Metastore
@@ -901,6 +910,13 @@ pub mod secret {
         /// `projects/{project_number}/secrets/{secret_id}/versions/{version_id}`.
         CloudSecret(std::string::String),
     }
+
+    impl Value {
+        /// Initializes the enum to the [CloudSecret](Self::CloudSecret) branch.
+        pub fn from_cloud_secret(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::CloudSecret(value.into())
+        }
+    }
 }
 
 /// Encryption settings for the service.
@@ -1151,6 +1167,13 @@ pub mod network_config {
             ///
             /// `projects/{project_number}/regions/{region_id}/subnetworks/{subnetwork_id}`
             Subnetwork(std::string::String),
+        }
+
+        impl VpcResource {
+            /// Initializes the enum to the [Subnetwork](Self::Subnetwork) branch.
+            pub fn from_subnetwork(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Subnetwork(value.into())
+            }
         }
     }
 }
@@ -1601,6 +1624,15 @@ pub mod metadata_import {
         /// Immutable. A database dump from a pre-existing metastore's database.
         DatabaseDump(std::boxed::Box<crate::model::metadata_import::DatabaseDump>),
     }
+
+    impl Metadata {
+        /// Initializes the enum to the [DatabaseDump](Self::DatabaseDump) branch.
+        pub fn from_database_dump(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::metadata_import::DatabaseDump>>,
+        ) -> Self {
+            Self::DatabaseDump(value.into())
+        }
+    }
 }
 
 /// The details of a metadata export operation.
@@ -1776,6 +1808,15 @@ pub mod metadata_export {
         /// `gs://<bucket_name>/<path_inside_bucket>/<export_folder>`, where
         /// `<export_folder>` is automatically generated.
         DestinationGcsUri(std::string::String),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [DestinationGcsUri](Self::DestinationGcsUri) branch.
+        pub fn from_destination_gcs_uri(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::DestinationGcsUri(value.into())
+        }
     }
 }
 
@@ -2289,6 +2330,19 @@ pub mod scaling_config {
         /// Scaling factor, increments of 0.1 for values less than 1.0, and
         /// increments of 1.0 for values greater than 1.0.
         ScalingFactor(f32),
+    }
+
+    impl ScalingModel {
+        /// Initializes the enum to the [InstanceSize](Self::InstanceSize) branch.
+        pub fn from_instance_size(
+            value: impl std::convert::Into<crate::model::scaling_config::InstanceSize>,
+        ) -> Self {
+            Self::InstanceSize(value.into())
+        }
+        /// Initializes the enum to the [ScalingFactor](Self::ScalingFactor) branch.
+        pub fn from_scaling_factor(value: impl std::convert::Into<f32>) -> Self {
+            Self::ScalingFactor(value.into())
+        }
     }
 }
 
@@ -3544,6 +3598,15 @@ pub mod export_metadata_request {
         /// `gs://<bucket_name>/<path_inside_bucket>`. A sub-folder
         /// `<export_folder>` containing exported files will be created below it.
         DestinationGcsFolder(std::string::String),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [DestinationGcsFolder](Self::DestinationGcsFolder) branch.
+        pub fn from_destination_gcs_folder(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::DestinationGcsFolder(value.into())
+        }
     }
 }
 

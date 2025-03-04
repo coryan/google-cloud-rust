@@ -553,6 +553,15 @@ pub mod certificate_issuance_config {
             /// Defines a CertificateAuthorityServiceConfig.
             CertificateAuthorityServiceConfig(std::boxed::Box<crate::model::certificate_issuance_config::certificate_authority_config::CertificateAuthorityServiceConfig>),
         }
+
+        impl Kind {
+            /// Initializes the enum to the [CertificateAuthorityServiceConfig](Self::CertificateAuthorityServiceConfig) branch.
+            pub fn from_certificate_authority_service_config(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::certificate_issuance_config::certificate_authority_config::CertificateAuthorityServiceConfig>>,
+            ) -> Self {
+                Self::CertificateAuthorityServiceConfig(value.into())
+            }
+        }
     }
 
     /// The type of keypair to generate.
@@ -2720,6 +2729,25 @@ pub mod certificate {
         /// If set, contains configuration and state of a managed certificate.
         Managed(std::boxed::Box<crate::model::certificate::ManagedCertificate>),
     }
+
+    impl Type {
+        /// Initializes the enum to the [SelfManaged](Self::SelfManaged) branch.
+        pub fn from_self_managed(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::certificate::SelfManagedCertificate>,
+            >,
+        ) -> Self {
+            Self::SelfManaged(value.into())
+        }
+        /// Initializes the enum to the [Managed](Self::Managed) branch.
+        pub fn from_managed(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::certificate::ManagedCertificate>,
+            >,
+        ) -> Self {
+            Self::Managed(value.into())
+        }
+    }
 }
 
 /// Defines a collection of certificate configurations.
@@ -3002,6 +3030,21 @@ pub mod certificate_map {
             /// `//compute.googleapis.com/projects/*/global/targetSslProxies/*`.
             TargetSslProxy(std::string::String),
         }
+
+        impl TargetProxy {
+            /// Initializes the enum to the [TargetHttpsProxy](Self::TargetHttpsProxy) branch.
+            pub fn from_target_https_proxy(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::TargetHttpsProxy(value.into())
+            }
+            /// Initializes the enum to the [TargetSslProxy](Self::TargetSslProxy) branch.
+            pub fn from_target_ssl_proxy(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::TargetSslProxy(value.into())
+            }
+        }
     }
 }
 
@@ -3235,6 +3278,19 @@ pub mod certificate_map_entry {
         Hostname(std::string::String),
         /// A predefined matcher for particular cases, other than SNI selection.
         Matcher(crate::model::certificate_map_entry::Matcher),
+    }
+
+    impl Match {
+        /// Initializes the enum to the [Hostname](Self::Hostname) branch.
+        pub fn from_hostname(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Hostname(value.into())
+        }
+        /// Initializes the enum to the [Matcher](Self::Matcher) branch.
+        pub fn from_matcher(
+            value: impl std::convert::Into<crate::model::certificate_map_entry::Matcher>,
+        ) -> Self {
+            Self::Matcher(value.into())
+        }
     }
 }
 
@@ -3991,6 +4047,15 @@ pub mod trust_config {
             /// Each certificate provided in PEM format may occupy up to 5kB.
             PemCertificate(std::string::String),
         }
+
+        impl Kind {
+            /// Initializes the enum to the [PemCertificate](Self::PemCertificate) branch.
+            pub fn from_pem_certificate(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::PemCertificate(value.into())
+            }
+        }
     }
 
     /// Defines an intermediate CA.
@@ -4070,6 +4135,15 @@ pub mod trust_config {
             ///
             /// Each certificate provided in PEM format may occupy up to 5kB.
             PemCertificate(std::string::String),
+        }
+
+        impl Kind {
+            /// Initializes the enum to the [PemCertificate](Self::PemCertificate) branch.
+            pub fn from_pem_certificate(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::PemCertificate(value.into())
+            }
         }
     }
 

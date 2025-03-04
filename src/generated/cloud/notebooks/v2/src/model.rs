@@ -446,6 +446,17 @@ pub mod vm_image {
         /// this family will be used.
         Family(std::string::String),
     }
+
+    impl Image {
+        /// Initializes the enum to the [Name](Self::Name) branch.
+        pub fn from_name(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Name(value.into())
+        }
+        /// Initializes the enum to the [Family](Self::Family) branch.
+        pub fn from_family(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Family(value.into())
+        }
+    }
 }
 
 /// Definition of a container image for starting a notebook instance with the
@@ -1171,6 +1182,21 @@ pub mod gce_setup {
         /// Optional. Use a container image to start the notebook instance.
         ContainerImage(std::boxed::Box<crate::model::ContainerImage>),
     }
+
+    impl Image {
+        /// Initializes the enum to the [VmImage](Self::VmImage) branch.
+        pub fn from_vm_image(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VmImage>>,
+        ) -> Self {
+            Self::VmImage(value.into())
+        }
+        /// Initializes the enum to the [ContainerImage](Self::ContainerImage) branch.
+        pub fn from_container_image(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ContainerImage>>,
+        ) -> Self {
+            Self::ContainerImage(value.into())
+        }
+    }
 }
 
 /// The entry of VM image upgrade history.
@@ -1633,6 +1659,15 @@ pub mod instance {
         /// Optional. Compute Engine setup for the notebook. Uses notebook-defined
         /// fields.
         GceSetup(std::boxed::Box<crate::model::GceSetup>),
+    }
+
+    impl Infrastructure {
+        /// Initializes the enum to the [GceSetup](Self::GceSetup) branch.
+        pub fn from_gce_setup(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GceSetup>>,
+        ) -> Self {
+            Self::GceSetup(value.into())
+        }
     }
 }
 

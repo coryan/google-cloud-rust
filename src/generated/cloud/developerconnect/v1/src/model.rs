@@ -366,6 +366,33 @@ pub mod connection {
         /// Configuration for connections to an instance of GitLab Enterprise.
         GitlabEnterpriseConfig(std::boxed::Box<crate::model::GitLabEnterpriseConfig>),
     }
+
+    impl ConnectionConfig {
+        /// Initializes the enum to the [GithubConfig](Self::GithubConfig) branch.
+        pub fn from_github_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitHubConfig>>,
+        ) -> Self {
+            Self::GithubConfig(value.into())
+        }
+        /// Initializes the enum to the [GithubEnterpriseConfig](Self::GithubEnterpriseConfig) branch.
+        pub fn from_github_enterprise_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitHubEnterpriseConfig>>,
+        ) -> Self {
+            Self::GithubEnterpriseConfig(value.into())
+        }
+        /// Initializes the enum to the [GitlabConfig](Self::GitlabConfig) branch.
+        pub fn from_gitlab_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitLabConfig>>,
+        ) -> Self {
+            Self::GitlabConfig(value.into())
+        }
+        /// Initializes the enum to the [GitlabEnterpriseConfig](Self::GitlabEnterpriseConfig) branch.
+        pub fn from_gitlab_enterprise_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitLabEnterpriseConfig>>,
+        ) -> Self {
+            Self::GitlabEnterpriseConfig(value.into())
+        }
+    }
 }
 
 /// The crypto key configuration. This field is used by the Customer-managed

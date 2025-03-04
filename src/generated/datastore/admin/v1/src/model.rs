@@ -1643,6 +1643,25 @@ pub mod migration_progress_event {
             std::boxed::Box<crate::model::migration_progress_event::RedirectWritesStepDetails>,
         ),
     }
+
+    impl StepDetails {
+        /// Initializes the enum to the [PrepareStepDetails](Self::PrepareStepDetails) branch.
+        pub fn from_prepare_step_details(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::migration_progress_event::PrepareStepDetails>,
+            >,
+        ) -> Self {
+            Self::PrepareStepDetails(value.into())
+        }
+        /// Initializes the enum to the [RedirectWritesStepDetails](Self::RedirectWritesStepDetails) branch.
+        pub fn from_redirect_writes_step_details(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::migration_progress_event::RedirectWritesStepDetails>,
+            >,
+        ) -> Self {
+            Self::RedirectWritesStepDetails(value.into())
+        }
+    }
 }
 
 /// Operation types.

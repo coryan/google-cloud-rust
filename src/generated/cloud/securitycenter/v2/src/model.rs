@@ -4949,6 +4949,27 @@ pub mod indicator {
                 std::boxed::Box<crate::model::indicator::process_signature::YaraRuleSignature>,
             ),
         }
+
+        impl Signature {
+            /// Initializes the enum to the [MemoryHashSignature](Self::MemoryHashSignature) branch.
+            pub fn from_memory_hash_signature(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::indicator::process_signature::MemoryHashSignature,
+                    >,
+                >,
+            ) -> Self {
+                Self::MemoryHashSignature(value.into())
+            }
+            /// Initializes the enum to the [YaraRuleSignature](Self::YaraRuleSignature) branch.
+            pub fn from_yara_rule_signature(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::indicator::process_signature::YaraRuleSignature>,
+                >,
+            ) -> Self {
+                Self::YaraRuleSignature(value.into())
+            }
+        }
     }
 }
 
@@ -5944,6 +5965,15 @@ pub mod log_entry {
         /// An individual entry in a log stored in Cloud Logging.
         CloudLoggingEntry(std::boxed::Box<crate::model::CloudLoggingEntry>),
     }
+
+    impl LogEntry {
+        /// Initializes the enum to the [CloudLoggingEntry](Self::CloudLoggingEntry) branch.
+        pub fn from_cloud_logging_entry(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudLoggingEntry>>,
+        ) -> Self {
+            Self::CloudLoggingEntry(value.into())
+        }
+    }
 }
 
 /// Metadata taken from a [Cloud Logging
@@ -6913,6 +6943,17 @@ pub mod notification_config {
         /// The config for triggering streaming-based notifications.
         StreamingConfig(std::boxed::Box<crate::model::notification_config::StreamingConfig>),
     }
+
+    impl NotifyConfig {
+        /// Initializes the enum to the [StreamingConfig](Self::StreamingConfig) branch.
+        pub fn from_streaming_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::notification_config::StreamingConfig>,
+            >,
+        ) -> Self {
+            Self::StreamingConfig(value.into())
+        }
+    }
 }
 
 /// Cloud SCC's Notification
@@ -7013,6 +7054,15 @@ pub mod notification_message {
         /// If it's a Finding based notification config, this field will be
         /// populated.
         Finding(std::boxed::Box<crate::model::Finding>),
+    }
+
+    impl Event {
+        /// Initializes the enum to the [Finding](Self::Finding) branch.
+        pub fn from_finding(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Finding>>,
+        ) -> Self {
+            Self::Finding(value.into())
+        }
     }
 }
 
@@ -7470,6 +7520,27 @@ pub mod resource {
         AwsMetadata(std::boxed::Box<crate::model::AwsMetadata>),
         /// The Azure metadata associated with the finding.
         AzureMetadata(std::boxed::Box<crate::model::AzureMetadata>),
+    }
+
+    impl CloudProviderMetadata {
+        /// Initializes the enum to the [GcpMetadata](Self::GcpMetadata) branch.
+        pub fn from_gcp_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcpMetadata>>,
+        ) -> Self {
+            Self::GcpMetadata(value.into())
+        }
+        /// Initializes the enum to the [AwsMetadata](Self::AwsMetadata) branch.
+        pub fn from_aws_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsMetadata>>,
+        ) -> Self {
+            Self::AwsMetadata(value.into())
+        }
+        /// Initializes the enum to the [AzureMetadata](Self::AzureMetadata) branch.
+        pub fn from_azure_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AzureMetadata>>,
+        ) -> Self {
+            Self::AzureMetadata(value.into())
+        }
     }
 }
 
@@ -10704,6 +10775,27 @@ pub mod list_findings_response {
                 AwsMetadata(std::boxed::Box<crate::model::AwsMetadata>),
                 /// The Azure metadata associated with the finding.
                 AzureMetadata(std::boxed::Box<crate::model::AzureMetadata>),
+            }
+
+            impl CloudProviderMetadata {
+                /// Initializes the enum to the [GcpMetadata](Self::GcpMetadata) branch.
+                pub fn from_gcp_metadata(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::GcpMetadata>>,
+                ) -> Self {
+                    Self::GcpMetadata(value.into())
+                }
+                /// Initializes the enum to the [AwsMetadata](Self::AwsMetadata) branch.
+                pub fn from_aws_metadata(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::AwsMetadata>>,
+                ) -> Self {
+                    Self::AwsMetadata(value.into())
+                }
+                /// Initializes the enum to the [AzureMetadata](Self::AzureMetadata) branch.
+                pub fn from_azure_metadata(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::AzureMetadata>>,
+                ) -> Self {
+                    Self::AzureMetadata(value.into())
+                }
             }
         }
     }

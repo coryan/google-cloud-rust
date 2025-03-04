@@ -354,6 +354,21 @@ pub mod verify_attestation_request {
         /// Optional. An SEV-SNP Attestation Report.
         SevSnpAttestation(std::boxed::Box<crate::model::SevSnpAttestation>),
     }
+
+    impl TeeAttestation {
+        /// Initializes the enum to the [TdCcel](Self::TdCcel) branch.
+        pub fn from_td_ccel(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TdxCcelAttestation>>,
+        ) -> Self {
+            Self::TdCcel(value.into())
+        }
+        /// Initializes the enum to the [SevSnpAttestation](Self::SevSnpAttestation) branch.
+        pub fn from_sev_snp_attestation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SevSnpAttestation>>,
+        ) -> Self {
+            Self::SevSnpAttestation(value.into())
+        }
+    }
 }
 
 /// A TDX Attestation quote.
@@ -793,6 +808,17 @@ pub mod token_options {
         AwsPrincipalTagsOptions(
             std::boxed::Box<crate::model::token_options::AwsPrincipalTagsOptions>,
         ),
+    }
+
+    impl TokenTypeOptions {
+        /// Initializes the enum to the [AwsPrincipalTagsOptions](Self::AwsPrincipalTagsOptions) branch.
+        pub fn from_aws_principal_tags_options(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::token_options::AwsPrincipalTagsOptions>,
+            >,
+        ) -> Self {
+            Self::AwsPrincipalTagsOptions(value.into())
+        }
     }
 }
 

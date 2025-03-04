@@ -1070,6 +1070,15 @@ pub mod organization {
         /// Immutable. The G Suite / Workspace customer id used in the Directory API.
         DirectoryCustomerId(std::string::String),
     }
+
+    impl Owner {
+        /// Initializes the enum to the [DirectoryCustomerId](Self::DirectoryCustomerId) branch.
+        pub fn from_directory_customer_id(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::DirectoryCustomerId(value.into())
+        }
+    }
 }
 
 /// The request sent to the `GetOrganization` method. The `name` field is

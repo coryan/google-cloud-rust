@@ -386,6 +386,17 @@ pub mod client_connector_service {
             /// The basic ingress config for ClientGateways.
             Config(std::boxed::Box<crate::model::client_connector_service::ingress::Config>),
         }
+
+        impl IngressConfig {
+            /// Initializes the enum to the [Config](Self::Config) branch.
+            pub fn from_config(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::client_connector_service::ingress::Config>,
+                >,
+            ) -> Self {
+                Self::Config(value.into())
+            }
+        }
     }
 
     /// The details of the egress info. One of the following options should be set.
@@ -507,6 +518,17 @@ pub mod client_connector_service {
         pub enum DestinationType {
             /// A VPC from the consumer project.
             PeeredVpc(std::boxed::Box<crate::model::client_connector_service::egress::PeeredVpc>),
+        }
+
+        impl DestinationType {
+            /// Initializes the enum to the [PeeredVpc](Self::PeeredVpc) branch.
+            pub fn from_peered_vpc(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::client_connector_service::egress::PeeredVpc>,
+                >,
+            ) -> Self {
+                Self::PeeredVpc(value.into())
+            }
         }
     }
 

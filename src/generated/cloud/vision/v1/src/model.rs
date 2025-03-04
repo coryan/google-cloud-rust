@@ -4940,6 +4940,15 @@ pub mod import_product_sets_input_config {
         /// of ImportProductSetRequests in each line.
         GcsSource(std::boxed::Box<crate::model::ImportProductSetsGcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ImportProductSetsGcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// Request message for the `ImportProductSets` method.
@@ -5330,6 +5339,19 @@ pub mod purge_products_request {
         /// If delete_orphan_products is true, all Products that are not in any
         /// ProductSet will be deleted.
         DeleteOrphanProducts(bool),
+    }
+
+    impl Target {
+        /// Initializes the enum to the [ProductSetPurgeConfig](Self::ProductSetPurgeConfig) branch.
+        pub fn from_product_set_purge_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ProductSetPurgeConfig>>,
+        ) -> Self {
+            Self::ProductSetPurgeConfig(value.into())
+        }
+        /// Initializes the enum to the [DeleteOrphanProducts](Self::DeleteOrphanProducts) branch.
+        pub fn from_delete_orphan_products(value: impl std::convert::Into<bool>) -> Self {
+            Self::DeleteOrphanProducts(value.into())
+        }
     }
 }
 

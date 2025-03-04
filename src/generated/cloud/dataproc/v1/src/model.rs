@@ -198,6 +198,15 @@ pub mod autoscaling_policy {
     pub enum Algorithm {
         BasicAlgorithm(std::boxed::Box<crate::model::BasicAutoscalingAlgorithm>),
     }
+
+    impl Algorithm {
+        /// Initializes the enum to the [BasicAlgorithm](Self::BasicAlgorithm) branch.
+        pub fn from_basic_algorithm(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BasicAutoscalingAlgorithm>>,
+        ) -> Self {
+            Self::BasicAlgorithm(value.into())
+        }
+    }
 }
 
 /// Basic algorithm for autoscaling.
@@ -292,6 +301,15 @@ pub mod basic_autoscaling_algorithm {
     pub enum Config {
         /// Required. YARN autoscaling configuration.
         YarnConfig(std::boxed::Box<crate::model::BasicYarnAutoscalingConfig>),
+    }
+
+    impl Config {
+        /// Initializes the enum to the [YarnConfig](Self::YarnConfig) branch.
+        pub fn from_yarn_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BasicYarnAutoscalingConfig>>,
+        ) -> Self {
+            Self::YarnConfig(value.into())
+        }
     }
 }
 
@@ -1501,6 +1519,33 @@ pub mod batch {
         /// Optional. SparkSql batch config.
         SparkSqlBatch(std::boxed::Box<crate::model::SparkSqlBatch>),
     }
+
+    impl BatchConfig {
+        /// Initializes the enum to the [PysparkBatch](Self::PysparkBatch) branch.
+        pub fn from_pyspark_batch(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PySparkBatch>>,
+        ) -> Self {
+            Self::PysparkBatch(value.into())
+        }
+        /// Initializes the enum to the [SparkBatch](Self::SparkBatch) branch.
+        pub fn from_spark_batch(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkBatch>>,
+        ) -> Self {
+            Self::SparkBatch(value.into())
+        }
+        /// Initializes the enum to the [SparkRBatch](Self::SparkRBatch) branch.
+        pub fn from_spark_r_batch(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkRBatch>>,
+        ) -> Self {
+            Self::SparkRBatch(value.into())
+        }
+        /// Initializes the enum to the [SparkSqlBatch](Self::SparkSqlBatch) branch.
+        pub fn from_spark_sql_batch(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkSqlBatch>>,
+        ) -> Self {
+            Self::SparkSqlBatch(value.into())
+        }
+    }
 }
 
 /// A configuration for running an
@@ -1792,6 +1837,17 @@ pub mod spark_batch {
         /// Optional. The name of the driver main class. The jar file that contains
         /// the class must be in the classpath or specified in `jar_file_uris`.
         MainClass(std::string::String),
+    }
+
+    impl Driver {
+        /// Initializes the enum to the [MainJarFileUri](Self::MainJarFileUri) branch.
+        pub fn from_main_jar_file_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::MainJarFileUri(value.into())
+        }
+        /// Initializes the enum to the [MainClass](Self::MainClass) branch.
+        pub fn from_main_class(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::MainClass(value.into())
+        }
     }
 }
 
@@ -2511,6 +2567,15 @@ pub mod virtual_cluster_config {
         /// Required. The configuration for running the Dataproc cluster on
         /// Kubernetes.
         KubernetesClusterConfig(std::boxed::Box<crate::model::KubernetesClusterConfig>),
+    }
+
+    impl InfrastructureConfig {
+        /// Initializes the enum to the [KubernetesClusterConfig](Self::KubernetesClusterConfig) branch.
+        pub fn from_kubernetes_cluster_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::KubernetesClusterConfig>>,
+        ) -> Self {
+            Self::KubernetesClusterConfig(value.into())
+        }
     }
 }
 
@@ -5010,6 +5075,21 @@ pub mod lifecycle_config {
         /// [Duration](https://developers.google.com/protocol-buffers/docs/proto3#json)).
         AutoDeleteTtl(std::boxed::Box<wkt::Duration>),
     }
+
+    impl Ttl {
+        /// Initializes the enum to the [AutoDeleteTime](Self::AutoDeleteTime) branch.
+        pub fn from_auto_delete_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::AutoDeleteTime(value.into())
+        }
+        /// Initializes the enum to the [AutoDeleteTtl](Self::AutoDeleteTtl) branch.
+        pub fn from_auto_delete_ttl(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+        ) -> Self {
+            Self::AutoDeleteTtl(value.into())
+        }
+    }
 }
 
 /// Specifies a Metastore configuration.
@@ -6621,6 +6701,17 @@ pub mod hadoop_job {
         /// must be in the default CLASSPATH or specified in `jar_file_uris`.
         MainClass(std::string::String),
     }
+
+    impl Driver {
+        /// Initializes the enum to the [MainJarFileUri](Self::MainJarFileUri) branch.
+        pub fn from_main_jar_file_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::MainJarFileUri(value.into())
+        }
+        /// Initializes the enum to the [MainClass](Self::MainClass) branch.
+        pub fn from_main_class(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::MainClass(value.into())
+        }
+    }
 }
 
 /// A Dataproc job for running [Apache Spark](https://spark.apache.org/)
@@ -6837,6 +6928,17 @@ pub mod spark_job {
         /// must be in the default CLASSPATH or specified in
         /// SparkJob.jar_file_uris.
         MainClass(std::string::String),
+    }
+
+    impl Driver {
+        /// Initializes the enum to the [MainJarFileUri](Self::MainJarFileUri) branch.
+        pub fn from_main_jar_file_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::MainJarFileUri(value.into())
+        }
+        /// Initializes the enum to the [MainClass](Self::MainClass) branch.
+        pub fn from_main_class(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::MainClass(value.into())
+        }
     }
 }
 
@@ -7204,6 +7306,19 @@ pub mod hive_job {
         /// A list of queries.
         QueryList(std::boxed::Box<crate::model::QueryList>),
     }
+
+    impl Queries {
+        /// Initializes the enum to the [QueryFileUri](Self::QueryFileUri) branch.
+        pub fn from_query_file_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::QueryFileUri(value.into())
+        }
+        /// Initializes the enum to the [QueryList](Self::QueryList) branch.
+        pub fn from_query_list(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::QueryList>>,
+        ) -> Self {
+            Self::QueryList(value.into())
+        }
+    }
 }
 
 /// A Dataproc job for running [Apache Spark
@@ -7369,6 +7484,19 @@ pub mod spark_sql_job {
         QueryFileUri(std::string::String),
         /// A list of queries.
         QueryList(std::boxed::Box<crate::model::QueryList>),
+    }
+
+    impl Queries {
+        /// Initializes the enum to the [QueryFileUri](Self::QueryFileUri) branch.
+        pub fn from_query_file_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::QueryFileUri(value.into())
+        }
+        /// Initializes the enum to the [QueryList](Self::QueryList) branch.
+        pub fn from_query_list(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::QueryList>>,
+        ) -> Self {
+            Self::QueryList(value.into())
+        }
     }
 }
 
@@ -7548,6 +7676,19 @@ pub mod pig_job {
         QueryFileUri(std::string::String),
         /// A list of queries.
         QueryList(std::boxed::Box<crate::model::QueryList>),
+    }
+
+    impl Queries {
+        /// Initializes the enum to the [QueryFileUri](Self::QueryFileUri) branch.
+        pub fn from_query_file_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::QueryFileUri(value.into())
+        }
+        /// Initializes the enum to the [QueryList](Self::QueryList) branch.
+        pub fn from_query_list(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::QueryList>>,
+        ) -> Self {
+            Self::QueryList(value.into())
+        }
     }
 }
 
@@ -7839,6 +7980,19 @@ pub mod presto_job {
         /// A list of queries.
         QueryList(std::boxed::Box<crate::model::QueryList>),
     }
+
+    impl Queries {
+        /// Initializes the enum to the [QueryFileUri](Self::QueryFileUri) branch.
+        pub fn from_query_file_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::QueryFileUri(value.into())
+        }
+        /// Initializes the enum to the [QueryList](Self::QueryList) branch.
+        pub fn from_query_list(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::QueryList>>,
+        ) -> Self {
+            Self::QueryList(value.into())
+        }
+    }
 }
 
 /// A Dataproc job for running [Trino](https://trino.io/) queries.
@@ -8012,6 +8166,19 @@ pub mod trino_job {
         QueryFileUri(std::string::String),
         /// A list of queries.
         QueryList(std::boxed::Box<crate::model::QueryList>),
+    }
+
+    impl Queries {
+        /// Initializes the enum to the [QueryFileUri](Self::QueryFileUri) branch.
+        pub fn from_query_file_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::QueryFileUri(value.into())
+        }
+        /// Initializes the enum to the [QueryList](Self::QueryList) branch.
+        pub fn from_query_list(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::QueryList>>,
+        ) -> Self {
+            Self::QueryList(value.into())
+        }
     }
 }
 
@@ -8208,6 +8375,17 @@ pub mod flink_job {
         ///
         /// [google.cloud.dataproc.v1.FlinkJob.jar_file_uris]: crate::model::FlinkJob::jar_file_uris
         MainClass(std::string::String),
+    }
+
+    impl Driver {
+        /// Initializes the enum to the [MainJarFileUri](Self::MainJarFileUri) branch.
+        pub fn from_main_jar_file_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::MainJarFileUri(value.into())
+        }
+        /// Initializes the enum to the [MainClass](Self::MainClass) branch.
+        pub fn from_main_class(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::MainClass(value.into())
+        }
     }
 }
 
@@ -9136,6 +9314,69 @@ pub mod job {
         TrinoJob(std::boxed::Box<crate::model::TrinoJob>),
         /// Optional. Job is a Flink job.
         FlinkJob(std::boxed::Box<crate::model::FlinkJob>),
+    }
+
+    impl TypeJob {
+        /// Initializes the enum to the [HadoopJob](Self::HadoopJob) branch.
+        pub fn from_hadoop_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HadoopJob>>,
+        ) -> Self {
+            Self::HadoopJob(value.into())
+        }
+        /// Initializes the enum to the [SparkJob](Self::SparkJob) branch.
+        pub fn from_spark_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkJob>>,
+        ) -> Self {
+            Self::SparkJob(value.into())
+        }
+        /// Initializes the enum to the [PysparkJob](Self::PysparkJob) branch.
+        pub fn from_pyspark_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PySparkJob>>,
+        ) -> Self {
+            Self::PysparkJob(value.into())
+        }
+        /// Initializes the enum to the [HiveJob](Self::HiveJob) branch.
+        pub fn from_hive_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HiveJob>>,
+        ) -> Self {
+            Self::HiveJob(value.into())
+        }
+        /// Initializes the enum to the [PigJob](Self::PigJob) branch.
+        pub fn from_pig_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PigJob>>,
+        ) -> Self {
+            Self::PigJob(value.into())
+        }
+        /// Initializes the enum to the [SparkRJob](Self::SparkRJob) branch.
+        pub fn from_spark_r_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkRJob>>,
+        ) -> Self {
+            Self::SparkRJob(value.into())
+        }
+        /// Initializes the enum to the [SparkSqlJob](Self::SparkSqlJob) branch.
+        pub fn from_spark_sql_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkSqlJob>>,
+        ) -> Self {
+            Self::SparkSqlJob(value.into())
+        }
+        /// Initializes the enum to the [PrestoJob](Self::PrestoJob) branch.
+        pub fn from_presto_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PrestoJob>>,
+        ) -> Self {
+            Self::PrestoJob(value.into())
+        }
+        /// Initializes the enum to the [TrinoJob](Self::TrinoJob) branch.
+        pub fn from_trino_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TrinoJob>>,
+        ) -> Self {
+            Self::TrinoJob(value.into())
+        }
+        /// Initializes the enum to the [FlinkJob](Self::FlinkJob) branch.
+        pub fn from_flink_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FlinkJob>>,
+        ) -> Self {
+            Self::FlinkJob(value.into())
+        }
     }
 }
 
@@ -11302,6 +11543,21 @@ pub mod session_template {
         /// Optional. Spark Connect session config.
         SparkConnectSession(std::boxed::Box<crate::model::SparkConnectConfig>),
     }
+
+    impl SessionConfig {
+        /// Initializes the enum to the [JupyterSession](Self::JupyterSession) branch.
+        pub fn from_jupyter_session(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::JupyterConfig>>,
+        ) -> Self {
+            Self::JupyterSession(value.into())
+        }
+        /// Initializes the enum to the [SparkConnectSession](Self::SparkConnectSession) branch.
+        pub fn from_spark_connect_session(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkConnectConfig>>,
+        ) -> Self {
+            Self::SparkConnectSession(value.into())
+        }
+    }
 }
 
 /// A request to create a session.
@@ -12053,6 +12309,21 @@ pub mod session {
         /// Optional. Spark Connect session config.
         SparkConnectSession(std::boxed::Box<crate::model::SparkConnectConfig>),
     }
+
+    impl SessionConfig {
+        /// Initializes the enum to the [JupyterSession](Self::JupyterSession) branch.
+        pub fn from_jupyter_session(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::JupyterConfig>>,
+        ) -> Self {
+            Self::JupyterSession(value.into())
+        }
+        /// Initializes the enum to the [SparkConnectSession](Self::SparkConnectSession) branch.
+        pub fn from_spark_connect_session(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkConnectConfig>>,
+        ) -> Self {
+            Self::SparkConnectSession(value.into())
+        }
+    }
 }
 
 /// Jupyter configuration for an interactive session.
@@ -12524,6 +12795,17 @@ pub mod execution_config {
         NetworkUri(std::string::String),
         /// Optional. Subnetwork URI to connect workload to.
         SubnetworkUri(std::string::String),
+    }
+
+    impl Network {
+        /// Initializes the enum to the [NetworkUri](Self::NetworkUri) branch.
+        pub fn from_network_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::NetworkUri(value.into())
+        }
+        /// Initializes the enum to the [SubnetworkUri](Self::SubnetworkUri) branch.
+        pub fn from_subnetwork_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::SubnetworkUri(value.into())
+        }
     }
 }
 
@@ -13052,6 +13334,15 @@ pub mod kubernetes_cluster_config {
     pub enum Config {
         /// Required. The configuration for running the Dataproc cluster on GKE.
         GkeClusterConfig(std::boxed::Box<crate::model::GkeClusterConfig>),
+    }
+
+    impl Config {
+        /// Initializes the enum to the [GkeClusterConfig](Self::GkeClusterConfig) branch.
+        pub fn from_gke_cluster_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GkeClusterConfig>>,
+        ) -> Self {
+            Self::GkeClusterConfig(value.into())
+        }
     }
 }
 
@@ -14200,6 +14491,21 @@ pub mod workflow_template_placement {
         /// The selector is evaluated at the time each job is submitted.
         ClusterSelector(std::boxed::Box<crate::model::ClusterSelector>),
     }
+
+    impl Placement {
+        /// Initializes the enum to the [ManagedCluster](Self::ManagedCluster) branch.
+        pub fn from_managed_cluster(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ManagedCluster>>,
+        ) -> Self {
+            Self::ManagedCluster(value.into())
+        }
+        /// Initializes the enum to the [ClusterSelector](Self::ClusterSelector) branch.
+        pub fn from_cluster_selector(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ClusterSelector>>,
+        ) -> Self {
+            Self::ClusterSelector(value.into())
+        }
+    }
 }
 
 /// Cluster that is managed by the workflow.
@@ -14723,6 +15029,69 @@ pub mod ordered_job {
         /// Optional. Job is a Flink job.
         FlinkJob(std::boxed::Box<crate::model::FlinkJob>),
     }
+
+    impl JobType {
+        /// Initializes the enum to the [HadoopJob](Self::HadoopJob) branch.
+        pub fn from_hadoop_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HadoopJob>>,
+        ) -> Self {
+            Self::HadoopJob(value.into())
+        }
+        /// Initializes the enum to the [SparkJob](Self::SparkJob) branch.
+        pub fn from_spark_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkJob>>,
+        ) -> Self {
+            Self::SparkJob(value.into())
+        }
+        /// Initializes the enum to the [PysparkJob](Self::PysparkJob) branch.
+        pub fn from_pyspark_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PySparkJob>>,
+        ) -> Self {
+            Self::PysparkJob(value.into())
+        }
+        /// Initializes the enum to the [HiveJob](Self::HiveJob) branch.
+        pub fn from_hive_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HiveJob>>,
+        ) -> Self {
+            Self::HiveJob(value.into())
+        }
+        /// Initializes the enum to the [PigJob](Self::PigJob) branch.
+        pub fn from_pig_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PigJob>>,
+        ) -> Self {
+            Self::PigJob(value.into())
+        }
+        /// Initializes the enum to the [SparkRJob](Self::SparkRJob) branch.
+        pub fn from_spark_r_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkRJob>>,
+        ) -> Self {
+            Self::SparkRJob(value.into())
+        }
+        /// Initializes the enum to the [SparkSqlJob](Self::SparkSqlJob) branch.
+        pub fn from_spark_sql_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkSqlJob>>,
+        ) -> Self {
+            Self::SparkSqlJob(value.into())
+        }
+        /// Initializes the enum to the [PrestoJob](Self::PrestoJob) branch.
+        pub fn from_presto_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PrestoJob>>,
+        ) -> Self {
+            Self::PrestoJob(value.into())
+        }
+        /// Initializes the enum to the [TrinoJob](Self::TrinoJob) branch.
+        pub fn from_trino_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TrinoJob>>,
+        ) -> Self {
+            Self::TrinoJob(value.into())
+        }
+        /// Initializes the enum to the [FlinkJob](Self::FlinkJob) branch.
+        pub fn from_flink_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FlinkJob>>,
+        ) -> Self {
+            Self::FlinkJob(value.into())
+        }
+    }
 }
 
 /// A configurable parameter that replaces one or more fields in the template.
@@ -14964,6 +15333,21 @@ pub mod parameter_validation {
         Regex(std::boxed::Box<crate::model::RegexValidation>),
         /// Validation based on a list of allowed values.
         Values(std::boxed::Box<crate::model::ValueValidation>),
+    }
+
+    impl ValidationType {
+        /// Initializes the enum to the [Regex](Self::Regex) branch.
+        pub fn from_regex(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RegexValidation>>,
+        ) -> Self {
+            Self::Regex(value.into())
+        }
+        /// Initializes the enum to the [Values](Self::Values) branch.
+        pub fn from_values(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ValueValidation>>,
+        ) -> Self {
+            Self::Values(value.into())
+        }
     }
 }
 

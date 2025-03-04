@@ -814,6 +814,33 @@ pub mod answer {
                 std::boxed::Box<crate::model::answer::reference::StructuredDocumentInfo>,
             ),
         }
+
+        impl Content {
+            /// Initializes the enum to the [UnstructuredDocumentInfo](Self::UnstructuredDocumentInfo) branch.
+            pub fn from_unstructured_document_info(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::answer::reference::UnstructuredDocumentInfo>,
+                >,
+            ) -> Self {
+                Self::UnstructuredDocumentInfo(value.into())
+            }
+            /// Initializes the enum to the [ChunkInfo](Self::ChunkInfo) branch.
+            pub fn from_chunk_info(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::answer::reference::ChunkInfo>,
+                >,
+            ) -> Self {
+                Self::ChunkInfo(value.into())
+            }
+            /// Initializes the enum to the [StructuredDocumentInfo](Self::StructuredDocumentInfo) branch.
+            pub fn from_structured_document_info(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::answer::reference::StructuredDocumentInfo>,
+                >,
+            ) -> Self {
+                Self::StructuredDocumentInfo(value.into())
+            }
+        }
     }
 
     /// Step information.
@@ -1294,6 +1321,17 @@ pub mod answer {
             pub enum Action {
                 /// Search action.
                 SearchAction(std::boxed::Box<crate::model::answer::step::action::SearchAction>),
+            }
+
+            impl Action {
+                /// Initializes the enum to the [SearchAction](Self::SearchAction) branch.
+                pub fn from_search_action(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::answer::step::action::SearchAction>,
+                    >,
+                ) -> Self {
+                    Self::SearchAction(value.into())
+                }
             }
         }
 
@@ -2087,6 +2125,17 @@ pub mod interval {
         ExclusiveMinimum(f64),
     }
 
+    impl Min {
+        /// Initializes the enum to the [Minimum](Self::Minimum) branch.
+        pub fn from_minimum(value: impl std::convert::Into<f64>) -> Self {
+            Self::Minimum(value.into())
+        }
+        /// Initializes the enum to the [ExclusiveMinimum](Self::ExclusiveMinimum) branch.
+        pub fn from_exclusive_minimum(value: impl std::convert::Into<f64>) -> Self {
+            Self::ExclusiveMinimum(value.into())
+        }
+    }
+
     /// The upper bound of the interval. If neither of the max fields are
     /// set, then the upper bound is positive infinity.
     ///
@@ -2100,6 +2149,17 @@ pub mod interval {
         Maximum(f64),
         /// Exclusive upper bound.
         ExclusiveMaximum(f64),
+    }
+
+    impl Max {
+        /// Initializes the enum to the [Maximum](Self::Maximum) branch.
+        pub fn from_maximum(value: impl std::convert::Into<f64>) -> Self {
+            Self::Maximum(value.into())
+        }
+        /// Initializes the enum to the [ExclusiveMaximum](Self::ExclusiveMaximum) branch.
+        pub fn from_exclusive_maximum(value: impl std::convert::Into<f64>) -> Self {
+            Self::ExclusiveMaximum(value.into())
+        }
     }
 }
 
@@ -2491,6 +2551,17 @@ pub mod completion_suggestion {
         /// Frequency of this suggestion. Will be used to rank suggestions when score
         /// is not available.
         Frequency(i64),
+    }
+
+    impl RankingInfo {
+        /// Initializes the enum to the [GlobalScore](Self::GlobalScore) branch.
+        pub fn from_global_score(value: impl std::convert::Into<f64>) -> Self {
+            Self::GlobalScore(value.into())
+        }
+        /// Initializes the enum to the [Frequency](Self::Frequency) branch.
+        pub fn from_frequency(value: impl std::convert::Into<i64>) -> Self {
+            Self::Frequency(value.into())
+        }
     }
 }
 
@@ -3337,6 +3408,33 @@ pub mod control {
         /// Treats a group of terms as synonyms of one another.
         SynonymsAction(std::boxed::Box<crate::model::control::SynonymsAction>),
     }
+
+    impl Action {
+        /// Initializes the enum to the [BoostAction](Self::BoostAction) branch.
+        pub fn from_boost_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::control::BoostAction>>,
+        ) -> Self {
+            Self::BoostAction(value.into())
+        }
+        /// Initializes the enum to the [FilterAction](Self::FilterAction) branch.
+        pub fn from_filter_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::control::FilterAction>>,
+        ) -> Self {
+            Self::FilterAction(value.into())
+        }
+        /// Initializes the enum to the [RedirectAction](Self::RedirectAction) branch.
+        pub fn from_redirect_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::control::RedirectAction>>,
+        ) -> Self {
+            Self::RedirectAction(value.into())
+        }
+        /// Initializes the enum to the [SynonymsAction](Self::SynonymsAction) branch.
+        pub fn from_synonyms_action(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::control::SynonymsAction>>,
+        ) -> Self {
+            Self::SynonymsAction(value.into())
+        }
+    }
 }
 
 /// Request for CreateControl method.
@@ -4019,6 +4117,21 @@ pub mod conversation_message {
         UserInput(std::boxed::Box<crate::model::TextInput>),
         /// Search reply.
         Reply(std::boxed::Box<crate::model::Reply>),
+    }
+
+    impl Message {
+        /// Initializes the enum to the [UserInput](Self::UserInput) branch.
+        pub fn from_user_input(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TextInput>>,
+        ) -> Self {
+            Self::UserInput(value.into())
+        }
+        /// Initializes the enum to the [Reply](Self::Reply) branch.
+        pub fn from_reply(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Reply>>,
+        ) -> Self {
+            Self::Reply(value.into())
+        }
     }
 }
 
@@ -5843,6 +5956,21 @@ pub mod answer_query_request {
                     /// Chunk information.
                     ChunkInfo(std::boxed::Box<crate::model::answer_query_request::search_spec::search_result_list::search_result::ChunkInfo>),
                 }
+
+                impl Content {
+                    /// Initializes the enum to the [UnstructuredDocumentInfo](Self::UnstructuredDocumentInfo) branch.
+                    pub fn from_unstructured_document_info(
+                        value: impl std::convert::Into<std::boxed::Box<crate::model::answer_query_request::search_spec::search_result_list::search_result::UnstructuredDocumentInfo>>,
+                    ) -> Self {
+                        Self::UnstructuredDocumentInfo(value.into())
+                    }
+                    /// Initializes the enum to the [ChunkInfo](Self::ChunkInfo) branch.
+                    pub fn from_chunk_info(
+                        value: impl std::convert::Into<std::boxed::Box<crate::model::answer_query_request::search_spec::search_result_list::search_result::ChunkInfo>>,
+                    ) -> Self {
+                        Self::ChunkInfo(value.into())
+                    }
+                }
             }
         }
 
@@ -5860,6 +5988,27 @@ pub mod answer_query_request {
             SearchResultList(
                 std::boxed::Box<crate::model::answer_query_request::search_spec::SearchResultList>,
             ),
+        }
+
+        impl Input {
+            /// Initializes the enum to the [SearchParams](Self::SearchParams) branch.
+            pub fn from_search_params(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::answer_query_request::search_spec::SearchParams>,
+                >,
+            ) -> Self {
+                Self::SearchParams(value.into())
+            }
+            /// Initializes the enum to the [SearchResultList](Self::SearchResultList) branch.
+            pub fn from_search_result_list(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::answer_query_request::search_spec::SearchResultList,
+                    >,
+                >,
+            ) -> Self {
+                Self::SearchResultList(value.into())
+            }
         }
     }
 
@@ -7982,6 +8131,17 @@ pub mod document {
             /// is 2.5 MB for text-based formats, 200 MB for other formats.
             Uri(std::string::String),
         }
+
+        impl Content {
+            /// Initializes the enum to the [RawBytes](Self::RawBytes) branch.
+            pub fn from_raw_bytes(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+                Self::RawBytes(value.into())
+            }
+            /// Initializes the enum to the [Uri](Self::Uri) branch.
+            pub fn from_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Uri(value.into())
+            }
+        }
     }
 
     /// Index status of the document.
@@ -8056,6 +8216,19 @@ pub mod document {
         ///
         /// [google.cloud.discoveryengine.v1.Schema]: crate::model::Schema
         JsonData(std::string::String),
+    }
+
+    impl Data {
+        /// Initializes the enum to the [StructData](Self::StructData) branch.
+        pub fn from_struct_data(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Struct>>,
+        ) -> Self {
+            Self::StructData(value.into())
+        }
+        /// Initializes the enum to the [JsonData](Self::JsonData) branch.
+        pub fn from_json_data(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::JsonData(value.into())
+        }
     }
 }
 
@@ -8298,6 +8471,15 @@ pub mod document_processing_config {
         pub enum ChunkMode {
             /// Configuration for the layout based chunking.
             LayoutBasedChunkingConfig(std::boxed::Box<crate::model::document_processing_config::chunking_config::LayoutBasedChunkingConfig>),
+        }
+
+        impl ChunkMode {
+            /// Initializes the enum to the [LayoutBasedChunkingConfig](Self::LayoutBasedChunkingConfig) branch.
+            pub fn from_layout_based_chunking_config(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::document_processing_config::chunking_config::LayoutBasedChunkingConfig>>,
+            ) -> Self {
+                Self::LayoutBasedChunkingConfig(value.into())
+            }
         }
     }
 
@@ -8573,6 +8755,31 @@ pub mod document_processing_config {
                     crate::model::document_processing_config::parsing_config::LayoutParsingConfig,
                 >,
             ),
+        }
+
+        impl TypeDedicatedConfig {
+            /// Initializes the enum to the [DigitalParsingConfig](Self::DigitalParsingConfig) branch.
+            pub fn from_digital_parsing_config(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::document_processing_config::parsing_config::DigitalParsingConfig>>,
+            ) -> Self {
+                Self::DigitalParsingConfig(value.into())
+            }
+            /// Initializes the enum to the [OcrParsingConfig](Self::OcrParsingConfig) branch.
+            pub fn from_ocr_parsing_config(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::document_processing_config::parsing_config::OcrParsingConfig,
+                    >,
+                >,
+            ) -> Self {
+                Self::OcrParsingConfig(value.into())
+            }
+            /// Initializes the enum to the [LayoutParsingConfig](Self::LayoutParsingConfig) branch.
+            pub fn from_layout_parsing_config(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::document_processing_config::parsing_config::LayoutParsingConfig>>,
+            ) -> Self {
+                Self::LayoutParsingConfig(value.into())
+            }
         }
     }
 }
@@ -9241,6 +9448,29 @@ pub mod batch_get_documents_metadata_request {
                 std::boxed::Box<crate::model::batch_get_documents_metadata_request::FhirMatcher>,
             ),
         }
+
+        impl Matcher {
+            /// Initializes the enum to the [UrisMatcher](Self::UrisMatcher) branch.
+            pub fn from_uris_matcher(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::batch_get_documents_metadata_request::UrisMatcher,
+                    >,
+                >,
+            ) -> Self {
+                Self::UrisMatcher(value.into())
+            }
+            /// Initializes the enum to the [FhirMatcher](Self::FhirMatcher) branch.
+            pub fn from_fhir_matcher(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::batch_get_documents_metadata_request::FhirMatcher,
+                    >,
+                >,
+            ) -> Self {
+                Self::FhirMatcher(value.into())
+            }
+        }
     }
 }
 
@@ -9497,6 +9727,19 @@ pub mod batch_get_documents_metadata_response {
                 /// Format:
                 /// projects/{project}/locations/{location}/datasets/{dataset}/fhirStores/{fhir_store}/fhir/{resource_type}/{fhir_resource_id}
                 FhirResource(std::string::String),
+            }
+
+            impl MatcherValue {
+                /// Initializes the enum to the [Uri](Self::Uri) branch.
+                pub fn from_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+                    Self::Uri(value.into())
+                }
+                /// Initializes the enum to the [FhirResource](Self::FhirResource) branch.
+                pub fn from_fhir_resource(
+                    value: impl std::convert::Into<std::string::String>,
+                ) -> Self {
+                    Self::FhirResource(value.into())
+                }
             }
         }
     }
@@ -10179,6 +10422,21 @@ pub mod engine {
         SearchEngineConfig(std::boxed::Box<crate::model::engine::SearchEngineConfig>),
     }
 
+    impl EngineConfig {
+        /// Initializes the enum to the [ChatEngineConfig](Self::ChatEngineConfig) branch.
+        pub fn from_chat_engine_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::engine::ChatEngineConfig>>,
+        ) -> Self {
+            Self::ChatEngineConfig(value.into())
+        }
+        /// Initializes the enum to the [SearchEngineConfig](Self::SearchEngineConfig) branch.
+        pub fn from_search_engine_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::engine::SearchEngineConfig>>,
+        ) -> Self {
+            Self::SearchEngineConfig(value.into())
+        }
+    }
+
     /// Engine metadata to monitor the status of the engine.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -10192,6 +10450,15 @@ pub mod engine {
         /// [google.cloud.discoveryengine.v1.Engine.solution_type]: crate::model::Engine::solution_type
         /// [google.cloud.discoveryengine.v1.SolutionType.SOLUTION_TYPE_CHAT]: crate::model::solution_type::SOLUTION_TYPE_CHAT
         ChatEngineMetadata(std::boxed::Box<crate::model::engine::ChatEngineMetadata>),
+    }
+
+    impl EngineMetadata {
+        /// Initializes the enum to the [ChatEngineMetadata](Self::ChatEngineMetadata) branch.
+        pub fn from_chat_engine_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::engine::ChatEngineMetadata>>,
+        ) -> Self {
+            Self::ChatEngineMetadata(value.into())
+        }
     }
 }
 
@@ -10762,6 +11029,13 @@ pub mod grounded_generation_content {
         pub enum Data {
             /// Inline text.
             Text(std::string::String),
+        }
+
+        impl Data {
+            /// Initializes the enum to the [Text](Self::Text) branch.
+            pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Text(value.into())
+            }
         }
     }
 }
@@ -11465,6 +11739,27 @@ pub mod generate_grounded_content_request {
             SearchSource(std::boxed::Box<crate::model::generate_grounded_content_request::grounding_source::SearchSource>),
             /// If set, grounding is performed with Google Search.
             GoogleSearchSource(std::boxed::Box<crate::model::generate_grounded_content_request::grounding_source::GoogleSearchSource>),
+        }
+
+        impl Source {
+            /// Initializes the enum to the [InlineSource](Self::InlineSource) branch.
+            pub fn from_inline_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::generate_grounded_content_request::grounding_source::InlineSource>>,
+            ) -> Self {
+                Self::InlineSource(value.into())
+            }
+            /// Initializes the enum to the [SearchSource](Self::SearchSource) branch.
+            pub fn from_search_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::generate_grounded_content_request::grounding_source::SearchSource>>,
+            ) -> Self {
+                Self::SearchSource(value.into())
+            }
+            /// Initializes the enum to the [GoogleSearchSource](Self::GoogleSearchSource) branch.
+            pub fn from_google_search_source(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::generate_grounded_content_request::grounding_source::GoogleSearchSource>>,
+            ) -> Self {
+                Self::GoogleSearchSource(value.into())
+            }
         }
     }
 
@@ -12727,6 +13022,15 @@ pub mod big_query_source {
         /// BigQuery time partitioned table's _PARTITIONDATE in YYYY-MM-DD format.
         PartitionDate(std::boxed::Box<gtype::model::Date>),
     }
+
+    impl Partition {
+        /// Initializes the enum to the [PartitionDate](Self::PartitionDate) branch.
+        pub fn from_partition_date(
+            value: impl std::convert::Into<std::boxed::Box<gtype::model::Date>>,
+        ) -> Self {
+            Self::PartitionDate(value.into())
+        }
+    }
 }
 
 /// The Spanner source for importing data
@@ -13573,6 +13877,13 @@ pub mod import_error_config {
         /// `google.rpc.Status` message.
         GcsPrefix(std::string::String),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsPrefix](Self::GcsPrefix) branch.
+        pub fn from_gcs_prefix(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsPrefix(value.into())
+        }
+    }
 }
 
 /// Request message for the ImportUserEvents request.
@@ -13779,6 +14090,29 @@ pub mod import_user_events_request {
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
         /// BigQuery input source.
         BigquerySource(std::boxed::Box<crate::model::BigQuerySource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [InlineSource](Self::InlineSource) branch.
+        pub fn from_inline_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::import_user_events_request::InlineSource>,
+            >,
+        ) -> Self {
+            Self::InlineSource(value.into())
+        }
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [BigquerySource](Self::BigquerySource) branch.
+        pub fn from_bigquery_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+        ) -> Self {
+            Self::BigquerySource(value.into())
+        }
     }
 }
 
@@ -14588,6 +14922,65 @@ pub mod import_documents_request {
         /// Cloud Bigtable input source.
         BigtableSource(std::boxed::Box<crate::model::BigtableSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [InlineSource](Self::InlineSource) branch.
+        pub fn from_inline_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::import_documents_request::InlineSource>,
+            >,
+        ) -> Self {
+            Self::InlineSource(value.into())
+        }
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [BigquerySource](Self::BigquerySource) branch.
+        pub fn from_bigquery_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+        ) -> Self {
+            Self::BigquerySource(value.into())
+        }
+        /// Initializes the enum to the [FhirStoreSource](Self::FhirStoreSource) branch.
+        pub fn from_fhir_store_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FhirStoreSource>>,
+        ) -> Self {
+            Self::FhirStoreSource(value.into())
+        }
+        /// Initializes the enum to the [SpannerSource](Self::SpannerSource) branch.
+        pub fn from_spanner_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SpannerSource>>,
+        ) -> Self {
+            Self::SpannerSource(value.into())
+        }
+        /// Initializes the enum to the [CloudSqlSource](Self::CloudSqlSource) branch.
+        pub fn from_cloud_sql_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudSqlSource>>,
+        ) -> Self {
+            Self::CloudSqlSource(value.into())
+        }
+        /// Initializes the enum to the [FirestoreSource](Self::FirestoreSource) branch.
+        pub fn from_firestore_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FirestoreSource>>,
+        ) -> Self {
+            Self::FirestoreSource(value.into())
+        }
+        /// Initializes the enum to the [AlloyDbSource](Self::AlloyDbSource) branch.
+        pub fn from_alloy_db_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AlloyDbSource>>,
+        ) -> Self {
+            Self::AlloyDbSource(value.into())
+        }
+        /// Initializes the enum to the [BigtableSource](Self::BigtableSource) branch.
+        pub fn from_bigtable_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigtableSource>>,
+        ) -> Self {
+            Self::BigtableSource(value.into())
+        }
+    }
 }
 
 /// Response of the
@@ -14823,6 +15216,25 @@ pub mod import_suggestion_deny_list_entries_request {
         /// * `suggestion_deny_list` (default): One JSON [SuggestionDenyListEntry]
         ///   per line.
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [InlineSource](Self::InlineSource) branch.
+        pub fn from_inline_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::import_suggestion_deny_list_entries_request::InlineSource,
+                >,
+            >,
+        ) -> Self {
+            Self::InlineSource(value.into())
+        }
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
     }
 }
 
@@ -15148,6 +15560,29 @@ pub mod import_completion_suggestions_request {
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
         /// BigQuery input source.
         BigquerySource(std::boxed::Box<crate::model::BigQuerySource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [InlineSource](Self::InlineSource) branch.
+        pub fn from_inline_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::import_completion_suggestions_request::InlineSource>,
+            >,
+        ) -> Self {
+            Self::InlineSource(value.into())
+        }
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [BigquerySource](Self::BigquerySource) branch.
+        pub fn from_bigquery_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQuerySource>>,
+        ) -> Self {
+            Self::BigquerySource(value.into())
+        }
     }
 }
 
@@ -15851,6 +16286,13 @@ pub mod purge_error_config {
         /// `google.rpc.Status` message.
         GcsPrefix(std::string::String),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsPrefix](Self::GcsPrefix) branch.
+        pub fn from_gcs_prefix(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsPrefix(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -16061,6 +16503,23 @@ pub mod purge_documents_request {
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
         /// Inline source for the input content for purge.
         InlineSource(std::boxed::Box<crate::model::purge_documents_request::InlineSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [InlineSource](Self::InlineSource) branch.
+        pub fn from_inline_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::purge_documents_request::InlineSource>,
+            >,
+        ) -> Self {
+            Self::InlineSource(value.into())
+        }
     }
 }
 
@@ -17183,6 +17642,19 @@ pub mod schema {
         /// The JSON representation of the schema.
         JsonSchema(std::string::String),
     }
+
+    impl Schema {
+        /// Initializes the enum to the [StructSchema](Self::StructSchema) branch.
+        pub fn from_struct_schema(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Struct>>,
+        ) -> Self {
+            Self::StructSchema(value.into())
+        }
+        /// Initializes the enum to the [JsonSchema](Self::JsonSchema) branch.
+        pub fn from_json_schema(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::JsonSchema(value.into())
+        }
+    }
 }
 
 /// Request message for
@@ -18249,6 +18721,13 @@ pub mod search_request {
             /// Base64 encoded image bytes. Supported image formats: JPEG, PNG, and
             /// BMP.
             ImageBytes(std::string::String),
+        }
+
+        impl Image {
+            /// Initializes the enum to the [ImageBytes](Self::ImageBytes) branch.
+            pub fn from_image_bytes(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::ImageBytes(value.into())
+            }
         }
     }
 
@@ -20456,6 +20935,19 @@ pub mod search_response {
                 /// [google.cloud.discoveryengine.v1.SearchRequest.FacetSpec.FacetKey.intervals]: crate::model::search_request::facet_spec::FacetKey::intervals
                 Interval(std::boxed::Box<crate::model::Interval>),
             }
+
+            impl FacetValue {
+                /// Initializes the enum to the [Value](Self::Value) branch.
+                pub fn from_value(value: impl std::convert::Into<std::string::String>) -> Self {
+                    Self::Value(value.into())
+                }
+                /// Initializes the enum to the [Interval](Self::Interval) branch.
+                pub fn from_interval(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::Interval>>,
+                ) -> Self {
+                    Self::Interval(value.into())
+                }
+            }
         }
     }
 
@@ -21422,6 +21914,17 @@ pub mod train_custom_model_request {
             std::boxed::Box<crate::model::train_custom_model_request::GcsTrainingInput>,
         ),
     }
+
+    impl TrainingInput {
+        /// Initializes the enum to the [GcsTrainingInput](Self::GcsTrainingInput) branch.
+        pub fn from_gcs_training_input(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::train_custom_model_request::GcsTrainingInput>,
+            >,
+        ) -> Self {
+            Self::GcsTrainingInput(value.into())
+        }
+    }
 }
 
 /// Response of the
@@ -21825,6 +22328,13 @@ pub mod query {
         /// Plain text.
         Text(std::string::String),
     }
+
+    impl Content {
+        /// Initializes the enum to the [Text](Self::Text) branch.
+        pub fn from_text(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Text(value.into())
+        }
+    }
 }
 
 /// SiteSearchEngine captures DataStore level site search persisting
@@ -22128,6 +22638,17 @@ pub mod target_site {
         pub enum Failure {
             /// Failed due to insufficient quota.
             QuotaFailure(std::boxed::Box<crate::model::target_site::failure_reason::QuotaFailure>),
+        }
+
+        impl Failure {
+            /// Initializes the enum to the [QuotaFailure](Self::QuotaFailure) branch.
+            pub fn from_quota_failure(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::target_site::failure_reason::QuotaFailure>,
+                >,
+            ) -> Self {
+                Self::QuotaFailure(value.into())
+            }
         }
     }
 
@@ -24865,6 +25386,21 @@ pub mod document_info {
         ///
         /// [google.cloud.discoveryengine.v1.Document]: crate::model::Document
         Uri(std::string::String),
+    }
+
+    impl DocumentDescriptor {
+        /// Initializes the enum to the [Id](Self::Id) branch.
+        pub fn from_id(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Id(value.into())
+        }
+        /// Initializes the enum to the [Name](Self::Name) branch.
+        pub fn from_name(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Name(value.into())
+        }
+        /// Initializes the enum to the [Uri](Self::Uri) branch.
+        pub fn from_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Uri(value.into())
+        }
     }
 }
 

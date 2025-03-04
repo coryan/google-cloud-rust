@@ -433,6 +433,17 @@ pub mod endpoint_matcher {
         /// The matcher is based on node metadata presented by xDS clients.
         MetadataLabelMatcher(std::boxed::Box<crate::model::endpoint_matcher::MetadataLabelMatcher>),
     }
+
+    impl MatcherType {
+        /// Initializes the enum to the [MetadataLabelMatcher](Self::MetadataLabelMatcher) branch.
+        pub fn from_metadata_label_matcher(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::endpoint_matcher::MetadataLabelMatcher>,
+            >,
+        ) -> Self {
+            Self::MetadataLabelMatcher(value.into())
+        }
+    }
 }
 
 /// A single extension chain wrapper that contains the match conditions and
@@ -3349,6 +3360,13 @@ pub mod grpc_route {
             /// Must refer to either a BackendService or ServiceDirectoryService.
             ServiceName(std::string::String),
         }
+
+        impl DestinationType {
+            /// Initializes the enum to the [ServiceName](Self::ServiceName) branch.
+            pub fn from_service_name(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::ServiceName(value.into())
+            }
+        }
     }
 
     /// The specification for fault injection introduced into traffic to test the
@@ -4471,6 +4489,37 @@ pub mod http_route {
             /// the range.
             RangeMatch(std::boxed::Box<crate::model::http_route::header_match::IntegerRange>),
         }
+
+        impl MatchType {
+            /// Initializes the enum to the [ExactMatch](Self::ExactMatch) branch.
+            pub fn from_exact_match(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::ExactMatch(value.into())
+            }
+            /// Initializes the enum to the [RegexMatch](Self::RegexMatch) branch.
+            pub fn from_regex_match(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::RegexMatch(value.into())
+            }
+            /// Initializes the enum to the [PrefixMatch](Self::PrefixMatch) branch.
+            pub fn from_prefix_match(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::PrefixMatch(value.into())
+            }
+            /// Initializes the enum to the [PresentMatch](Self::PresentMatch) branch.
+            pub fn from_present_match(value: impl std::convert::Into<bool>) -> Self {
+                Self::PresentMatch(value.into())
+            }
+            /// Initializes the enum to the [SuffixMatch](Self::SuffixMatch) branch.
+            pub fn from_suffix_match(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::SuffixMatch(value.into())
+            }
+            /// Initializes the enum to the [RangeMatch](Self::RangeMatch) branch.
+            pub fn from_range_match(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::http_route::header_match::IntegerRange>,
+                >,
+            ) -> Self {
+                Self::RangeMatch(value.into())
+            }
+        }
     }
 
     /// Specifications to match a query parameter in the request.
@@ -4623,6 +4672,21 @@ pub mod http_route {
             ///
             /// Only one of exact_match, regex_match, or present_match must be set.
             PresentMatch(bool),
+        }
+
+        impl MatchType {
+            /// Initializes the enum to the [ExactMatch](Self::ExactMatch) branch.
+            pub fn from_exact_match(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::ExactMatch(value.into())
+            }
+            /// Initializes the enum to the [RegexMatch](Self::RegexMatch) branch.
+            pub fn from_regex_match(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::RegexMatch(value.into())
+            }
+            /// Initializes the enum to the [PresentMatch](Self::PresentMatch) branch.
+            pub fn from_present_match(value: impl std::convert::Into<bool>) -> Self {
+                Self::PresentMatch(value.into())
+            }
         }
     }
 
@@ -4814,6 +4878,23 @@ pub mod http_route {
             /// Only one of full_path_match, prefix_match, or regex_match should be
             /// used.
             RegexMatch(std::string::String),
+        }
+
+        impl PathMatch {
+            /// Initializes the enum to the [FullPathMatch](Self::FullPathMatch) branch.
+            pub fn from_full_path_match(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::FullPathMatch(value.into())
+            }
+            /// Initializes the enum to the [PrefixMatch](Self::PrefixMatch) branch.
+            pub fn from_prefix_match(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::PrefixMatch(value.into())
+            }
+            /// Initializes the enum to the [RegexMatch](Self::RegexMatch) branch.
+            pub fn from_regex_match(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::RegexMatch(value.into())
+            }
         }
     }
 

@@ -3387,6 +3387,21 @@ pub mod ip_allocation_policy {
         ClusterIpv4CidrBlock(std::string::String),
     }
 
+    impl ClusterIpAllocation {
+        /// Initializes the enum to the [ClusterSecondaryRangeName](Self::ClusterSecondaryRangeName) branch.
+        pub fn from_cluster_secondary_range_name(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::ClusterSecondaryRangeName(value.into())
+        }
+        /// Initializes the enum to the [ClusterIpv4CidrBlock](Self::ClusterIpv4CidrBlock) branch.
+        pub fn from_cluster_ipv4_cidr_block(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::ClusterIpv4CidrBlock(value.into())
+        }
+    }
+
     /// Configuration of allocating IP addresses for services in the GKE cluster.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -3415,6 +3430,21 @@ pub mod ip_allocation_policy {
         /// `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range
         /// to use.
         ServicesIpv4CidrBlock(std::string::String),
+    }
+
+    impl ServicesIpAllocation {
+        /// Initializes the enum to the [ServicesSecondaryRangeName](Self::ServicesSecondaryRangeName) branch.
+        pub fn from_services_secondary_range_name(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::ServicesSecondaryRangeName(value.into())
+        }
+        /// Initializes the enum to the [ServicesIpv4CidrBlock](Self::ServicesIpv4CidrBlock) branch.
+        pub fn from_services_ipv4_cidr_block(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::ServicesIpv4CidrBlock(value.into())
+        }
     }
 }
 

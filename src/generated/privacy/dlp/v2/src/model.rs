@@ -314,6 +314,33 @@ pub mod exclusion_rule {
         /// tabular data, the context includes the column name.
         ExcludeByHotword(std::boxed::Box<crate::model::ExcludeByHotword>),
     }
+
+    impl Type {
+        /// Initializes the enum to the [Dictionary](Self::Dictionary) branch.
+        pub fn from_dictionary(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::custom_info_type::Dictionary>>,
+        ) -> Self {
+            Self::Dictionary(value.into())
+        }
+        /// Initializes the enum to the [Regex](Self::Regex) branch.
+        pub fn from_regex(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::custom_info_type::Regex>>,
+        ) -> Self {
+            Self::Regex(value.into())
+        }
+        /// Initializes the enum to the [ExcludeInfoTypes](Self::ExcludeInfoTypes) branch.
+        pub fn from_exclude_info_types(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExcludeInfoTypes>>,
+        ) -> Self {
+            Self::ExcludeInfoTypes(value.into())
+        }
+        /// Initializes the enum to the [ExcludeByHotword](Self::ExcludeByHotword) branch.
+        pub fn from_exclude_by_hotword(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExcludeByHotword>>,
+        ) -> Self {
+            Self::ExcludeByHotword(value.into())
+        }
+    }
 }
 
 /// A single inspection rule to be applied to infoTypes, specified in
@@ -427,6 +454,23 @@ pub mod inspection_rule {
         HotwordRule(std::boxed::Box<crate::model::custom_info_type::detection_rule::HotwordRule>),
         /// Exclusion rule.
         ExclusionRule(std::boxed::Box<crate::model::ExclusionRule>),
+    }
+
+    impl Type {
+        /// Initializes the enum to the [HotwordRule](Self::HotwordRule) branch.
+        pub fn from_hotword_rule(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::custom_info_type::detection_rule::HotwordRule>,
+            >,
+        ) -> Self {
+            Self::HotwordRule(value.into())
+        }
+        /// Initializes the enum to the [ExclusionRule](Self::ExclusionRule) branch.
+        pub fn from_exclusion_rule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExclusionRule>>,
+        ) -> Self {
+            Self::ExclusionRule(value.into())
+        }
     }
 }
 
@@ -1128,6 +1172,25 @@ pub mod content_item {
         /// Content data to inspect or redact. Replaces `type` and `data`.
         ByteItem(std::boxed::Box<crate::model::ByteContentItem>),
     }
+
+    impl DataItem {
+        /// Initializes the enum to the [Value](Self::Value) branch.
+        pub fn from_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Value(value.into())
+        }
+        /// Initializes the enum to the [Table](Self::Table) branch.
+        pub fn from_table(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Table>>,
+        ) -> Self {
+            Self::Table(value.into())
+        }
+        /// Initializes the enum to the [ByteItem](Self::ByteItem) branch.
+        pub fn from_byte_item(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ByteContentItem>>,
+        ) -> Self {
+            Self::ByteItem(value.into())
+        }
+    }
 }
 
 /// Structured content to inspect. Up to 50,000 `Value`s per request allowed. See
@@ -1771,6 +1834,33 @@ pub mod content_location {
         /// Location within the metadata for inspected content.
         MetadataLocation(std::boxed::Box<crate::model::MetadataLocation>),
     }
+
+    impl Location {
+        /// Initializes the enum to the [RecordLocation](Self::RecordLocation) branch.
+        pub fn from_record_location(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RecordLocation>>,
+        ) -> Self {
+            Self::RecordLocation(value.into())
+        }
+        /// Initializes the enum to the [ImageLocation](Self::ImageLocation) branch.
+        pub fn from_image_location(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ImageLocation>>,
+        ) -> Self {
+            Self::ImageLocation(value.into())
+        }
+        /// Initializes the enum to the [DocumentLocation](Self::DocumentLocation) branch.
+        pub fn from_document_location(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DocumentLocation>>,
+        ) -> Self {
+            Self::DocumentLocation(value.into())
+        }
+        /// Initializes the enum to the [MetadataLocation](Self::MetadataLocation) branch.
+        pub fn from_metadata_location(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MetadataLocation>>,
+        ) -> Self {
+            Self::MetadataLocation(value.into())
+        }
+    }
 }
 
 /// Metadata Location
@@ -1861,6 +1951,15 @@ pub mod metadata_location {
     pub enum Label {
         /// Storage metadata.
         StorageLabel(std::boxed::Box<crate::model::StorageMetadataLabel>),
+    }
+
+    impl Label {
+        /// Initializes the enum to the [StorageLabel](Self::StorageLabel) branch.
+        pub fn from_storage_label(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StorageMetadataLabel>>,
+        ) -> Self {
+            Self::StorageLabel(value.into())
+        }
     }
 }
 
@@ -2508,6 +2607,19 @@ pub mod redact_image_request {
             /// If true, all text found in the image, regardless whether it matches an
             /// info_type, is redacted. Only one should be provided.
             RedactAllText(bool),
+        }
+
+        impl Target {
+            /// Initializes the enum to the [InfoType](Self::InfoType) branch.
+            pub fn from_info_type(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::InfoType>>,
+            ) -> Self {
+                Self::InfoType(value.into())
+            }
+            /// Initializes the enum to the [RedactAllText](Self::RedactAllText) branch.
+            pub fn from_redact_all_text(value: impl std::convert::Into<bool>) -> Self {
+                Self::RedactAllText(value.into())
+            }
         }
     }
 }
@@ -3297,6 +3409,15 @@ pub mod output_storage_config {
         /// quasi-identifiers, cannot store their results in the same table.
         Table(std::boxed::Box<crate::model::BigQueryTable>),
     }
+
+    impl Type {
+        /// Initializes the enum to the [Table](Self::Table) branch.
+        pub fn from_table(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryTable>>,
+        ) -> Self {
+            Self::Table(value.into())
+        }
+    }
 }
 
 /// Statistics regarding a specific InfoType.
@@ -3683,6 +3804,27 @@ pub mod data_profile_big_query_row_schema {
         /// File store data profile column.
         FileStoreProfile(std::boxed::Box<crate::model::FileStoreDataProfile>),
     }
+
+    impl DataProfile {
+        /// Initializes the enum to the [TableProfile](Self::TableProfile) branch.
+        pub fn from_table_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TableDataProfile>>,
+        ) -> Self {
+            Self::TableProfile(value.into())
+        }
+        /// Initializes the enum to the [ColumnProfile](Self::ColumnProfile) branch.
+        pub fn from_column_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ColumnDataProfile>>,
+        ) -> Self {
+            Self::ColumnProfile(value.into())
+        }
+        /// Initializes the enum to the [FileStoreProfile](Self::FileStoreProfile) branch.
+        pub fn from_file_store_profile(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FileStoreDataProfile>>,
+        ) -> Self {
+            Self::FileStoreProfile(value.into())
+        }
+    }
 }
 
 /// Statistics related to processing hybrid inspect requests.
@@ -3819,6 +3961,15 @@ pub mod action_details {
     pub enum Details {
         /// Outcome of a de-identification action.
         DeidentifyDetails(std::boxed::Box<crate::model::DeidentifyDataSourceDetails>),
+    }
+
+    impl Details {
+        /// Initializes the enum to the [DeidentifyDetails](Self::DeidentifyDetails) branch.
+        pub fn from_deidentify_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DeidentifyDataSourceDetails>>,
+        ) -> Self {
+            Self::DeidentifyDetails(value.into())
+        }
     }
 }
 
@@ -4578,6 +4729,27 @@ pub mod info_type_category {
         /// The class of identifiers where this infoType belongs
         TypeCategory(crate::model::info_type_category::TypeCategory),
     }
+
+    impl Category {
+        /// Initializes the enum to the [LocationCategory](Self::LocationCategory) branch.
+        pub fn from_location_category(
+            value: impl std::convert::Into<crate::model::info_type_category::LocationCategory>,
+        ) -> Self {
+            Self::LocationCategory(value.into())
+        }
+        /// Initializes the enum to the [IndustryCategory](Self::IndustryCategory) branch.
+        pub fn from_industry_category(
+            value: impl std::convert::Into<crate::model::info_type_category::IndustryCategory>,
+        ) -> Self {
+            Self::IndustryCategory(value.into())
+        }
+        /// Initializes the enum to the [TypeCategory](Self::TypeCategory) branch.
+        pub fn from_type_category(
+            value: impl std::convert::Into<crate::model::info_type_category::TypeCategory>,
+        ) -> Self {
+            Self::TypeCategory(value.into())
+        }
+    }
 }
 
 /// Details about each available version for an infotype.
@@ -4929,6 +5101,23 @@ pub mod quasi_id {
         /// If no semantic tag is indicated, we infer the statistical model from
         /// the distribution of values in the input data
         Inferred(std::boxed::Box<wkt::Empty>),
+    }
+
+    impl Tag {
+        /// Initializes the enum to the [InfoType](Self::InfoType) branch.
+        pub fn from_info_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InfoType>>,
+        ) -> Self {
+            Self::InfoType(value.into())
+        }
+        /// Initializes the enum to the [CustomTag](Self::CustomTag) branch.
+        pub fn from_custom_tag(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::CustomTag(value.into())
+        }
+        /// Initializes the enum to the [Inferred](Self::Inferred) branch.
+        pub fn from_inferred(value: impl std::convert::Into<std::boxed::Box<wkt::Empty>>) -> Self {
+            Self::Inferred(value.into())
+        }
     }
 }
 
@@ -5714,6 +5903,27 @@ pub mod privacy_metric {
                 /// the distribution of values in the input data
                 Inferred(std::boxed::Box<wkt::Empty>),
             }
+
+            impl Tag {
+                /// Initializes the enum to the [InfoType](Self::InfoType) branch.
+                pub fn from_info_type(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::InfoType>>,
+                ) -> Self {
+                    Self::InfoType(value.into())
+                }
+                /// Initializes the enum to the [CustomTag](Self::CustomTag) branch.
+                pub fn from_custom_tag(
+                    value: impl std::convert::Into<std::string::String>,
+                ) -> Self {
+                    Self::CustomTag(value.into())
+                }
+                /// Initializes the enum to the [Inferred](Self::Inferred) branch.
+                pub fn from_inferred(
+                    value: impl std::convert::Into<std::boxed::Box<wkt::Empty>>,
+                ) -> Self {
+                    Self::Inferred(value.into())
+                }
+            }
         }
 
         /// An auxiliary table contains statistical information on the relative
@@ -5931,6 +6141,57 @@ pub mod privacy_metric {
         DeltaPresenceEstimationConfig(
             std::boxed::Box<crate::model::privacy_metric::DeltaPresenceEstimationConfig>,
         ),
+    }
+
+    impl Type {
+        /// Initializes the enum to the [NumericalStatsConfig](Self::NumericalStatsConfig) branch.
+        pub fn from_numerical_stats_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::privacy_metric::NumericalStatsConfig>,
+            >,
+        ) -> Self {
+            Self::NumericalStatsConfig(value.into())
+        }
+        /// Initializes the enum to the [CategoricalStatsConfig](Self::CategoricalStatsConfig) branch.
+        pub fn from_categorical_stats_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::privacy_metric::CategoricalStatsConfig>,
+            >,
+        ) -> Self {
+            Self::CategoricalStatsConfig(value.into())
+        }
+        /// Initializes the enum to the [KAnonymityConfig](Self::KAnonymityConfig) branch.
+        pub fn from_k_anonymity_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::privacy_metric::KAnonymityConfig>,
+            >,
+        ) -> Self {
+            Self::KAnonymityConfig(value.into())
+        }
+        /// Initializes the enum to the [LDiversityConfig](Self::LDiversityConfig) branch.
+        pub fn from_l_diversity_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::privacy_metric::LDiversityConfig>,
+            >,
+        ) -> Self {
+            Self::LDiversityConfig(value.into())
+        }
+        /// Initializes the enum to the [KMapEstimationConfig](Self::KMapEstimationConfig) branch.
+        pub fn from_k_map_estimation_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::privacy_metric::KMapEstimationConfig>,
+            >,
+        ) -> Self {
+            Self::KMapEstimationConfig(value.into())
+        }
+        /// Initializes the enum to the [DeltaPresenceEstimationConfig](Self::DeltaPresenceEstimationConfig) branch.
+        pub fn from_delta_presence_estimation_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::privacy_metric::DeltaPresenceEstimationConfig>,
+            >,
+        ) -> Self {
+            Self::DeltaPresenceEstimationConfig(value.into())
+        }
     }
 }
 
@@ -7223,6 +7484,65 @@ pub mod analyze_data_source_risk_details {
             >,
         ),
     }
+
+    impl Result {
+        /// Initializes the enum to the [NumericalStatsResult](Self::NumericalStatsResult) branch.
+        pub fn from_numerical_stats_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::analyze_data_source_risk_details::NumericalStatsResult,
+                >,
+            >,
+        ) -> Self {
+            Self::NumericalStatsResult(value.into())
+        }
+        /// Initializes the enum to the [CategoricalStatsResult](Self::CategoricalStatsResult) branch.
+        pub fn from_categorical_stats_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::analyze_data_source_risk_details::CategoricalStatsResult,
+                >,
+            >,
+        ) -> Self {
+            Self::CategoricalStatsResult(value.into())
+        }
+        /// Initializes the enum to the [KAnonymityResult](Self::KAnonymityResult) branch.
+        pub fn from_k_anonymity_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::analyze_data_source_risk_details::KAnonymityResult>,
+            >,
+        ) -> Self {
+            Self::KAnonymityResult(value.into())
+        }
+        /// Initializes the enum to the [LDiversityResult](Self::LDiversityResult) branch.
+        pub fn from_l_diversity_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::analyze_data_source_risk_details::LDiversityResult>,
+            >,
+        ) -> Self {
+            Self::LDiversityResult(value.into())
+        }
+        /// Initializes the enum to the [KMapEstimationResult](Self::KMapEstimationResult) branch.
+        pub fn from_k_map_estimation_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::analyze_data_source_risk_details::KMapEstimationResult,
+                >,
+            >,
+        ) -> Self {
+            Self::KMapEstimationResult(value.into())
+        }
+        /// Initializes the enum to the [DeltaPresenceEstimationResult](Self::DeltaPresenceEstimationResult) branch.
+        pub fn from_delta_presence_estimation_result(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::analyze_data_source_risk_details::DeltaPresenceEstimationResult,
+                >,
+            >,
+        ) -> Self {
+            Self::DeltaPresenceEstimationResult(value.into())
+        }
+    }
 }
 
 /// A value of a field, including its frequency.
@@ -7513,6 +7833,49 @@ pub mod value {
         /// day of week
         DayOfWeekValue(gtype::model::DayOfWeek),
     }
+
+    impl Type {
+        /// Initializes the enum to the [IntegerValue](Self::IntegerValue) branch.
+        pub fn from_integer_value(value: impl std::convert::Into<i64>) -> Self {
+            Self::IntegerValue(value.into())
+        }
+        /// Initializes the enum to the [FloatValue](Self::FloatValue) branch.
+        pub fn from_float_value(value: impl std::convert::Into<f64>) -> Self {
+            Self::FloatValue(value.into())
+        }
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
+        /// Initializes the enum to the [BooleanValue](Self::BooleanValue) branch.
+        pub fn from_boolean_value(value: impl std::convert::Into<bool>) -> Self {
+            Self::BooleanValue(value.into())
+        }
+        /// Initializes the enum to the [TimestampValue](Self::TimestampValue) branch.
+        pub fn from_timestamp_value(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::TimestampValue(value.into())
+        }
+        /// Initializes the enum to the [TimeValue](Self::TimeValue) branch.
+        pub fn from_time_value(
+            value: impl std::convert::Into<std::boxed::Box<gtype::model::TimeOfDay>>,
+        ) -> Self {
+            Self::TimeValue(value.into())
+        }
+        /// Initializes the enum to the [DateValue](Self::DateValue) branch.
+        pub fn from_date_value(
+            value: impl std::convert::Into<std::boxed::Box<gtype::model::Date>>,
+        ) -> Self {
+            Self::DateValue(value.into())
+        }
+        /// Initializes the enum to the [DayOfWeekValue](Self::DayOfWeekValue) branch.
+        pub fn from_day_of_week_value(
+            value: impl std::convert::Into<gtype::model::DayOfWeek>,
+        ) -> Self {
+            Self::DayOfWeekValue(value.into())
+        }
+    }
 }
 
 /// Message for infoType-dependent details parsed from quote.
@@ -7586,6 +7949,15 @@ pub mod quote_info {
     pub enum ParsedQuote {
         /// The date time indicated by the quote.
         DateTime(std::boxed::Box<crate::model::DateTime>),
+    }
+
+    impl ParsedQuote {
+        /// Initializes the enum to the [DateTime](Self::DateTime) branch.
+        pub fn from_date_time(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DateTime>>,
+        ) -> Self {
+            Self::DateTime(value.into())
+        }
     }
 }
 
@@ -7861,6 +8233,27 @@ pub mod deidentify_config {
         RecordTransformations(std::boxed::Box<crate::model::RecordTransformations>),
         /// Treat the dataset as an image and redact.
         ImageTransformations(std::boxed::Box<crate::model::ImageTransformations>),
+    }
+
+    impl Transformation {
+        /// Initializes the enum to the [InfoTypeTransformations](Self::InfoTypeTransformations) branch.
+        pub fn from_info_type_transformations(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InfoTypeTransformations>>,
+        ) -> Self {
+            Self::InfoTypeTransformations(value.into())
+        }
+        /// Initializes the enum to the [RecordTransformations](Self::RecordTransformations) branch.
+        pub fn from_record_transformations(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RecordTransformations>>,
+        ) -> Self {
+            Self::RecordTransformations(value.into())
+        }
+        /// Initializes the enum to the [ImageTransformations](Self::ImageTransformations) branch.
+        pub fn from_image_transformations(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ImageTransformations>>,
+        ) -> Self {
+            Self::ImageTransformations(value.into())
+        }
     }
 }
 
@@ -8181,6 +8574,35 @@ pub mod image_transformations {
                 std::boxed::Box<crate::model::image_transformations::image_transformation::AllText>,
             ),
         }
+
+        impl Target {
+            /// Initializes the enum to the [SelectedInfoTypes](Self::SelectedInfoTypes) branch.
+            pub fn from_selected_info_types(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::image_transformations::image_transformation::SelectedInfoTypes>>,
+            ) -> Self {
+                Self::SelectedInfoTypes(value.into())
+            }
+            /// Initializes the enum to the [AllInfoTypes](Self::AllInfoTypes) branch.
+            pub fn from_all_info_types(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::image_transformations::image_transformation::AllInfoTypes,
+                    >,
+                >,
+            ) -> Self {
+                Self::AllInfoTypes(value.into())
+            }
+            /// Initializes the enum to the [AllText](Self::AllText) branch.
+            pub fn from_all_text(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::image_transformations::image_transformation::AllText,
+                    >,
+                >,
+            ) -> Self {
+                Self::AllText(value.into())
+            }
+        }
     }
 }
 
@@ -8354,6 +8776,25 @@ pub mod transformation_error_handling {
         LeaveUntransformed(
             std::boxed::Box<crate::model::transformation_error_handling::LeaveUntransformed>,
         ),
+    }
+
+    impl Mode {
+        /// Initializes the enum to the [ThrowError](Self::ThrowError) branch.
+        pub fn from_throw_error(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::transformation_error_handling::ThrowError>,
+            >,
+        ) -> Self {
+            Self::ThrowError(value.into())
+        }
+        /// Initializes the enum to the [LeaveUntransformed](Self::LeaveUntransformed) branch.
+        pub fn from_leave_untransformed(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::transformation_error_handling::LeaveUntransformed>,
+            >,
+        ) -> Self {
+            Self::LeaveUntransformed(value.into())
+        }
     }
 }
 
@@ -8821,6 +9262,81 @@ pub mod primitive_transformation {
         /// Replace with a value randomly drawn (with replacement) from a dictionary.
         ReplaceDictionaryConfig(std::boxed::Box<crate::model::ReplaceDictionaryConfig>),
     }
+
+    impl Transformation {
+        /// Initializes the enum to the [ReplaceConfig](Self::ReplaceConfig) branch.
+        pub fn from_replace_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ReplaceValueConfig>>,
+        ) -> Self {
+            Self::ReplaceConfig(value.into())
+        }
+        /// Initializes the enum to the [RedactConfig](Self::RedactConfig) branch.
+        pub fn from_redact_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RedactConfig>>,
+        ) -> Self {
+            Self::RedactConfig(value.into())
+        }
+        /// Initializes the enum to the [CharacterMaskConfig](Self::CharacterMaskConfig) branch.
+        pub fn from_character_mask_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CharacterMaskConfig>>,
+        ) -> Self {
+            Self::CharacterMaskConfig(value.into())
+        }
+        /// Initializes the enum to the [CryptoReplaceFfxFpeConfig](Self::CryptoReplaceFfxFpeConfig) branch.
+        pub fn from_crypto_replace_ffx_fpe_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CryptoReplaceFfxFpeConfig>>,
+        ) -> Self {
+            Self::CryptoReplaceFfxFpeConfig(value.into())
+        }
+        /// Initializes the enum to the [FixedSizeBucketingConfig](Self::FixedSizeBucketingConfig) branch.
+        pub fn from_fixed_size_bucketing_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FixedSizeBucketingConfig>>,
+        ) -> Self {
+            Self::FixedSizeBucketingConfig(value.into())
+        }
+        /// Initializes the enum to the [BucketingConfig](Self::BucketingConfig) branch.
+        pub fn from_bucketing_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BucketingConfig>>,
+        ) -> Self {
+            Self::BucketingConfig(value.into())
+        }
+        /// Initializes the enum to the [ReplaceWithInfoTypeConfig](Self::ReplaceWithInfoTypeConfig) branch.
+        pub fn from_replace_with_info_type_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ReplaceWithInfoTypeConfig>>,
+        ) -> Self {
+            Self::ReplaceWithInfoTypeConfig(value.into())
+        }
+        /// Initializes the enum to the [TimePartConfig](Self::TimePartConfig) branch.
+        pub fn from_time_part_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimePartConfig>>,
+        ) -> Self {
+            Self::TimePartConfig(value.into())
+        }
+        /// Initializes the enum to the [CryptoHashConfig](Self::CryptoHashConfig) branch.
+        pub fn from_crypto_hash_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CryptoHashConfig>>,
+        ) -> Self {
+            Self::CryptoHashConfig(value.into())
+        }
+        /// Initializes the enum to the [DateShiftConfig](Self::DateShiftConfig) branch.
+        pub fn from_date_shift_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DateShiftConfig>>,
+        ) -> Self {
+            Self::DateShiftConfig(value.into())
+        }
+        /// Initializes the enum to the [CryptoDeterministicConfig](Self::CryptoDeterministicConfig) branch.
+        pub fn from_crypto_deterministic_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CryptoDeterministicConfig>>,
+        ) -> Self {
+            Self::CryptoDeterministicConfig(value.into())
+        }
+        /// Initializes the enum to the [ReplaceDictionaryConfig](Self::ReplaceDictionaryConfig) branch.
+        pub fn from_replace_dictionary_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ReplaceDictionaryConfig>>,
+        ) -> Self {
+            Self::ReplaceDictionaryConfig(value.into())
+        }
+    }
 }
 
 /// For use with `Date`, `Timestamp`, and `TimeOfDay`, extract or preserve a
@@ -9180,6 +9696,17 @@ pub mod replace_dictionary_config {
         /// contains details about the size limits of dictionaries.
         WordList(std::boxed::Box<crate::model::custom_info_type::dictionary::WordList>),
     }
+
+    impl Type {
+        /// Initializes the enum to the [WordList](Self::WordList) branch.
+        pub fn from_word_list(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::custom_info_type::dictionary::WordList>,
+            >,
+        ) -> Self {
+            Self::WordList(value.into())
+        }
+    }
 }
 
 /// Replace each matching finding with the name of the info_type.
@@ -9386,6 +9913,21 @@ pub mod chars_to_ignore {
         /// Common characters to not transform when masking. Useful to avoid removing
         /// punctuation.
         CommonCharactersToIgnore(crate::model::chars_to_ignore::CommonCharsToIgnore),
+    }
+
+    impl Characters {
+        /// Initializes the enum to the [CharactersToSkip](Self::CharactersToSkip) branch.
+        pub fn from_characters_to_skip(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::CharactersToSkip(value.into())
+        }
+        /// Initializes the enum to the [CommonCharactersToIgnore](Self::CommonCharactersToIgnore) branch.
+        pub fn from_common_characters_to_ignore(
+            value: impl std::convert::Into<crate::model::chars_to_ignore::CommonCharsToIgnore>,
+        ) -> Self {
+            Self::CommonCharactersToIgnore(value.into())
+        }
     }
 }
 
@@ -9970,6 +10512,25 @@ pub mod crypto_replace_ffx_fpe_config {
         /// The native way to select the alphabet. Must be in the range [2, 95].
         Radix(i32),
     }
+
+    impl Alphabet {
+        /// Initializes the enum to the [CommonAlphabet](Self::CommonAlphabet) branch.
+        pub fn from_common_alphabet(
+            value: impl std::convert::Into<
+                crate::model::crypto_replace_ffx_fpe_config::FfxCommonNativeAlphabet,
+            >,
+        ) -> Self {
+            Self::CommonAlphabet(value.into())
+        }
+        /// Initializes the enum to the [CustomAlphabet](Self::CustomAlphabet) branch.
+        pub fn from_custom_alphabet(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::CustomAlphabet(value.into())
+        }
+        /// Initializes the enum to the [Radix](Self::Radix) branch.
+        pub fn from_radix(value: impl std::convert::Into<i32>) -> Self {
+            Self::Radix(value.into())
+        }
+    }
 }
 
 /// This is a data encryption key (DEK) (as opposed to
@@ -10114,6 +10675,27 @@ pub mod crypto_key {
         Unwrapped(std::boxed::Box<crate::model::UnwrappedCryptoKey>),
         /// Key wrapped using Cloud KMS
         KmsWrapped(std::boxed::Box<crate::model::KmsWrappedCryptoKey>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [Transient](Self::Transient) branch.
+        pub fn from_transient(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TransientCryptoKey>>,
+        ) -> Self {
+            Self::Transient(value.into())
+        }
+        /// Initializes the enum to the [Unwrapped](Self::Unwrapped) branch.
+        pub fn from_unwrapped(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UnwrappedCryptoKey>>,
+        ) -> Self {
+            Self::Unwrapped(value.into())
+        }
+        /// Initializes the enum to the [KmsWrapped](Self::KmsWrapped) branch.
+        pub fn from_kms_wrapped(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::KmsWrappedCryptoKey>>,
+        ) -> Self {
+            Self::KmsWrapped(value.into())
+        }
     }
 }
 
@@ -10349,6 +10931,15 @@ pub mod date_shift_config {
         /// results in the same shift for the same context and crypto_key. If
         /// set, must also set context. Can only be applied to table items.
         CryptoKey(std::boxed::Box<crate::model::CryptoKey>),
+    }
+
+    impl Method {
+        /// Initializes the enum to the [CryptoKey](Self::CryptoKey) branch.
+        pub fn from_crypto_key(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CryptoKey>>,
+        ) -> Self {
+            Self::CryptoKey(value.into())
+        }
     }
 }
 
@@ -10603,6 +11194,21 @@ pub mod field_transformation {
         /// Treat the contents of the field as free text, and selectively
         /// transform content that matches an `InfoType`.
         InfoTypeTransformations(std::boxed::Box<crate::model::InfoTypeTransformations>),
+    }
+
+    impl Transformation {
+        /// Initializes the enum to the [PrimitiveTransformation](Self::PrimitiveTransformation) branch.
+        pub fn from_primitive_transformation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PrimitiveTransformation>>,
+        ) -> Self {
+            Self::PrimitiveTransformation(value.into())
+        }
+        /// Initializes the enum to the [InfoTypeTransformations](Self::InfoTypeTransformations) branch.
+        pub fn from_info_type_transformations(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InfoTypeTransformations>>,
+        ) -> Self {
+            Self::InfoTypeTransformations(value.into())
+        }
     }
 }
 
@@ -10978,6 +11584,17 @@ pub mod record_condition {
         pub enum Type {
             /// Conditions to apply to the expression.
             Conditions(std::boxed::Box<crate::model::record_condition::Conditions>),
+        }
+
+        impl Type {
+            /// Initializes the enum to the [Conditions](Self::Conditions) branch.
+            pub fn from_conditions(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::record_condition::Conditions>,
+                >,
+            ) -> Self {
+                Self::Conditions(value.into())
+            }
         }
     }
 }
@@ -11558,6 +12175,19 @@ pub mod transformation_location {
         /// For record transformations, provide a field and container information.
         RecordTransformation(std::boxed::Box<crate::model::RecordTransformation>),
     }
+
+    impl LocationType {
+        /// Initializes the enum to the [FindingId](Self::FindingId) branch.
+        pub fn from_finding_id(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::FindingId(value.into())
+        }
+        /// Initializes the enum to the [RecordTransformation](Self::RecordTransformation) branch.
+        pub fn from_record_transformation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RecordTransformation>>,
+        ) -> Self {
+            Self::RecordTransformation(value.into())
+        }
+    }
 }
 
 /// The field in a record to transform.
@@ -11747,6 +12377,15 @@ pub mod transformation_details_storage_config {
         /// time zone will be used for generating the date details.
         Table(std::boxed::Box<crate::model::BigQueryTable>),
     }
+
+    impl Type {
+        /// Initializes the enum to the [Table](Self::Table) branch.
+        pub fn from_table(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryTable>>,
+        ) -> Self {
+            Self::Table(value.into())
+        }
+    }
 }
 
 /// Schedule for inspect job triggers.
@@ -11832,6 +12471,15 @@ pub mod schedule {
         /// This value must be set to a time duration greater than or equal
         /// to 1 day and can be no longer than 60 days.
         RecurrencePeriodDuration(std::boxed::Box<wkt::Duration>),
+    }
+
+    impl Option {
+        /// Initializes the enum to the [RecurrencePeriodDuration](Self::RecurrencePeriodDuration) branch.
+        pub fn from_recurrence_period_duration(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+        ) -> Self {
+            Self::RecurrencePeriodDuration(value.into())
+        }
     }
 }
 
@@ -12455,6 +13103,21 @@ pub mod job_trigger {
             /// For use with hybrid jobs. Jobs must be manually created and finished.
             Manual(std::boxed::Box<crate::model::Manual>),
         }
+
+        impl Trigger {
+            /// Initializes the enum to the [Schedule](Self::Schedule) branch.
+            pub fn from_schedule(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::Schedule>>,
+            ) -> Self {
+                Self::Schedule(value.into())
+            }
+            /// Initializes the enum to the [Manual](Self::Manual) branch.
+            pub fn from_manual(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::Manual>>,
+            ) -> Self {
+                Self::Manual(value.into())
+            }
+        }
     }
 
     /// Whether the trigger is currently active. If PAUSED or CANCELLED, no jobs
@@ -12512,6 +13175,15 @@ pub mod job_trigger {
     pub enum Job {
         /// For inspect jobs, a snapshot of the configuration.
         InspectJob(std::boxed::Box<crate::model::InspectJobConfig>),
+    }
+
+    impl Job {
+        /// Initializes the enum to the [InspectJob](Self::InspectJob) branch.
+        pub fn from_inspect_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InspectJobConfig>>,
+        ) -> Self {
+            Self::InspectJob(value.into())
+        }
     }
 }
 
@@ -13057,6 +13729,15 @@ pub mod action {
             /// Form of: gs://bucket/folder/ or gs://bucket
             CloudStorageOutput(std::string::String),
         }
+
+        impl Output {
+            /// Initializes the enum to the [CloudStorageOutput](Self::CloudStorageOutput) branch.
+            pub fn from_cloud_storage_output(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::CloudStorageOutput(value.into())
+            }
+        }
     }
 
     /// Sends an email when the job completes. The email goes to IAM project owners
@@ -13125,6 +13806,53 @@ pub mod action {
         JobNotificationEmails(std::boxed::Box<crate::model::action::JobNotificationEmails>),
         /// Enable Stackdriver metric dlp.googleapis.com/finding_count.
         PublishToStackdriver(std::boxed::Box<crate::model::action::PublishToStackdriver>),
+    }
+
+    impl Action {
+        /// Initializes the enum to the [SaveFindings](Self::SaveFindings) branch.
+        pub fn from_save_findings(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::action::SaveFindings>>,
+        ) -> Self {
+            Self::SaveFindings(value.into())
+        }
+        /// Initializes the enum to the [PubSub](Self::PubSub) branch.
+        pub fn from_pub_sub(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::action::PublishToPubSub>>,
+        ) -> Self {
+            Self::PubSub(value.into())
+        }
+        /// Initializes the enum to the [PublishSummaryToCscc](Self::PublishSummaryToCscc) branch.
+        pub fn from_publish_summary_to_cscc(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::action::PublishSummaryToCscc>>,
+        ) -> Self {
+            Self::PublishSummaryToCscc(value.into())
+        }
+        /// Initializes the enum to the [PublishFindingsToCloudDataCatalog](Self::PublishFindingsToCloudDataCatalog) branch.
+        pub fn from_publish_findings_to_cloud_data_catalog(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::action::PublishFindingsToCloudDataCatalog>,
+            >,
+        ) -> Self {
+            Self::PublishFindingsToCloudDataCatalog(value.into())
+        }
+        /// Initializes the enum to the [Deidentify](Self::Deidentify) branch.
+        pub fn from_deidentify(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::action::Deidentify>>,
+        ) -> Self {
+            Self::Deidentify(value.into())
+        }
+        /// Initializes the enum to the [JobNotificationEmails](Self::JobNotificationEmails) branch.
+        pub fn from_job_notification_emails(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::action::JobNotificationEmails>>,
+        ) -> Self {
+            Self::JobNotificationEmails(value.into())
+        }
+        /// Initializes the enum to the [PublishToStackdriver](Self::PublishToStackdriver) branch.
+        pub fn from_publish_to_stackdriver(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::action::PublishToStackdriver>>,
+        ) -> Self {
+            Self::PublishToStackdriver(value.into())
+        }
     }
 }
 
@@ -14264,6 +14992,21 @@ pub mod create_dlp_job_request {
         /// BigQuery table.
         RiskJob(std::boxed::Box<crate::model::RiskAnalysisJobConfig>),
     }
+
+    impl Job {
+        /// Initializes the enum to the [InspectJob](Self::InspectJob) branch.
+        pub fn from_inspect_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InspectJobConfig>>,
+        ) -> Self {
+            Self::InspectJob(value.into())
+        }
+        /// Initializes the enum to the [RiskJob](Self::RiskJob) branch.
+        pub fn from_risk_job(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RiskAnalysisJobConfig>>,
+        ) -> Self {
+            Self::RiskJob(value.into())
+        }
+    }
 }
 
 /// Request message for ListJobTriggers.
@@ -15199,6 +15942,15 @@ pub mod data_profile_action {
                 /// sensitivity score.
                 SensitivityScore(std::boxed::Box<crate::model::SensitivityScore>),
             }
+
+            impl Type {
+                /// Initializes the enum to the [SensitivityScore](Self::SensitivityScore) branch.
+                pub fn from_sensitivity_score(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::SensitivityScore>>,
+                ) -> Self {
+                    Self::SensitivityScore(value.into())
+                }
+            }
         }
 
         /// A value of a tag.
@@ -15284,6 +16036,15 @@ pub mod data_profile_action {
                 /// example, "123456/environment/prod".
                 NamespacedValue(std::string::String),
             }
+
+            impl Format {
+                /// Initializes the enum to the [NamespacedValue](Self::NamespacedValue) branch.
+                pub fn from_namespaced_value(
+                    value: impl std::convert::Into<std::string::String>,
+                ) -> Self {
+                    Self::NamespacedValue(value.into())
+                }
+            }
         }
     }
 
@@ -15357,6 +16118,47 @@ pub mod data_profile_action {
         ),
         /// Tags the profiled resources with the specified tag values.
         TagResources(std::boxed::Box<crate::model::data_profile_action::TagResources>),
+    }
+
+    impl Action {
+        /// Initializes the enum to the [ExportData](Self::ExportData) branch.
+        pub fn from_export_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::data_profile_action::Export>>,
+        ) -> Self {
+            Self::ExportData(value.into())
+        }
+        /// Initializes the enum to the [PubSubNotification](Self::PubSubNotification) branch.
+        pub fn from_pub_sub_notification(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::data_profile_action::PubSubNotification>,
+            >,
+        ) -> Self {
+            Self::PubSubNotification(value.into())
+        }
+        /// Initializes the enum to the [PublishToChronicle](Self::PublishToChronicle) branch.
+        pub fn from_publish_to_chronicle(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::data_profile_action::PublishToChronicle>,
+            >,
+        ) -> Self {
+            Self::PublishToChronicle(value.into())
+        }
+        /// Initializes the enum to the [PublishToScc](Self::PublishToScc) branch.
+        pub fn from_publish_to_scc(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::data_profile_action::PublishToSecurityCommandCenter>,
+            >,
+        ) -> Self {
+            Self::PublishToScc(value.into())
+        }
+        /// Initializes the enum to the [TagResources](Self::TagResources) branch.
+        pub fn from_tag_resources(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::data_profile_action::TagResources>,
+            >,
+        ) -> Self {
+            Self::TagResources(value.into())
+        }
     }
 }
 
@@ -15720,6 +16522,17 @@ pub mod data_profile_location {
         OrganizationId(i64),
         /// The ID of the folder within an organization to scan.
         FolderId(i64),
+    }
+
+    impl Location {
+        /// Initializes the enum to the [OrganizationId](Self::OrganizationId) branch.
+        pub fn from_organization_id(value: impl std::convert::Into<i64>) -> Self {
+            Self::OrganizationId(value.into())
+        }
+        /// Initializes the enum to the [FolderId](Self::FolderId) branch.
+        pub fn from_folder_id(value: impl std::convert::Into<i64>) -> Self {
+            Self::FolderId(value.into())
+        }
     }
 }
 
@@ -16304,6 +17117,45 @@ pub mod discovery_target {
         /// multi_region_processing or global_processing configured.
         VertexDatasetTarget(std::boxed::Box<crate::model::VertexDatasetDiscoveryTarget>),
     }
+
+    impl Target {
+        /// Initializes the enum to the [BigQueryTarget](Self::BigQueryTarget) branch.
+        pub fn from_big_query_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDiscoveryTarget>>,
+        ) -> Self {
+            Self::BigQueryTarget(value.into())
+        }
+        /// Initializes the enum to the [CloudSqlTarget](Self::CloudSqlTarget) branch.
+        pub fn from_cloud_sql_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudSqlDiscoveryTarget>>,
+        ) -> Self {
+            Self::CloudSqlTarget(value.into())
+        }
+        /// Initializes the enum to the [SecretsTarget](Self::SecretsTarget) branch.
+        pub fn from_secrets_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SecretsDiscoveryTarget>>,
+        ) -> Self {
+            Self::SecretsTarget(value.into())
+        }
+        /// Initializes the enum to the [CloudStorageTarget](Self::CloudStorageTarget) branch.
+        pub fn from_cloud_storage_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudStorageDiscoveryTarget>>,
+        ) -> Self {
+            Self::CloudStorageTarget(value.into())
+        }
+        /// Initializes the enum to the [OtherCloudTarget](Self::OtherCloudTarget) branch.
+        pub fn from_other_cloud_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OtherCloudDiscoveryTarget>>,
+        ) -> Self {
+            Self::OtherCloudTarget(value.into())
+        }
+        /// Initializes the enum to the [VertexDatasetTarget](Self::VertexDatasetTarget) branch.
+        pub fn from_vertex_dataset_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VertexDatasetDiscoveryTarget>>,
+        ) -> Self {
+            Self::VertexDatasetTarget(value.into())
+        }
+    }
 }
 
 /// Target used to match against for discovery with BigQuery tables
@@ -16454,6 +17306,21 @@ pub mod big_query_discovery_target {
         Cadence(std::boxed::Box<crate::model::DiscoveryGenerationCadence>),
         /// Tables that match this filter will not have profiles created.
         Disabled(std::boxed::Box<crate::model::Disabled>),
+    }
+
+    impl Frequency {
+        /// Initializes the enum to the [Cadence](Self::Cadence) branch.
+        pub fn from_cadence(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DiscoveryGenerationCadence>>,
+        ) -> Self {
+            Self::Cadence(value.into())
+        }
+        /// Initializes the enum to the [Disabled](Self::Disabled) branch.
+        pub fn from_disabled(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Disabled>>,
+        ) -> Self {
+            Self::Disabled(value.into())
+        }
     }
 }
 
@@ -16647,6 +17514,29 @@ pub mod discovery_big_query_filter {
         /// TableReference).
         TableReference(std::boxed::Box<crate::model::TableReference>),
     }
+
+    impl Filter {
+        /// Initializes the enum to the [Tables](Self::Tables) branch.
+        pub fn from_tables(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryTableCollection>>,
+        ) -> Self {
+            Self::Tables(value.into())
+        }
+        /// Initializes the enum to the [OtherTables](Self::OtherTables) branch.
+        pub fn from_other_tables(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::discovery_big_query_filter::AllOtherBigQueryTables>,
+            >,
+        ) -> Self {
+            Self::OtherTables(value.into())
+        }
+        /// Initializes the enum to the [TableReference](Self::TableReference) branch.
+        pub fn from_table_reference(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TableReference>>,
+        ) -> Self {
+            Self::TableReference(value.into())
+        }
+    }
 }
 
 /// Specifies a collection of BigQuery tables. Used for Discovery.
@@ -16729,6 +17619,15 @@ pub mod big_query_table_collection {
     pub enum Pattern {
         /// A collection of regular expressions to match a BigQuery table against.
         IncludeRegexes(std::boxed::Box<crate::model::BigQueryRegexes>),
+    }
+
+    impl Pattern {
+        /// Initializes the enum to the [IncludeRegexes](Self::IncludeRegexes) branch.
+        pub fn from_include_regexes(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryRegexes>>,
+        ) -> Self {
+            Self::IncludeRegexes(value.into())
+        }
     }
 }
 
@@ -16927,6 +17826,21 @@ pub mod discovery_big_query_conditions {
         Types(std::boxed::Box<crate::model::BigQueryTableTypes>),
         /// Restrict discovery to categories of table types.
         TypeCollection(crate::model::BigQueryTableTypeCollection),
+    }
+
+    impl IncludedTypes {
+        /// Initializes the enum to the [Types](Self::Types) branch.
+        pub fn from_types(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryTableTypes>>,
+        ) -> Self {
+            Self::Types(value.into())
+        }
+        /// Initializes the enum to the [TypeCollection](Self::TypeCollection) branch.
+        pub fn from_type_collection(
+            value: impl std::convert::Into<crate::model::BigQueryTableTypeCollection>,
+        ) -> Self {
+            Self::TypeCollection(value.into())
+        }
     }
 }
 
@@ -17292,6 +18206,23 @@ pub mod cloud_sql_discovery_target {
         /// Disable profiling for database resources that match this filter.
         Disabled(std::boxed::Box<crate::model::Disabled>),
     }
+
+    impl Cadence {
+        /// Initializes the enum to the [GenerationCadence](Self::GenerationCadence) branch.
+        pub fn from_generation_cadence(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::DiscoveryCloudSqlGenerationCadence>,
+            >,
+        ) -> Self {
+            Self::GenerationCadence(value.into())
+        }
+        /// Initializes the enum to the [Disabled](Self::Disabled) branch.
+        pub fn from_disabled(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Disabled>>,
+        ) -> Self {
+            Self::Disabled(value.into())
+        }
+    }
 }
 
 /// Determines what tables will have profiles generated within an organization
@@ -17453,6 +18384,27 @@ pub mod discovery_cloud_sql_filter {
         /// one target (the target with this database resource reference).
         DatabaseResourceReference(std::boxed::Box<crate::model::DatabaseResourceReference>),
     }
+
+    impl Filter {
+        /// Initializes the enum to the [Collection](Self::Collection) branch.
+        pub fn from_collection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DatabaseResourceCollection>>,
+        ) -> Self {
+            Self::Collection(value.into())
+        }
+        /// Initializes the enum to the [Others](Self::Others) branch.
+        pub fn from_others(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AllOtherDatabaseResources>>,
+        ) -> Self {
+            Self::Others(value.into())
+        }
+        /// Initializes the enum to the [DatabaseResourceReference](Self::DatabaseResourceReference) branch.
+        pub fn from_database_resource_reference(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DatabaseResourceReference>>,
+        ) -> Self {
+            Self::DatabaseResourceReference(value.into())
+        }
+    }
 }
 
 /// Match database resources using regex filters. Examples of database
@@ -17538,6 +18490,15 @@ pub mod database_resource_collection {
     pub enum Pattern {
         /// A collection of regular expressions to match a database resource against.
         IncludeRegexes(std::boxed::Box<crate::model::DatabaseResourceRegexes>),
+    }
+
+    impl Pattern {
+        /// Initializes the enum to the [IncludeRegexes](Self::IncludeRegexes) branch.
+        pub fn from_include_regexes(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DatabaseResourceRegexes>>,
+        ) -> Self {
+            Self::IncludeRegexes(value.into())
+        }
     }
 }
 
@@ -18248,6 +19209,23 @@ pub mod cloud_storage_discovery_target {
         /// Optional. Disable profiling for buckets that match this filter.
         Disabled(std::boxed::Box<crate::model::Disabled>),
     }
+
+    impl Cadence {
+        /// Initializes the enum to the [GenerationCadence](Self::GenerationCadence) branch.
+        pub fn from_generation_cadence(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::DiscoveryCloudStorageGenerationCadence>,
+            >,
+        ) -> Self {
+            Self::GenerationCadence(value.into())
+        }
+        /// Initializes the enum to the [Disabled](Self::Disabled) branch.
+        pub fn from_disabled(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Disabled>>,
+        ) -> Self {
+            Self::Disabled(value.into())
+        }
+    }
 }
 
 /// Determines which buckets will have profiles generated within an organization
@@ -18413,6 +19391,27 @@ pub mod discovery_cloud_storage_filter {
         /// automatically.
         Others(std::boxed::Box<crate::model::AllOtherResources>),
     }
+
+    impl Filter {
+        /// Initializes the enum to the [Collection](Self::Collection) branch.
+        pub fn from_collection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FileStoreCollection>>,
+        ) -> Self {
+            Self::Collection(value.into())
+        }
+        /// Initializes the enum to the [CloudStorageResourceReference](Self::CloudStorageResourceReference) branch.
+        pub fn from_cloud_storage_resource_reference(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudStorageResourceReference>>,
+        ) -> Self {
+            Self::CloudStorageResourceReference(value.into())
+        }
+        /// Initializes the enum to the [Others](Self::Others) branch.
+        pub fn from_others(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AllOtherResources>>,
+        ) -> Self {
+            Self::Others(value.into())
+        }
+    }
 }
 
 /// Match file stores (e.g. buckets) using regex filters.
@@ -18496,6 +19495,15 @@ pub mod file_store_collection {
         /// Optional. A collection of regular expressions to match a file store
         /// against.
         IncludeRegexes(std::boxed::Box<crate::model::FileStoreRegexes>),
+    }
+
+    impl Pattern {
+        /// Initializes the enum to the [IncludeRegexes](Self::IncludeRegexes) branch.
+        pub fn from_include_regexes(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FileStoreRegexes>>,
+        ) -> Self {
+            Self::IncludeRegexes(value.into())
+        }
     }
 }
 
@@ -18614,6 +19622,15 @@ pub mod file_store_regex {
     pub enum ResourceRegex {
         /// Optional. Regex for Cloud Storage.
         CloudStorageRegex(std::boxed::Box<crate::model::CloudStorageRegex>),
+    }
+
+    impl ResourceRegex {
+        /// Initializes the enum to the [CloudStorageRegex](Self::CloudStorageRegex) branch.
+        pub fn from_cloud_storage_regex(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudStorageRegex>>,
+        ) -> Self {
+            Self::CloudStorageRegex(value.into())
+        }
     }
 }
 
@@ -19076,6 +20093,17 @@ pub mod discovery_file_store_conditions {
         /// Optional. Cloud Storage conditions.
         CloudStorageConditions(std::boxed::Box<crate::model::DiscoveryCloudStorageConditions>),
     }
+
+    impl Conditions {
+        /// Initializes the enum to the [CloudStorageConditions](Self::CloudStorageConditions) branch.
+        pub fn from_cloud_storage_conditions(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::DiscoveryCloudStorageConditions>,
+            >,
+        ) -> Self {
+            Self::CloudStorageConditions(value.into())
+        }
+    }
 }
 
 /// Target used to match against for discovery of resources from other clouds.
@@ -19245,6 +20273,23 @@ pub mod other_cloud_discovery_target {
         /// Disable profiling for resources that match this filter.
         Disabled(std::boxed::Box<crate::model::Disabled>),
     }
+
+    impl Cadence {
+        /// Initializes the enum to the [GenerationCadence](Self::GenerationCadence) branch.
+        pub fn from_generation_cadence(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::DiscoveryOtherCloudGenerationCadence>,
+            >,
+        ) -> Self {
+            Self::GenerationCadence(value.into())
+        }
+        /// Initializes the enum to the [Disabled](Self::Disabled) branch.
+        pub fn from_disabled(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Disabled>>,
+        ) -> Self {
+            Self::Disabled(value.into())
+        }
+    }
 }
 
 /// Determines which resources from the other cloud will have profiles generated.
@@ -19402,6 +20447,29 @@ pub mod discovery_other_cloud_filter {
         /// automatically.
         Others(std::boxed::Box<crate::model::AllOtherResources>),
     }
+
+    impl Filter {
+        /// Initializes the enum to the [Collection](Self::Collection) branch.
+        pub fn from_collection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OtherCloudResourceCollection>>,
+        ) -> Self {
+            Self::Collection(value.into())
+        }
+        /// Initializes the enum to the [SingleResource](Self::SingleResource) branch.
+        pub fn from_single_resource(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::OtherCloudSingleResourceReference>,
+            >,
+        ) -> Self {
+            Self::SingleResource(value.into())
+        }
+        /// Initializes the enum to the [Others](Self::Others) branch.
+        pub fn from_others(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AllOtherResources>>,
+        ) -> Self {
+            Self::Others(value.into())
+        }
+    }
 }
 
 /// Match resources using regex filters.
@@ -19484,6 +20552,15 @@ pub mod other_cloud_resource_collection {
     pub enum Pattern {
         /// A collection of regular expressions to match a resource against.
         IncludeRegexes(std::boxed::Box<crate::model::OtherCloudResourceRegexes>),
+    }
+
+    impl Pattern {
+        /// Initializes the enum to the [IncludeRegexes](Self::IncludeRegexes) branch.
+        pub fn from_include_regexes(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OtherCloudResourceRegexes>>,
+        ) -> Self {
+            Self::IncludeRegexes(value.into())
+        }
     }
 }
 
@@ -19609,6 +20686,15 @@ pub mod other_cloud_resource_regex {
     pub enum ResourceRegex {
         /// Regex for Amazon S3 buckets.
         AmazonS3BucketRegex(std::boxed::Box<crate::model::AmazonS3BucketRegex>),
+    }
+
+    impl ResourceRegex {
+        /// Initializes the enum to the [AmazonS3BucketRegex](Self::AmazonS3BucketRegex) branch.
+        pub fn from_amazon_s3_bucket_regex(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AmazonS3BucketRegex>>,
+        ) -> Self {
+            Self::AmazonS3BucketRegex(value.into())
+        }
     }
 }
 
@@ -19774,6 +20860,15 @@ pub mod other_cloud_single_resource_reference {
     pub enum Resource {
         /// Amazon S3 bucket.
         AmazonS3Bucket(std::boxed::Box<crate::model::AmazonS3Bucket>),
+    }
+
+    impl Resource {
+        /// Initializes the enum to the [AmazonS3Bucket](Self::AmazonS3Bucket) branch.
+        pub fn from_amazon_s3_bucket(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AmazonS3Bucket>>,
+        ) -> Self {
+            Self::AmazonS3Bucket(value.into())
+        }
     }
 }
 
@@ -19943,6 +21038,15 @@ pub mod discovery_other_cloud_conditions {
     pub enum Conditions {
         /// Amazon S3 bucket conditions.
         AmazonS3BucketConditions(std::boxed::Box<crate::model::AmazonS3BucketConditions>),
+    }
+
+    impl Conditions {
+        /// Initializes the enum to the [AmazonS3BucketConditions](Self::AmazonS3BucketConditions) branch.
+        pub fn from_amazon_s3_bucket_conditions(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AmazonS3BucketConditions>>,
+        ) -> Self {
+            Self::AmazonS3BucketConditions(value.into())
+        }
     }
 }
 
@@ -20261,6 +21365,17 @@ pub mod discovery_starting_location {
         /// The ID of the folder within an organization to be scanned.
         FolderId(i64),
     }
+
+    impl Location {
+        /// Initializes the enum to the [OrganizationId](Self::OrganizationId) branch.
+        pub fn from_organization_id(value: impl std::convert::Into<i64>) -> Self {
+            Self::OrganizationId(value.into())
+        }
+        /// Initializes the enum to the [FolderId](Self::FolderId) branch.
+        pub fn from_folder_id(value: impl std::convert::Into<i64>) -> Self {
+            Self::FolderId(value.into())
+        }
+    }
 }
 
 /// The other cloud starting location for discovery.
@@ -20445,6 +21560,17 @@ pub mod other_cloud_discovery_starting_location {
             /// discovery configs.
             AllAssetInventoryAssets(bool),
         }
+
+        impl Scope {
+            /// Initializes the enum to the [AccountId](Self::AccountId) branch.
+            pub fn from_account_id(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::AccountId(value.into())
+            }
+            /// Initializes the enum to the [AllAssetInventoryAssets](Self::AllAssetInventoryAssets) branch.
+            pub fn from_all_asset_inventory_assets(value: impl std::convert::Into<bool>) -> Self {
+                Self::AllAssetInventoryAssets(value.into())
+            }
+        }
     }
 
     /// The other cloud starting location for discovery.
@@ -20458,6 +21584,15 @@ pub mod other_cloud_discovery_starting_location {
                 crate::model::other_cloud_discovery_starting_location::AwsDiscoveryStartingLocation,
             >,
         ),
+    }
+
+    impl Location {
+        /// Initializes the enum to the [AwsLocation](Self::AwsLocation) branch.
+        pub fn from_aws_location(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::other_cloud_discovery_starting_location::AwsDiscoveryStartingLocation>>,
+        ) -> Self {
+            Self::AwsLocation(value.into())
+        }
     }
 }
 
@@ -20626,6 +21761,23 @@ pub mod vertex_dataset_discovery_target {
         /// Disable profiling for datasets that match this filter.
         Disabled(std::boxed::Box<crate::model::Disabled>),
     }
+
+    impl Cadence {
+        /// Initializes the enum to the [GenerationCadence](Self::GenerationCadence) branch.
+        pub fn from_generation_cadence(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::DiscoveryVertexDatasetGenerationCadence>,
+            >,
+        ) -> Self {
+            Self::GenerationCadence(value.into())
+        }
+        /// Initializes the enum to the [Disabled](Self::Disabled) branch.
+        pub fn from_disabled(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Disabled>>,
+        ) -> Self {
+            Self::Disabled(value.into())
+        }
+    }
 }
 
 /// Determines what datasets will have profiles generated within an organization
@@ -20789,6 +21941,29 @@ pub mod discovery_vertex_dataset_filter {
         /// automatically.
         Others(std::boxed::Box<crate::model::AllOtherResources>),
     }
+
+    impl Filter {
+        /// Initializes the enum to the [Collection](Self::Collection) branch.
+        pub fn from_collection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VertexDatasetCollection>>,
+        ) -> Self {
+            Self::Collection(value.into())
+        }
+        /// Initializes the enum to the [VertexDatasetResourceReference](Self::VertexDatasetResourceReference) branch.
+        pub fn from_vertex_dataset_resource_reference(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::VertexDatasetResourceReference>,
+            >,
+        ) -> Self {
+            Self::VertexDatasetResourceReference(value.into())
+        }
+        /// Initializes the enum to the [Others](Self::Others) branch.
+        pub fn from_others(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AllOtherResources>>,
+        ) -> Self {
+            Self::Others(value.into())
+        }
+    }
 }
 
 /// Match dataset resources using regex filters.
@@ -20869,6 +22044,15 @@ pub mod vertex_dataset_collection {
     pub enum Pattern {
         /// The regex used to filter dataset resources.
         VertexDatasetRegexes(std::boxed::Box<crate::model::VertexDatasetRegexes>),
+    }
+
+    impl Pattern {
+        /// Initializes the enum to the [VertexDatasetRegexes](Self::VertexDatasetRegexes) branch.
+        pub fn from_vertex_dataset_regexes(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VertexDatasetRegexes>>,
+        ) -> Self {
+            Self::VertexDatasetRegexes(value.into())
+        }
     }
 }
 
@@ -21373,6 +22557,21 @@ pub mod dlp_job {
         RiskDetails(std::boxed::Box<crate::model::AnalyzeDataSourceRiskDetails>),
         /// Results from inspecting a data source.
         InspectDetails(std::boxed::Box<crate::model::InspectDataSourceDetails>),
+    }
+
+    impl Details {
+        /// Initializes the enum to the [RiskDetails](Self::RiskDetails) branch.
+        pub fn from_risk_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AnalyzeDataSourceRiskDetails>>,
+        ) -> Self {
+            Self::RiskDetails(value.into())
+        }
+        /// Initializes the enum to the [InspectDetails](Self::InspectDetails) branch.
+        pub fn from_inspect_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InspectDataSourceDetails>>,
+        ) -> Self {
+            Self::InspectDetails(value.into())
+        }
     }
 }
 
@@ -22207,6 +23406,21 @@ pub mod large_custom_dictionary_config {
         /// Field in a BigQuery table where each cell represents a dictionary phrase.
         BigQueryField(std::boxed::Box<crate::model::BigQueryField>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [CloudStorageFileSet](Self::CloudStorageFileSet) branch.
+        pub fn from_cloud_storage_file_set(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudStorageFileSet>>,
+        ) -> Self {
+            Self::CloudStorageFileSet(value.into())
+        }
+        /// Initializes the enum to the [BigQueryField](Self::BigQueryField) branch.
+        pub fn from_big_query_field(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryField>>,
+        ) -> Self {
+            Self::BigQueryField(value.into())
+        }
+    }
 }
 
 /// Summary statistics of a custom dictionary.
@@ -22404,6 +23618,27 @@ pub mod stored_info_type_config {
         /// Store regular expression-based StoredInfoType.
         Regex(std::boxed::Box<crate::model::custom_info_type::Regex>),
     }
+
+    impl Type {
+        /// Initializes the enum to the [LargeCustomDictionary](Self::LargeCustomDictionary) branch.
+        pub fn from_large_custom_dictionary(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::LargeCustomDictionaryConfig>>,
+        ) -> Self {
+            Self::LargeCustomDictionary(value.into())
+        }
+        /// Initializes the enum to the [Dictionary](Self::Dictionary) branch.
+        pub fn from_dictionary(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::custom_info_type::Dictionary>>,
+        ) -> Self {
+            Self::Dictionary(value.into())
+        }
+        /// Initializes the enum to the [Regex](Self::Regex) branch.
+        pub fn from_regex(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::custom_info_type::Regex>>,
+        ) -> Self {
+            Self::Regex(value.into())
+        }
+    }
 }
 
 /// Statistics for a StoredInfoType.
@@ -22484,6 +23719,15 @@ pub mod stored_info_type_stats {
     pub enum Type {
         /// StoredInfoType where findings are defined by a dictionary of phrases.
         LargeCustomDictionary(std::boxed::Box<crate::model::LargeCustomDictionaryStats>),
+    }
+
+    impl Type {
+        /// Initializes the enum to the [LargeCustomDictionary](Self::LargeCustomDictionary) branch.
+        pub fn from_large_custom_dictionary(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::LargeCustomDictionaryStats>>,
+        ) -> Self {
+            Self::LargeCustomDictionary(value.into())
+        }
     }
 }
 
@@ -26292,6 +27536,25 @@ pub mod data_profile_pub_sub_condition {
                 crate::model::data_profile_pub_sub_condition::ProfileScoreBucket,
             ),
         }
+
+        impl Value {
+            /// Initializes the enum to the [MinimumRiskScore](Self::MinimumRiskScore) branch.
+            pub fn from_minimum_risk_score(
+                value: impl std::convert::Into<
+                    crate::model::data_profile_pub_sub_condition::ProfileScoreBucket,
+                >,
+            ) -> Self {
+                Self::MinimumRiskScore(value.into())
+            }
+            /// Initializes the enum to the [MinimumSensitivityScore](Self::MinimumSensitivityScore) branch.
+            pub fn from_minimum_sensitivity_score(
+                value: impl std::convert::Into<
+                    crate::model::data_profile_pub_sub_condition::ProfileScoreBucket,
+                >,
+            ) -> Self {
+                Self::MinimumSensitivityScore(value.into())
+            }
+        }
     }
 
     /// An expression, consisting of an operator and conditions.
@@ -27017,6 +28280,15 @@ pub mod connection {
         /// Connect to a Cloud SQL instance.
         CloudSql(std::boxed::Box<crate::model::CloudSqlProperties>),
     }
+
+    impl Properties {
+        /// Initializes the enum to the [CloudSql](Self::CloudSql) branch.
+        pub fn from_cloud_sql(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudSqlProperties>>,
+        ) -> Self {
+            Self::CloudSql(value.into())
+        }
+    }
 }
 
 /// A credential consisting of a username and password, where the password is
@@ -27290,6 +28562,21 @@ pub mod cloud_sql_properties {
         /// Built-in IAM authentication (must be configured in Cloud SQL).
         CloudSqlIam(std::boxed::Box<crate::model::CloudSqlIamCredential>),
     }
+
+    impl Credential {
+        /// Initializes the enum to the [UsernamePassword](Self::UsernamePassword) branch.
+        pub fn from_username_password(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SecretManagerCredential>>,
+        ) -> Self {
+            Self::UsernamePassword(value.into())
+        }
+        /// Initializes the enum to the [CloudSqlIam](Self::CloudSqlIam) branch.
+        pub fn from_cloud_sql_iam(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudSqlIamCredential>>,
+        ) -> Self {
+            Self::CloudSqlIam(value.into())
+        }
+    }
 }
 
 /// Request message for DeleteTableProfile.
@@ -27497,6 +28784,15 @@ pub mod file_cluster_type {
     pub enum FileClusterType {
         /// Cluster type.
         Cluster(crate::model::file_cluster_type::Cluster),
+    }
+
+    impl FileClusterType {
+        /// Initializes the enum to the [Cluster](Self::Cluster) branch.
+        pub fn from_cluster(
+            value: impl std::convert::Into<crate::model::file_cluster_type::Cluster>,
+        ) -> Self {
+            Self::Cluster(value.into())
+        }
     }
 }
 
@@ -28260,6 +29556,23 @@ pub mod custom_info_type {
             /// is accepted.
             CloudStoragePath(std::boxed::Box<crate::model::CloudStoragePath>),
         }
+
+        impl Source {
+            /// Initializes the enum to the [WordList](Self::WordList) branch.
+            pub fn from_word_list(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::custom_info_type::dictionary::WordList>,
+                >,
+            ) -> Self {
+                Self::WordList(value.into())
+            }
+            /// Initializes the enum to the [CloudStoragePath](Self::CloudStoragePath) branch.
+            pub fn from_cloud_storage_path(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::CloudStoragePath>>,
+            ) -> Self {
+                Self::CloudStoragePath(value.into())
+            }
+        }
     }
 
     /// Message defining a custom regular expression.
@@ -28565,6 +29878,19 @@ pub mod custom_info_type {
                 /// a final likelihood of `LIKELY`.
                 RelativeLikelihood(i32),
             }
+
+            impl Adjustment {
+                /// Initializes the enum to the [FixedLikelihood](Self::FixedLikelihood) branch.
+                pub fn from_fixed_likelihood(
+                    value: impl std::convert::Into<crate::model::Likelihood>,
+                ) -> Self {
+                    Self::FixedLikelihood(value.into())
+                }
+                /// Initializes the enum to the [RelativeLikelihood](Self::RelativeLikelihood) branch.
+                pub fn from_relative_likelihood(value: impl std::convert::Into<i32>) -> Self {
+                    Self::RelativeLikelihood(value.into())
+                }
+            }
         }
 
         /// The rule that adjusts the likelihood of findings within a certain
@@ -28663,6 +29989,17 @@ pub mod custom_info_type {
                 std::boxed::Box<crate::model::custom_info_type::detection_rule::HotwordRule>,
             ),
         }
+
+        impl Type {
+            /// Initializes the enum to the [HotwordRule](Self::HotwordRule) branch.
+            pub fn from_hotword_rule(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::custom_info_type::detection_rule::HotwordRule>,
+                >,
+            ) -> Self {
+                Self::HotwordRule(value.into())
+            }
+        }
     }
 
     /// Type of exclusion rule.
@@ -28722,6 +30059,35 @@ pub mod custom_info_type {
         /// Load an existing `StoredInfoType` resource for use in
         /// `InspectDataSource`. Not currently supported in `InspectContent`.
         StoredType(std::boxed::Box<crate::model::StoredType>),
+    }
+
+    impl Type {
+        /// Initializes the enum to the [Dictionary](Self::Dictionary) branch.
+        pub fn from_dictionary(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::custom_info_type::Dictionary>>,
+        ) -> Self {
+            Self::Dictionary(value.into())
+        }
+        /// Initializes the enum to the [Regex](Self::Regex) branch.
+        pub fn from_regex(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::custom_info_type::Regex>>,
+        ) -> Self {
+            Self::Regex(value.into())
+        }
+        /// Initializes the enum to the [SurrogateType](Self::SurrogateType) branch.
+        pub fn from_surrogate_type(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::custom_info_type::SurrogateType>,
+            >,
+        ) -> Self {
+            Self::SurrogateType(value.into())
+        }
+        /// Initializes the enum to the [StoredType](Self::StoredType) branch.
+        pub fn from_stored_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StoredType>>,
+        ) -> Self {
+            Self::StoredType(value.into())
+        }
     }
 }
 
@@ -29757,6 +31123,33 @@ pub mod storage_config {
         /// Hybrid inspection options.
         HybridOptions(std::boxed::Box<crate::model::HybridOptions>),
     }
+
+    impl Type {
+        /// Initializes the enum to the [DatastoreOptions](Self::DatastoreOptions) branch.
+        pub fn from_datastore_options(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DatastoreOptions>>,
+        ) -> Self {
+            Self::DatastoreOptions(value.into())
+        }
+        /// Initializes the enum to the [CloudStorageOptions](Self::CloudStorageOptions) branch.
+        pub fn from_cloud_storage_options(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudStorageOptions>>,
+        ) -> Self {
+            Self::CloudStorageOptions(value.into())
+        }
+        /// Initializes the enum to the [BigQueryOptions](Self::BigQueryOptions) branch.
+        pub fn from_big_query_options(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryOptions>>,
+        ) -> Self {
+            Self::BigQueryOptions(value.into())
+        }
+        /// Initializes the enum to the [HybridOptions](Self::HybridOptions) branch.
+        pub fn from_hybrid_options(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HybridOptions>>,
+        ) -> Self {
+            Self::HybridOptions(value.into())
+        }
+    }
 }
 
 /// Configuration to control jobs where the content being inspected is outside
@@ -30118,6 +31511,17 @@ pub mod key {
             /// Cannot be `""`.
             Name(std::string::String),
         }
+
+        impl IdType {
+            /// Initializes the enum to the [Id](Self::Id) branch.
+            pub fn from_id(value: impl std::convert::Into<i64>) -> Self {
+                Self::Id(value.into())
+            }
+            /// Initializes the enum to the [Name](Self::Name) branch.
+            pub fn from_name(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::Name(value.into())
+            }
+        }
     }
 }
 
@@ -30237,6 +31641,21 @@ pub mod record_key {
         DatastoreKey(std::boxed::Box<crate::model::DatastoreKey>),
         /// Datastore key
         BigQueryKey(std::boxed::Box<crate::model::BigQueryKey>),
+    }
+
+    impl Type {
+        /// Initializes the enum to the [DatastoreKey](Self::DatastoreKey) branch.
+        pub fn from_datastore_key(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DatastoreKey>>,
+        ) -> Self {
+            Self::DatastoreKey(value.into())
+        }
+        /// Initializes the enum to the [BigQueryKey](Self::BigQueryKey) branch.
+        pub fn from_big_query_key(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryKey>>,
+        ) -> Self {
+            Self::BigQueryKey(value.into())
+        }
     }
 }
 

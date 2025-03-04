@@ -177,6 +177,17 @@ pub mod big_query_connection_spec {
         /// Specification for the BigQuery connection to a Cloud SQL instance.
         CloudSql(std::boxed::Box<crate::model::CloudSqlBigQueryConnectionSpec>),
     }
+
+    impl ConnectionSpec {
+        /// Initializes the enum to the [CloudSql](Self::CloudSql) branch.
+        pub fn from_cloud_sql(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::CloudSqlBigQueryConnectionSpec>,
+            >,
+        ) -> Self {
+            Self::CloudSql(value.into())
+        }
+    }
 }
 
 /// Specification for the BigQuery connection to a Cloud SQL instance.
@@ -509,6 +520,15 @@ pub mod data_source {
     pub enum Properties {
         /// Detailed properties of the underlying storage.
         StorageProperties(std::boxed::Box<crate::model::StorageProperties>),
+    }
+
+    impl Properties {
+        /// Initializes the enum to the [StorageProperties](Self::StorageProperties) branch.
+        pub fn from_storage_properties(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StorageProperties>>,
+        ) -> Self {
+            Self::StorageProperties(value.into())
+        }
     }
 }
 
@@ -1639,6 +1659,23 @@ pub mod lookup_entry_request {
         /// `dataproc_metastore:{PROJECT_ID}.{LOCATION_ID}.{INSTANCE_ID}.{DATABASE_ID}.{TABLE_ID}`
         FullyQualifiedName(std::string::String),
     }
+
+    impl TargetName {
+        /// Initializes the enum to the [LinkedResource](Self::LinkedResource) branch.
+        pub fn from_linked_resource(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::LinkedResource(value.into())
+        }
+        /// Initializes the enum to the [SqlResource](Self::SqlResource) branch.
+        pub fn from_sql_resource(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::SqlResource(value.into())
+        }
+        /// Initializes the enum to the [FullyQualifiedName](Self::FullyQualifiedName) branch.
+        pub fn from_fully_qualified_name(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::FullyQualifiedName(value.into())
+        }
+    }
 }
 
 /// Entry metadata.
@@ -2473,6 +2510,19 @@ pub mod entry {
         UserSpecifiedType(std::string::String),
     }
 
+    impl EntryType {
+        /// Initializes the enum to the [Type](Self::Type) branch.
+        pub fn from_type(value: impl std::convert::Into<crate::model::EntryType>) -> Self {
+            Self::Type(value.into())
+        }
+        /// Initializes the enum to the [UserSpecifiedType](Self::UserSpecifiedType) branch.
+        pub fn from_user_specified_type(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::UserSpecifiedType(value.into())
+        }
+    }
+
     /// The source system of the entry.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -2493,6 +2543,21 @@ pub mod entry {
         UserSpecifiedSystem(std::string::String),
     }
 
+    impl System {
+        /// Initializes the enum to the [IntegratedSystem](Self::IntegratedSystem) branch.
+        pub fn from_integrated_system(
+            value: impl std::convert::Into<crate::model::IntegratedSystem>,
+        ) -> Self {
+            Self::IntegratedSystem(value.into())
+        }
+        /// Initializes the enum to the [UserSpecifiedSystem](Self::UserSpecifiedSystem) branch.
+        pub fn from_user_specified_system(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::UserSpecifiedSystem(value.into())
+        }
+    }
+
     /// System specification.
     /// Can be used as a complement for `spec`, when some metadata is relevant for
     /// all entries existing within given system
@@ -2509,6 +2574,27 @@ pub mod entry {
         /// Specification that applies to Cloud Bigtable system. Only settable when
         /// `integrated_system` is equal to `CLOUD_BIGTABLE`
         CloudBigtableSystemSpec(std::boxed::Box<crate::model::CloudBigtableSystemSpec>),
+    }
+
+    impl SystemSpec {
+        /// Initializes the enum to the [SqlDatabaseSystemSpec](Self::SqlDatabaseSystemSpec) branch.
+        pub fn from_sql_database_system_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SqlDatabaseSystemSpec>>,
+        ) -> Self {
+            Self::SqlDatabaseSystemSpec(value.into())
+        }
+        /// Initializes the enum to the [LookerSystemSpec](Self::LookerSystemSpec) branch.
+        pub fn from_looker_system_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::LookerSystemSpec>>,
+        ) -> Self {
+            Self::LookerSystemSpec(value.into())
+        }
+        /// Initializes the enum to the [CloudBigtableSystemSpec](Self::CloudBigtableSystemSpec) branch.
+        pub fn from_cloud_bigtable_system_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudBigtableSystemSpec>>,
+        ) -> Self {
+            Self::CloudBigtableSystemSpec(value.into())
+        }
     }
 
     /// Type specification.
@@ -2528,6 +2614,27 @@ pub mod entry {
         /// For more information, see [Introduction to partitioned tables]
         /// (<https://cloud.google.com/bigquery/docs/partitioned-tables#partitioning_versus_sharding>).
         BigqueryDateShardedSpec(std::boxed::Box<crate::model::BigQueryDateShardedSpec>),
+    }
+
+    impl TypeSpec {
+        /// Initializes the enum to the [GcsFilesetSpec](Self::GcsFilesetSpec) branch.
+        pub fn from_gcs_fileset_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsFilesetSpec>>,
+        ) -> Self {
+            Self::GcsFilesetSpec(value.into())
+        }
+        /// Initializes the enum to the [BigqueryTableSpec](Self::BigqueryTableSpec) branch.
+        pub fn from_bigquery_table_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryTableSpec>>,
+        ) -> Self {
+            Self::BigqueryTableSpec(value.into())
+        }
+        /// Initializes the enum to the [BigqueryDateShardedSpec](Self::BigqueryDateShardedSpec) branch.
+        pub fn from_bigquery_date_sharded_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDateShardedSpec>>,
+        ) -> Self {
+            Self::BigqueryDateShardedSpec(value.into())
+        }
     }
 
     /// Type- and system-specific information. Specifications for types contain
@@ -2560,6 +2667,57 @@ pub mod entry {
         ModelSpec(std::boxed::Box<crate::model::ModelSpec>),
         /// FeatureonlineStore spec for Vertex AI Feature Store.
         FeatureOnlineStoreSpec(std::boxed::Box<crate::model::FeatureOnlineStoreSpec>),
+    }
+
+    impl Spec {
+        /// Initializes the enum to the [DatabaseTableSpec](Self::DatabaseTableSpec) branch.
+        pub fn from_database_table_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DatabaseTableSpec>>,
+        ) -> Self {
+            Self::DatabaseTableSpec(value.into())
+        }
+        /// Initializes the enum to the [DataSourceConnectionSpec](Self::DataSourceConnectionSpec) branch.
+        pub fn from_data_source_connection_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DataSourceConnectionSpec>>,
+        ) -> Self {
+            Self::DataSourceConnectionSpec(value.into())
+        }
+        /// Initializes the enum to the [RoutineSpec](Self::RoutineSpec) branch.
+        pub fn from_routine_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RoutineSpec>>,
+        ) -> Self {
+            Self::RoutineSpec(value.into())
+        }
+        /// Initializes the enum to the [DatasetSpec](Self::DatasetSpec) branch.
+        pub fn from_dataset_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DatasetSpec>>,
+        ) -> Self {
+            Self::DatasetSpec(value.into())
+        }
+        /// Initializes the enum to the [FilesetSpec](Self::FilesetSpec) branch.
+        pub fn from_fileset_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FilesetSpec>>,
+        ) -> Self {
+            Self::FilesetSpec(value.into())
+        }
+        /// Initializes the enum to the [ServiceSpec](Self::ServiceSpec) branch.
+        pub fn from_service_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ServiceSpec>>,
+        ) -> Self {
+            Self::ServiceSpec(value.into())
+        }
+        /// Initializes the enum to the [ModelSpec](Self::ModelSpec) branch.
+        pub fn from_model_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ModelSpec>>,
+        ) -> Self {
+            Self::ModelSpec(value.into())
+        }
+        /// Initializes the enum to the [FeatureOnlineStoreSpec](Self::FeatureOnlineStoreSpec) branch.
+        pub fn from_feature_online_store_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FeatureOnlineStoreSpec>>,
+        ) -> Self {
+            Self::FeatureOnlineStoreSpec(value.into())
+        }
     }
 }
 
@@ -2796,6 +2954,17 @@ pub mod database_table_spec {
             BaseTable(std::string::String),
             /// SQL query used to generate this view.
             SqlQuery(std::string::String),
+        }
+
+        impl SourceDefinition {
+            /// Initializes the enum to the [BaseTable](Self::BaseTable) branch.
+            pub fn from_base_table(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::BaseTable(value.into())
+            }
+            /// Initializes the enum to the [SqlQuery](Self::SqlQuery) branch.
+            pub fn from_sql_query(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::SqlQuery(value.into())
+            }
         }
     }
 
@@ -3205,6 +3374,15 @@ pub mod routine_spec {
         /// Fields specific for BigQuery routines.
         BigqueryRoutineSpec(std::boxed::Box<crate::model::BigQueryRoutineSpec>),
     }
+
+    impl SystemSpec {
+        /// Initializes the enum to the [BigqueryRoutineSpec](Self::BigqueryRoutineSpec) branch.
+        pub fn from_bigquery_routine_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryRoutineSpec>>,
+        ) -> Self {
+            Self::BigqueryRoutineSpec(value.into())
+        }
+    }
 }
 
 /// Specification that applies to a dataset. Valid only for
@@ -3286,6 +3464,15 @@ pub mod dataset_spec {
     pub enum SystemSpec {
         /// Vertex AI Dataset specific fields
         VertexDatasetSpec(std::boxed::Box<crate::model::VertexDatasetSpec>),
+    }
+
+    impl SystemSpec {
+        /// Initializes the enum to the [VertexDatasetSpec](Self::VertexDatasetSpec) branch.
+        pub fn from_vertex_dataset_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VertexDatasetSpec>>,
+        ) -> Self {
+            Self::VertexDatasetSpec(value.into())
+        }
     }
 }
 
@@ -3676,6 +3863,15 @@ pub mod service_spec {
         /// Specification that applies to Instance entries of `CLOUD_BIGTABLE`
         /// system.
         CloudBigtableInstanceSpec(std::boxed::Box<crate::model::CloudBigtableInstanceSpec>),
+    }
+
+    impl SystemSpec {
+        /// Initializes the enum to the [CloudBigtableInstanceSpec](Self::CloudBigtableInstanceSpec) branch.
+        pub fn from_cloud_bigtable_instance_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudBigtableInstanceSpec>>,
+        ) -> Self {
+            Self::CloudBigtableInstanceSpec(value.into())
+        }
     }
 }
 
@@ -4081,6 +4277,15 @@ pub mod model_spec {
     pub enum SystemSpec {
         /// Specification for vertex model resources.
         VertexModelSpec(std::boxed::Box<crate::model::VertexModelSpec>),
+    }
+
+    impl SystemSpec {
+        /// Initializes the enum to the [VertexModelSpec](Self::VertexModelSpec) branch.
+        pub fn from_vertex_model_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VertexModelSpec>>,
+        ) -> Self {
+            Self::VertexModelSpec(value.into())
+        }
     }
 }
 
@@ -5727,6 +5932,13 @@ pub mod import_entries_request {
         /// Path to a Cloud Storage bucket that contains a dump ready for ingestion.
         GcsBucketPath(std::string::String),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsBucketPath](Self::GcsBucketPath) branch.
+        pub fn from_gcs_bucket_path(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsBucketPath(value.into())
+        }
+    }
 }
 
 /// Response message for [long-running operation][google.longrunning.Operation]
@@ -6104,6 +6316,21 @@ pub mod set_config_request {
         TagTemplateMigration(crate::model::TagTemplateMigration),
         /// Opt-in status for the UI switch to Dataplex.
         CatalogUiExperience(crate::model::CatalogUIExperience),
+    }
+
+    impl Configuration {
+        /// Initializes the enum to the [TagTemplateMigration](Self::TagTemplateMigration) branch.
+        pub fn from_tag_template_migration(
+            value: impl std::convert::Into<crate::model::TagTemplateMigration>,
+        ) -> Self {
+            Self::TagTemplateMigration(value.into())
+        }
+        /// Initializes the enum to the [CatalogUiExperience](Self::CatalogUiExperience) branch.
+        pub fn from_catalog_ui_experience(
+            value: impl std::convert::Into<crate::model::CatalogUIExperience>,
+        ) -> Self {
+            Self::CatalogUiExperience(value.into())
+        }
     }
 }
 
@@ -6610,6 +6837,15 @@ pub mod tagged_entry {
         /// Non-encrypted Data Catalog v1 Entry.
         V1Entry(std::boxed::Box<crate::model::Entry>),
     }
+
+    impl Entry {
+        /// Initializes the enum to the [V1Entry](Self::V1Entry) branch.
+        pub fn from_v1_entry(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Entry>>,
+        ) -> Self {
+            Self::V1Entry(value.into())
+        }
+    }
 }
 
 /// Wrapper for any item that can be contained in the dump.
@@ -6680,6 +6916,15 @@ pub mod dump_item {
     pub enum Item {
         /// Entry and its tags.
         TaggedEntry(std::boxed::Box<crate::model::TaggedEntry>),
+    }
+
+    impl Item {
+        /// Initializes the enum to the [TaggedEntry](Self::TaggedEntry) branch.
+        pub fn from_tagged_entry(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TaggedEntry>>,
+        ) -> Self {
+            Self::TaggedEntry(value.into())
+        }
     }
 }
 
@@ -7189,6 +7434,49 @@ pub mod physical_schema {
         Orc(std::boxed::Box<crate::model::physical_schema::OrcSchema>),
         /// Marks a CSV-encoded data source.
         Csv(std::boxed::Box<crate::model::physical_schema::CsvSchema>),
+    }
+
+    impl Schema {
+        /// Initializes the enum to the [Avro](Self::Avro) branch.
+        pub fn from_avro(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::physical_schema::AvroSchema>>,
+        ) -> Self {
+            Self::Avro(value.into())
+        }
+        /// Initializes the enum to the [Thrift](Self::Thrift) branch.
+        pub fn from_thrift(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::physical_schema::ThriftSchema>>,
+        ) -> Self {
+            Self::Thrift(value.into())
+        }
+        /// Initializes the enum to the [Protobuf](Self::Protobuf) branch.
+        pub fn from_protobuf(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::physical_schema::ProtobufSchema>,
+            >,
+        ) -> Self {
+            Self::Protobuf(value.into())
+        }
+        /// Initializes the enum to the [Parquet](Self::Parquet) branch.
+        pub fn from_parquet(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::physical_schema::ParquetSchema>,
+            >,
+        ) -> Self {
+            Self::Parquet(value.into())
+        }
+        /// Initializes the enum to the [Orc](Self::Orc) branch.
+        pub fn from_orc(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::physical_schema::OrcSchema>>,
+        ) -> Self {
+            Self::Orc(value.into())
+        }
+        /// Initializes the enum to the [Csv](Self::Csv) branch.
+        pub fn from_csv(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::physical_schema::CsvSchema>>,
+        ) -> Self {
+            Self::Csv(value.into())
+        }
     }
 }
 
@@ -8412,6 +8700,21 @@ pub mod import_taxonomies_request {
         /// Cross-regional source taxonomy to import.
         CrossRegionalSource(std::boxed::Box<crate::model::CrossRegionalSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [InlineSource](Self::InlineSource) branch.
+        pub fn from_inline_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InlineSource>>,
+        ) -> Self {
+            Self::InlineSource(value.into())
+        }
+        /// Initializes the enum to the [CrossRegionalSource](Self::CrossRegionalSource) branch.
+        pub fn from_cross_regional_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CrossRegionalSource>>,
+        ) -> Self {
+            Self::CrossRegionalSource(value.into())
+        }
+    }
 }
 
 /// Inline source containing taxonomies to import.
@@ -8618,6 +8921,13 @@ pub mod export_taxonomies_request {
         /// Serialized export taxonomies that contain all the policy
         /// tags as nested protocol buffers.
         SerializedTaxonomies(bool),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [SerializedTaxonomies](Self::SerializedTaxonomies) branch.
+        pub fn from_serialized_taxonomies(value: impl std::convert::Into<bool>) -> Self {
+            Self::SerializedTaxonomies(value.into())
+        }
     }
 }
 
@@ -9085,6 +9395,17 @@ pub mod column_schema {
         /// Looker specific column info of this column.
         LookerColumnSpec(std::boxed::Box<crate::model::column_schema::LookerColumnSpec>),
     }
+
+    impl SystemSpec {
+        /// Initializes the enum to the [LookerColumnSpec](Self::LookerColumnSpec) branch.
+        pub fn from_looker_column_spec(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::column_schema::LookerColumnSpec>,
+            >,
+        ) -> Self {
+            Self::LookerColumnSpec(value.into())
+        }
+    }
 }
 
 /// Result in the response to a search request.
@@ -9327,6 +9648,21 @@ pub mod search_catalog_result {
         /// Custom source system that you can manually integrate Data Catalog with.
         UserSpecifiedSystem(std::string::String),
     }
+
+    impl System {
+        /// Initializes the enum to the [IntegratedSystem](Self::IntegratedSystem) branch.
+        pub fn from_integrated_system(
+            value: impl std::convert::Into<crate::model::IntegratedSystem>,
+        ) -> Self {
+            Self::IntegratedSystem(value.into())
+        }
+        /// Initializes the enum to the [UserSpecifiedSystem](Self::UserSpecifiedSystem) branch.
+        pub fn from_user_specified_system(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::UserSpecifiedSystem(value.into())
+        }
+    }
 }
 
 /// Describes a BigQuery table.
@@ -9447,6 +9783,21 @@ pub mod big_query_table_spec {
         /// Specification of a BigQuery table. Populated only if
         /// the `table_source_type` is `BIGQUERY_TABLE`.
         TableSpec(std::boxed::Box<crate::model::TableSpec>),
+    }
+
+    impl TypeSpec {
+        /// Initializes the enum to the [ViewSpec](Self::ViewSpec) branch.
+        pub fn from_view_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ViewSpec>>,
+        ) -> Self {
+            Self::ViewSpec(value.into())
+        }
+        /// Initializes the enum to the [TableSpec](Self::TableSpec) branch.
+        pub fn from_table_spec(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TableSpec>>,
+        ) -> Self {
+            Self::TableSpec(value.into())
+        }
     }
 }
 
@@ -9749,6 +10100,13 @@ pub mod tag {
         /// (`.`). Example: `column.nested_column`.
         Column(std::string::String),
     }
+
+    impl Scope {
+        /// Initializes the enum to the [Column](Self::Column) branch.
+        pub fn from_column(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Column(value.into())
+        }
+    }
 }
 
 /// Contains the value and additional information on a field within
@@ -10013,6 +10371,37 @@ pub mod tag_field {
         /// including encoded images. The maximum length of the text without images
         /// is 100 KiB.
         RichtextValue(std::string::String),
+    }
+
+    impl Kind {
+        /// Initializes the enum to the [DoubleValue](Self::DoubleValue) branch.
+        pub fn from_double_value(value: impl std::convert::Into<f64>) -> Self {
+            Self::DoubleValue(value.into())
+        }
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
+        /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+        pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolValue(value.into())
+        }
+        /// Initializes the enum to the [TimestampValue](Self::TimestampValue) branch.
+        pub fn from_timestamp_value(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::TimestampValue(value.into())
+        }
+        /// Initializes the enum to the [EnumValue](Self::EnumValue) branch.
+        pub fn from_enum_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::tag_field::EnumValue>>,
+        ) -> Self {
+            Self::EnumValue(value.into())
+        }
+        /// Initializes the enum to the [RichtextValue](Self::RichtextValue) branch.
+        pub fn from_richtext_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::RichtextValue(value.into())
+        }
     }
 }
 
@@ -10517,6 +10906,21 @@ pub mod field_type {
         PrimitiveType(crate::model::field_type::PrimitiveType),
         /// An enum type.
         EnumType(std::boxed::Box<crate::model::field_type::EnumType>),
+    }
+
+    impl TypeDecl {
+        /// Initializes the enum to the [PrimitiveType](Self::PrimitiveType) branch.
+        pub fn from_primitive_type(
+            value: impl std::convert::Into<crate::model::field_type::PrimitiveType>,
+        ) -> Self {
+            Self::PrimitiveType(value.into())
+        }
+        /// Initializes the enum to the [EnumType](Self::EnumType) branch.
+        pub fn from_enum_type(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::field_type::EnumType>>,
+        ) -> Self {
+            Self::EnumType(value.into())
+        }
     }
 }
 

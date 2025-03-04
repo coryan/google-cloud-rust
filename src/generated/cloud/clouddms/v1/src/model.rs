@@ -784,6 +784,21 @@ pub mod generate_ssh_script_request {
         /// The VM selection configuration
         VmSelectionConfig(std::boxed::Box<crate::model::VmSelectionConfig>),
     }
+
+    impl VmConfig {
+        /// Initializes the enum to the [VmCreationConfig](Self::VmCreationConfig) branch.
+        pub fn from_vm_creation_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VmCreationConfig>>,
+        ) -> Self {
+            Self::VmCreationConfig(value.into())
+        }
+        /// Initializes the enum to the [VmSelectionConfig](Self::VmSelectionConfig) branch.
+        pub fn from_vm_selection_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VmSelectionConfig>>,
+        ) -> Self {
+            Self::VmSelectionConfig(value.into())
+        }
+    }
 }
 
 /// VM creation configuration message
@@ -2390,6 +2405,15 @@ pub mod apply_conversion_workspace_request {
         /// profile.
         ConnectionProfile(std::string::String),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [ConnectionProfile](Self::ConnectionProfile) branch.
+        pub fn from_connection_profile(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::ConnectionProfile(value.into())
+        }
+    }
 }
 
 /// Retrieve a list of all mapping rules in a given conversion workspace.
@@ -2675,6 +2699,21 @@ pub mod seed_conversion_workspace_request {
         /// Optional. Fully qualified (Uri) name of the destination connection
         /// profile.
         DestinationConnectionProfile(std::string::String),
+    }
+
+    impl SeedFrom {
+        /// Initializes the enum to the [SourceConnectionProfile](Self::SourceConnectionProfile) branch.
+        pub fn from_source_connection_profile(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::SourceConnectionProfile(value.into())
+        }
+        /// Initializes the enum to the [DestinationConnectionProfile](Self::DestinationConnectionProfile) branch.
+        pub fn from_destination_connection_profile(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::DestinationConnectionProfile(value.into())
+        }
     }
 }
 
@@ -3912,6 +3951,23 @@ pub mod postgre_sql_connection_profile {
             std::boxed::Box<crate::model::PrivateServiceConnectConnectivity>,
         ),
     }
+
+    impl Connectivity {
+        /// Initializes the enum to the [StaticIpConnectivity](Self::StaticIpConnectivity) branch.
+        pub fn from_static_ip_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StaticIpConnectivity>>,
+        ) -> Self {
+            Self::StaticIpConnectivity(value.into())
+        }
+        /// Initializes the enum to the [PrivateServiceConnectConnectivity](Self::PrivateServiceConnectConnectivity) branch.
+        pub fn from_private_service_connect_connectivity(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::PrivateServiceConnectConnectivity>,
+            >,
+        ) -> Self {
+            Self::PrivateServiceConnectConnectivity(value.into())
+        }
+    }
 }
 
 /// Specifies connection parameters required specifically for Oracle
@@ -4147,6 +4203,27 @@ pub mod oracle_connection_profile {
         ForwardSshConnectivity(std::boxed::Box<crate::model::ForwardSshTunnelConnectivity>),
         /// Private connectivity.
         PrivateConnectivity(std::boxed::Box<crate::model::PrivateConnectivity>),
+    }
+
+    impl Connectivity {
+        /// Initializes the enum to the [StaticServiceIpConnectivity](Self::StaticServiceIpConnectivity) branch.
+        pub fn from_static_service_ip_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StaticServiceIpConnectivity>>,
+        ) -> Self {
+            Self::StaticServiceIpConnectivity(value.into())
+        }
+        /// Initializes the enum to the [ForwardSshConnectivity](Self::ForwardSshConnectivity) branch.
+        pub fn from_forward_ssh_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ForwardSshTunnelConnectivity>>,
+        ) -> Self {
+            Self::ForwardSshConnectivity(value.into())
+        }
+        /// Initializes the enum to the [PrivateConnectivity](Self::PrivateConnectivity) branch.
+        pub fn from_private_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PrivateConnectivity>>,
+        ) -> Self {
+            Self::PrivateConnectivity(value.into())
+        }
     }
 }
 
@@ -4395,6 +4472,19 @@ pub mod sql_acl_entry {
         ExpireTime(std::boxed::Box<wkt::Timestamp>),
         /// Input only. The time-to-leave of this access control entry.
         Ttl(std::boxed::Box<wkt::Duration>),
+    }
+
+    impl Expiration {
+        /// Initializes the enum to the [ExpireTime](Self::ExpireTime) branch.
+        pub fn from_expire_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::ExpireTime(value.into())
+        }
+        /// Initializes the enum to the [Ttl](Self::Ttl) branch.
+        pub fn from_ttl(value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>) -> Self {
+            Self::Ttl(value.into())
+        }
     }
 }
 
@@ -5638,6 +5728,17 @@ pub mod forward_ssh_tunnel_connectivity {
         /// Input only. SSH private key.
         PrivateKey(std::string::String),
     }
+
+    impl AuthenticationMethod {
+        /// Initializes the enum to the [Password](Self::Password) branch.
+        pub fn from_password(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Password(value.into())
+        }
+        /// Initializes the enum to the [PrivateKey](Self::PrivateKey) branch.
+        pub fn from_private_key(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::PrivateKey(value.into())
+        }
+    }
 }
 
 /// Static IP address connectivity configured on service project.
@@ -6506,6 +6607,27 @@ pub mod migration_job {
         /// static ip connectivity data (default, no additional details needed).
         StaticIpConnectivity(std::boxed::Box<crate::model::StaticIpConnectivity>),
     }
+
+    impl Connectivity {
+        /// Initializes the enum to the [ReverseSshConnectivity](Self::ReverseSshConnectivity) branch.
+        pub fn from_reverse_ssh_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ReverseSshConnectivity>>,
+        ) -> Self {
+            Self::ReverseSshConnectivity(value.into())
+        }
+        /// Initializes the enum to the [VpcPeeringConnectivity](Self::VpcPeeringConnectivity) branch.
+        pub fn from_vpc_peering_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VpcPeeringConnectivity>>,
+        ) -> Self {
+            Self::VpcPeeringConnectivity(value.into())
+        }
+        /// Initializes the enum to the [StaticIpConnectivity](Self::StaticIpConnectivity) branch.
+        pub fn from_static_ip_connectivity(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StaticIpConnectivity>>,
+        ) -> Self {
+            Self::StaticIpConnectivity(value.into())
+        }
+    }
 }
 
 /// A conversion workspace's version.
@@ -6929,6 +7051,39 @@ pub mod connection_profile {
         Cloudsql(std::boxed::Box<crate::model::CloudSqlConnectionProfile>),
         /// An AlloyDB cluster connection profile.
         Alloydb(std::boxed::Box<crate::model::AlloyDbConnectionProfile>),
+    }
+
+    impl ConnectionProfile {
+        /// Initializes the enum to the [Mysql](Self::Mysql) branch.
+        pub fn from_mysql(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MySqlConnectionProfile>>,
+        ) -> Self {
+            Self::Mysql(value.into())
+        }
+        /// Initializes the enum to the [Postgresql](Self::Postgresql) branch.
+        pub fn from_postgresql(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PostgreSqlConnectionProfile>>,
+        ) -> Self {
+            Self::Postgresql(value.into())
+        }
+        /// Initializes the enum to the [Oracle](Self::Oracle) branch.
+        pub fn from_oracle(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OracleConnectionProfile>>,
+        ) -> Self {
+            Self::Oracle(value.into())
+        }
+        /// Initializes the enum to the [Cloudsql](Self::Cloudsql) branch.
+        pub fn from_cloudsql(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudSqlConnectionProfile>>,
+        ) -> Self {
+            Self::Cloudsql(value.into())
+        }
+        /// Initializes the enum to the [Alloydb](Self::Alloydb) branch.
+        pub fn from_alloydb(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AlloyDbConnectionProfile>>,
+        ) -> Self {
+            Self::Alloydb(value.into())
+        }
     }
 }
 
@@ -7356,6 +7511,15 @@ pub mod private_connection {
     pub enum Connectivity {
         /// VPC peering configuration.
         VpcPeeringConfig(std::boxed::Box<crate::model::VpcPeeringConfig>),
+    }
+
+    impl Connectivity {
+        /// Initializes the enum to the [VpcPeeringConfig](Self::VpcPeeringConfig) branch.
+        pub fn from_vpc_peering_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VpcPeeringConfig>>,
+        ) -> Self {
+            Self::VpcPeeringConfig(value.into())
+        }
     }
 }
 
@@ -8066,6 +8230,41 @@ pub mod background_job_log_entry {
         /// Output only. Apply job details.
         ApplyJobDetails(std::boxed::Box<crate::model::background_job_log_entry::ApplyJobDetails>),
     }
+
+    impl JobDetails {
+        /// Initializes the enum to the [SeedJobDetails](Self::SeedJobDetails) branch.
+        pub fn from_seed_job_details(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::background_job_log_entry::SeedJobDetails>,
+            >,
+        ) -> Self {
+            Self::SeedJobDetails(value.into())
+        }
+        /// Initializes the enum to the [ImportRulesJobDetails](Self::ImportRulesJobDetails) branch.
+        pub fn from_import_rules_job_details(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::background_job_log_entry::ImportRulesJobDetails>,
+            >,
+        ) -> Self {
+            Self::ImportRulesJobDetails(value.into())
+        }
+        /// Initializes the enum to the [ConvertJobDetails](Self::ConvertJobDetails) branch.
+        pub fn from_convert_job_details(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::background_job_log_entry::ConvertJobDetails>,
+            >,
+        ) -> Self {
+            Self::ConvertJobDetails(value.into())
+        }
+        /// Initializes the enum to the [ApplyJobDetails](Self::ApplyJobDetails) branch.
+        pub fn from_apply_job_details(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::background_job_log_entry::ApplyJobDetails>,
+            >,
+        ) -> Self {
+            Self::ApplyJobDetails(value.into())
+        }
+    }
 }
 
 /// A filter defining the entities that a mapping rule should be applied to.
@@ -8724,6 +8923,75 @@ pub mod mapping_rule {
         /// a table.
         FilterTableColumns(std::boxed::Box<crate::model::FilterTableColumns>),
     }
+
+    impl Details {
+        /// Initializes the enum to the [SingleEntityRename](Self::SingleEntityRename) branch.
+        pub fn from_single_entity_rename(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SingleEntityRename>>,
+        ) -> Self {
+            Self::SingleEntityRename(value.into())
+        }
+        /// Initializes the enum to the [MultiEntityRename](Self::MultiEntityRename) branch.
+        pub fn from_multi_entity_rename(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MultiEntityRename>>,
+        ) -> Self {
+            Self::MultiEntityRename(value.into())
+        }
+        /// Initializes the enum to the [EntityMove](Self::EntityMove) branch.
+        pub fn from_entity_move(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EntityMove>>,
+        ) -> Self {
+            Self::EntityMove(value.into())
+        }
+        /// Initializes the enum to the [SingleColumnChange](Self::SingleColumnChange) branch.
+        pub fn from_single_column_change(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SingleColumnChange>>,
+        ) -> Self {
+            Self::SingleColumnChange(value.into())
+        }
+        /// Initializes the enum to the [MultiColumnDataTypeChange](Self::MultiColumnDataTypeChange) branch.
+        pub fn from_multi_column_data_type_change(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MultiColumnDatatypeChange>>,
+        ) -> Self {
+            Self::MultiColumnDataTypeChange(value.into())
+        }
+        /// Initializes the enum to the [ConditionalColumnSetValue](Self::ConditionalColumnSetValue) branch.
+        pub fn from_conditional_column_set_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ConditionalColumnSetValue>>,
+        ) -> Self {
+            Self::ConditionalColumnSetValue(value.into())
+        }
+        /// Initializes the enum to the [ConvertRowidColumn](Self::ConvertRowidColumn) branch.
+        pub fn from_convert_rowid_column(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ConvertRowIdToColumn>>,
+        ) -> Self {
+            Self::ConvertRowidColumn(value.into())
+        }
+        /// Initializes the enum to the [SetTablePrimaryKey](Self::SetTablePrimaryKey) branch.
+        pub fn from_set_table_primary_key(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SetTablePrimaryKey>>,
+        ) -> Self {
+            Self::SetTablePrimaryKey(value.into())
+        }
+        /// Initializes the enum to the [SinglePackageChange](Self::SinglePackageChange) branch.
+        pub fn from_single_package_change(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SinglePackageChange>>,
+        ) -> Self {
+            Self::SinglePackageChange(value.into())
+        }
+        /// Initializes the enum to the [SourceSqlChange](Self::SourceSqlChange) branch.
+        pub fn from_source_sql_change(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SourceSqlChange>>,
+        ) -> Self {
+            Self::SourceSqlChange(value.into())
+        }
+        /// Initializes the enum to the [FilterTableColumns](Self::FilterTableColumns) branch.
+        pub fn from_filter_table_columns(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FilterTableColumns>>,
+        ) -> Self {
+            Self::FilterTableColumns(value.into())
+        }
+    }
 }
 
 /// Options to configure rule type SingleEntityRename.
@@ -9246,6 +9514,21 @@ pub mod multi_column_datatype_change {
         /// NUMERIC/NUMBER.
         SourceNumericFilter(std::boxed::Box<crate::model::SourceNumericFilter>),
     }
+
+    impl SourceFilter {
+        /// Initializes the enum to the [SourceTextFilter](Self::SourceTextFilter) branch.
+        pub fn from_source_text_filter(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SourceTextFilter>>,
+        ) -> Self {
+            Self::SourceTextFilter(value.into())
+        }
+        /// Initializes the enum to the [SourceNumericFilter](Self::SourceNumericFilter) branch.
+        pub fn from_source_numeric_filter(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SourceNumericFilter>>,
+        ) -> Self {
+            Self::SourceNumericFilter(value.into())
+        }
+    }
 }
 
 /// Filter for text-based data types like varchar.
@@ -9509,6 +9792,21 @@ pub mod conditional_column_set_value {
         /// Optional. Optional filter on source column precision and scale. Used for
         /// fixed point numbers such as NUMERIC/NUMBER data types.
         SourceNumericFilter(std::boxed::Box<crate::model::SourceNumericFilter>),
+    }
+
+    impl SourceFilter {
+        /// Initializes the enum to the [SourceTextFilter](Self::SourceTextFilter) branch.
+        pub fn from_source_text_filter(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SourceTextFilter>>,
+        ) -> Self {
+            Self::SourceTextFilter(value.into())
+        }
+        /// Initializes the enum to the [SourceNumericFilter](Self::SourceNumericFilter) branch.
+        pub fn from_source_numeric_filter(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SourceNumericFilter>>,
+        ) -> Self {
+            Self::SourceNumericFilter(value.into())
+        }
     }
 }
 
@@ -9871,6 +10169,31 @@ pub mod value_transformation {
         DoubleComparison(std::boxed::Box<crate::model::DoubleComparisonFilter>),
     }
 
+    impl Filter {
+        /// Initializes the enum to the [IsNull](Self::IsNull) branch.
+        pub fn from_is_null(value: impl std::convert::Into<std::boxed::Box<wkt::Empty>>) -> Self {
+            Self::IsNull(value.into())
+        }
+        /// Initializes the enum to the [ValueList](Self::ValueList) branch.
+        pub fn from_value_list(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ValueListFilter>>,
+        ) -> Self {
+            Self::ValueList(value.into())
+        }
+        /// Initializes the enum to the [IntComparison](Self::IntComparison) branch.
+        pub fn from_int_comparison(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IntComparisonFilter>>,
+        ) -> Self {
+            Self::IntComparison(value.into())
+        }
+        /// Initializes the enum to the [DoubleComparison](Self::DoubleComparison) branch.
+        pub fn from_double_comparison(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DoubleComparisonFilter>>,
+        ) -> Self {
+            Self::DoubleComparison(value.into())
+        }
+    }
+
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
     #[non_exhaustive]
@@ -9890,6 +10213,45 @@ pub mod value_transformation {
         RoundScale(std::boxed::Box<crate::model::RoundToScale>),
         /// Optional. Applies a hash function on the data
         ApplyHash(std::boxed::Box<crate::model::ApplyHash>),
+    }
+
+    impl Action {
+        /// Initializes the enum to the [AssignNull](Self::AssignNull) branch.
+        pub fn from_assign_null(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Empty>>,
+        ) -> Self {
+            Self::AssignNull(value.into())
+        }
+        /// Initializes the enum to the [AssignSpecificValue](Self::AssignSpecificValue) branch.
+        pub fn from_assign_specific_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AssignSpecificValue>>,
+        ) -> Self {
+            Self::AssignSpecificValue(value.into())
+        }
+        /// Initializes the enum to the [AssignMinValue](Self::AssignMinValue) branch.
+        pub fn from_assign_min_value(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Empty>>,
+        ) -> Self {
+            Self::AssignMinValue(value.into())
+        }
+        /// Initializes the enum to the [AssignMaxValue](Self::AssignMaxValue) branch.
+        pub fn from_assign_max_value(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Empty>>,
+        ) -> Self {
+            Self::AssignMaxValue(value.into())
+        }
+        /// Initializes the enum to the [RoundScale](Self::RoundScale) branch.
+        pub fn from_round_scale(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RoundToScale>>,
+        ) -> Self {
+            Self::RoundScale(value.into())
+        }
+        /// Initializes the enum to the [ApplyHash](Self::ApplyHash) branch.
+        pub fn from_apply_hash(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ApplyHash>>,
+        ) -> Self {
+            Self::ApplyHash(value.into())
+        }
     }
 }
 
@@ -10360,6 +10722,15 @@ pub mod apply_hash {
     pub enum HashFunction {
         /// Optional. Generate UUID from the data's byte array
         UuidFromBytes(std::boxed::Box<wkt::Empty>),
+    }
+
+    impl HashFunction {
+        /// Initializes the enum to the [UuidFromBytes](Self::UuidFromBytes) branch.
+        pub fn from_uuid_from_bytes(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Empty>>,
+        ) -> Self {
+            Self::UuidFromBytes(value.into())
+        }
     }
 }
 
@@ -10915,6 +11286,75 @@ pub mod database_entity {
         Udt(std::boxed::Box<crate::model::UDTEntity>),
         /// Materialized view.
         MaterializedView(std::boxed::Box<crate::model::MaterializedViewEntity>),
+    }
+
+    impl EntityBody {
+        /// Initializes the enum to the [Database](Self::Database) branch.
+        pub fn from_database(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DatabaseInstanceEntity>>,
+        ) -> Self {
+            Self::Database(value.into())
+        }
+        /// Initializes the enum to the [Schema](Self::Schema) branch.
+        pub fn from_schema(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SchemaEntity>>,
+        ) -> Self {
+            Self::Schema(value.into())
+        }
+        /// Initializes the enum to the [Table](Self::Table) branch.
+        pub fn from_table(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TableEntity>>,
+        ) -> Self {
+            Self::Table(value.into())
+        }
+        /// Initializes the enum to the [View](Self::View) branch.
+        pub fn from_view(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ViewEntity>>,
+        ) -> Self {
+            Self::View(value.into())
+        }
+        /// Initializes the enum to the [Sequence](Self::Sequence) branch.
+        pub fn from_sequence(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SequenceEntity>>,
+        ) -> Self {
+            Self::Sequence(value.into())
+        }
+        /// Initializes the enum to the [StoredProcedure](Self::StoredProcedure) branch.
+        pub fn from_stored_procedure(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StoredProcedureEntity>>,
+        ) -> Self {
+            Self::StoredProcedure(value.into())
+        }
+        /// Initializes the enum to the [DatabaseFunction](Self::DatabaseFunction) branch.
+        pub fn from_database_function(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FunctionEntity>>,
+        ) -> Self {
+            Self::DatabaseFunction(value.into())
+        }
+        /// Initializes the enum to the [Synonym](Self::Synonym) branch.
+        pub fn from_synonym(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SynonymEntity>>,
+        ) -> Self {
+            Self::Synonym(value.into())
+        }
+        /// Initializes the enum to the [DatabasePackage](Self::DatabasePackage) branch.
+        pub fn from_database_package(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PackageEntity>>,
+        ) -> Self {
+            Self::DatabasePackage(value.into())
+        }
+        /// Initializes the enum to the [Udt](Self::Udt) branch.
+        pub fn from_udt(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UDTEntity>>,
+        ) -> Self {
+            Self::Udt(value.into())
+        }
+        /// Initializes the enum to the [MaterializedView](Self::MaterializedView) branch.
+        pub fn from_materialized_view(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MaterializedViewEntity>>,
+        ) -> Self {
+            Self::MaterializedView(value.into())
+        }
     }
 }
 

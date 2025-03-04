@@ -7665,6 +7665,17 @@ pub mod restore_parameters {
         /// projects/{project}/locations/{location}/backupVaults/{backup_vault_id}/backups/{backup_id}
         SourceBackup(std::string::String),
     }
+
+    impl Source {
+        /// Initializes the enum to the [SourceSnapshot](Self::SourceSnapshot) branch.
+        pub fn from_source_snapshot(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::SourceSnapshot(value.into())
+        }
+        /// Initializes the enum to the [SourceBackup](Self::SourceBackup) branch.
+        pub fn from_source_backup(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::SourceBackup(value.into())
+        }
+    }
 }
 
 /// BackupConfig contains backup related config on a volume.

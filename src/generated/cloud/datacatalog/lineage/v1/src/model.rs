@@ -1721,6 +1721,21 @@ pub mod search_links_request {
         /// links that lead from upstream assets to the specified asset.
         Target(std::boxed::Box<crate::model::EntityReference>),
     }
+
+    impl Criteria {
+        /// Initializes the enum to the [Source](Self::Source) branch.
+        pub fn from_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EntityReference>>,
+        ) -> Self {
+            Self::Source(value.into())
+        }
+        /// Initializes the enum to the [Target](Self::Target) branch.
+        pub fn from_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EntityReference>>,
+        ) -> Self {
+            Self::Target(value.into())
+        }
+    }
 }
 
 /// Response message for

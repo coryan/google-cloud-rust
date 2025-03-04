@@ -1016,6 +1016,17 @@ pub mod automated_backup_policy {
         WeeklySchedule(std::boxed::Box<crate::model::automated_backup_policy::WeeklySchedule>),
     }
 
+    impl Schedule {
+        /// Initializes the enum to the [WeeklySchedule](Self::WeeklySchedule) branch.
+        pub fn from_weekly_schedule(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::automated_backup_policy::WeeklySchedule>,
+            >,
+        ) -> Self {
+            Self::WeeklySchedule(value.into())
+        }
+    }
+
     /// The retention policy for automated backups.
     ///
     /// The retention policy for a backup is fixed at the time the backup is
@@ -1035,6 +1046,25 @@ pub mod automated_backup_policy {
         QuantityBasedRetention(
             std::boxed::Box<crate::model::automated_backup_policy::QuantityBasedRetention>,
         ),
+    }
+
+    impl Retention {
+        /// Initializes the enum to the [TimeBasedRetention](Self::TimeBasedRetention) branch.
+        pub fn from_time_based_retention(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::automated_backup_policy::TimeBasedRetention>,
+            >,
+        ) -> Self {
+            Self::TimeBasedRetention(value.into())
+        }
+        /// Initializes the enum to the [QuantityBasedRetention](Self::QuantityBasedRetention) branch.
+        pub fn from_quantity_based_retention(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::automated_backup_policy::QuantityBasedRetention>,
+            >,
+        ) -> Self {
+            Self::QuantityBasedRetention(value.into())
+        }
     }
 }
 
@@ -2283,6 +2313,21 @@ pub mod cluster {
         BackupSource(std::boxed::Box<crate::model::BackupSource>),
         /// Output only. Cluster created via DMS migration.
         MigrationSource(std::boxed::Box<crate::model::MigrationSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [BackupSource](Self::BackupSource) branch.
+        pub fn from_backup_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BackupSource>>,
+        ) -> Self {
+            Self::BackupSource(value.into())
+        }
+        /// Initializes the enum to the [MigrationSource](Self::MigrationSource) branch.
+        pub fn from_migration_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MigrationSource>>,
+        ) -> Self {
+            Self::MigrationSource(value.into())
+        }
     }
 }
 
@@ -4157,6 +4202,25 @@ pub mod supported_database_flag {
             std::boxed::Box<crate::model::supported_database_flag::IntegerRestrictions>,
         ),
     }
+
+    impl Restrictions {
+        /// Initializes the enum to the [StringRestrictions](Self::StringRestrictions) branch.
+        pub fn from_string_restrictions(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::supported_database_flag::StringRestrictions>,
+            >,
+        ) -> Self {
+            Self::StringRestrictions(value.into())
+        }
+        /// Initializes the enum to the [IntegerRestrictions](Self::IntegerRestrictions) branch.
+        pub fn from_integer_restrictions(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::supported_database_flag::IntegerRestrictions>,
+            >,
+        ) -> Self {
+            Self::IntegerRestrictions(value.into())
+        }
+    }
 }
 
 /// Message describing User object.
@@ -5191,6 +5255,21 @@ pub mod restore_cluster_request {
         /// ContinuousBackup source. Continuous backup needs to be enabled in the
         /// source cluster for this operation to succeed.
         ContinuousBackupSource(std::boxed::Box<crate::model::ContinuousBackupSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [BackupSource](Self::BackupSource) branch.
+        pub fn from_backup_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BackupSource>>,
+        ) -> Self {
+            Self::BackupSource(value.into())
+        }
+        /// Initializes the enum to the [ContinuousBackupSource](Self::ContinuousBackupSource) branch.
+        pub fn from_continuous_backup_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ContinuousBackupSource>>,
+        ) -> Self {
+            Self::ContinuousBackupSource(value.into())
+        }
     }
 }
 
@@ -6452,6 +6531,13 @@ pub mod execute_sql_request {
         /// Optional. The database native user’s password.
         Password(std::string::String),
     }
+
+    impl UserCredential {
+        /// Initializes the enum to the [Password](Self::Password) branch.
+        pub fn from_password(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Password(value.into())
+        }
+    }
 }
 
 /// Execute a SQL statement response.
@@ -7514,6 +7600,15 @@ pub mod operation_metadata {
     pub enum RequestSpecific {
         /// Output only. BatchCreateInstances related metadata.
         BatchCreateInstancesMetadata(std::boxed::Box<crate::model::BatchCreateInstancesMetadata>),
+    }
+
+    impl RequestSpecific {
+        /// Initializes the enum to the [BatchCreateInstancesMetadata](Self::BatchCreateInstancesMetadata) branch.
+        pub fn from_batch_create_instances_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BatchCreateInstancesMetadata>>,
+        ) -> Self {
+            Self::BatchCreateInstancesMetadata(value.into())
+        }
     }
 }
 

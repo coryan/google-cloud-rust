@@ -1355,6 +1355,17 @@ pub mod ingest_conversations_request {
         GcsSource(std::boxed::Box<crate::model::ingest_conversations_request::GcsSource>),
     }
 
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::ingest_conversations_request::GcsSource>,
+            >,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
+
     /// Configuration for converting individual `source` objects to conversations.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -1364,6 +1375,17 @@ pub mod ingest_conversations_request {
         TranscriptObjectConfig(
             std::boxed::Box<crate::model::ingest_conversations_request::TranscriptObjectConfig>,
         ),
+    }
+
+    impl ObjectConfig {
+        /// Initializes the enum to the [TranscriptObjectConfig](Self::TranscriptObjectConfig) branch.
+        pub fn from_transcript_object_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::ingest_conversations_request::TranscriptObjectConfig>,
+            >,
+        ) -> Self {
+            Self::TranscriptObjectConfig(value.into())
+        }
     }
 }
 
@@ -2363,6 +2385,17 @@ pub mod export_insights_data_request {
             std::boxed::Box<crate::model::export_insights_data_request::BigQueryDestination>,
         ),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [BigQueryDestination](Self::BigQueryDestination) branch.
+        pub fn from_big_query_destination(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::export_insights_data_request::BigQueryDestination>,
+            >,
+        ) -> Self {
+            Self::BigQueryDestination(value.into())
+        }
+    }
 }
 
 /// Metadata for an export insights operation.
@@ -3126,6 +3159,17 @@ pub mod export_issue_model_request {
         /// Google Cloud Storage URI to export the issue model to.
         GcsDestination(std::boxed::Box<crate::model::export_issue_model_request::GcsDestination>),
     }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::export_issue_model_request::GcsDestination>,
+            >,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
+    }
 }
 
 /// Response from export issue model
@@ -3334,6 +3378,17 @@ pub mod import_issue_model_request {
     pub enum Source {
         /// Google Cloud Storage source message.
         GcsSource(std::boxed::Box<crate::model::import_issue_model_request::GcsSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::import_issue_model_request::GcsSource>,
+            >,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
     }
 }
 
@@ -5187,6 +5242,41 @@ pub mod dimension {
             std::boxed::Box<crate::model::dimension::QaQuestionAnswerDimensionMetadata>,
         ),
     }
+
+    impl DimensionMetadata {
+        /// Initializes the enum to the [IssueDimensionMetadata](Self::IssueDimensionMetadata) branch.
+        pub fn from_issue_dimension_metadata(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::dimension::IssueDimensionMetadata>,
+            >,
+        ) -> Self {
+            Self::IssueDimensionMetadata(value.into())
+        }
+        /// Initializes the enum to the [AgentDimensionMetadata](Self::AgentDimensionMetadata) branch.
+        pub fn from_agent_dimension_metadata(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::dimension::AgentDimensionMetadata>,
+            >,
+        ) -> Self {
+            Self::AgentDimensionMetadata(value.into())
+        }
+        /// Initializes the enum to the [QaQuestionDimensionMetadata](Self::QaQuestionDimensionMetadata) branch.
+        pub fn from_qa_question_dimension_metadata(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::dimension::QaQuestionDimensionMetadata>,
+            >,
+        ) -> Self {
+            Self::QaQuestionDimensionMetadata(value.into())
+        }
+        /// Initializes the enum to the [QaQuestionAnswerDimensionMetadata](Self::QaQuestionAnswerDimensionMetadata) branch.
+        pub fn from_qa_question_answer_dimension_metadata(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::dimension::QaQuestionAnswerDimensionMetadata>,
+            >,
+        ) -> Self {
+            Self::QaQuestionAnswerDimensionMetadata(value.into())
+        }
+    }
 }
 
 /// The request for querying metrics.
@@ -5847,6 +5937,15 @@ pub mod query_metrics_response {
             pub enum Measure {
                 /// The measure related to conversations.
                 ConversationMeasure(std::boxed::Box<crate::model::query_metrics_response::slice::data_point::ConversationMeasure>),
+            }
+
+            impl Measure {
+                /// Initializes the enum to the [ConversationMeasure](Self::ConversationMeasure) branch.
+                pub fn from_conversation_measure(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::query_metrics_response::slice::data_point::ConversationMeasure>>,
+                ) -> Self {
+                    Self::ConversationMeasure(value.into())
+                }
             }
         }
 
@@ -7743,6 +7842,17 @@ pub mod bulk_upload_feedback_labels_request {
         /// A cloud storage bucket source.
         GcsSource(std::boxed::Box<crate::model::bulk_upload_feedback_labels_request::GcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::bulk_upload_feedback_labels_request::GcsSource>,
+            >,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// Response for the Bulk Upload Feedback Labels API.
@@ -8268,6 +8378,19 @@ pub mod bulk_download_feedback_labels_request {
         GcsDestination(
             std::boxed::Box<crate::model::bulk_download_feedback_labels_request::GcsDestination>,
         ),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<
+                std::boxed::Box<
+                    crate::model::bulk_download_feedback_labels_request::GcsDestination,
+                >,
+            >,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
     }
 }
 
@@ -9383,6 +9506,15 @@ pub mod conversation {
         CallMetadata(std::boxed::Box<crate::model::conversation::CallMetadata>),
     }
 
+    impl Metadata {
+        /// Initializes the enum to the [CallMetadata](Self::CallMetadata) branch.
+        pub fn from_call_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::conversation::CallMetadata>>,
+        ) -> Self {
+            Self::CallMetadata(value.into())
+        }
+    }
+
     /// A time to live expiration setting, can be either a specified timestamp or a
     /// duration from the time that the conversation creation request was received.
     /// Conversations with an expiration set will be removed up to 24 hours after
@@ -9397,6 +9529,19 @@ pub mod conversation {
         /// Input only. The TTL for this resource. If specified, then this TTL will
         /// be used to calculate the expire time.
         Ttl(std::boxed::Box<wkt::Duration>),
+    }
+
+    impl Expiration {
+        /// Initializes the enum to the [ExpireTime](Self::ExpireTime) branch.
+        pub fn from_expire_time(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Timestamp>>,
+        ) -> Self {
+            Self::ExpireTime(value.into())
+        }
+        /// Initializes the enum to the [Ttl](Self::Ttl) branch.
+        pub fn from_ttl(value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>) -> Self {
+            Self::Ttl(value.into())
+        }
     }
 }
 
@@ -9598,6 +9743,21 @@ pub mod conversation_data_source {
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
         /// The source when the conversation comes from Dialogflow.
         DialogflowSource(std::boxed::Box<crate::model::DialogflowSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+        /// Initializes the enum to the [DialogflowSource](Self::DialogflowSource) branch.
+        pub fn from_dialogflow_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DialogflowSource>>,
+        ) -> Self {
+            Self::DialogflowSource(value.into())
+        }
     }
 }
 
@@ -9923,6 +10083,17 @@ pub mod analysis_result {
         /// Call-specific metadata created by the analysis.
         CallAnalysisMetadata(std::boxed::Box<crate::model::analysis_result::CallAnalysisMetadata>),
     }
+
+    impl Metadata {
+        /// Initializes the enum to the [CallAnalysisMetadata](Self::CallAnalysisMetadata) branch.
+        pub fn from_call_analysis_metadata(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::analysis_result::CallAnalysisMetadata>,
+            >,
+        ) -> Self {
+            Self::CallAnalysisMetadata(value.into())
+        }
+    }
 }
 
 /// Issue Modeling result on a conversation.
@@ -10123,6 +10294,19 @@ pub mod feedback_label {
         Label(std::string::String),
         /// QaAnswer label.
         QaAnswerLabel(std::boxed::Box<crate::model::qa_answer::AnswerValue>),
+    }
+
+    impl LabelType {
+        /// Initializes the enum to the [Label](Self::Label) branch.
+        pub fn from_label(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Label(value.into())
+        }
+        /// Initializes the enum to the [QaAnswerLabel](Self::QaAnswerLabel) branch.
+        pub fn from_qa_answer_label(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::qa_answer::AnswerValue>>,
+        ) -> Self {
+            Self::QaAnswerLabel(value.into())
+        }
     }
 }
 
@@ -10596,6 +10780,57 @@ pub mod call_annotation {
         /// Data specifying an issue match.
         IssueMatchData(std::boxed::Box<crate::model::IssueMatchData>),
     }
+
+    impl Data {
+        /// Initializes the enum to the [InterruptionData](Self::InterruptionData) branch.
+        pub fn from_interruption_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InterruptionData>>,
+        ) -> Self {
+            Self::InterruptionData(value.into())
+        }
+        /// Initializes the enum to the [SentimentData](Self::SentimentData) branch.
+        pub fn from_sentiment_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SentimentData>>,
+        ) -> Self {
+            Self::SentimentData(value.into())
+        }
+        /// Initializes the enum to the [SilenceData](Self::SilenceData) branch.
+        pub fn from_silence_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SilenceData>>,
+        ) -> Self {
+            Self::SilenceData(value.into())
+        }
+        /// Initializes the enum to the [HoldData](Self::HoldData) branch.
+        pub fn from_hold_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HoldData>>,
+        ) -> Self {
+            Self::HoldData(value.into())
+        }
+        /// Initializes the enum to the [EntityMentionData](Self::EntityMentionData) branch.
+        pub fn from_entity_mention_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EntityMentionData>>,
+        ) -> Self {
+            Self::EntityMentionData(value.into())
+        }
+        /// Initializes the enum to the [IntentMatchData](Self::IntentMatchData) branch.
+        pub fn from_intent_match_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IntentMatchData>>,
+        ) -> Self {
+            Self::IntentMatchData(value.into())
+        }
+        /// Initializes the enum to the [PhraseMatchData](Self::PhraseMatchData) branch.
+        pub fn from_phrase_match_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PhraseMatchData>>,
+        ) -> Self {
+            Self::PhraseMatchData(value.into())
+        }
+        /// Initializes the enum to the [IssueMatchData](Self::IssueMatchData) branch.
+        pub fn from_issue_match_data(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::IssueMatchData>>,
+        ) -> Self {
+            Self::IssueMatchData(value.into())
+        }
+    }
 }
 
 /// A point in a conversation that marks the start or the end of an annotation.
@@ -10682,6 +10917,13 @@ pub mod annotation_boundary {
         /// The word index of this boundary with respect to the first word in the
         /// transcript piece. This index starts at zero.
         WordIndex(i32),
+    }
+
+    impl DetailedBoundary {
+        /// Initializes the enum to the [WordIndex](Self::WordIndex) branch.
+        pub fn from_word_index(value: impl std::convert::Into<i32>) -> Self {
+            Self::WordIndex(value.into())
+        }
     }
 }
 
@@ -12235,6 +12477,15 @@ pub mod phrase_match_rule_config {
         /// The configuration for the exact match rule.
         ExactMatchConfig(std::boxed::Box<crate::model::ExactMatchConfig>),
     }
+
+    impl Config {
+        /// Initializes the enum to the [ExactMatchConfig](Self::ExactMatchConfig) branch.
+        pub fn from_exact_match_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExactMatchConfig>>,
+        ) -> Self {
+            Self::ExactMatchConfig(value.into())
+        }
+    }
 }
 
 /// Exact match configuration.
@@ -13211,6 +13462,47 @@ pub mod runtime_annotation {
             std::boxed::Box<crate::model::ConversationSummarizationSuggestionData>,
         ),
     }
+
+    impl Data {
+        /// Initializes the enum to the [ArticleSuggestion](Self::ArticleSuggestion) branch.
+        pub fn from_article_suggestion(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ArticleSuggestionData>>,
+        ) -> Self {
+            Self::ArticleSuggestion(value.into())
+        }
+        /// Initializes the enum to the [FaqAnswer](Self::FaqAnswer) branch.
+        pub fn from_faq_answer(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FaqAnswerData>>,
+        ) -> Self {
+            Self::FaqAnswer(value.into())
+        }
+        /// Initializes the enum to the [SmartReply](Self::SmartReply) branch.
+        pub fn from_smart_reply(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SmartReplyData>>,
+        ) -> Self {
+            Self::SmartReply(value.into())
+        }
+        /// Initializes the enum to the [SmartComposeSuggestion](Self::SmartComposeSuggestion) branch.
+        pub fn from_smart_compose_suggestion(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SmartComposeSuggestionData>>,
+        ) -> Self {
+            Self::SmartComposeSuggestion(value.into())
+        }
+        /// Initializes the enum to the [DialogflowInteraction](Self::DialogflowInteraction) branch.
+        pub fn from_dialogflow_interaction(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DialogflowInteractionData>>,
+        ) -> Self {
+            Self::DialogflowInteraction(value.into())
+        }
+        /// Initializes the enum to the [ConversationSummarizationSuggestion](Self::ConversationSummarizationSuggestion) branch.
+        pub fn from_conversation_summarization_suggestion(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::ConversationSummarizationSuggestionData>,
+            >,
+        ) -> Self {
+            Self::ConversationSummarizationSuggestion(value.into())
+        }
+    }
 }
 
 /// The feedback that the customer has about a certain answer in the
@@ -13974,6 +14266,19 @@ pub mod conversation_participant {
         /// A user-specified ID representing the participant.
         UserId(std::string::String),
     }
+
+    impl Participant {
+        /// Initializes the enum to the [DialogflowParticipantName](Self::DialogflowParticipantName) branch.
+        pub fn from_dialogflow_participant_name(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::DialogflowParticipantName(value.into())
+        }
+        /// Initializes the enum to the [UserId](Self::UserId) branch.
+        pub fn from_user_id(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::UserId(value.into())
+        }
+    }
 }
 
 /// The View resource.
@@ -14400,6 +14705,23 @@ pub mod annotator_selector {
                 crate::model::annotator_selector::summarization_config::SummarizationModel,
             ),
         }
+
+        impl ModelSource {
+            /// Initializes the enum to the [ConversationProfile](Self::ConversationProfile) branch.
+            pub fn from_conversation_profile(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::ConversationProfile(value.into())
+            }
+            /// Initializes the enum to the [SummarizationModel](Self::SummarizationModel) branch.
+            pub fn from_summarization_model(
+                value: impl std::convert::Into<
+                    crate::model::annotator_selector::summarization_config::SummarizationModel,
+                >,
+            ) -> Self {
+                Self::SummarizationModel(value.into())
+            }
+        }
     }
 
     /// Configuration for the QA feature.
@@ -14525,6 +14847,17 @@ pub mod annotator_selector {
             ScorecardList(
                 std::boxed::Box<crate::model::annotator_selector::qa_config::ScorecardList>,
             ),
+        }
+
+        impl ScorecardSource {
+            /// Initializes the enum to the [ScorecardList](Self::ScorecardList) branch.
+            pub fn from_scorecard_list(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::annotator_selector::qa_config::ScorecardList>,
+                >,
+            ) -> Self {
+                Self::ScorecardList(value.into())
+            }
         }
     }
 }
@@ -14877,6 +15210,25 @@ pub mod qa_question {
             /// be set to `true`. If a question receives this answer, it will be
             /// excluded from any score calculations.
             NaValue(bool),
+        }
+
+        impl Value {
+            /// Initializes the enum to the [StrValue](Self::StrValue) branch.
+            pub fn from_str_value(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::StrValue(value.into())
+            }
+            /// Initializes the enum to the [NumValue](Self::NumValue) branch.
+            pub fn from_num_value(value: impl std::convert::Into<f64>) -> Self {
+                Self::NumValue(value.into())
+            }
+            /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+            pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+                Self::BoolValue(value.into())
+            }
+            /// Initializes the enum to the [NaValue](Self::NaValue) branch.
+            pub fn from_na_value(value: impl std::convert::Into<bool>) -> Self {
+                Self::NaValue(value.into())
+            }
         }
     }
 
@@ -15508,6 +15860,25 @@ pub mod qa_answer {
             BoolValue(bool),
             /// A value of "Not Applicable (N/A)". Should only ever be `true`.
             NaValue(bool),
+        }
+
+        impl Value {
+            /// Initializes the enum to the [StrValue](Self::StrValue) branch.
+            pub fn from_str_value(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::StrValue(value.into())
+            }
+            /// Initializes the enum to the [NumValue](Self::NumValue) branch.
+            pub fn from_num_value(value: impl std::convert::Into<f64>) -> Self {
+                Self::NumValue(value.into())
+            }
+            /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+            pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+                Self::BoolValue(value.into())
+            }
+            /// Initializes the enum to the [NaValue](Self::NaValue) branch.
+            pub fn from_na_value(value: impl std::convert::Into<bool>) -> Self {
+                Self::NaValue(value.into())
+            }
         }
     }
 

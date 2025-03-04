@@ -910,12 +910,28 @@ pub mod compliance_note {
         CisBenchmark(std::boxed::Box<crate::model::compliance_note::CisBenchmark>),
     }
 
+    impl ComplianceType {
+        /// Initializes the enum to the [CisBenchmark](Self::CisBenchmark) branch.
+        pub fn from_cis_benchmark(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::compliance_note::CisBenchmark>>,
+        ) -> Self {
+            Self::CisBenchmark(value.into())
+        }
+    }
+
     /// Potential impact of the suggested remediation
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
     #[non_exhaustive]
     pub enum PotentialImpact {
         Impact(std::string::String),
+    }
+
+    impl PotentialImpact {
+        /// Initializes the enum to the [Impact](Self::Impact) branch.
+        pub fn from_impact(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Impact(value.into())
+        }
     }
 }
 
@@ -2824,6 +2840,15 @@ pub mod dsse_attestation_occurrence {
     pub enum DecodedPayload {
         Statement(std::boxed::Box<crate::model::InTotoStatement>),
     }
+
+    impl DecodedPayload {
+        /// Initializes the enum to the [Statement](Self::Statement) branch.
+        pub fn from_statement(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InTotoStatement>>,
+        ) -> Self {
+            Self::Statement(value.into())
+        }
+    }
 }
 
 /// An instance of an analysis type that has been found on a resource.
@@ -3300,6 +3325,75 @@ pub mod occurrence {
         DsseAttestation(std::boxed::Box<crate::model::DSSEAttestationOccurrence>),
         /// Describes a specific SBOM reference occurrences.
         SbomReference(std::boxed::Box<crate::model::SBOMReferenceOccurrence>),
+    }
+
+    impl Details {
+        /// Initializes the enum to the [Vulnerability](Self::Vulnerability) branch.
+        pub fn from_vulnerability(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VulnerabilityOccurrence>>,
+        ) -> Self {
+            Self::Vulnerability(value.into())
+        }
+        /// Initializes the enum to the [Build](Self::Build) branch.
+        pub fn from_build(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BuildOccurrence>>,
+        ) -> Self {
+            Self::Build(value.into())
+        }
+        /// Initializes the enum to the [Image](Self::Image) branch.
+        pub fn from_image(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ImageOccurrence>>,
+        ) -> Self {
+            Self::Image(value.into())
+        }
+        /// Initializes the enum to the [Package](Self::Package) branch.
+        pub fn from_package(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PackageOccurrence>>,
+        ) -> Self {
+            Self::Package(value.into())
+        }
+        /// Initializes the enum to the [Deployment](Self::Deployment) branch.
+        pub fn from_deployment(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DeploymentOccurrence>>,
+        ) -> Self {
+            Self::Deployment(value.into())
+        }
+        /// Initializes the enum to the [Discovery](Self::Discovery) branch.
+        pub fn from_discovery(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DiscoveryOccurrence>>,
+        ) -> Self {
+            Self::Discovery(value.into())
+        }
+        /// Initializes the enum to the [Attestation](Self::Attestation) branch.
+        pub fn from_attestation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AttestationOccurrence>>,
+        ) -> Self {
+            Self::Attestation(value.into())
+        }
+        /// Initializes the enum to the [Upgrade](Self::Upgrade) branch.
+        pub fn from_upgrade(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UpgradeOccurrence>>,
+        ) -> Self {
+            Self::Upgrade(value.into())
+        }
+        /// Initializes the enum to the [Compliance](Self::Compliance) branch.
+        pub fn from_compliance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ComplianceOccurrence>>,
+        ) -> Self {
+            Self::Compliance(value.into())
+        }
+        /// Initializes the enum to the [DsseAttestation](Self::DsseAttestation) branch.
+        pub fn from_dsse_attestation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DSSEAttestationOccurrence>>,
+        ) -> Self {
+            Self::DsseAttestation(value.into())
+        }
+        /// Initializes the enum to the [SbomReference](Self::SbomReference) branch.
+        pub fn from_sbom_reference(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SBOMReferenceOccurrence>>,
+        ) -> Self {
+            Self::SbomReference(value.into())
+        }
     }
 }
 
@@ -3803,6 +3897,81 @@ pub mod note {
         VulnerabilityAssessment(std::boxed::Box<crate::model::VulnerabilityAssessmentNote>),
         /// A note describing an SBOM reference.
         SbomReference(std::boxed::Box<crate::model::SBOMReferenceNote>),
+    }
+
+    impl Type {
+        /// Initializes the enum to the [Vulnerability](Self::Vulnerability) branch.
+        pub fn from_vulnerability(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VulnerabilityNote>>,
+        ) -> Self {
+            Self::Vulnerability(value.into())
+        }
+        /// Initializes the enum to the [Build](Self::Build) branch.
+        pub fn from_build(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BuildNote>>,
+        ) -> Self {
+            Self::Build(value.into())
+        }
+        /// Initializes the enum to the [Image](Self::Image) branch.
+        pub fn from_image(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ImageNote>>,
+        ) -> Self {
+            Self::Image(value.into())
+        }
+        /// Initializes the enum to the [Package](Self::Package) branch.
+        pub fn from_package(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PackageNote>>,
+        ) -> Self {
+            Self::Package(value.into())
+        }
+        /// Initializes the enum to the [Deployment](Self::Deployment) branch.
+        pub fn from_deployment(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DeploymentNote>>,
+        ) -> Self {
+            Self::Deployment(value.into())
+        }
+        /// Initializes the enum to the [Discovery](Self::Discovery) branch.
+        pub fn from_discovery(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DiscoveryNote>>,
+        ) -> Self {
+            Self::Discovery(value.into())
+        }
+        /// Initializes the enum to the [Attestation](Self::Attestation) branch.
+        pub fn from_attestation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AttestationNote>>,
+        ) -> Self {
+            Self::Attestation(value.into())
+        }
+        /// Initializes the enum to the [Upgrade](Self::Upgrade) branch.
+        pub fn from_upgrade(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UpgradeNote>>,
+        ) -> Self {
+            Self::Upgrade(value.into())
+        }
+        /// Initializes the enum to the [Compliance](Self::Compliance) branch.
+        pub fn from_compliance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ComplianceNote>>,
+        ) -> Self {
+            Self::Compliance(value.into())
+        }
+        /// Initializes the enum to the [DsseAttestation](Self::DsseAttestation) branch.
+        pub fn from_dsse_attestation(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DSSEAttestationNote>>,
+        ) -> Self {
+            Self::DsseAttestation(value.into())
+        }
+        /// Initializes the enum to the [VulnerabilityAssessment](Self::VulnerabilityAssessment) branch.
+        pub fn from_vulnerability_assessment(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VulnerabilityAssessmentNote>>,
+        ) -> Self {
+            Self::VulnerabilityAssessment(value.into())
+        }
+        /// Initializes the enum to the [SbomReference](Self::SbomReference) branch.
+        pub fn from_sbom_reference(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SBOMReferenceNote>>,
+        ) -> Self {
+            Self::SbomReference(value.into())
+        }
     }
 }
 
@@ -5420,6 +5589,27 @@ pub mod in_toto_statement {
         Provenance(std::boxed::Box<crate::model::InTotoProvenance>),
         SlsaProvenance(std::boxed::Box<crate::model::SlsaProvenance>),
         SlsaProvenanceZeroTwo(std::boxed::Box<crate::model::SlsaProvenanceZeroTwo>),
+    }
+
+    impl Predicate {
+        /// Initializes the enum to the [Provenance](Self::Provenance) branch.
+        pub fn from_provenance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InTotoProvenance>>,
+        ) -> Self {
+            Self::Provenance(value.into())
+        }
+        /// Initializes the enum to the [SlsaProvenance](Self::SlsaProvenance) branch.
+        pub fn from_slsa_provenance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SlsaProvenance>>,
+        ) -> Self {
+            Self::SlsaProvenance(value.into())
+        }
+        /// Initializes the enum to the [SlsaProvenanceZeroTwo](Self::SlsaProvenanceZeroTwo) branch.
+        pub fn from_slsa_provenance_zero_two(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SlsaProvenanceZeroTwo>>,
+        ) -> Self {
+            Self::SlsaProvenanceZeroTwo(value.into())
+        }
     }
 }
 
@@ -7131,6 +7321,27 @@ pub mod source_context {
         /// A SourceContext referring to any third party Git repo (e.g., GitHub).
         Git(std::boxed::Box<crate::model::GitSourceContext>),
     }
+
+    impl Context {
+        /// Initializes the enum to the [CloudRepo](Self::CloudRepo) branch.
+        pub fn from_cloud_repo(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudRepoSourceContext>>,
+        ) -> Self {
+            Self::CloudRepo(value.into())
+        }
+        /// Initializes the enum to the [Gerrit](Self::Gerrit) branch.
+        pub fn from_gerrit(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GerritSourceContext>>,
+        ) -> Self {
+            Self::Gerrit(value.into())
+        }
+        /// Initializes the enum to the [Git](Self::Git) branch.
+        pub fn from_git(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GitSourceContext>>,
+        ) -> Self {
+            Self::Git(value.into())
+        }
+    }
 }
 
 /// An alias to a repo revision.
@@ -7346,6 +7557,19 @@ pub mod cloud_repo_source_context {
         /// An alias, which may be a branch or tag.
         AliasContext(std::boxed::Box<crate::model::AliasContext>),
     }
+
+    impl Revision {
+        /// Initializes the enum to the [RevisionId](Self::RevisionId) branch.
+        pub fn from_revision_id(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::RevisionId(value.into())
+        }
+        /// Initializes the enum to the [AliasContext](Self::AliasContext) branch.
+        pub fn from_alias_context(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AliasContext>>,
+        ) -> Self {
+            Self::AliasContext(value.into())
+        }
+    }
 }
 
 /// A SourceContext referring to a Gerrit project.
@@ -7475,6 +7699,19 @@ pub mod gerrit_source_context {
         RevisionId(std::string::String),
         /// An alias, which may be a branch or tag.
         AliasContext(std::boxed::Box<crate::model::AliasContext>),
+    }
+
+    impl Revision {
+        /// Initializes the enum to the [RevisionId](Self::RevisionId) branch.
+        pub fn from_revision_id(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::RevisionId(value.into())
+        }
+        /// Initializes the enum to the [AliasContext](Self::AliasContext) branch.
+        pub fn from_alias_context(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AliasContext>>,
+        ) -> Self {
+            Self::AliasContext(value.into())
+        }
     }
 }
 
@@ -7615,6 +7852,19 @@ pub mod repo_id {
         ProjectRepoId(std::boxed::Box<crate::model::ProjectRepoId>),
         /// A server-assigned, globally unique identifier.
         Uid(std::string::String),
+    }
+
+    impl Id {
+        /// Initializes the enum to the [ProjectRepoId](Self::ProjectRepoId) branch.
+        pub fn from_project_repo_id(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ProjectRepoId>>,
+        ) -> Self {
+            Self::ProjectRepoId(value.into())
+        }
+        /// Initializes the enum to the [Uid](Self::Uid) branch.
+        pub fn from_uid(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Uid(value.into())
+        }
     }
 }
 
@@ -9419,6 +9669,13 @@ pub mod vulnerability_assessment_note {
             /// Contains a URI which is vendor-specific.
             /// Example: The artifact repository URL of an image.
             GenericUri(std::string::String),
+        }
+
+        impl Identifier {
+            /// Initializes the enum to the [GenericUri](Self::GenericUri) branch.
+            pub fn from_generic_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::GenericUri(value.into())
+            }
         }
     }
 

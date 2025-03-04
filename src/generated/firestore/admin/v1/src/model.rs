@@ -712,6 +712,17 @@ pub mod database {
             /// snapshot thereof).
             Backup(std::boxed::Box<crate::model::database::source_info::BackupSource>),
         }
+
+        impl Source {
+            /// Initializes the enum to the [Backup](Self::Backup) branch.
+            pub fn from_backup(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::database::source_info::BackupSource>,
+                >,
+            ) -> Self {
+                Self::Backup(value.into())
+            }
+        }
     }
 
     /// Encryption configuration for a new database being created from another
@@ -981,6 +992,39 @@ pub mod database {
                     crate::model::database::encryption_config::CustomerManagedEncryptionOptions,
                 >,
             ),
+        }
+
+        impl EncryptionType {
+            /// Initializes the enum to the [GoogleDefaultEncryption](Self::GoogleDefaultEncryption) branch.
+            pub fn from_google_default_encryption(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::database::encryption_config::GoogleDefaultEncryptionOptions,
+                    >,
+                >,
+            ) -> Self {
+                Self::GoogleDefaultEncryption(value.into())
+            }
+            /// Initializes the enum to the [UseSourceEncryption](Self::UseSourceEncryption) branch.
+            pub fn from_use_source_encryption(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::database::encryption_config::SourceEncryptionOptions,
+                    >,
+                >,
+            ) -> Self {
+                Self::UseSourceEncryption(value.into())
+            }
+            /// Initializes the enum to the [CustomerManagedEncryption](Self::CustomerManagedEncryption) branch.
+            pub fn from_customer_managed_encryption(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::database::encryption_config::CustomerManagedEncryptionOptions,
+                    >,
+                >,
+            ) -> Self {
+                Self::CustomerManagedEncryption(value.into())
+            }
         }
     }
 
@@ -3478,6 +3522,17 @@ pub mod index {
                 /// Indicates the vector index is a flat index.
                 Flat(std::boxed::Box<crate::model::index::index_field::vector_config::FlatIndex>),
             }
+
+            impl Type {
+                /// Initializes the enum to the [Flat](Self::Flat) branch.
+                pub fn from_flat(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::index::index_field::vector_config::FlatIndex>,
+                    >,
+                ) -> Self {
+                    Self::Flat(value.into())
+                }
+            }
         }
 
         /// The supported orderings.
@@ -3575,6 +3630,29 @@ pub mod index {
             /// Indicates that this field supports nearest neighbor and distance
             /// operations on vector.
             VectorConfig(std::boxed::Box<crate::model::index::index_field::VectorConfig>),
+        }
+
+        impl ValueMode {
+            /// Initializes the enum to the [Order](Self::Order) branch.
+            pub fn from_order(
+                value: impl std::convert::Into<crate::model::index::index_field::Order>,
+            ) -> Self {
+                Self::Order(value.into())
+            }
+            /// Initializes the enum to the [ArrayConfig](Self::ArrayConfig) branch.
+            pub fn from_array_config(
+                value: impl std::convert::Into<crate::model::index::index_field::ArrayConfig>,
+            ) -> Self {
+                Self::ArrayConfig(value.into())
+            }
+            /// Initializes the enum to the [VectorConfig](Self::VectorConfig) branch.
+            pub fn from_vector_config(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::index::index_field::VectorConfig>,
+                >,
+            ) -> Self {
+                Self::VectorConfig(value.into())
+            }
         }
     }
 
@@ -4959,6 +5037,21 @@ pub mod backup_schedule {
         DailyRecurrence(std::boxed::Box<crate::model::DailyRecurrence>),
         /// For a schedule that runs weekly on a specific day.
         WeeklyRecurrence(std::boxed::Box<crate::model::WeeklyRecurrence>),
+    }
+
+    impl Recurrence {
+        /// Initializes the enum to the [DailyRecurrence](Self::DailyRecurrence) branch.
+        pub fn from_daily_recurrence(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DailyRecurrence>>,
+        ) -> Self {
+            Self::DailyRecurrence(value.into())
+        }
+        /// Initializes the enum to the [WeeklyRecurrence](Self::WeeklyRecurrence) branch.
+        pub fn from_weekly_recurrence(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::WeeklyRecurrence>>,
+        ) -> Self {
+            Self::WeeklyRecurrence(value.into())
+        }
     }
 }
 

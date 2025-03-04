@@ -497,6 +497,25 @@ pub mod inventory {
             /// Software package available to be installed on the VM instance.
             AvailablePackage(std::boxed::Box<crate::model::inventory::SoftwarePackage>),
         }
+
+        impl Details {
+            /// Initializes the enum to the [InstalledPackage](Self::InstalledPackage) branch.
+            pub fn from_installed_package(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::SoftwarePackage>,
+                >,
+            ) -> Self {
+                Self::InstalledPackage(value.into())
+            }
+            /// Initializes the enum to the [AvailablePackage](Self::AvailablePackage) branch.
+            pub fn from_available_package(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::SoftwarePackage>,
+                >,
+            ) -> Self {
+                Self::AvailablePackage(value.into())
+            }
+        }
     }
 
     /// Software package information of the operating system.
@@ -877,6 +896,79 @@ pub mod inventory {
             CosPackage(std::boxed::Box<crate::model::inventory::VersionedPackage>),
             /// Details of Windows Application.
             WindowsApplication(std::boxed::Box<crate::model::inventory::WindowsApplication>),
+        }
+
+        impl Details {
+            /// Initializes the enum to the [YumPackage](Self::YumPackage) branch.
+            pub fn from_yum_package(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::VersionedPackage>,
+                >,
+            ) -> Self {
+                Self::YumPackage(value.into())
+            }
+            /// Initializes the enum to the [AptPackage](Self::AptPackage) branch.
+            pub fn from_apt_package(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::VersionedPackage>,
+                >,
+            ) -> Self {
+                Self::AptPackage(value.into())
+            }
+            /// Initializes the enum to the [ZypperPackage](Self::ZypperPackage) branch.
+            pub fn from_zypper_package(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::VersionedPackage>,
+                >,
+            ) -> Self {
+                Self::ZypperPackage(value.into())
+            }
+            /// Initializes the enum to the [GoogetPackage](Self::GoogetPackage) branch.
+            pub fn from_googet_package(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::VersionedPackage>,
+                >,
+            ) -> Self {
+                Self::GoogetPackage(value.into())
+            }
+            /// Initializes the enum to the [ZypperPatch](Self::ZypperPatch) branch.
+            pub fn from_zypper_patch(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::inventory::ZypperPatch>>,
+            ) -> Self {
+                Self::ZypperPatch(value.into())
+            }
+            /// Initializes the enum to the [WuaPackage](Self::WuaPackage) branch.
+            pub fn from_wua_package(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::WindowsUpdatePackage>,
+                >,
+            ) -> Self {
+                Self::WuaPackage(value.into())
+            }
+            /// Initializes the enum to the [QfePackage](Self::QfePackage) branch.
+            pub fn from_qfe_package(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::WindowsQuickFixEngineeringPackage>,
+                >,
+            ) -> Self {
+                Self::QfePackage(value.into())
+            }
+            /// Initializes the enum to the [CosPackage](Self::CosPackage) branch.
+            pub fn from_cos_package(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::VersionedPackage>,
+                >,
+            ) -> Self {
+                Self::CosPackage(value.into())
+            }
+            /// Initializes the enum to the [WindowsApplication](Self::WindowsApplication) branch.
+            pub fn from_windows_application(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::inventory::WindowsApplication>,
+                >,
+            ) -> Self {
+                Self::WindowsApplication(value.into())
+            }
         }
     }
 
@@ -2106,6 +2198,31 @@ pub mod os_policy {
                 /// A local path within the VM to use.
                 LocalPath(std::string::String),
             }
+
+            impl Type {
+                /// Initializes the enum to the [Remote](Self::Remote) branch.
+                pub fn from_remote(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::os_policy::resource::file::Remote>,
+                    >,
+                ) -> Self {
+                    Self::Remote(value.into())
+                }
+                /// Initializes the enum to the [Gcs](Self::Gcs) branch.
+                pub fn from_gcs(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::os_policy::resource::file::Gcs>,
+                    >,
+                ) -> Self {
+                    Self::Gcs(value.into())
+                }
+                /// Initializes the enum to the [LocalPath](Self::LocalPath) branch.
+                pub fn from_local_path(
+                    value: impl std::convert::Into<std::string::String>,
+                ) -> Self {
+                    Self::LocalPath(value.into())
+                }
+            }
         }
 
         /// A resource that manages a system package.
@@ -2795,6 +2912,69 @@ pub mod os_policy {
                 /// An MSI package.
                 Msi(std::boxed::Box<crate::model::os_policy::resource::package_resource::Msi>),
             }
+
+            impl SystemPackage {
+                /// Initializes the enum to the [Apt](Self::Apt) branch.
+                pub fn from_apt(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::os_policy::resource::package_resource::Apt>,
+                    >,
+                ) -> Self {
+                    Self::Apt(value.into())
+                }
+                /// Initializes the enum to the [Deb](Self::Deb) branch.
+                pub fn from_deb(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::os_policy::resource::package_resource::Deb>,
+                    >,
+                ) -> Self {
+                    Self::Deb(value.into())
+                }
+                /// Initializes the enum to the [Yum](Self::Yum) branch.
+                pub fn from_yum(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::os_policy::resource::package_resource::Yum>,
+                    >,
+                ) -> Self {
+                    Self::Yum(value.into())
+                }
+                /// Initializes the enum to the [Zypper](Self::Zypper) branch.
+                pub fn from_zypper(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::os_policy::resource::package_resource::Zypper,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::Zypper(value.into())
+                }
+                /// Initializes the enum to the [Rpm](Self::Rpm) branch.
+                pub fn from_rpm(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::os_policy::resource::package_resource::Rpm>,
+                    >,
+                ) -> Self {
+                    Self::Rpm(value.into())
+                }
+                /// Initializes the enum to the [Googet](Self::Googet) branch.
+                pub fn from_googet(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::os_policy::resource::package_resource::GooGet,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::Googet(value.into())
+                }
+                /// Initializes the enum to the [Msi](Self::Msi) branch.
+                pub fn from_msi(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::os_policy::resource::package_resource::Msi>,
+                    >,
+                ) -> Self {
+                    Self::Msi(value.into())
+                }
+            }
         }
 
         /// A resource that manages a package repository.
@@ -3367,6 +3547,45 @@ pub mod os_policy {
                     >,
                 ),
             }
+
+            impl Repository {
+                /// Initializes the enum to the [Apt](Self::Apt) branch.
+                pub fn from_apt(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::os_policy::resource::repository_resource::AptRepository,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::Apt(value.into())
+                }
+                /// Initializes the enum to the [Yum](Self::Yum) branch.
+                pub fn from_yum(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::os_policy::resource::repository_resource::YumRepository,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::Yum(value.into())
+                }
+                /// Initializes the enum to the [Zypper](Self::Zypper) branch.
+                pub fn from_zypper(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::os_policy::resource::repository_resource::ZypperRepository>>,
+                ) -> Self {
+                    Self::Zypper(value.into())
+                }
+                /// Initializes the enum to the [Goo](Self::Goo) branch.
+                pub fn from_goo(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<
+                            crate::model::os_policy::resource::repository_resource::GooRepository,
+                        >,
+                    >,
+                ) -> Self {
+                    Self::Goo(value.into())
+                }
+            }
         }
 
         /// A resource that allows executing scripts on the VM.
@@ -3681,6 +3900,23 @@ pub mod os_policy {
                     /// The size of the script is limited to 1024 characters.
                     Script(std::string::String),
                 }
+
+                impl Source {
+                    /// Initializes the enum to the [File](Self::File) branch.
+                    pub fn from_file(
+                        value: impl std::convert::Into<
+                            std::boxed::Box<crate::model::os_policy::resource::File>,
+                        >,
+                    ) -> Self {
+                        Self::File(value.into())
+                    }
+                    /// Initializes the enum to the [Script](Self::Script) branch.
+                    pub fn from_script(
+                        value: impl std::convert::Into<std::string::String>,
+                    ) -> Self {
+                        Self::Script(value.into())
+                    }
+                }
             }
         }
 
@@ -3891,6 +4127,21 @@ pub mod os_policy {
                 /// The size of the content is limited to 1024 characters.
                 Content(std::string::String),
             }
+
+            impl Source {
+                /// Initializes the enum to the [File](Self::File) branch.
+                pub fn from_file(
+                    value: impl std::convert::Into<
+                        std::boxed::Box<crate::model::os_policy::resource::File>,
+                    >,
+                ) -> Self {
+                    Self::File(value.into())
+                }
+                /// Initializes the enum to the [Content](Self::Content) branch.
+                pub fn from_content(value: impl std::convert::Into<std::string::String>) -> Self {
+                    Self::Content(value.into())
+                }
+            }
         }
 
         /// Resource type.
@@ -3906,6 +4157,41 @@ pub mod os_policy {
             Exec(std::boxed::Box<crate::model::os_policy::resource::ExecResource>),
             /// File resource
             File(std::boxed::Box<crate::model::os_policy::resource::FileResource>),
+        }
+
+        impl ResourceType {
+            /// Initializes the enum to the [Pkg](Self::Pkg) branch.
+            pub fn from_pkg(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::os_policy::resource::PackageResource>,
+                >,
+            ) -> Self {
+                Self::Pkg(value.into())
+            }
+            /// Initializes the enum to the [Repository](Self::Repository) branch.
+            pub fn from_repository(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::os_policy::resource::RepositoryResource>,
+                >,
+            ) -> Self {
+                Self::Repository(value.into())
+            }
+            /// Initializes the enum to the [Exec](Self::Exec) branch.
+            pub fn from_exec(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::os_policy::resource::ExecResource>,
+                >,
+            ) -> Self {
+                Self::Exec(value.into())
+            }
+            /// Initializes the enum to the [File](Self::File) branch.
+            pub fn from_file(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::os_policy::resource::FileResource>,
+                >,
+            ) -> Self {
+                Self::File(value.into())
+            }
         }
     }
 
@@ -4731,6 +5017,15 @@ pub mod os_policy_assignment_report {
             pub enum Output {
                 /// ExecResource specific output.
                 ExecResourceOutput(std::boxed::Box<crate::model::os_policy_assignment_report::os_policy_compliance::os_policy_resource_compliance::ExecResourceOutput>),
+            }
+
+            impl Output {
+                /// Initializes the enum to the [ExecResourceOutput](Self::ExecResourceOutput) branch.
+                pub fn from_exec_resource_output(
+                    value: impl std::convert::Into<std::boxed::Box<crate::model::os_policy_assignment_report::os_policy_compliance::os_policy_resource_compliance::ExecResourceOutput>>,
+                ) -> Self {
+                    Self::ExecResourceOutput(value.into())
+                }
             }
         }
 
@@ -5963,6 +6258,17 @@ pub mod fixed_or_percent {
         /// multiplied by a reference value.
         Percent(i32),
     }
+
+    impl Mode {
+        /// Initializes the enum to the [Fixed](Self::Fixed) branch.
+        pub fn from_fixed(value: impl std::convert::Into<i32>) -> Self {
+            Self::Fixed(value.into())
+        }
+        /// Initializes the enum to the [Percent](Self::Percent) branch.
+        pub fn from_percent(value: impl std::convert::Into<i32>) -> Self {
+            Self::Percent(value.into())
+        }
+    }
 }
 
 /// Patch deployments are configurations that individual patch jobs use to
@@ -6261,6 +6567,21 @@ pub mod patch_deployment {
         /// Required. Schedule recurring executions.
         RecurringSchedule(std::boxed::Box<crate::model::RecurringSchedule>),
     }
+
+    impl Schedule {
+        /// Initializes the enum to the [OneTimeSchedule](Self::OneTimeSchedule) branch.
+        pub fn from_one_time_schedule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OneTimeSchedule>>,
+        ) -> Self {
+            Self::OneTimeSchedule(value.into())
+        }
+        /// Initializes the enum to the [RecurringSchedule](Self::RecurringSchedule) branch.
+        pub fn from_recurring_schedule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RecurringSchedule>>,
+        ) -> Self {
+            Self::RecurringSchedule(value.into())
+        }
+    }
 }
 
 /// Sets the time for a one time patch deployment. Timestamp is in
@@ -6548,6 +6869,21 @@ pub mod recurring_schedule {
         /// Required. Schedule with monthly executions.
         Monthly(std::boxed::Box<crate::model::MonthlySchedule>),
     }
+
+    impl ScheduleConfig {
+        /// Initializes the enum to the [Weekly](Self::Weekly) branch.
+        pub fn from_weekly(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::WeeklySchedule>>,
+        ) -> Self {
+            Self::Weekly(value.into())
+        }
+        /// Initializes the enum to the [Monthly](Self::Monthly) branch.
+        pub fn from_monthly(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MonthlySchedule>>,
+        ) -> Self {
+            Self::Monthly(value.into())
+        }
+    }
 }
 
 /// Represents a weekly schedule.
@@ -6685,6 +7021,19 @@ pub mod monthly_schedule {
         /// will be skipped. For example, a schedule to run "every month on the 31st"
         /// will not run in February, April, June, etc.
         MonthDay(i32),
+    }
+
+    impl DayOfMonth {
+        /// Initializes the enum to the [WeekDayOfMonth](Self::WeekDayOfMonth) branch.
+        pub fn from_week_day_of_month(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::WeekDayOfMonth>>,
+        ) -> Self {
+            Self::WeekDayOfMonth(value.into())
+        }
+        /// Initializes the enum to the [MonthDay](Self::MonthDay) branch.
+        pub fn from_month_day(value: impl std::convert::Into<i32>) -> Self {
+            Self::MonthDay(value.into())
+        }
     }
 }
 
@@ -9043,6 +9392,19 @@ pub mod exec_step_config {
         LocalPath(std::string::String),
         /// A Cloud Storage object containing the executable.
         GcsObject(std::boxed::Box<crate::model::GcsObject>),
+    }
+
+    impl Executable {
+        /// Initializes the enum to the [LocalPath](Self::LocalPath) branch.
+        pub fn from_local_path(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::LocalPath(value.into())
+        }
+        /// Initializes the enum to the [GcsObject](Self::GcsObject) branch.
+        pub fn from_gcs_object(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsObject>>,
+        ) -> Self {
+            Self::GcsObject(value.into())
+        }
     }
 }
 

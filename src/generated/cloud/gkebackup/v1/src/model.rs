@@ -666,6 +666,19 @@ pub mod backup {
             /// Output only. Anthos version
             AnthosVersion(std::string::String),
         }
+
+        impl PlatformVersion {
+            /// Initializes the enum to the [GkeVersion](Self::GkeVersion) branch.
+            pub fn from_gke_version(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::GkeVersion(value.into())
+            }
+            /// Initializes the enum to the [AnthosVersion](Self::AnthosVersion) branch.
+            pub fn from_anthos_version(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::AnthosVersion(value.into())
+            }
+        }
     }
 
     /// State
@@ -741,6 +754,25 @@ pub mod backup {
         /// Output only. If set, the list of ProtectedApplications whose resources
         /// were included in the Backup.
         SelectedApplications(std::boxed::Box<crate::model::NamespacedNames>),
+    }
+
+    impl BackupScope {
+        /// Initializes the enum to the [AllNamespaces](Self::AllNamespaces) branch.
+        pub fn from_all_namespaces(value: impl std::convert::Into<bool>) -> Self {
+            Self::AllNamespaces(value.into())
+        }
+        /// Initializes the enum to the [SelectedNamespaces](Self::SelectedNamespaces) branch.
+        pub fn from_selected_namespaces(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Namespaces>>,
+        ) -> Self {
+            Self::SelectedNamespaces(value.into())
+        }
+        /// Initializes the enum to the [SelectedApplications](Self::SelectedApplications) branch.
+        pub fn from_selected_applications(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::NamespacedNames>>,
+        ) -> Self {
+            Self::SelectedApplications(value.into())
+        }
     }
 }
 
@@ -1380,6 +1412,25 @@ pub mod backup_plan {
             /// ProtectedApplications.
             SelectedApplications(std::boxed::Box<crate::model::NamespacedNames>),
         }
+
+        impl BackupScope {
+            /// Initializes the enum to the [AllNamespaces](Self::AllNamespaces) branch.
+            pub fn from_all_namespaces(value: impl std::convert::Into<bool>) -> Self {
+                Self::AllNamespaces(value.into())
+            }
+            /// Initializes the enum to the [SelectedNamespaces](Self::SelectedNamespaces) branch.
+            pub fn from_selected_namespaces(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::Namespaces>>,
+            ) -> Self {
+                Self::SelectedNamespaces(value.into())
+            }
+            /// Initializes the enum to the [SelectedApplications](Self::SelectedApplications) branch.
+            pub fn from_selected_applications(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::NamespacedNames>>,
+            ) -> Self {
+                Self::SelectedApplications(value.into())
+            }
+        }
     }
 
     /// State
@@ -1705,6 +1756,27 @@ pub mod exclusion_window {
         Daily(bool),
         /// The exclusion window occurs on these days of each week in UTC.
         DaysOfWeek(std::boxed::Box<crate::model::exclusion_window::DayOfWeekList>),
+    }
+
+    impl Recurrence {
+        /// Initializes the enum to the [SingleOccurrenceDate](Self::SingleOccurrenceDate) branch.
+        pub fn from_single_occurrence_date(
+            value: impl std::convert::Into<std::boxed::Box<gtype::model::Date>>,
+        ) -> Self {
+            Self::SingleOccurrenceDate(value.into())
+        }
+        /// Initializes the enum to the [Daily](Self::Daily) branch.
+        pub fn from_daily(value: impl std::convert::Into<bool>) -> Self {
+            Self::Daily(value.into())
+        }
+        /// Initializes the enum to the [DaysOfWeek](Self::DaysOfWeek) branch.
+        pub fn from_days_of_week(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::exclusion_window::DayOfWeekList>,
+            >,
+        ) -> Self {
+            Self::DaysOfWeek(value.into())
+        }
     }
 }
 
@@ -5218,6 +5290,15 @@ pub mod restore_config {
             /// to apply the policy to.
             VolumeType(crate::model::volume_type_enum::VolumeType),
         }
+
+        impl Scope {
+            /// Initializes the enum to the [VolumeType](Self::VolumeType) branch.
+            pub fn from_volume_type(
+                value: impl std::convert::Into<crate::model::volume_type_enum::VolumeType>,
+            ) -> Self {
+                Self::VolumeType(value.into())
+            }
+        }
     }
 
     /// Allows customers to specify dependencies between resources
@@ -5545,6 +5626,35 @@ pub mod restore_config {
         /// namespaces except those in this list will be restored.
         ExcludedNamespaces(std::boxed::Box<crate::model::Namespaces>),
     }
+
+    impl NamespacedResourceRestoreScope {
+        /// Initializes the enum to the [AllNamespaces](Self::AllNamespaces) branch.
+        pub fn from_all_namespaces(value: impl std::convert::Into<bool>) -> Self {
+            Self::AllNamespaces(value.into())
+        }
+        /// Initializes the enum to the [SelectedNamespaces](Self::SelectedNamespaces) branch.
+        pub fn from_selected_namespaces(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Namespaces>>,
+        ) -> Self {
+            Self::SelectedNamespaces(value.into())
+        }
+        /// Initializes the enum to the [SelectedApplications](Self::SelectedApplications) branch.
+        pub fn from_selected_applications(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::NamespacedNames>>,
+        ) -> Self {
+            Self::SelectedApplications(value.into())
+        }
+        /// Initializes the enum to the [NoNamespaces](Self::NoNamespaces) branch.
+        pub fn from_no_namespaces(value: impl std::convert::Into<bool>) -> Self {
+            Self::NoNamespaces(value.into())
+        }
+        /// Initializes the enum to the [ExcludedNamespaces](Self::ExcludedNamespaces) branch.
+        pub fn from_excluded_namespaces(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Namespaces>>,
+        ) -> Self {
+            Self::ExcludedNamespaces(value.into())
+        }
+    }
 }
 
 /// Defines a selector to identify a single or a group of resources.
@@ -5727,6 +5837,15 @@ pub mod volume_data_restore_policy_override {
     pub enum Scope {
         /// A list of PVCs to apply the policy override to.
         SelectedPvcs(std::boxed::Box<crate::model::NamespacedNames>),
+    }
+
+    impl Scope {
+        /// Initializes the enum to the [SelectedPvcs](Self::SelectedPvcs) branch.
+        pub fn from_selected_pvcs(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::NamespacedNames>>,
+        ) -> Self {
+            Self::SelectedPvcs(value.into())
+        }
     }
 }
 

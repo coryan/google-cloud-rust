@@ -623,6 +623,25 @@ pub mod span {
             /// An event describing a message sent/received between Spans.
             MessageEvent(std::boxed::Box<crate::model::span::time_event::MessageEvent>),
         }
+
+        impl Value {
+            /// Initializes the enum to the [Annotation](Self::Annotation) branch.
+            pub fn from_annotation(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::span::time_event::Annotation>,
+                >,
+            ) -> Self {
+                Self::Annotation(value.into())
+            }
+            /// Initializes the enum to the [MessageEvent](Self::MessageEvent) branch.
+            pub fn from_message_event(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::span::time_event::MessageEvent>,
+                >,
+            ) -> Self {
+                Self::MessageEvent(value.into())
+            }
+        }
     }
 
     /// A collection of `TimeEvent`s. A `TimeEvent` is a time-stamped annotation
@@ -1034,6 +1053,23 @@ pub mod attribute_value {
         IntValue(i64),
         /// A Boolean value represented by `true` or `false`.
         BoolValue(bool),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TruncatableString>>,
+        ) -> Self {
+            Self::StringValue(value.into())
+        }
+        /// Initializes the enum to the [IntValue](Self::IntValue) branch.
+        pub fn from_int_value(value: impl std::convert::Into<i64>) -> Self {
+            Self::IntValue(value.into())
+        }
+        /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+        pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolValue(value.into())
+        }
     }
 }
 

@@ -388,6 +388,15 @@ pub mod attachment {
         /// A CSV file attachment. Max size is 10 MB.
         Csv(std::boxed::Box<crate::model::Csv>),
     }
+
+    impl Data {
+        /// Initializes the enum to the [Csv](Self::Csv) branch.
+        pub fn from_csv(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Csv>>,
+        ) -> Self {
+            Self::Csv(value.into())
+        }
+    }
 }
 
 /// A representation of a CSV file attachment, as a list of column headers and

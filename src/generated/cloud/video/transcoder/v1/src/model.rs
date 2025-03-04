@@ -446,6 +446,19 @@ pub mod job {
         /// The configuration for this job.
         Config(std::boxed::Box<crate::model::JobConfig>),
     }
+
+    impl JobConfig {
+        /// Initializes the enum to the [TemplateId](Self::TemplateId) branch.
+        pub fn from_template_id(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TemplateId(value.into())
+        }
+        /// Initializes the enum to the [Config](Self::Config) branch.
+        pub fn from_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::JobConfig>>,
+        ) -> Self {
+            Self::Config(value.into())
+        }
+    }
 }
 
 /// Transcoding job template resource.
@@ -1051,6 +1064,27 @@ pub mod elementary_stream {
         /// Encoding of a text stream. For example, closed captions or subtitles.
         TextStream(std::boxed::Box<crate::model::TextStream>),
     }
+
+    impl ElementaryStream {
+        /// Initializes the enum to the [VideoStream](Self::VideoStream) branch.
+        pub fn from_video_stream(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VideoStream>>,
+        ) -> Self {
+            Self::VideoStream(value.into())
+        }
+        /// Initializes the enum to the [AudioStream](Self::AudioStream) branch.
+        pub fn from_audio_stream(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AudioStream>>,
+        ) -> Self {
+            Self::AudioStream(value.into())
+        }
+        /// Initializes the enum to the [TextStream](Self::TextStream) branch.
+        pub fn from_text_stream(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TextStream>>,
+        ) -> Self {
+            Self::TextStream(value.into())
+        }
+    }
 }
 
 /// Multiplexing settings for output stream.
@@ -1405,6 +1439,15 @@ pub mod manifest {
         /// `DASH` manifest configuration.
         Dash(std::boxed::Box<crate::model::manifest::DashConfig>),
     }
+
+    impl ManifestConfig {
+        /// Initializes the enum to the [Dash](Self::Dash) branch.
+        pub fn from_dash(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::manifest::DashConfig>>,
+        ) -> Self {
+            Self::Dash(value.into())
+        }
+    }
 }
 
 /// A Pub/Sub destination.
@@ -1676,6 +1719,19 @@ pub mod sprite_sheet {
         /// Starting from `0s`, create sprites at regular intervals. Specify the
         /// interval value in seconds.
         Interval(std::boxed::Box<wkt::Duration>),
+    }
+
+    impl ExtractionStrategy {
+        /// Initializes the enum to the [TotalCount](Self::TotalCount) branch.
+        pub fn from_total_count(value: impl std::convert::Into<i32>) -> Self {
+            Self::TotalCount(value.into())
+        }
+        /// Initializes the enum to the [Interval](Self::Interval) branch.
+        pub fn from_interval(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+        ) -> Self {
+            Self::Interval(value.into())
+        }
     }
 }
 
@@ -2137,6 +2193,27 @@ pub mod overlay {
             AnimationFade(std::boxed::Box<crate::model::overlay::AnimationFade>),
             /// End previous animation.
             AnimationEnd(std::boxed::Box<crate::model::overlay::AnimationEnd>),
+        }
+
+        impl AnimationType {
+            /// Initializes the enum to the [AnimationStatic](Self::AnimationStatic) branch.
+            pub fn from_animation_static(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::overlay::AnimationStatic>>,
+            ) -> Self {
+                Self::AnimationStatic(value.into())
+            }
+            /// Initializes the enum to the [AnimationFade](Self::AnimationFade) branch.
+            pub fn from_animation_fade(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::overlay::AnimationFade>>,
+            ) -> Self {
+                Self::AnimationFade(value.into())
+            }
+            /// Initializes the enum to the [AnimationEnd](Self::AnimationEnd) branch.
+            pub fn from_animation_end(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::overlay::AnimationEnd>>,
+            ) -> Self {
+                Self::AnimationEnd(value.into())
+            }
         }
     }
 
@@ -2889,6 +2966,25 @@ pub mod preprocessing_config {
             /// Specifies the Bob Weaver Deinterlacing Filter Configuration.
             Bwdif(std::boxed::Box<crate::model::preprocessing_config::deinterlace::BwdifConfig>),
         }
+
+        impl DeinterlacingFilter {
+            /// Initializes the enum to the [Yadif](Self::Yadif) branch.
+            pub fn from_yadif(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::preprocessing_config::deinterlace::YadifConfig>,
+                >,
+            ) -> Self {
+                Self::Yadif(value.into())
+            }
+            /// Initializes the enum to the [Bwdif](Self::Bwdif) branch.
+            pub fn from_bwdif(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::preprocessing_config::deinterlace::BwdifConfig>,
+                >,
+            ) -> Self {
+                Self::Bwdif(value.into())
+            }
+        }
     }
 }
 
@@ -3379,6 +3475,19 @@ pub mod video_stream {
             /// `gopDuration`.
             GopDuration(std::boxed::Box<wkt::Duration>),
         }
+
+        impl GopMode {
+            /// Initializes the enum to the [GopFrameCount](Self::GopFrameCount) branch.
+            pub fn from_gop_frame_count(value: impl std::convert::Into<i32>) -> Self {
+                Self::GopFrameCount(value.into())
+            }
+            /// Initializes the enum to the [GopDuration](Self::GopDuration) branch.
+            pub fn from_gop_duration(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+            ) -> Self {
+                Self::GopDuration(value.into())
+            }
+        }
     }
 
     /// H265 codec settings.
@@ -3739,6 +3848,19 @@ pub mod video_stream {
             /// `gopDuration`.
             GopDuration(std::boxed::Box<wkt::Duration>),
         }
+
+        impl GopMode {
+            /// Initializes the enum to the [GopFrameCount](Self::GopFrameCount) branch.
+            pub fn from_gop_frame_count(value: impl std::convert::Into<i32>) -> Self {
+                Self::GopFrameCount(value.into())
+            }
+            /// Initializes the enum to the [GopDuration](Self::GopDuration) branch.
+            pub fn from_gop_duration(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+            ) -> Self {
+                Self::GopDuration(value.into())
+            }
+        }
     }
 
     /// VP9 codec settings.
@@ -3983,6 +4105,19 @@ pub mod video_stream {
             /// `gopDuration`.
             GopDuration(std::boxed::Box<wkt::Duration>),
         }
+
+        impl GopMode {
+            /// Initializes the enum to the [GopFrameCount](Self::GopFrameCount) branch.
+            pub fn from_gop_frame_count(value: impl std::convert::Into<i32>) -> Self {
+                Self::GopFrameCount(value.into())
+            }
+            /// Initializes the enum to the [GopDuration](Self::GopDuration) branch.
+            pub fn from_gop_duration(
+                value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+            ) -> Self {
+                Self::GopDuration(value.into())
+            }
+        }
     }
 
     /// Codec settings can be h264, h265, or vp9.
@@ -3996,6 +4131,33 @@ pub mod video_stream {
         H265(std::boxed::Box<crate::model::video_stream::H265CodecSettings>),
         /// VP9 codec settings.
         Vp9(std::boxed::Box<crate::model::video_stream::Vp9CodecSettings>),
+    }
+
+    impl CodecSettings {
+        /// Initializes the enum to the [H264](Self::H264) branch.
+        pub fn from_h264(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::video_stream::H264CodecSettings>,
+            >,
+        ) -> Self {
+            Self::H264(value.into())
+        }
+        /// Initializes the enum to the [H265](Self::H265) branch.
+        pub fn from_h265(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::video_stream::H265CodecSettings>,
+            >,
+        ) -> Self {
+            Self::H265(value.into())
+        }
+        /// Initializes the enum to the [Vp9](Self::Vp9) branch.
+        pub fn from_vp9(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::video_stream::Vp9CodecSettings>,
+            >,
+        ) -> Self {
+            Self::Vp9(value.into())
+        }
     }
 }
 
@@ -4865,6 +5027,31 @@ pub mod encryption {
         MpegCenc(std::boxed::Box<crate::model::encryption::MpegCommonEncryption>),
     }
 
+    impl EncryptionMode {
+        /// Initializes the enum to the [Aes128](Self::Aes128) branch.
+        pub fn from_aes_128(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::encryption::Aes128Encryption>>,
+        ) -> Self {
+            Self::Aes128(value.into())
+        }
+        /// Initializes the enum to the [SampleAes](Self::SampleAes) branch.
+        pub fn from_sample_aes(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::encryption::SampleAesEncryption>,
+            >,
+        ) -> Self {
+            Self::SampleAes(value.into())
+        }
+        /// Initializes the enum to the [MpegCenc](Self::MpegCenc) branch.
+        pub fn from_mpeg_cenc(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::encryption::MpegCommonEncryption>,
+            >,
+        ) -> Self {
+            Self::MpegCenc(value.into())
+        }
+    }
+
     /// Defines where content keys are stored.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -4872,6 +5059,17 @@ pub mod encryption {
     pub enum SecretSource {
         /// Keys are stored in Google Secret Manager.
         SecretManagerKeySource(std::boxed::Box<crate::model::encryption::SecretManagerSource>),
+    }
+
+    impl SecretSource {
+        /// Initializes the enum to the [SecretManagerKeySource](Self::SecretManagerKeySource) branch.
+        pub fn from_secret_manager_key_source(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::encryption::SecretManagerSource>,
+            >,
+        ) -> Self {
+            Self::SecretManagerKeySource(value.into())
+        }
     }
 }
 

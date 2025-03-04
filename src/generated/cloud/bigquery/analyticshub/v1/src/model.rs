@@ -371,6 +371,25 @@ pub mod sharing_environment_config {
             std::boxed::Box<crate::model::sharing_environment_config::DcrExchangeConfig>,
         ),
     }
+
+    impl Environment {
+        /// Initializes the enum to the [DefaultExchangeConfig](Self::DefaultExchangeConfig) branch.
+        pub fn from_default_exchange_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::sharing_environment_config::DefaultExchangeConfig>,
+            >,
+        ) -> Self {
+            Self::DefaultExchangeConfig(value.into())
+        }
+        /// Initializes the enum to the [DcrExchangeConfig](Self::DcrExchangeConfig) branch.
+        pub fn from_dcr_exchange_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::sharing_environment_config::DcrExchangeConfig>,
+            >,
+        ) -> Self {
+            Self::DcrExchangeConfig(value.into())
+        }
+    }
 }
 
 /// Contains details of the data provider.
@@ -979,6 +998,13 @@ pub mod listing {
                 /// Example:"projects/test_project/datasets/test_dataset/tables/test_table"
                 Table(std::string::String),
             }
+
+            impl Resource {
+                /// Initializes the enum to the [Table](Self::Table) branch.
+                pub fn from_table(value: impl std::convert::Into<std::string::String>) -> Self {
+                    Self::Table(value.into())
+                }
+            }
         }
 
         /// Restricted export policy used to configure restricted export on linked
@@ -1225,6 +1251,17 @@ pub mod listing {
     pub enum Source {
         /// Required. Shared dataset i.e. BigQuery dataset source.
         BigqueryDataset(std::boxed::Box<crate::model::listing::BigQueryDatasetSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [BigqueryDataset](Self::BigqueryDataset) branch.
+        pub fn from_bigquery_dataset(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::listing::BigQueryDatasetSource>,
+            >,
+        ) -> Self {
+            Self::BigqueryDataset(value.into())
+        }
     }
 }
 
@@ -1499,6 +1536,15 @@ pub mod subscription {
             /// projects/subscriberproject/datasets/linked_dataset
             LinkedDataset(std::string::String),
         }
+
+        impl Reference {
+            /// Initializes the enum to the [LinkedDataset](Self::LinkedDataset) branch.
+            pub fn from_linked_dataset(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::LinkedDataset(value.into())
+            }
+        }
     }
 
     /// State of the subscription.
@@ -1558,6 +1604,17 @@ pub mod subscription {
         /// Output only. Resource name of the source Data Exchange.
         /// e.g. projects/123/locations/US/dataExchanges/456
         DataExchange(std::string::String),
+    }
+
+    impl ResourceName {
+        /// Initializes the enum to the [Listing](Self::Listing) branch.
+        pub fn from_listing(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Listing(value.into())
+        }
+        /// Initializes the enum to the [DataExchange](Self::DataExchange) branch.
+        pub fn from_data_exchange(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::DataExchange(value.into())
+        }
     }
 }
 
@@ -2313,6 +2370,15 @@ pub mod subscribe_listing_request {
     pub enum Destination {
         /// Input only. BigQuery destination dataset to create for the subscriber.
         DestinationDataset(std::boxed::Box<crate::model::DestinationDataset>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [DestinationDataset](Self::DestinationDataset) branch.
+        pub fn from_destination_dataset(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DestinationDataset>>,
+        ) -> Self {
+            Self::DestinationDataset(value.into())
+        }
     }
 }
 

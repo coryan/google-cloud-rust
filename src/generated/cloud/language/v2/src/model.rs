@@ -197,6 +197,17 @@ pub mod document {
         /// NOTE: Cloud Storage object versioning is not supported.
         GcsContentUri(std::string::String),
     }
+
+    impl Source {
+        /// Initializes the enum to the [Content](Self::Content) branch.
+        pub fn from_content(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Content(value.into())
+        }
+        /// Initializes the enum to the [GcsContentUri](Self::GcsContentUri) branch.
+        pub fn from_gcs_content_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsContentUri(value.into())
+        }
+    }
 }
 
 /// Represents a sentence in the input document.

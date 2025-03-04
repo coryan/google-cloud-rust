@@ -443,6 +443,25 @@ pub mod payload {
         /// The action taken by agent.
         Action(crate::model::Action),
     }
+
+    impl Kind {
+        /// Initializes the enum to the [HttpRequest](Self::HttpRequest) branch.
+        pub fn from_http_request(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HttpRequest>>,
+        ) -> Self {
+            Self::HttpRequest(value.into())
+        }
+        /// Initializes the enum to the [StreamInfo](Self::StreamInfo) branch.
+        pub fn from_stream_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StreamInfo>>,
+        ) -> Self {
+            Self::StreamInfo(value.into())
+        }
+        /// Initializes the enum to the [Action](Self::Action) branch.
+        pub fn from_action(value: impl std::convert::Into<crate::model::Action>) -> Self {
+            Self::Action(value.into())
+        }
+    }
 }
 
 /// The Information of bi-directional stream.

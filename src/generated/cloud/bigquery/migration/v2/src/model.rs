@@ -517,6 +517,21 @@ pub mod migration_task {
         /// Task details for unified SQL Translation.
         TranslationDetails(std::boxed::Box<crate::model::TranslationDetails>),
     }
+
+    impl TaskDetails {
+        /// Initializes the enum to the [TranslationConfigDetails](Self::TranslationConfigDetails) branch.
+        pub fn from_translation_config_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TranslationConfigDetails>>,
+        ) -> Self {
+            Self::TranslationConfigDetails(value.into())
+        }
+        /// Initializes the enum to the [TranslationDetails](Self::TranslationDetails) branch.
+        pub fn from_translation_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TranslationDetails>>,
+        ) -> Self {
+            Self::TranslationDetails(value.into())
+        }
+    }
 }
 
 /// A subtask for a migration which carries details about the configuration of
@@ -815,6 +830,15 @@ pub mod migration_task_result {
     pub enum Details {
         /// Details specific to translation task types.
         TranslationTaskResult(std::boxed::Box<crate::model::TranslationTaskResult>),
+    }
+
+    impl Details {
+        /// Initializes the enum to the [TranslationTaskResult](Self::TranslationTaskResult) branch.
+        pub fn from_translation_task_result(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TranslationTaskResult>>,
+        ) -> Self {
+            Self::TranslationTaskResult(value.into())
+        }
     }
 }
 
@@ -1370,6 +1394,31 @@ pub mod typed_value {
         StringValue(std::string::String),
         /// A distribution value.
         DistributionValue(std::boxed::Box<api::model::Distribution>),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+        pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolValue(value.into())
+        }
+        /// Initializes the enum to the [Int64Value](Self::Int64Value) branch.
+        pub fn from_int64_value(value: impl std::convert::Into<i64>) -> Self {
+            Self::Int64Value(value.into())
+        }
+        /// Initializes the enum to the [DoubleValue](Self::DoubleValue) branch.
+        pub fn from_double_value(value: impl std::convert::Into<f64>) -> Self {
+            Self::DoubleValue(value.into())
+        }
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
+        /// Initializes the enum to the [DistributionValue](Self::DistributionValue) branch.
+        pub fn from_distribution_value(
+            value: impl std::convert::Into<std::boxed::Box<api::model::Distribution>>,
+        ) -> Self {
+            Self::DistributionValue(value.into())
+        }
     }
 }
 
@@ -2064,6 +2113,13 @@ pub mod translation_config_details {
         GcsSourcePath(std::string::String),
     }
 
+    impl SourceLocation {
+        /// Initializes the enum to the [GcsSourcePath](Self::GcsSourcePath) branch.
+        pub fn from_gcs_source_path(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsSourcePath(value.into())
+        }
+    }
+
     /// The chosen path where the destination for output files will be found.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -2071,6 +2127,13 @@ pub mod translation_config_details {
     pub enum TargetLocation {
         /// The Cloud Storage path to write back the corresponding input files to.
         GcsTargetPath(std::string::String),
+    }
+
+    impl TargetLocation {
+        /// Initializes the enum to the [GcsTargetPath](Self::GcsTargetPath) branch.
+        pub fn from_gcs_target_path(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::GcsTargetPath(value.into())
+        }
     }
 
     /// The mapping of full SQL object names from their current state to the
@@ -2081,6 +2144,15 @@ pub mod translation_config_details {
     pub enum OutputNameMapping {
         /// The mapping of objects to their desired output names in list form.
         NameMappingList(std::boxed::Box<crate::model::ObjectNameMappingList>),
+    }
+
+    impl OutputNameMapping {
+        /// Initializes the enum to the [NameMappingList](Self::NameMappingList) branch.
+        pub fn from_name_mapping_list(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ObjectNameMappingList>>,
+        ) -> Self {
+            Self::NameMappingList(value.into())
+        }
     }
 }
 
@@ -2672,6 +2744,111 @@ pub mod dialect {
         SqliteDialect(std::boxed::Box<crate::model::SQLiteDialect>),
         /// Greenplum dialect
         GreenplumDialect(std::boxed::Box<crate::model::GreenplumDialect>),
+    }
+
+    impl DialectValue {
+        /// Initializes the enum to the [BigqueryDialect](Self::BigqueryDialect) branch.
+        pub fn from_bigquery_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BigQueryDialect>>,
+        ) -> Self {
+            Self::BigqueryDialect(value.into())
+        }
+        /// Initializes the enum to the [HiveqlDialect](Self::HiveqlDialect) branch.
+        pub fn from_hiveql_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::HiveQLDialect>>,
+        ) -> Self {
+            Self::HiveqlDialect(value.into())
+        }
+        /// Initializes the enum to the [RedshiftDialect](Self::RedshiftDialect) branch.
+        pub fn from_redshift_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RedshiftDialect>>,
+        ) -> Self {
+            Self::RedshiftDialect(value.into())
+        }
+        /// Initializes the enum to the [TeradataDialect](Self::TeradataDialect) branch.
+        pub fn from_teradata_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TeradataDialect>>,
+        ) -> Self {
+            Self::TeradataDialect(value.into())
+        }
+        /// Initializes the enum to the [OracleDialect](Self::OracleDialect) branch.
+        pub fn from_oracle_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::OracleDialect>>,
+        ) -> Self {
+            Self::OracleDialect(value.into())
+        }
+        /// Initializes the enum to the [SparksqlDialect](Self::SparksqlDialect) branch.
+        pub fn from_sparksql_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SparkSQLDialect>>,
+        ) -> Self {
+            Self::SparksqlDialect(value.into())
+        }
+        /// Initializes the enum to the [SnowflakeDialect](Self::SnowflakeDialect) branch.
+        pub fn from_snowflake_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SnowflakeDialect>>,
+        ) -> Self {
+            Self::SnowflakeDialect(value.into())
+        }
+        /// Initializes the enum to the [NetezzaDialect](Self::NetezzaDialect) branch.
+        pub fn from_netezza_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::NetezzaDialect>>,
+        ) -> Self {
+            Self::NetezzaDialect(value.into())
+        }
+        /// Initializes the enum to the [AzureSynapseDialect](Self::AzureSynapseDialect) branch.
+        pub fn from_azure_synapse_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AzureSynapseDialect>>,
+        ) -> Self {
+            Self::AzureSynapseDialect(value.into())
+        }
+        /// Initializes the enum to the [VerticaDialect](Self::VerticaDialect) branch.
+        pub fn from_vertica_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VerticaDialect>>,
+        ) -> Self {
+            Self::VerticaDialect(value.into())
+        }
+        /// Initializes the enum to the [SqlServerDialect](Self::SqlServerDialect) branch.
+        pub fn from_sql_server_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SQLServerDialect>>,
+        ) -> Self {
+            Self::SqlServerDialect(value.into())
+        }
+        /// Initializes the enum to the [PostgresqlDialect](Self::PostgresqlDialect) branch.
+        pub fn from_postgresql_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PostgresqlDialect>>,
+        ) -> Self {
+            Self::PostgresqlDialect(value.into())
+        }
+        /// Initializes the enum to the [PrestoDialect](Self::PrestoDialect) branch.
+        pub fn from_presto_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PrestoDialect>>,
+        ) -> Self {
+            Self::PrestoDialect(value.into())
+        }
+        /// Initializes the enum to the [MysqlDialect](Self::MysqlDialect) branch.
+        pub fn from_mysql_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MySQLDialect>>,
+        ) -> Self {
+            Self::MysqlDialect(value.into())
+        }
+        /// Initializes the enum to the [Db2Dialect](Self::Db2Dialect) branch.
+        pub fn from_db2_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DB2Dialect>>,
+        ) -> Self {
+            Self::Db2Dialect(value.into())
+        }
+        /// Initializes the enum to the [SqliteDialect](Self::SqliteDialect) branch.
+        pub fn from_sqlite_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::SQLiteDialect>>,
+        ) -> Self {
+            Self::SqliteDialect(value.into())
+        }
+        /// Initializes the enum to the [GreenplumDialect](Self::GreenplumDialect) branch.
+        pub fn from_greenplum_dialect(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GreenplumDialect>>,
+        ) -> Self {
+            Self::GreenplumDialect(value.into())
+        }
     }
 }
 
@@ -3656,6 +3833,19 @@ pub mod source_spec {
         /// Source literal.
         Literal(std::boxed::Box<crate::model::Literal>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [BaseUri](Self::BaseUri) branch.
+        pub fn from_base_uri(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::BaseUri(value.into())
+        }
+        /// Initializes the enum to the [Literal](Self::Literal) branch.
+        pub fn from_literal(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Literal>>,
+        ) -> Self {
+            Self::Literal(value.into())
+        }
+    }
 }
 
 /// Represents one path to the location that holds target data.
@@ -3791,6 +3981,17 @@ pub mod literal {
         LiteralString(std::string::String),
         /// Literal byte data.
         LiteralBytes(bytes::Bytes),
+    }
+
+    impl LiteralData {
+        /// Initializes the enum to the [LiteralString](Self::LiteralString) branch.
+        pub fn from_literal_string(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::LiteralString(value.into())
+        }
+        /// Initializes the enum to the [LiteralBytes](Self::LiteralBytes) branch.
+        pub fn from_literal_bytes(value: impl std::convert::Into<bytes::Bytes>) -> Self {
+            Self::LiteralBytes(value.into())
+        }
     }
 }
 

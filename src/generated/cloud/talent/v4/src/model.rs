@@ -994,6 +994,23 @@ pub mod compensation_info {
             /// Compensation range.
             Range(std::boxed::Box<crate::model::compensation_info::CompensationRange>),
         }
+
+        impl CompensationAmount {
+            /// Initializes the enum to the [Amount](Self::Amount) branch.
+            pub fn from_amount(
+                value: impl std::convert::Into<std::boxed::Box<gtype::model::Money>>,
+            ) -> Self {
+                Self::Amount(value.into())
+            }
+            /// Initializes the enum to the [Range](Self::Range) branch.
+            pub fn from_range(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::compensation_info::CompensationRange>,
+                >,
+            ) -> Self {
+                Self::Range(value.into())
+            }
+        }
     }
 
     /// Compensation range.
@@ -2446,6 +2463,15 @@ pub mod client_event {
         /// implements Cloud Talent Solution.
         JobEvent(std::boxed::Box<crate::model::JobEvent>),
     }
+
+    impl Event {
+        /// Initializes the enum to the [JobEvent](Self::JobEvent) branch.
+        pub fn from_job_event(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::JobEvent>>,
+        ) -> Self {
+            Self::JobEvent(value.into())
+        }
+    }
 }
 
 /// An event issued when a job seeker interacts with the application that
@@ -3633,6 +3659,21 @@ pub mod commute_filter {
         ///
         /// [google.type.TimeOfDay]: gtype::model::TimeOfDay
         DepartureTime(std::boxed::Box<gtype::model::TimeOfDay>),
+    }
+
+    impl TrafficOption {
+        /// Initializes the enum to the [RoadTraffic](Self::RoadTraffic) branch.
+        pub fn from_road_traffic(
+            value: impl std::convert::Into<crate::model::commute_filter::RoadTraffic>,
+        ) -> Self {
+            Self::RoadTraffic(value.into())
+        }
+        /// Initializes the enum to the [DepartureTime](Self::DepartureTime) branch.
+        pub fn from_departure_time(
+            value: impl std::convert::Into<std::boxed::Box<gtype::model::TimeOfDay>>,
+        ) -> Self {
+            Self::DepartureTime(value.into())
+        }
     }
 }
 

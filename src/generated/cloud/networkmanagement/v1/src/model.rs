@@ -2839,6 +2839,171 @@ pub mod step {
         /// only for return traces.
         ServerlessNeg(std::boxed::Box<crate::model::ServerlessNegInfo>),
     }
+
+    impl StepInfo {
+        /// Initializes the enum to the [Instance](Self::Instance) branch.
+        pub fn from_instance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InstanceInfo>>,
+        ) -> Self {
+            Self::Instance(value.into())
+        }
+        /// Initializes the enum to the [Firewall](Self::Firewall) branch.
+        pub fn from_firewall(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::FirewallInfo>>,
+        ) -> Self {
+            Self::Firewall(value.into())
+        }
+        /// Initializes the enum to the [Route](Self::Route) branch.
+        pub fn from_route(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RouteInfo>>,
+        ) -> Self {
+            Self::Route(value.into())
+        }
+        /// Initializes the enum to the [Endpoint](Self::Endpoint) branch.
+        pub fn from_endpoint(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::EndpointInfo>>,
+        ) -> Self {
+            Self::Endpoint(value.into())
+        }
+        /// Initializes the enum to the [GoogleService](Self::GoogleService) branch.
+        pub fn from_google_service(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GoogleServiceInfo>>,
+        ) -> Self {
+            Self::GoogleService(value.into())
+        }
+        /// Initializes the enum to the [ForwardingRule](Self::ForwardingRule) branch.
+        pub fn from_forwarding_rule(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ForwardingRuleInfo>>,
+        ) -> Self {
+            Self::ForwardingRule(value.into())
+        }
+        /// Initializes the enum to the [VpnGateway](Self::VpnGateway) branch.
+        pub fn from_vpn_gateway(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VpnGatewayInfo>>,
+        ) -> Self {
+            Self::VpnGateway(value.into())
+        }
+        /// Initializes the enum to the [VpnTunnel](Self::VpnTunnel) branch.
+        pub fn from_vpn_tunnel(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VpnTunnelInfo>>,
+        ) -> Self {
+            Self::VpnTunnel(value.into())
+        }
+        /// Initializes the enum to the [VpcConnector](Self::VpcConnector) branch.
+        pub fn from_vpc_connector(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VpcConnectorInfo>>,
+        ) -> Self {
+            Self::VpcConnector(value.into())
+        }
+        /// Initializes the enum to the [Deliver](Self::Deliver) branch.
+        pub fn from_deliver(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DeliverInfo>>,
+        ) -> Self {
+            Self::Deliver(value.into())
+        }
+        /// Initializes the enum to the [Forward](Self::Forward) branch.
+        pub fn from_forward(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ForwardInfo>>,
+        ) -> Self {
+            Self::Forward(value.into())
+        }
+        /// Initializes the enum to the [Abort](Self::Abort) branch.
+        pub fn from_abort(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AbortInfo>>,
+        ) -> Self {
+            Self::Abort(value.into())
+        }
+        /// Initializes the enum to the [Drop](Self::Drop) branch.
+        pub fn from_drop(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::DropInfo>>,
+        ) -> Self {
+            Self::Drop(value.into())
+        }
+        /// Initializes the enum to the [LoadBalancer](Self::LoadBalancer) branch.
+        pub fn from_load_balancer(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::LoadBalancerInfo>>,
+        ) -> Self {
+            Self::LoadBalancer(value.into())
+        }
+        /// Initializes the enum to the [Network](Self::Network) branch.
+        pub fn from_network(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::NetworkInfo>>,
+        ) -> Self {
+            Self::Network(value.into())
+        }
+        /// Initializes the enum to the [GkeMaster](Self::GkeMaster) branch.
+        pub fn from_gke_master(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GKEMasterInfo>>,
+        ) -> Self {
+            Self::GkeMaster(value.into())
+        }
+        /// Initializes the enum to the [CloudSqlInstance](Self::CloudSqlInstance) branch.
+        pub fn from_cloud_sql_instance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudSQLInstanceInfo>>,
+        ) -> Self {
+            Self::CloudSqlInstance(value.into())
+        }
+        /// Initializes the enum to the [RedisInstance](Self::RedisInstance) branch.
+        pub fn from_redis_instance(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RedisInstanceInfo>>,
+        ) -> Self {
+            Self::RedisInstance(value.into())
+        }
+        /// Initializes the enum to the [RedisCluster](Self::RedisCluster) branch.
+        pub fn from_redis_cluster(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RedisClusterInfo>>,
+        ) -> Self {
+            Self::RedisCluster(value.into())
+        }
+        /// Initializes the enum to the [CloudFunction](Self::CloudFunction) branch.
+        pub fn from_cloud_function(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudFunctionInfo>>,
+        ) -> Self {
+            Self::CloudFunction(value.into())
+        }
+        /// Initializes the enum to the [AppEngineVersion](Self::AppEngineVersion) branch.
+        pub fn from_app_engine_version(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AppEngineVersionInfo>>,
+        ) -> Self {
+            Self::AppEngineVersion(value.into())
+        }
+        /// Initializes the enum to the [CloudRunRevision](Self::CloudRunRevision) branch.
+        pub fn from_cloud_run_revision(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CloudRunRevisionInfo>>,
+        ) -> Self {
+            Self::CloudRunRevision(value.into())
+        }
+        /// Initializes the enum to the [Nat](Self::Nat) branch.
+        pub fn from_nat(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::NatInfo>>,
+        ) -> Self {
+            Self::Nat(value.into())
+        }
+        /// Initializes the enum to the [ProxyConnection](Self::ProxyConnection) branch.
+        pub fn from_proxy_connection(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ProxyConnectionInfo>>,
+        ) -> Self {
+            Self::ProxyConnection(value.into())
+        }
+        /// Initializes the enum to the [LoadBalancerBackendInfo](Self::LoadBalancerBackendInfo) branch.
+        pub fn from_load_balancer_backend_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::LoadBalancerBackendInfo>>,
+        ) -> Self {
+            Self::LoadBalancerBackendInfo(value.into())
+        }
+        /// Initializes the enum to the [StorageBucket](Self::StorageBucket) branch.
+        pub fn from_storage_bucket(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StorageBucketInfo>>,
+        ) -> Self {
+            Self::StorageBucket(value.into())
+        }
+        /// Initializes the enum to the [ServerlessNeg](Self::ServerlessNeg) branch.
+        pub fn from_serverless_neg(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ServerlessNegInfo>>,
+        ) -> Self {
+            Self::ServerlessNeg(value.into())
+        }
+    }
 }
 
 /// For display only. Metadata associated with a Compute Engine instance.
@@ -7699,6 +7864,19 @@ pub mod vpc_flow_logs_config {
         /// Traffic will be logged from the VPN Tunnel.
         /// Format: projects/{project_id}/regions/{region}/vpnTunnels/{name}
         VpnTunnel(std::string::String),
+    }
+
+    impl TargetResource {
+        /// Initializes the enum to the [InterconnectAttachment](Self::InterconnectAttachment) branch.
+        pub fn from_interconnect_attachment(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::InterconnectAttachment(value.into())
+        }
+        /// Initializes the enum to the [VpnTunnel](Self::VpnTunnel) branch.
+        pub fn from_vpn_tunnel(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::VpnTunnel(value.into())
+        }
     }
 }
 

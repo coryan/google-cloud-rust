@@ -5040,6 +5040,25 @@ pub mod policy_based_route {
         ),
     }
 
+    impl Target {
+        /// Initializes the enum to the [VirtualMachine](Self::VirtualMachine) branch.
+        pub fn from_virtual_machine(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::policy_based_route::VirtualMachine>,
+            >,
+        ) -> Self {
+            Self::VirtualMachine(value.into())
+        }
+        /// Initializes the enum to the [InterconnectAttachment](Self::InterconnectAttachment) branch.
+        pub fn from_interconnect_attachment(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::policy_based_route::InterconnectAttachment>,
+            >,
+        ) -> Self {
+            Self::InterconnectAttachment(value.into())
+        }
+    }
+
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
     #[non_exhaustive]
@@ -5051,6 +5070,19 @@ pub mod policy_based_route {
         /// Optional. Other routes that will be referenced to determine the next hop
         /// of the packet.
         NextHopOtherRoutes(crate::model::policy_based_route::OtherRoutes),
+    }
+
+    impl NextHop {
+        /// Initializes the enum to the [NextHopIlbIp](Self::NextHopIlbIp) branch.
+        pub fn from_next_hop_ilb_ip(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::NextHopIlbIp(value.into())
+        }
+        /// Initializes the enum to the [NextHopOtherRoutes](Self::NextHopOtherRoutes) branch.
+        pub fn from_next_hop_other_routes(
+            value: impl std::convert::Into<crate::model::policy_based_route::OtherRoutes>,
+        ) -> Self {
+            Self::NextHopOtherRoutes(value.into())
+        }
     }
 }
 

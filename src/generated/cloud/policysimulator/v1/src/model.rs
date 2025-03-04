@@ -921,6 +921,21 @@ pub mod replay_result {
         /// successfully.
         Error(std::boxed::Box<rpc::model::Status>),
     }
+
+    impl Result {
+        /// Initializes the enum to the [Diff](Self::Diff) branch.
+        pub fn from_diff(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ReplayDiff>>,
+        ) -> Self {
+            Self::Diff(value.into())
+        }
+        /// Initializes the enum to the [Error](Self::Error) branch.
+        pub fn from_error(
+            value: impl std::convert::Into<std::boxed::Box<rpc::model::Status>>,
+        ) -> Self {
+            Self::Error(value.into())
+        }
+    }
 }
 
 /// Request message for

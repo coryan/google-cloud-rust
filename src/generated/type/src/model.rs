@@ -486,6 +486,21 @@ pub mod date_time {
         /// Time zone.
         TimeZone(std::boxed::Box<crate::model::TimeZone>),
     }
+
+    impl TimeOffset {
+        /// Initializes the enum to the [UtcOffset](Self::UtcOffset) branch.
+        pub fn from_utc_offset(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Duration>>,
+        ) -> Self {
+            Self::UtcOffset(value.into())
+        }
+        /// Initializes the enum to the [TimeZone](Self::TimeZone) branch.
+        pub fn from_time_zone(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::TimeZone>>,
+        ) -> Self {
+            Self::TimeZone(value.into())
+        }
+    }
 }
 
 /// Represents a time zone from the
@@ -1182,6 +1197,19 @@ pub mod phone_number {
         ///
         /// - <https://en.wikipedia.org/wiki/Short_code>
         ShortCode(std::boxed::Box<crate::model::phone_number::ShortCode>),
+    }
+
+    impl Kind {
+        /// Initializes the enum to the [E164Number](Self::E164Number) branch.
+        pub fn from_e164_number(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::E164Number(value.into())
+        }
+        /// Initializes the enum to the [ShortCode](Self::ShortCode) branch.
+        pub fn from_short_code(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::phone_number::ShortCode>>,
+        ) -> Self {
+            Self::ShortCode(value.into())
+        }
     }
 }
 

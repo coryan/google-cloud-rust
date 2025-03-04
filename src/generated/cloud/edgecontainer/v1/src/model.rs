@@ -678,6 +678,25 @@ pub mod cluster {
             /// clusters in the same project can result in data loss.
             Local(std::boxed::Box<crate::model::cluster::control_plane::Local>),
         }
+
+        impl Config {
+            /// Initializes the enum to the [Remote](Self::Remote) branch.
+            pub fn from_remote(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::cluster::control_plane::Remote>,
+                >,
+            ) -> Self {
+                Self::Remote(value.into())
+            }
+            /// Initializes the enum to the [Local](Self::Local) branch.
+            pub fn from_local(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::cluster::control_plane::Local>,
+                >,
+            ) -> Self {
+                Self::Local(value.into())
+            }
+        }
     }
 
     /// Config that customers are allowed to define for GDCE system add-ons.

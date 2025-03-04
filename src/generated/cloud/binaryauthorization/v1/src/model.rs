@@ -598,6 +598,15 @@ pub mod attestor {
         /// during policy enforcement.
         UserOwnedGrafeasNote(std::boxed::Box<crate::model::UserOwnedGrafeasNote>),
     }
+
+    impl AttestorType {
+        /// Initializes the enum to the [UserOwnedGrafeasNote](Self::UserOwnedGrafeasNote) branch.
+        pub fn from_user_owned_grafeas_note(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UserOwnedGrafeasNote>>,
+        ) -> Self {
+            Self::UserOwnedGrafeasNote(value.into())
+        }
+    }
 }
 
 /// An [user owned Grafeas note][google.cloud.binaryauthorization.v1.UserOwnedGrafeasNote] references a Grafeas
@@ -984,6 +993,21 @@ pub mod attestor_public_key {
         /// blank, a default one will be computed based on the digest of the DER
         /// encoding of the public key.
         PkixPublicKey(std::boxed::Box<crate::model::PkixPublicKey>),
+    }
+
+    impl PublicKey {
+        /// Initializes the enum to the [AsciiArmoredPgpPublicKey](Self::AsciiArmoredPgpPublicKey) branch.
+        pub fn from_ascii_armored_pgp_public_key(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::AsciiArmoredPgpPublicKey(value.into())
+        }
+        /// Initializes the enum to the [PkixPublicKey](Self::PkixPublicKey) branch.
+        pub fn from_pkix_public_key(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PkixPublicKey>>,
+        ) -> Self {
+            Self::PkixPublicKey(value.into())
+        }
     }
 }
 

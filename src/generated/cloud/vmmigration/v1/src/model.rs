@@ -380,6 +380,27 @@ pub mod cycle_step {
         /// Post processing step.
         PostProcessing(std::boxed::Box<crate::model::PostProcessingStep>),
     }
+
+    impl Step {
+        /// Initializes the enum to the [InitializingReplication](Self::InitializingReplication) branch.
+        pub fn from_initializing_replication(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InitializingReplicationStep>>,
+        ) -> Self {
+            Self::InitializingReplication(value.into())
+        }
+        /// Initializes the enum to the [Replicating](Self::Replicating) branch.
+        pub fn from_replicating(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ReplicatingStep>>,
+        ) -> Self {
+            Self::Replicating(value.into())
+        }
+        /// Initializes the enum to the [PostProcessing](Self::PostProcessing) branch.
+        pub fn from_post_processing(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PostProcessingStep>>,
+        ) -> Self {
+            Self::PostProcessing(value.into())
+        }
+    }
 }
 
 /// InitializingReplicationStep contains specific step details.
@@ -948,6 +969,15 @@ pub mod migrating_vm {
         ComputeEngineTargetDefaults(std::boxed::Box<crate::model::ComputeEngineTargetDefaults>),
     }
 
+    impl TargetVmDefaults {
+        /// Initializes the enum to the [ComputeEngineTargetDefaults](Self::ComputeEngineTargetDefaults) branch.
+        pub fn from_compute_engine_target_defaults(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ComputeEngineTargetDefaults>>,
+        ) -> Self {
+            Self::ComputeEngineTargetDefaults(value.into())
+        }
+    }
+
     /// Details about the source VM.
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
     #[serde(rename_all = "camelCase")]
@@ -955,6 +985,15 @@ pub mod migrating_vm {
     pub enum SourceVmDetails {
         /// Output only. Details of the VM from an AWS source.
         AwsSourceVmDetails(std::boxed::Box<crate::model::AwsSourceVmDetails>),
+    }
+
+    impl SourceVmDetails {
+        /// Initializes the enum to the [AwsSourceVmDetails](Self::AwsSourceVmDetails) branch.
+        pub fn from_aws_source_vm_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsSourceVmDetails>>,
+        ) -> Self {
+            Self::AwsSourceVmDetails(value.into())
+        }
     }
 }
 
@@ -1197,6 +1236,15 @@ pub mod clone_job {
         /// Output only. Details of the target VM in Compute Engine.
         ComputeEngineTargetDetails(std::boxed::Box<crate::model::ComputeEngineTargetDetails>),
     }
+
+    impl TargetVmDetails {
+        /// Initializes the enum to the [ComputeEngineTargetDetails](Self::ComputeEngineTargetDetails) branch.
+        pub fn from_compute_engine_target_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ComputeEngineTargetDetails>>,
+        ) -> Self {
+            Self::ComputeEngineTargetDetails(value.into())
+        }
+    }
 }
 
 /// CloneStep holds information about the clone step progress.
@@ -1358,6 +1406,27 @@ pub mod clone_step {
         PreparingVmDisks(std::boxed::Box<crate::model::PreparingVMDisksStep>),
         /// Instantiating migrated VM step.
         InstantiatingMigratedVm(std::boxed::Box<crate::model::InstantiatingMigratedVMStep>),
+    }
+
+    impl Step {
+        /// Initializes the enum to the [AdaptingOs](Self::AdaptingOs) branch.
+        pub fn from_adapting_os(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AdaptingOSStep>>,
+        ) -> Self {
+            Self::AdaptingOs(value.into())
+        }
+        /// Initializes the enum to the [PreparingVmDisks](Self::PreparingVmDisks) branch.
+        pub fn from_preparing_vm_disks(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PreparingVMDisksStep>>,
+        ) -> Self {
+            Self::PreparingVmDisks(value.into())
+        }
+        /// Initializes the enum to the [InstantiatingMigratedVm](Self::InstantiatingMigratedVm) branch.
+        pub fn from_instantiating_migrated_vm(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InstantiatingMigratedVMStep>>,
+        ) -> Self {
+            Self::InstantiatingMigratedVm(value.into())
+        }
     }
 }
 
@@ -1668,6 +1737,15 @@ pub mod cutover_job {
         /// Output only. Details of the target VM in Compute Engine.
         ComputeEngineTargetDetails(std::boxed::Box<crate::model::ComputeEngineTargetDetails>),
     }
+
+    impl TargetVmDetails {
+        /// Initializes the enum to the [ComputeEngineTargetDetails](Self::ComputeEngineTargetDetails) branch.
+        pub fn from_compute_engine_target_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ComputeEngineTargetDetails>>,
+        ) -> Self {
+            Self::ComputeEngineTargetDetails(value.into())
+        }
+    }
 }
 
 /// CutoverStep holds information about the cutover step progress.
@@ -1902,6 +1980,39 @@ pub mod cutover_step {
         PreparingVmDisks(std::boxed::Box<crate::model::PreparingVMDisksStep>),
         /// Instantiating migrated VM step.
         InstantiatingMigratedVm(std::boxed::Box<crate::model::InstantiatingMigratedVMStep>),
+    }
+
+    impl Step {
+        /// Initializes the enum to the [PreviousReplicationCycle](Self::PreviousReplicationCycle) branch.
+        pub fn from_previous_replication_cycle(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ReplicationCycle>>,
+        ) -> Self {
+            Self::PreviousReplicationCycle(value.into())
+        }
+        /// Initializes the enum to the [ShuttingDownSourceVm](Self::ShuttingDownSourceVm) branch.
+        pub fn from_shutting_down_source_vm(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ShuttingDownSourceVMStep>>,
+        ) -> Self {
+            Self::ShuttingDownSourceVm(value.into())
+        }
+        /// Initializes the enum to the [FinalSync](Self::FinalSync) branch.
+        pub fn from_final_sync(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ReplicationCycle>>,
+        ) -> Self {
+            Self::FinalSync(value.into())
+        }
+        /// Initializes the enum to the [PreparingVmDisks](Self::PreparingVmDisks) branch.
+        pub fn from_preparing_vm_disks(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PreparingVMDisksStep>>,
+        ) -> Self {
+            Self::PreparingVmDisks(value.into())
+        }
+        /// Initializes the enum to the [InstantiatingMigratedVm](Self::InstantiatingMigratedVm) branch.
+        pub fn from_instantiating_migrated_vm(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::InstantiatingMigratedVMStep>>,
+        ) -> Self {
+            Self::InstantiatingMigratedVm(value.into())
+        }
     }
 }
 
@@ -2385,6 +2496,21 @@ pub mod source {
         /// AWS type source details.
         Aws(std::boxed::Box<crate::model::AwsSourceDetails>),
     }
+
+    impl SourceDetails {
+        /// Initializes the enum to the [Vmware](Self::Vmware) branch.
+        pub fn from_vmware(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VmwareSourceDetails>>,
+        ) -> Self {
+            Self::Vmware(value.into())
+        }
+        /// Initializes the enum to the [Aws](Self::Aws) branch.
+        pub fn from_aws(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsSourceDetails>>,
+        ) -> Self {
+            Self::Aws(value.into())
+        }
+    }
 }
 
 /// VmwareSourceDetails message describes a specific source details for the
@@ -2757,6 +2883,17 @@ pub mod aws_source_details {
     pub enum CredentialsType {
         /// AWS Credentials using access key id and secret.
         AccessKeyCreds(std::boxed::Box<crate::model::aws_source_details::AccessKeyCredentials>),
+    }
+
+    impl CredentialsType {
+        /// Initializes the enum to the [AccessKeyCreds](Self::AccessKeyCreds) branch.
+        pub fn from_access_key_creds(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::aws_source_details::AccessKeyCredentials>,
+            >,
+        ) -> Self {
+            Self::AccessKeyCreds(value.into())
+        }
     }
 }
 
@@ -4565,6 +4702,21 @@ pub mod fetch_inventory_response {
         /// The description of the VMs in a Source of type AWS.
         AwsVms(std::boxed::Box<crate::model::AwsVmsDetails>),
     }
+
+    impl SourceVms {
+        /// Initializes the enum to the [VmwareVms](Self::VmwareVms) branch.
+        pub fn from_vmware_vms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VmwareVmsDetails>>,
+        ) -> Self {
+            Self::VmwareVms(value.into())
+        }
+        /// Initializes the enum to the [AwsVms](Self::AwsVms) branch.
+        pub fn from_aws_vms(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsVmsDetails>>,
+        ) -> Self {
+            Self::AwsVms(value.into())
+        }
+    }
 }
 
 /// Utilization report details the utilization (CPU, memory, etc.) of selected
@@ -4912,6 +5064,15 @@ pub mod vm_utilization_info {
     pub enum VmDetails {
         /// The description of the VM in a Source of type Vmware.
         VmwareVmDetails(std::boxed::Box<crate::model::VmwareVmDetails>),
+    }
+
+    impl VmDetails {
+        /// Initializes the enum to the [VmwareVmDetails](Self::VmwareVmDetails) branch.
+        pub fn from_vmware_vm_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VmwareVmDetails>>,
+        ) -> Self {
+            Self::VmwareVmDetails(value.into())
+        }
     }
 }
 

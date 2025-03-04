@@ -1944,6 +1944,15 @@ pub mod input_config {
         /// Google Cloud Storage location where input content is located.
         GcsSource(std::boxed::Box<crate::model::GcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// Request for [Import][google.cloud.redis.v1.CloudRedis.ImportInstance].
@@ -2102,6 +2111,15 @@ pub mod output_config {
     pub enum Destination {
         /// Google Cloud Storage destination for output content.
         GcsDestination(std::boxed::Box<crate::model::GcsDestination>),
+    }
+
+    impl Destination {
+        /// Initializes the enum to the [GcsDestination](Self::GcsDestination) branch.
+        pub fn from_gcs_destination(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GcsDestination>>,
+        ) -> Self {
+            Self::GcsDestination(value.into())
+        }
     }
 }
 

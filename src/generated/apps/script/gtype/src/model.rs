@@ -338,6 +338,17 @@ pub mod universal_action_extension_point {
         /// Endpoint to be run by the UniversalAction.
         RunFunction(std::string::String),
     }
+
+    impl ActionType {
+        /// Initializes the enum to the [OpenLink](Self::OpenLink) branch.
+        pub fn from_open_link(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::OpenLink(value.into())
+        }
+        /// Initializes the enum to the [RunFunction](Self::RunFunction) branch.
+        pub fn from_run_function(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::RunFunction(value.into())
+        }
+    }
 }
 
 /// Add-on configuration that is shared across all add-on host applications.

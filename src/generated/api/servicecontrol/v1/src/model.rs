@@ -660,6 +660,29 @@ pub mod distribution {
         /// Buckets with arbitrary user-provided width.
         ExplicitBuckets(std::boxed::Box<crate::model::distribution::ExplicitBuckets>),
     }
+
+    impl BucketOption {
+        /// Initializes the enum to the [LinearBuckets](Self::LinearBuckets) branch.
+        pub fn from_linear_buckets(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::distribution::LinearBuckets>>,
+        ) -> Self {
+            Self::LinearBuckets(value.into())
+        }
+        /// Initializes the enum to the [ExponentialBuckets](Self::ExponentialBuckets) branch.
+        pub fn from_exponential_buckets(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::distribution::ExponentialBuckets>,
+            >,
+        ) -> Self {
+            Self::ExponentialBuckets(value.into())
+        }
+        /// Initializes the enum to the [ExplicitBuckets](Self::ExplicitBuckets) branch.
+        pub fn from_explicit_buckets(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::distribution::ExplicitBuckets>>,
+        ) -> Self {
+            Self::ExplicitBuckets(value.into())
+        }
+    }
 }
 
 /// A common proto for logging HTTP requests. Only contains semantics
@@ -1104,6 +1127,25 @@ pub mod log_entry {
         /// is expressed as a JSON object.
         StructPayload(std::boxed::Box<wkt::Struct>),
     }
+
+    impl Payload {
+        /// Initializes the enum to the [ProtoPayload](Self::ProtoPayload) branch.
+        pub fn from_proto_payload(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Any>>,
+        ) -> Self {
+            Self::ProtoPayload(value.into())
+        }
+        /// Initializes the enum to the [TextPayload](Self::TextPayload) branch.
+        pub fn from_text_payload(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::TextPayload(value.into())
+        }
+        /// Initializes the enum to the [StructPayload](Self::StructPayload) branch.
+        pub fn from_struct_payload(
+            value: impl std::convert::Into<std::boxed::Box<wkt::Struct>>,
+        ) -> Self {
+            Self::StructPayload(value.into())
+        }
+    }
 }
 
 /// Additional information about a potentially long-running operation with which
@@ -1457,6 +1499,31 @@ pub mod metric_value {
         StringValue(std::string::String),
         /// A distribution value.
         DistributionValue(std::boxed::Box<crate::model::Distribution>),
+    }
+
+    impl Value {
+        /// Initializes the enum to the [BoolValue](Self::BoolValue) branch.
+        pub fn from_bool_value(value: impl std::convert::Into<bool>) -> Self {
+            Self::BoolValue(value.into())
+        }
+        /// Initializes the enum to the [Int64Value](Self::Int64Value) branch.
+        pub fn from_int64_value(value: impl std::convert::Into<i64>) -> Self {
+            Self::Int64Value(value.into())
+        }
+        /// Initializes the enum to the [DoubleValue](Self::DoubleValue) branch.
+        pub fn from_double_value(value: impl std::convert::Into<f64>) -> Self {
+            Self::DoubleValue(value.into())
+        }
+        /// Initializes the enum to the [StringValue](Self::StringValue) branch.
+        pub fn from_string_value(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::StringValue(value.into())
+        }
+        /// Initializes the enum to the [DistributionValue](Self::DistributionValue) branch.
+        pub fn from_distribution_value(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::Distribution>>,
+        ) -> Self {
+            Self::DistributionValue(value.into())
+        }
     }
 }
 

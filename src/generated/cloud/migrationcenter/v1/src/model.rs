@@ -241,6 +241,15 @@ pub mod asset {
         /// machines.
         MachineDetails(std::boxed::Box<crate::model::MachineDetails>),
     }
+
+    impl AssetDetails {
+        /// Initializes the enum to the [MachineDetails](Self::MachineDetails) branch.
+        pub fn from_machine_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MachineDetails>>,
+        ) -> Self {
+            Self::MachineDetails(value.into())
+        }
+    }
 }
 
 /// The preferences that apply to all assets in a given context.
@@ -602,6 +611,21 @@ pub mod import_job {
         /// Output only. The report with the results of running the import job.
         ExecutionReport(std::boxed::Box<crate::model::ExecutionReport>),
     }
+
+    impl Report {
+        /// Initializes the enum to the [ValidationReport](Self::ValidationReport) branch.
+        pub fn from_validation_report(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ValidationReport>>,
+        ) -> Self {
+            Self::ValidationReport(value.into())
+        }
+        /// Initializes the enum to the [ExecutionReport](Self::ExecutionReport) branch.
+        pub fn from_execution_report(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ExecutionReport>>,
+        ) -> Self {
+            Self::ExecutionReport(value.into())
+        }
+    }
 }
 
 /// A resource that represents a payload file in an import job.
@@ -779,6 +803,15 @@ pub mod import_data_file {
     pub enum FileInfo {
         /// Information about a file that is uploaded to a storage service.
         UploadFileInfo(std::boxed::Box<crate::model::UploadFileInfo>),
+    }
+
+    impl FileInfo {
+        /// Initializes the enum to the [UploadFileInfo](Self::UploadFileInfo) branch.
+        pub fn from_upload_file_info(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UploadFileInfo>>,
+        ) -> Self {
+            Self::UploadFileInfo(value.into())
+        }
     }
 }
 
@@ -5396,6 +5429,15 @@ pub mod asset_frame {
         /// Asset information specific for virtual machines.
         MachineDetails(std::boxed::Box<crate::model::MachineDetails>),
     }
+
+    impl FrameData {
+        /// Initializes the enum to the [MachineDetails](Self::MachineDetails) branch.
+        pub fn from_machine_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MachineDetails>>,
+        ) -> Self {
+            Self::MachineDetails(value.into())
+        }
+    }
 }
 
 /// Details of a machine.
@@ -6517,6 +6559,15 @@ pub mod disk_entry {
     pub enum PlatformSpecific {
         /// VMware disk details.
         Vmware(std::boxed::Box<crate::model::VmwareDiskConfig>),
+    }
+
+    impl PlatformSpecific {
+        /// Initializes the enum to the [Vmware](Self::Vmware) branch.
+        pub fn from_vmware(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VmwareDiskConfig>>,
+        ) -> Self {
+            Self::Vmware(value.into())
+        }
     }
 }
 
@@ -8478,6 +8529,39 @@ pub mod platform_details {
         /// Physical machines platform details.
         PhysicalDetails(std::boxed::Box<crate::model::PhysicalPlatformDetails>),
     }
+
+    impl VendorDetails {
+        /// Initializes the enum to the [VmwareDetails](Self::VmwareDetails) branch.
+        pub fn from_vmware_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VmwarePlatformDetails>>,
+        ) -> Self {
+            Self::VmwareDetails(value.into())
+        }
+        /// Initializes the enum to the [AwsEc2Details](Self::AwsEc2Details) branch.
+        pub fn from_aws_ec2_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AwsEc2PlatformDetails>>,
+        ) -> Self {
+            Self::AwsEc2Details(value.into())
+        }
+        /// Initializes the enum to the [AzureVmDetails](Self::AzureVmDetails) branch.
+        pub fn from_azure_vm_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AzureVmPlatformDetails>>,
+        ) -> Self {
+            Self::AzureVmDetails(value.into())
+        }
+        /// Initializes the enum to the [GenericDetails](Self::GenericDetails) branch.
+        pub fn from_generic_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GenericPlatformDetails>>,
+        ) -> Self {
+            Self::GenericDetails(value.into())
+        }
+        /// Initializes the enum to the [PhysicalDetails](Self::PhysicalDetails) branch.
+        pub fn from_physical_details(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::PhysicalPlatformDetails>>,
+        ) -> Self {
+            Self::PhysicalDetails(value.into())
+        }
+    }
 }
 
 /// VMware specific details.
@@ -9445,6 +9529,21 @@ pub mod insight {
         /// Output only. A generic insight about an asset
         GenericInsight(std::boxed::Box<crate::model::GenericInsight>),
     }
+
+    impl Insight {
+        /// Initializes the enum to the [MigrationInsight](Self::MigrationInsight) branch.
+        pub fn from_migration_insight(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::MigrationInsight>>,
+        ) -> Self {
+            Self::MigrationInsight(value.into())
+        }
+        /// Initializes the enum to the [GenericInsight](Self::GenericInsight) branch.
+        pub fn from_generic_insight(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::GenericInsight>>,
+        ) -> Self {
+            Self::GenericInsight(value.into())
+        }
+    }
 }
 
 /// A generic insight about an asset.
@@ -9598,6 +9697,15 @@ pub mod migration_insight {
     pub enum MigrationTarget {
         /// Output only. A Google Compute Engine target.
         ComputeEngineTarget(std::boxed::Box<crate::model::ComputeEngineMigrationTarget>),
+    }
+
+    impl MigrationTarget {
+        /// Initializes the enum to the [ComputeEngineTarget](Self::ComputeEngineTarget) branch.
+        pub fn from_compute_engine_target(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ComputeEngineMigrationTarget>>,
+        ) -> Self {
+            Self::ComputeEngineTarget(value.into())
+        }
     }
 }
 
@@ -10120,6 +10228,33 @@ pub mod aggregation {
         /// Creates a frequency distribution of all field values.
         Frequency(std::boxed::Box<crate::model::aggregation::Frequency>),
     }
+
+    impl AggregationFunction {
+        /// Initializes the enum to the [Count](Self::Count) branch.
+        pub fn from_count(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::aggregation::Count>>,
+        ) -> Self {
+            Self::Count(value.into())
+        }
+        /// Initializes the enum to the [Sum](Self::Sum) branch.
+        pub fn from_sum(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::aggregation::Sum>>,
+        ) -> Self {
+            Self::Sum(value.into())
+        }
+        /// Initializes the enum to the [Histogram](Self::Histogram) branch.
+        pub fn from_histogram(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::aggregation::Histogram>>,
+        ) -> Self {
+            Self::Histogram(value.into())
+        }
+        /// Initializes the enum to the [Frequency](Self::Frequency) branch.
+        pub fn from_frequency(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::aggregation::Frequency>>,
+        ) -> Self {
+            Self::Frequency(value.into())
+        }
+    }
 }
 
 /// Message describing a result of an aggregation.
@@ -10479,6 +10614,33 @@ pub mod aggregation_result {
         Sum(std::boxed::Box<crate::model::aggregation_result::Sum>),
         Histogram(std::boxed::Box<crate::model::aggregation_result::Histogram>),
         Frequency(std::boxed::Box<crate::model::aggregation_result::Frequency>),
+    }
+
+    impl Result {
+        /// Initializes the enum to the [Count](Self::Count) branch.
+        pub fn from_count(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::aggregation_result::Count>>,
+        ) -> Self {
+            Self::Count(value.into())
+        }
+        /// Initializes the enum to the [Sum](Self::Sum) branch.
+        pub fn from_sum(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::aggregation_result::Sum>>,
+        ) -> Self {
+            Self::Sum(value.into())
+        }
+        /// Initializes the enum to the [Histogram](Self::Histogram) branch.
+        pub fn from_histogram(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::aggregation_result::Histogram>>,
+        ) -> Self {
+            Self::Histogram(value.into())
+        }
+        /// Initializes the enum to the [Frequency](Self::Frequency) branch.
+        pub fn from_frequency(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::aggregation_result::Frequency>>,
+        ) -> Self {
+            Self::Frequency(value.into())
+        }
     }
 }
 

@@ -300,6 +300,15 @@ pub mod import_apt_artifacts_request {
         /// Google Cloud Storage location where input content is located.
         GcsSource(std::boxed::Box<crate::model::ImportAptArtifactsGcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ImportAptArtifactsGcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// Error information explaining why a package was not imported.
@@ -395,6 +404,15 @@ pub mod import_apt_artifacts_error_info {
     pub enum Source {
         /// Google Cloud Storage location requested.
         GcsSource(std::boxed::Box<crate::model::ImportAptArtifactsGcsSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ImportAptArtifactsGcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
     }
 }
 
@@ -3182,6 +3200,23 @@ pub mod cleanup_policy {
         /// specified with a Keep action.
         MostRecentVersions(std::boxed::Box<crate::model::CleanupPolicyMostRecentVersions>),
     }
+
+    impl ConditionType {
+        /// Initializes the enum to the [Condition](Self::Condition) branch.
+        pub fn from_condition(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CleanupPolicyCondition>>,
+        ) -> Self {
+            Self::Condition(value.into())
+        }
+        /// Initializes the enum to the [MostRecentVersions](Self::MostRecentVersions) branch.
+        pub fn from_most_recent_versions(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::CleanupPolicyMostRecentVersions>,
+            >,
+        ) -> Self {
+            Self::MostRecentVersions(value.into())
+        }
+    }
 }
 
 /// Virtual repository configuration.
@@ -3664,6 +3699,15 @@ pub mod remote_repository_config {
             /// Use username and password to access the remote repository.
             UsernamePasswordCredentials(std::boxed::Box<crate::model::remote_repository_config::upstream_credentials::UsernamePasswordCredentials>),
         }
+
+        impl Credentials {
+            /// Initializes the enum to the [UsernamePasswordCredentials](Self::UsernamePasswordCredentials) branch.
+            pub fn from_username_password_credentials(
+                value: impl std::convert::Into<std::boxed::Box<crate::model::remote_repository_config::upstream_credentials::UsernamePasswordCredentials>>,
+            ) -> Self {
+                Self::UsernamePasswordCredentials(value.into())
+            }
+        }
     }
 
     /// Configuration for a Docker remote repository.
@@ -3875,6 +3919,27 @@ pub mod remote_repository_config {
                 >,
             ),
         }
+
+        impl Upstream {
+            /// Initializes the enum to the [PublicRepository](Self::PublicRepository) branch.
+            pub fn from_public_repository(
+                value: impl std::convert::Into<
+                    crate::model::remote_repository_config::docker_repository::PublicRepository,
+                >,
+            ) -> Self {
+                Self::PublicRepository(value.into())
+            }
+            /// Initializes the enum to the [CustomRepository](Self::CustomRepository) branch.
+            pub fn from_custom_repository(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::remote_repository_config::docker_repository::CustomRepository,
+                    >,
+                >,
+            ) -> Self {
+                Self::CustomRepository(value.into())
+            }
+        }
     }
 
     /// Configuration for a Maven remote repository.
@@ -4085,6 +4150,27 @@ pub mod remote_repository_config {
                 >,
             ),
         }
+
+        impl Upstream {
+            /// Initializes the enum to the [PublicRepository](Self::PublicRepository) branch.
+            pub fn from_public_repository(
+                value: impl std::convert::Into<
+                    crate::model::remote_repository_config::maven_repository::PublicRepository,
+                >,
+            ) -> Self {
+                Self::PublicRepository(value.into())
+            }
+            /// Initializes the enum to the [CustomRepository](Self::CustomRepository) branch.
+            pub fn from_custom_repository(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::remote_repository_config::maven_repository::CustomRepository,
+                    >,
+                >,
+            ) -> Self {
+                Self::CustomRepository(value.into())
+            }
+        }
     }
 
     /// Configuration for a Npm remote repository.
@@ -4293,6 +4379,27 @@ pub mod remote_repository_config {
                     crate::model::remote_repository_config::npm_repository::CustomRepository,
                 >,
             ),
+        }
+
+        impl Upstream {
+            /// Initializes the enum to the [PublicRepository](Self::PublicRepository) branch.
+            pub fn from_public_repository(
+                value: impl std::convert::Into<
+                    crate::model::remote_repository_config::npm_repository::PublicRepository,
+                >,
+            ) -> Self {
+                Self::PublicRepository(value.into())
+            }
+            /// Initializes the enum to the [CustomRepository](Self::CustomRepository) branch.
+            pub fn from_custom_repository(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::remote_repository_config::npm_repository::CustomRepository,
+                    >,
+                >,
+            ) -> Self {
+                Self::CustomRepository(value.into())
+            }
         }
     }
 
@@ -4503,6 +4610,27 @@ pub mod remote_repository_config {
                     crate::model::remote_repository_config::python_repository::CustomRepository,
                 >,
             ),
+        }
+
+        impl Upstream {
+            /// Initializes the enum to the [PublicRepository](Self::PublicRepository) branch.
+            pub fn from_public_repository(
+                value: impl std::convert::Into<
+                    crate::model::remote_repository_config::python_repository::PublicRepository,
+                >,
+            ) -> Self {
+                Self::PublicRepository(value.into())
+            }
+            /// Initializes the enum to the [CustomRepository](Self::CustomRepository) branch.
+            pub fn from_custom_repository(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::remote_repository_config::python_repository::CustomRepository,
+                    >,
+                >,
+            ) -> Self {
+                Self::CustomRepository(value.into())
+            }
         }
     }
 
@@ -4773,6 +4901,29 @@ pub mod remote_repository_config {
                     crate::model::remote_repository_config::apt_repository::CustomRepository,
                 >,
             ),
+        }
+
+        impl Upstream {
+            /// Initializes the enum to the [PublicRepository](Self::PublicRepository) branch.
+            pub fn from_public_repository(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::remote_repository_config::apt_repository::PublicRepository,
+                    >,
+                >,
+            ) -> Self {
+                Self::PublicRepository(value.into())
+            }
+            /// Initializes the enum to the [CustomRepository](Self::CustomRepository) branch.
+            pub fn from_custom_repository(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::remote_repository_config::apt_repository::CustomRepository,
+                    >,
+                >,
+            ) -> Self {
+                Self::CustomRepository(value.into())
+            }
         }
     }
 
@@ -5053,6 +5204,29 @@ pub mod remote_repository_config {
                 >,
             ),
         }
+
+        impl Upstream {
+            /// Initializes the enum to the [PublicRepository](Self::PublicRepository) branch.
+            pub fn from_public_repository(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::remote_repository_config::yum_repository::PublicRepository,
+                    >,
+                >,
+            ) -> Self {
+                Self::PublicRepository(value.into())
+            }
+            /// Initializes the enum to the [CustomRepository](Self::CustomRepository) branch.
+            pub fn from_custom_repository(
+                value: impl std::convert::Into<
+                    std::boxed::Box<
+                        crate::model::remote_repository_config::yum_repository::CustomRepository,
+                    >,
+                >,
+            ) -> Self {
+                Self::CustomRepository(value.into())
+            }
+        }
     }
 
     /// Common remote repository settings type.
@@ -5106,6 +5280,65 @@ pub mod remote_repository_config {
         CommonRepository(
             std::boxed::Box<crate::model::remote_repository_config::CommonRemoteRepository>,
         ),
+    }
+
+    impl RemoteSource {
+        /// Initializes the enum to the [DockerRepository](Self::DockerRepository) branch.
+        pub fn from_docker_repository(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::remote_repository_config::DockerRepository>,
+            >,
+        ) -> Self {
+            Self::DockerRepository(value.into())
+        }
+        /// Initializes the enum to the [MavenRepository](Self::MavenRepository) branch.
+        pub fn from_maven_repository(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::remote_repository_config::MavenRepository>,
+            >,
+        ) -> Self {
+            Self::MavenRepository(value.into())
+        }
+        /// Initializes the enum to the [NpmRepository](Self::NpmRepository) branch.
+        pub fn from_npm_repository(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::remote_repository_config::NpmRepository>,
+            >,
+        ) -> Self {
+            Self::NpmRepository(value.into())
+        }
+        /// Initializes the enum to the [PythonRepository](Self::PythonRepository) branch.
+        pub fn from_python_repository(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::remote_repository_config::PythonRepository>,
+            >,
+        ) -> Self {
+            Self::PythonRepository(value.into())
+        }
+        /// Initializes the enum to the [AptRepository](Self::AptRepository) branch.
+        pub fn from_apt_repository(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::remote_repository_config::AptRepository>,
+            >,
+        ) -> Self {
+            Self::AptRepository(value.into())
+        }
+        /// Initializes the enum to the [YumRepository](Self::YumRepository) branch.
+        pub fn from_yum_repository(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::remote_repository_config::YumRepository>,
+            >,
+        ) -> Self {
+            Self::YumRepository(value.into())
+        }
+        /// Initializes the enum to the [CommonRepository](Self::CommonRepository) branch.
+        pub fn from_common_repository(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::remote_repository_config::CommonRemoteRepository>,
+            >,
+        ) -> Self {
+            Self::CommonRepository(value.into())
+        }
     }
 }
 
@@ -5912,6 +6145,25 @@ pub mod repository {
         DockerConfig(std::boxed::Box<crate::model::repository::DockerRepositoryConfig>),
     }
 
+    impl FormatConfig {
+        /// Initializes the enum to the [MavenConfig](Self::MavenConfig) branch.
+        pub fn from_maven_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::repository::MavenRepositoryConfig>,
+            >,
+        ) -> Self {
+            Self::MavenConfig(value.into())
+        }
+        /// Initializes the enum to the [DockerConfig](Self::DockerConfig) branch.
+        pub fn from_docker_config(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::repository::DockerRepositoryConfig>,
+            >,
+        ) -> Self {
+            Self::DockerConfig(value.into())
+        }
+    }
+
     /// Repository configuration specific to the Mode value being selected (Remote
     /// or Virtual)
     #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
@@ -5922,6 +6174,21 @@ pub mod repository {
         VirtualRepositoryConfig(std::boxed::Box<crate::model::VirtualRepositoryConfig>),
         /// Configuration specific for a Remote Repository.
         RemoteRepositoryConfig(std::boxed::Box<crate::model::RemoteRepositoryConfig>),
+    }
+
+    impl ModeConfig {
+        /// Initializes the enum to the [VirtualRepositoryConfig](Self::VirtualRepositoryConfig) branch.
+        pub fn from_virtual_repository_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::VirtualRepositoryConfig>>,
+        ) -> Self {
+            Self::VirtualRepositoryConfig(value.into())
+        }
+        /// Initializes the enum to the [RemoteRepositoryConfig](Self::RemoteRepositoryConfig) branch.
+        pub fn from_remote_repository_config(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::RemoteRepositoryConfig>>,
+        ) -> Self {
+            Self::RemoteRepositoryConfig(value.into())
+        }
     }
 }
 
@@ -8154,6 +8421,15 @@ pub mod import_yum_artifacts_request {
         /// Google Cloud Storage location where input content is located.
         GcsSource(std::boxed::Box<crate::model::ImportYumArtifactsGcsSource>),
     }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ImportYumArtifactsGcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
+    }
 }
 
 /// Error information explaining why a package was not imported.
@@ -8249,6 +8525,15 @@ pub mod import_yum_artifacts_error_info {
     pub enum Source {
         /// Google Cloud Storage location requested.
         GcsSource(std::boxed::Box<crate::model::ImportYumArtifactsGcsSource>),
+    }
+
+    impl Source {
+        /// Initializes the enum to the [GcsSource](Self::GcsSource) branch.
+        pub fn from_gcs_source(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ImportYumArtifactsGcsSource>>,
+        ) -> Self {
+            Self::GcsSource(value.into())
+        }
     }
 }
 

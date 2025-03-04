@@ -473,6 +473,27 @@ pub mod url_map {
         /// Uses API Endpoints to handle requests.
         ApiEndpoint(std::boxed::Box<crate::model::ApiEndpointHandler>),
     }
+
+    impl HandlerType {
+        /// Initializes the enum to the [StaticFiles](Self::StaticFiles) branch.
+        pub fn from_static_files(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::StaticFilesHandler>>,
+        ) -> Self {
+            Self::StaticFiles(value.into())
+        }
+        /// Initializes the enum to the [Script](Self::Script) branch.
+        pub fn from_script(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ScriptHandler>>,
+        ) -> Self {
+            Self::Script(value.into())
+        }
+        /// Initializes the enum to the [ApiEndpoint](Self::ApiEndpoint) branch.
+        pub fn from_api_endpoint(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ApiEndpointHandler>>,
+        ) -> Self {
+            Self::ApiEndpoint(value.into())
+        }
+    }
 }
 
 /// Files served directly to the user for a given URL, such as images, CSS
@@ -3533,6 +3554,21 @@ pub mod audit_data {
         /// Detailed information about CreateVersion call.
         CreateVersion(std::boxed::Box<crate::model::CreateVersionMethod>),
     }
+
+    impl Method {
+        /// Initializes the enum to the [UpdateService](Self::UpdateService) branch.
+        pub fn from_update_service(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::UpdateServiceMethod>>,
+        ) -> Self {
+            Self::UpdateService(value.into())
+        }
+        /// Initializes the enum to the [CreateVersion](Self::CreateVersion) branch.
+        pub fn from_create_version(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CreateVersionMethod>>,
+        ) -> Self {
+            Self::CreateVersion(value.into())
+        }
+    }
 }
 
 /// Detailed information about UpdateService call.
@@ -5268,6 +5304,15 @@ pub mod operation_metadata_v_1 {
     pub enum MethodMetadata {
         CreateVersionMetadata(std::boxed::Box<crate::model::CreateVersionMetadataV1>),
     }
+
+    impl MethodMetadata {
+        /// Initializes the enum to the [CreateVersionMetadata](Self::CreateVersionMetadata) branch.
+        pub fn from_create_version_metadata(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::CreateVersionMetadataV1>>,
+        ) -> Self {
+            Self::CreateVersionMetadata(value.into())
+        }
+    }
 }
 
 /// Metadata for the given [google.longrunning.Operation][google.longrunning.Operation] during a
@@ -6209,6 +6254,27 @@ pub mod version {
         /// complex initialization and rely on the state of its memory over time.
         /// Manually scaled versions are sometimes referred to as "backends".
         ManualScaling(std::boxed::Box<crate::model::ManualScaling>),
+    }
+
+    impl Scaling {
+        /// Initializes the enum to the [AutomaticScaling](Self::AutomaticScaling) branch.
+        pub fn from_automatic_scaling(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::AutomaticScaling>>,
+        ) -> Self {
+            Self::AutomaticScaling(value.into())
+        }
+        /// Initializes the enum to the [BasicScaling](Self::BasicScaling) branch.
+        pub fn from_basic_scaling(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::BasicScaling>>,
+        ) -> Self {
+            Self::BasicScaling(value.into())
+        }
+        /// Initializes the enum to the [ManualScaling](Self::ManualScaling) branch.
+        pub fn from_manual_scaling(
+            value: impl std::convert::Into<std::boxed::Box<crate::model::ManualScaling>>,
+        ) -> Self {
+            Self::ManualScaling(value.into())
+        }
     }
 }
 
@@ -7257,6 +7323,13 @@ pub mod entrypoint {
     pub enum Command {
         /// The format should be a shell command that can be fed to `bash -c`.
         Shell(std::string::String),
+    }
+
+    impl Command {
+        /// Initializes the enum to the [Shell](Self::Shell) branch.
+        pub fn from_shell(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::Shell(value.into())
+        }
     }
 }
 

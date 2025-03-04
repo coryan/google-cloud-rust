@@ -8179,6 +8179,25 @@ pub mod external_access_rule {
             /// `projects/my-project/locations/us-central1-a/privateClouds/my-cloud/externalAddresses/my-address`.
             ExternalAddress(std::string::String),
         }
+
+        impl IpRange {
+            /// Initializes the enum to the [IpAddress](Self::IpAddress) branch.
+            pub fn from_ip_address(value: impl std::convert::Into<std::string::String>) -> Self {
+                Self::IpAddress(value.into())
+            }
+            /// Initializes the enum to the [IpAddressRange](Self::IpAddressRange) branch.
+            pub fn from_ip_address_range(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::IpAddressRange(value.into())
+            }
+            /// Initializes the enum to the [ExternalAddress](Self::ExternalAddress) branch.
+            pub fn from_external_address(
+                value: impl std::convert::Into<std::string::String>,
+            ) -> Self {
+                Self::ExternalAddress(value.into())
+            }
+        }
     }
 
     /// Action determines whether the external access rule permits or blocks
@@ -10656,6 +10675,19 @@ pub mod management_dns_zone_binding {
         /// `{project}` can either be a project number or a project ID.
         VmwareEngineNetwork(std::string::String),
     }
+
+    impl BindNetwork {
+        /// Initializes the enum to the [VpcNetwork](Self::VpcNetwork) branch.
+        pub fn from_vpc_network(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::VpcNetwork(value.into())
+        }
+        /// Initializes the enum to the [VmwareEngineNetwork](Self::VmwareEngineNetwork) branch.
+        pub fn from_vmware_engine_network(
+            value: impl std::convert::Into<std::string::String>,
+        ) -> Self {
+            Self::VmwareEngineNetwork(value.into())
+        }
+    }
 }
 
 /// VMware Engine network resource that provides connectivity for VMware Engine
@@ -11628,5 +11660,16 @@ pub mod principal {
         User(std::string::String),
         /// The service account which needs to be granted the permission.
         ServiceAccount(std::string::String),
+    }
+
+    impl Principal {
+        /// Initializes the enum to the [User](Self::User) branch.
+        pub fn from_user(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::User(value.into())
+        }
+        /// Initializes the enum to the [ServiceAccount](Self::ServiceAccount) branch.
+        pub fn from_service_account(value: impl std::convert::Into<std::string::String>) -> Self {
+            Self::ServiceAccount(value.into())
+        }
     }
 }

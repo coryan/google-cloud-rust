@@ -224,6 +224,17 @@ pub mod notification_config {
             std::boxed::Box<crate::model::notification_config::CloudPubSubNotificationConfig>,
         ),
     }
+
+    impl Config {
+        /// Initializes the enum to the [PubsubNotification](Self::PubsubNotification) branch.
+        pub fn from_pubsub_notification(
+            value: impl std::convert::Into<
+                std::boxed::Box<crate::model::notification_config::CloudPubSubNotificationConfig>,
+            >,
+        ) -> Self {
+            Self::PubsubNotification(value.into())
+        }
+    }
 }
 
 /// ImageConfig defines the control plane images to run.
@@ -1024,6 +1035,17 @@ pub mod app_connector {
             ServiceAccount(
                 std::boxed::Box<crate::model::app_connector::principal_info::ServiceAccount>,
             ),
+        }
+
+        impl Type {
+            /// Initializes the enum to the [ServiceAccount](Self::ServiceAccount) branch.
+            pub fn from_service_account(
+                value: impl std::convert::Into<
+                    std::boxed::Box<crate::model::app_connector::principal_info::ServiceAccount>,
+                >,
+            ) -> Self {
+                Self::ServiceAccount(value.into())
+            }
         }
     }
 
