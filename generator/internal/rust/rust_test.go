@@ -92,7 +92,10 @@ func TestParseOptions(t *testing.T) {
 			"google.protobuf": gp,
 			"test-only":       gp,
 		},
-		skipConvert: map[string]bool{".test.v1.Name": true, ".test.v2.AnotherName": true},
+		skipConvert: map[string]bool{
+			".test.v1.Name":        true,
+			".test.v1.AnotherName": true,
+		},
 	}
 	sort.Slice(want.extraPackages, func(i, j int) bool {
 		return want.extraPackages[i].name < want.extraPackages[j].name

@@ -99,15 +99,16 @@ func Test_OneOfAnnotations(t *testing.T) {
 	ignore := cmpopts.IgnoreFields(api.Field{}, "Group")
 
 	if diff := cmp.Diff(&oneOfAnnotation{
-		FieldName:      "r#type",
-		SetterName:     "type",
-		EnumName:       "Type",
-		FQEnumName:     "crate::model::message::Type",
-		FieldType:      "crate::model::message::Type",
-		DocLines:       []string{"/// Say something clever about this oneof."},
-		SingularFields: []*api.Field{singular},
-		RepeatedFields: []*api.Field{repeated},
-		MapFields:      []*api.Field{map_field},
+		FieldName:        "r#type",
+		SetterName:       "type",
+		EnumName:         "Type",
+		FQEnumName:       "crate::model::message::Type",
+		RelativeEnumName: "message::Type",
+		FieldType:        "crate::model::message::Type",
+		DocLines:         []string{"/// Say something clever about this oneof."},
+		SingularFields:   []*api.Field{singular},
+		RepeatedFields:   []*api.Field{repeated},
+		MapFields:        []*api.Field{map_field},
 	}, group.Codec, ignore); diff != "" {
 		t.Errorf("mismatch in oneof annotations (-want, +got)\n:%s", diff)
 	}
@@ -162,6 +163,7 @@ func Test_OneOfAnnotations(t *testing.T) {
 		AddQueryParameter:  `let builder = req.get_oneof_field_map().map(|p| serde_json::to_value(p).map_err(Error::serde) ).transpose()?.into_iter().fold(builder, |builder, p| { use gax::query_parameter::QueryParameter; p.add(builder, "oneofFieldMap") });`,
 		KeyType:            "i32",
 		ValueType:          "i32",
+		IsBoxed:            true,
 	}, map_field.Codec, ignore); diff != "" {
 		t.Errorf("mismatch in field annotations (-want, +got)\n:%s", diff)
 	}
