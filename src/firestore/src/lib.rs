@@ -20,6 +20,7 @@ pub mod model;
 
 pub(crate) mod google {
     pub mod firestore {
+        #[allow(clippy::enum_variant_names)]
         pub mod v1 {
             include!("generated/protos/google.firestore.v1.rs");
         }
