@@ -8151,3 +8151,18 @@ impl wkt::message::Message for ExistenceFilter {
         "type.googleapis.com/google.firestore.v1.ExistenceFilter"
     }
 }
+
+#[allow(dead_code)]
+pub(crate) mod stubs;
+
+#[allow(dead_code)]
+pub(crate) mod tracing;
+
+#[allow(dead_code)]
+pub(crate) mod transport;
+
+#[allow(dead_code)]
+pub(crate) mod builders;
+
+#[allow(dead_code)]
+pub(crate) mod client;

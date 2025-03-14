@@ -68,8 +68,9 @@ type serviceAnnotations struct {
 	Methods     []*api.Method
 	DefaultHost string
 	// If true, this service includes methods that return long-running operations.
-	HasLROs  bool
-	APITitle string
+	HasLROs          bool
+	APITitle         string
+	GrpcClientModule string
 }
 
 type messageAnnotation struct {
@@ -115,12 +116,14 @@ type methodAnnotation struct {
 }
 
 type pathInfoAnnotation struct {
-	Method        string
-	MethodToLower string
-	PathFmt       string
-	PathArgs      []string
-	HasPathArgs   bool
-	HasBody       bool
+	Method           string
+	MethodToLower    string
+	PathFmt          string
+	PathArgs         []string
+	HasPathArgs      bool
+	RequestParams    []requestParam
+	HasRequestParams bool
+	HasBody          bool
 }
 
 type operationInfo struct {
@@ -314,10 +317,11 @@ func (c *codec) annotateService(s *api.Service, model *api.API) {
 		ModuleName: toSnake(s.Name),
 		DocLines: formatDocComments(
 			s.Documentation, s.ID, model.State, c.modulePath, []string{s.ID, s.Package}, c.packageMapping),
-		Methods:     methods,
-		DefaultHost: s.DefaultHost,
-		HasLROs:     hasLROs,
-		APITitle:    model.Title,
+		Methods:          methods,
+		DefaultHost:      s.DefaultHost,
+		HasLROs:          hasLROs,
+		APITitle:         model.Title,
+		GrpcClientModule: c.gRPCClientModule,
 	}
 	s.Codec = ann
 }
@@ -405,9 +409,11 @@ func (c *codec) annotateMethod(m *api.Method, s *api.Service, state *api.APIStat
 		MethodToLower: strings.ToLower(m.PathInfo.Verb),
 		PathFmt:       httpPathFmt(m.PathInfo),
 		PathArgs:      httpPathArgs(m.PathInfo, m, state),
+		RequestParams: requestParams(m.PathInfo, m, state),
 		HasBody:       m.PathInfo.BodyFieldPath != "",
 	}
 	pathInfoAnnotation.HasPathArgs = len(pathInfoAnnotation.PathArgs) > 0
+	pathInfoAnnotation.HasRequestParams = len(pathInfoAnnotation.RequestParams) > 0
 
 	m.PathInfo.Codec = pathInfoAnnotation
 	annotation := &methodAnnotation{

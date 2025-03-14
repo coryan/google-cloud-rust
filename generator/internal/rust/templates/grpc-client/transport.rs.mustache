@@ -1,0 +1,134 @@
+{{!
+Copyright 2025 Google LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+}}
+// Copyright {{Codec.CopyrightYear}} Google LLC
+{{#Codec.BoilerPlate}}
+//{{{.}}}
+{{/Codec.BoilerPlate}}
+{{#Codec.HasServices}}
+
+use crate::Result;
+{{! Disable warnings about unused imports: sometimes there are no RPCs with query parameters and this goes unused }}
+#[allow(unused_imports)]
+use gax::error::Error;
+
+const DEFAULT_HOST: &str = "https://{{Codec.DefaultHost}}";
+
+mod info {
+    const NAME: &str = env!("CARGO_PKG_NAME");
+    const VERSION: &str = env!("CARGO_PKG_VERSION");
+    lazy_static::lazy_static! {
+        pub(crate) static ref X_GOOG_API_CLIENT_HEADER: String = {
+            let ac = gax::api_header::XGoogApiClient{
+                name:          NAME,
+                version:       VERSION,
+                library_type:  gax::api_header::GAPIC, 
+            };
+            ac.header_value()
+        };
+    }
+}
+
+{{/Codec.HasServices}}
+{{#Codec.Services}}
+/// Implements [{{Codec.Name}}](super::stubs::{{Codec.Name}}) using a Tonic-generated client.
+#[derive(Clone)]
+pub struct {{Codec.Name}} {
+    inner: {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client<tonic::transport::Channel>,
+    cred: auth::credentials::Credential,
+}
+
+impl std::fmt::Debug for {{Codec.Name}} {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
+        f.debug_struct("{{Codec.Name}}")
+            .field("inner", &self.inner)
+            .finish()
+    }
+}
+
+impl {{Codec.Name}} {
+    pub async fn new(config: gax::options::ClientConfig) -> Result<Self> {
+        let inner = Self::make_inner(&config).await?;
+        let cred = Self::make_credentials(&config).await?;
+        Ok(Self { inner, cred })
+    }
+
+    async fn make_inner(config: &gax::options::ClientConfig) -> Result<{{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client<tonic::transport::Channel>> {
+        {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client::connect(
+            config
+            .endpoint()
+            .clone()
+            .unwrap_or_else(|| DEFAULT_HOST.to_string())
+        )
+        .await
+        .map_err(Error::other)
+    }
+
+    async fn make_credentials(config: &gax::options::ClientConfig) -> Result<auth::credentials::Credential> {
+        if let Some(c) = config.credential().clone() {
+            return Ok(c);
+        }
+        auth::credentials::create_access_token_credential()
+                .await
+                .map_err(Error::authentication)
+    }
+
+    async fn make_headers(&self) -> Result<http::header::HeaderMap> {
+        let mut headers = self
+            .cred
+            .get_headers()
+            .await
+            .map_err(Error::authentication)?;
+        headers.push((
+            http::header::HeaderName::from_static("x-goog-api-client"),
+            http::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
+        ));
+        Ok(http::header::HeaderMap::from_iter(headers))
+    }
+}
+
+impl super::stubs::{{Codec.Name}} for {{Codec.Name}} {
+    {{#Codec.Methods}}
+    async fn {{Codec.Name}}(
+        &self,
+        req: {{InputType.Codec.QualifiedName}},
+        _options: gax::options::RequestOptions,
+    ) -> Result<{{OutputType.Codec.QualifiedName}}> {
+        use wkt::prost::Convert;
+        let mut headers = self.make_headers().await?;
+        {{#PathInfo.Codec.HasRequestParams}}
+        let x_goog_request_params = [
+            {{#PathInfo.Codec.RequestParams}}
+            format!("{{Name}}={}", req{{{Accessor}}}),
+            {{/PathInfo.Codec.RequestParams}}
+        ].into_iter().fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        {{/PathInfo.Codec.HasRequestParams}}
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
+        let mut inner = self.inner.clone();
+        let response = inner.{{Codec.Name}}(request).await.map_err(Error::rpc)?;
+        {{! TODO(#1384) - we should do something with the metadata }}
+        let response = response.into_inner();
+        Ok(response.cnv())
+    }
+
+    {{/Codec.Methods}}
+}
+
+{{/Codec.Services}}

@@ -13,23 +13,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 }}
-{{> ../mod/mod.rs}}
-
-{{!
-    TODO(#1384) - there is some risk of name collitions. For example, if there
-    is a message called `Stubs` (or `Transport`) with nested messages or enums. 
-}}
-#[allow(dead_code)]
-pub(crate) mod stubs;
-
-#[allow(dead_code)]
-pub(crate) mod tracing;
-
-#[allow(dead_code)]
-pub(crate) mod transport;
-
-#[allow(dead_code)]
-pub(crate) mod builders;
-
-#[allow(dead_code)]
-pub(crate) mod client;
+{{> ../crate/src/builders.rs}}
