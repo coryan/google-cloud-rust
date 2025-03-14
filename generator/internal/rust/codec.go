@@ -106,6 +106,8 @@ func newCodec(protobufSource bool, options map[string]string) (*codec, error) {
 			codec.disabledRustdocWarnings = strings.Split(definition, ",")
 		case key == "template-override":
 			codec.templateOverride = definition
+		case key == "grpc-client-module":
+			codec.gRPCClientModule = definition
 		default:
 			return nil, fmt.Errorf("unknown Rust codec option %q", key)
 		}
@@ -205,6 +207,8 @@ type codec struct {
 	systemParameters []systemParameter
 	// Overrides the template sudirectory.
 	templateOverride string
+	// Defines the tonic module, only used in with gRPC-based clients
+	gRPCClientModule string
 }
 
 type systemParameter struct {

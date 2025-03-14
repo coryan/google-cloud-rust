@@ -8159,4 +8159,7 @@ pub(crate) mod stubs;
 pub(crate) mod tracing;
 
 #[allow(dead_code)]
+pub(crate) mod transport;
+
+#[allow(dead_code)]
 pub(crate) mod builders;

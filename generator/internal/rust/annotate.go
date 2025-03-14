@@ -68,8 +68,9 @@ type serviceAnnotations struct {
 	Methods     []*api.Method
 	DefaultHost string
 	// If true, this service includes methods that return long-running operations.
-	HasLROs  bool
-	APITitle string
+	HasLROs          bool
+	APITitle         string
+	GrpcClientModule string
 }
 
 type messageAnnotation struct {
@@ -314,10 +315,11 @@ func (c *codec) annotateService(s *api.Service, model *api.API) {
 		ModuleName: toSnake(s.Name),
 		DocLines: formatDocComments(
 			s.Documentation, s.ID, model.State, c.modulePath, []string{s.ID, s.Package}, c.packageMapping),
-		Methods:     methods,
-		DefaultHost: s.DefaultHost,
-		HasLROs:     hasLROs,
-		APITitle:    model.Title,
+		Methods:          methods,
+		DefaultHost:      s.DefaultHost,
+		HasLROs:          hasLROs,
+		APITitle:         model.Title,
+		GrpcClientModule: c.gRPCClientModule,
 	}
 	s.Codec = ann
 }
