@@ -8154,3 +8154,6 @@ impl wkt::message::Message for ExistenceFilter {
 
 #[allow(dead_code)]
 pub(crate) mod stubs;
+
+#[allow(dead_code)]
+pub(crate) mod tracing;
