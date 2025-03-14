@@ -26,6 +26,7 @@ license.workspace    = true
 repository.workspace = true
 
 [dependencies]
+async-trait = "0.1"
 bytes       = { version = "1", features = ["serde"] }
 prost       = "0.13"
 prost-types = "0.13"
