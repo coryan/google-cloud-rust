@@ -40,39 +40,45 @@ pub(crate) mod dynamic;
 /// implementation of each method. Most of these implementations just return an
 /// error.
 pub trait Firestore: std::fmt::Debug + Send + Sync {
-
     /// Implements [crate::client::Firestore::get_document].
     fn get_document(
         &self,
         _req: crate::model::GetDocumentRequest,
-        _options: gax::options::RequestOptions
+        _options: gax::options::RequestOptions,
     ) -> impl std::future::Future<Output = crate::Result<crate::model::Document>> + Send {
-        std::future::ready::<crate::Result<crate::model::Document>>(Err(Error::other("unimplemented")))
+        std::future::ready::<crate::Result<crate::model::Document>>(Err(Error::other(
+            "unimplemented",
+        )))
     }
 
     /// Implements [crate::client::Firestore::list_documents].
     fn list_documents(
         &self,
         _req: crate::model::ListDocumentsRequest,
-        _options: gax::options::RequestOptions
-    ) -> impl std::future::Future<Output = crate::Result<crate::model::ListDocumentsResponse>> + Send {
-        std::future::ready::<crate::Result<crate::model::ListDocumentsResponse>>(Err(Error::other("unimplemented")))
+        _options: gax::options::RequestOptions,
+    ) -> impl std::future::Future<Output = crate::Result<crate::model::ListDocumentsResponse>> + Send
+    {
+        std::future::ready::<crate::Result<crate::model::ListDocumentsResponse>>(Err(Error::other(
+            "unimplemented",
+        )))
     }
 
     /// Implements [crate::client::Firestore::update_document].
     fn update_document(
         &self,
         _req: crate::model::UpdateDocumentRequest,
-        _options: gax::options::RequestOptions
+        _options: gax::options::RequestOptions,
     ) -> impl std::future::Future<Output = crate::Result<crate::model::Document>> + Send {
-        std::future::ready::<crate::Result<crate::model::Document>>(Err(Error::other("unimplemented")))
+        std::future::ready::<crate::Result<crate::model::Document>>(Err(Error::other(
+            "unimplemented",
+        )))
     }
 
     /// Implements [crate::client::Firestore::delete_document].
     fn delete_document(
         &self,
         _req: crate::model::DeleteDocumentRequest,
-        _options: gax::options::RequestOptions
+        _options: gax::options::RequestOptions,
     ) -> impl std::future::Future<Output = crate::Result<wkt::Empty>> + Send {
         std::future::ready::<crate::Result<wkt::Empty>>(Err(Error::other("unimplemented")))
     }
@@ -81,25 +87,30 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
     fn begin_transaction(
         &self,
         _req: crate::model::BeginTransactionRequest,
-        _options: gax::options::RequestOptions
-    ) -> impl std::future::Future<Output = crate::Result<crate::model::BeginTransactionResponse>> + Send {
-        std::future::ready::<crate::Result<crate::model::BeginTransactionResponse>>(Err(Error::other("unimplemented")))
+        _options: gax::options::RequestOptions,
+    ) -> impl std::future::Future<Output = crate::Result<crate::model::BeginTransactionResponse>> + Send
+    {
+        std::future::ready::<crate::Result<crate::model::BeginTransactionResponse>>(Err(
+            Error::other("unimplemented"),
+        ))
     }
 
     /// Implements [crate::client::Firestore::commit].
     fn commit(
         &self,
         _req: crate::model::CommitRequest,
-        _options: gax::options::RequestOptions
+        _options: gax::options::RequestOptions,
     ) -> impl std::future::Future<Output = crate::Result<crate::model::CommitResponse>> + Send {
-        std::future::ready::<crate::Result<crate::model::CommitResponse>>(Err(Error::other("unimplemented")))
+        std::future::ready::<crate::Result<crate::model::CommitResponse>>(Err(Error::other(
+            "unimplemented",
+        )))
     }
 
     /// Implements [crate::client::Firestore::rollback].
     fn rollback(
         &self,
         _req: crate::model::RollbackRequest,
-        _options: gax::options::RequestOptions
+        _options: gax::options::RequestOptions,
     ) -> impl std::future::Future<Output = crate::Result<wkt::Empty>> + Send {
         std::future::ready::<crate::Result<wkt::Empty>>(Err(Error::other("unimplemented")))
     }
@@ -108,72 +119,46 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
     fn partition_query(
         &self,
         _req: crate::model::PartitionQueryRequest,
-        _options: gax::options::RequestOptions
-    ) -> impl std::future::Future<Output = crate::Result<crate::model::PartitionQueryResponse>> + Send {
-        std::future::ready::<crate::Result<crate::model::PartitionQueryResponse>>(Err(Error::other("unimplemented")))
+        _options: gax::options::RequestOptions,
+    ) -> impl std::future::Future<Output = crate::Result<crate::model::PartitionQueryResponse>> + Send
+    {
+        std::future::ready::<crate::Result<crate::model::PartitionQueryResponse>>(Err(
+            Error::other("unimplemented"),
+        ))
     }
 
     /// Implements [crate::client::Firestore::list_collection_ids].
     fn list_collection_ids(
         &self,
         _req: crate::model::ListCollectionIdsRequest,
-        _options: gax::options::RequestOptions
-    ) -> impl std::future::Future<Output = crate::Result<crate::model::ListCollectionIdsResponse>> + Send {
-        std::future::ready::<crate::Result<crate::model::ListCollectionIdsResponse>>(Err(Error::other("unimplemented")))
+        _options: gax::options::RequestOptions,
+    ) -> impl std::future::Future<Output = crate::Result<crate::model::ListCollectionIdsResponse>> + Send
+    {
+        std::future::ready::<crate::Result<crate::model::ListCollectionIdsResponse>>(Err(
+            Error::other("unimplemented"),
+        ))
     }
 
     /// Implements [crate::client::Firestore::batch_write].
     fn batch_write(
         &self,
         _req: crate::model::BatchWriteRequest,
-        _options: gax::options::RequestOptions
-    ) -> impl std::future::Future<Output = crate::Result<crate::model::BatchWriteResponse>> + Send {
-        std::future::ready::<crate::Result<crate::model::BatchWriteResponse>>(Err(Error::other("unimplemented")))
+        _options: gax::options::RequestOptions,
+    ) -> impl std::future::Future<Output = crate::Result<crate::model::BatchWriteResponse>> + Send
+    {
+        std::future::ready::<crate::Result<crate::model::BatchWriteResponse>>(Err(Error::other(
+            "unimplemented",
+        )))
     }
 
     /// Implements [crate::client::Firestore::create_document].
     fn create_document(
         &self,
         _req: crate::model::CreateDocumentRequest,
-        _options: gax::options::RequestOptions
+        _options: gax::options::RequestOptions,
     ) -> impl std::future::Future<Output = crate::Result<crate::model::Document>> + Send {
-        std::future::ready::<crate::Result<crate::model::Document>>(Err(Error::other("unimplemented")))
-    }
-
-    /// Implements [crate::client::Firestore::list_operations].
-    fn list_operations(
-        &self,
-        _req: longrunning::model::ListOperationsRequest,
-        _options: gax::options::RequestOptions
-    ) -> impl std::future::Future<Output = crate::Result<longrunning::model::ListOperationsResponse>> + Send {
-        std::future::ready::<crate::Result<longrunning::model::ListOperationsResponse>>(Err(Error::other("unimplemented")))
-    }
-
-    /// Implements [crate::client::Firestore::get_operation].
-    fn get_operation(
-        &self,
-        _req: longrunning::model::GetOperationRequest,
-        _options: gax::options::RequestOptions
-    ) -> impl std::future::Future<Output = crate::Result<longrunning::model::Operation>> + Send {
-        std::future::ready::<crate::Result<longrunning::model::Operation>>(Err(Error::other("unimplemented")))
-    }
-
-    /// Implements [crate::client::Firestore::delete_operation].
-    fn delete_operation(
-        &self,
-        _req: longrunning::model::DeleteOperationRequest,
-        _options: gax::options::RequestOptions
-    ) -> impl std::future::Future<Output = crate::Result<wkt::Empty>> + Send {
-        std::future::ready::<crate::Result<wkt::Empty>>(Err(Error::other("unimplemented")))
-    }
-
-    /// Implements [crate::client::Firestore::cancel_operation].
-    fn cancel_operation(
-        &self,
-        _req: longrunning::model::CancelOperationRequest,
-        _options: gax::options::RequestOptions
-    ) -> impl std::future::Future<Output = crate::Result<wkt::Empty>> + Send {
-        std::future::ready::<crate::Result<wkt::Empty>>(Err(Error::other("unimplemented")))
+        std::future::ready::<crate::Result<crate::model::Document>>(Err(Error::other(
+            "unimplemented",
+        )))
     }
 }
-

@@ -19,7 +19,7 @@
 use crate::Result;
 use std::sync::Arc;
 
-/// Implements a client for the Cloud Firestore API.
+/// Implements a client for the .
 ///
 /// # Service Description
 ///
@@ -210,54 +210,6 @@ impl Firestore {
         crate::builders::firestore::CreateDocument::new(self.inner.clone())
             .set_parent ( parent.into() )
             .set_collection_id ( collection_id.into() )
-    }
-
-    /// Provides the [Operations][google.longrunning.Operations] service functionality in this service.
-    ///
-    /// [google.longrunning.Operations]: longrunning::client::Operations
-    pub fn list_operations(
-        &self,
-        name: impl Into<std::string::String>,
-    ) -> crate::builders::firestore::ListOperations
-    {
-        crate::builders::firestore::ListOperations::new(self.inner.clone())
-            .set_name ( name.into() )
-    }
-
-    /// Provides the [Operations][google.longrunning.Operations] service functionality in this service.
-    ///
-    /// [google.longrunning.Operations]: longrunning::client::Operations
-    pub fn get_operation(
-        &self,
-        name: impl Into<std::string::String>,
-    ) -> crate::builders::firestore::GetOperation
-    {
-        crate::builders::firestore::GetOperation::new(self.inner.clone())
-            .set_name ( name.into() )
-    }
-
-    /// Provides the [Operations][google.longrunning.Operations] service functionality in this service.
-    ///
-    /// [google.longrunning.Operations]: longrunning::client::Operations
-    pub fn delete_operation(
-        &self,
-        name: impl Into<std::string::String>,
-    ) -> crate::builders::firestore::DeleteOperation
-    {
-        crate::builders::firestore::DeleteOperation::new(self.inner.clone())
-            .set_name ( name.into() )
-    }
-
-    /// Provides the [Operations][google.longrunning.Operations] service functionality in this service.
-    ///
-    /// [google.longrunning.Operations]: longrunning::client::Operations
-    pub fn cancel_operation(
-        &self,
-        name: impl Into<std::string::String>,
-    ) -> crate::builders::firestore::CancelOperation
-    {
-        crate::builders::firestore::CancelOperation::new(self.inner.clone())
-            .set_name ( name.into() )
     }
 
 }

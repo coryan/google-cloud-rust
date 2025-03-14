@@ -130,41 +130,5 @@ where T: crate::stubs::Firestore + std::fmt::Debug + Send + Sync {
         self.inner.create_document(req, options).await
     }
 
-    #[tracing::instrument(ret)]
-    async fn list_operations(
-        &self,
-        req: longrunning::model::ListOperationsRequest,
-        options: gax::options::RequestOptions
-    ) -> Result<longrunning::model::ListOperationsResponse> {
-        self.inner.list_operations(req, options).await
-    }
-
-    #[tracing::instrument(ret)]
-    async fn get_operation(
-        &self,
-        req: longrunning::model::GetOperationRequest,
-        options: gax::options::RequestOptions
-    ) -> Result<longrunning::model::Operation> {
-        self.inner.get_operation(req, options).await
-    }
-
-    #[tracing::instrument(ret)]
-    async fn delete_operation(
-        &self,
-        req: longrunning::model::DeleteOperationRequest,
-        options: gax::options::RequestOptions
-    ) -> Result<wkt::Empty> {
-        self.inner.delete_operation(req, options).await
-    }
-
-    #[tracing::instrument(ret)]
-    async fn cancel_operation(
-        &self,
-        req: longrunning::model::CancelOperationRequest,
-        options: gax::options::RequestOptions
-    ) -> Result<wkt::Empty> {
-        self.inner.cancel_operation(req, options).await
-    }
-
 }
 
