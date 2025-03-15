@@ -15,6 +15,10 @@ limitations under the License.
 }}
 {{> ../mod/mod.rs}}
 
+{{!
+    TODO(#1384) - there is some risk of name collitions. For example, if there
+    is a message called `Stubs` (or `Transport`) with nested messages or enums. 
+}}
 #[allow(dead_code)]
 pub(crate) mod stubs;
 
