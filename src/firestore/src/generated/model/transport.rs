@@ -84,8 +84,18 @@ impl Firestore {
             .map_err(Error::authentication)
     }
 
-    fn metadata(&self) -> tonic::metadata::MetadataMap {
-        tonic::metadata::MetadataMap::new()
+    async fn make_metadata(&self) -> Result<tonic::metadata::MetadataMap> {
+        let mut headers = self
+            .cred
+            .get_headers()
+            .await
+            .map_err(Error::authentication)?;
+        headers.push((
+            http::header::HeaderName::from_static("x-goog-api-client"),
+            http::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
+        ));
+        let headers = http::header::HeaderMap::from_iter(headers);
+        Ok(tonic::metadata::MetadataMap::from_headers(headers))
     }
 }
 
@@ -96,8 +106,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::Document> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.get_document(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
@@ -110,8 +120,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::ListDocumentsResponse> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.list_documents(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
@@ -124,8 +134,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::Document> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.update_document(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
@@ -138,8 +148,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<wkt::Empty> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.delete_document(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
@@ -152,8 +162,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::BeginTransactionResponse> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.begin_transaction(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
@@ -166,8 +176,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::CommitResponse> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.commit(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
@@ -180,8 +190,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<wkt::Empty> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.rollback(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
@@ -194,8 +204,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::PartitionQueryResponse> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.partition_query(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
@@ -208,8 +218,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::ListCollectionIdsResponse> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner
             .list_collection_ids(request)
@@ -225,8 +235,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::BatchWriteResponse> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.batch_write(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
@@ -239,8 +249,8 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::Document> {
         use wkt::prost::Convert;
-        let request =
-            tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.create_document(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
