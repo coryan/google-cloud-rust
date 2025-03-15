@@ -85,7 +85,7 @@ impl {{Codec.Name}} {
                 .map_err(Error::authentication)
     }
 
-    async fn make_metadata(&self) -> Result<tonic::metadata::MetadataMap> {
+    async fn make_headers(&self) -> Result<http::header::HeaderMap> {
         let mut headers = self
             .cred
             .get_headers()
@@ -95,8 +95,7 @@ impl {{Codec.Name}} {
             http::header::HeaderName::from_static("x-goog-api-client"),
             http::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
         ));
-        let headers = http::header::HeaderMap::from_iter(headers);
-        Ok(tonic::metadata::MetadataMap::from_headers(headers))
+        Ok(http::header::HeaderMap::from_iter(headers))
     }
 }
 
@@ -108,8 +107,19 @@ impl super::stubs::{{Codec.Name}} for {{Codec.Name}} {
         _options: gax::options::RequestOptions,
     ) -> Result<{{OutputType.Codec.QualifiedName}}> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
-        {{! TODO(#1384) - insert the request parameters }}
+        let mut headers = self.make_headers().await?;
+        {{#PathInfo.Codec.HasRequestParams}}
+        let x_goog_request_params = [
+            {{#PathInfo.Codec.RequestParams}}
+            format!("{{Name}}={}", req{{{Accessor}}}),
+            {{/PathInfo.Codec.RequestParams}}
+        ].into_iter().fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        {{/PathInfo.Codec.HasRequestParams}}
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.{{Codec.Name}}(request).await.map_err(Error::rpc)?;

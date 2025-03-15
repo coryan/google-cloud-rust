@@ -818,6 +818,29 @@ func httpPathArgs(h *api.PathInfo, method *api.Method, state *api.APIState) []st
 	return args
 }
 
+type requestParam struct {
+	Name     string
+	Accessor string
+}
+
+func requestParams(h *api.PathInfo, method *api.Method, state *api.APIState) []requestParam {
+	message, ok := state.MessageByID[method.InputTypeID]
+	if !ok {
+		slog.Error("cannot find input message for", "method", method)
+		return []requestParam{}
+	}
+	var params []requestParam
+	for _, arg := range h.PathTemplate {
+		if arg.FieldPath != nil {
+			params = append(params, requestParam{
+				Name:     *arg.FieldPath,
+				Accessor: derefFieldPath(*arg.FieldPath, message, state),
+			})
+		}
+	}
+	return params
+}
+
 // Convert a name to `snake_case`. The Rust naming conventions use this style
 // for modules, fields, and functions.
 //
