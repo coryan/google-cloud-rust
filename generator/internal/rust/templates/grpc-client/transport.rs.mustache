@@ -45,11 +45,11 @@ mod info {
 {{#Codec.Services}}
 /// Implements [{{Codec.Name}}](super::stubs::{{Codec.Name}}) using a Tonic-generated client.
 #[derive(Clone)]
-pub struct {{Codec.Name}}<T> {
-    inner: {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}<T>,
+pub struct {{Codec.Name}} {
+    inner: {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client<tonic::transport::Channel>,
 }
 
-impl<T> std::fmt::Debug for {{Codec.Name}}<T> {
+impl std::fmt::Debug for {{Codec.Name}} {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         f.debug_struct("{{Codec.Name}}")
             .field("inner", &self.inner)
@@ -57,18 +57,18 @@ impl<T> std::fmt::Debug for {{Codec.Name}}<T> {
     }
 }
 
-impl<T> {{Codec.Name}}<T> {
+impl {{Codec.Name}} {
     pub async fn new(config: gax::options::ClientConfig) -> Result<Self> {
-        let inner = {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}::connect(
+        let inner = {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client::connect(
             config.endpoint().unwrap_or_else(|| DEFAULT_HOST.to_string())
         )
         .await
-        .map_err(Error::other);
+        .map_err(Error::other)?;
         Ok(Self { inner })
     }
 }
 
-impl<T> super::stubs::{{Codec.Name}} for {{Codec.Name}}<T> {
+impl super::stubs::{{Codec.Name}} for {{Codec.Name}} {
     {{#Codec.Methods}}
     async fn {{Codec.Name}}(
         &self,
@@ -80,7 +80,8 @@ impl<T> super::stubs::{{Codec.Name}} for {{Codec.Name}}<T> {
         {{! TODO(#1384) - add auth headers }}
         // TODO: .header(;
         let request = req.cnv();
-        let response = self.inner.{{Codec.Name}}(request).await.map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.{{Codec.Name}}(request).await.map_err(Error::rpc)?;
         {{! TODO(#1384) - we should do something with the metadata }}
         let response = response.into_inner();
         Ok(response.cnv())

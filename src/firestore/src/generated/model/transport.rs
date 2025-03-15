@@ -37,11 +37,12 @@ mod info {
 
 /// Implements [Firestore](super::stubs::Firestore) using a Tonic-generated client.
 #[derive(Clone)]
-pub struct Firestore<T> {
-    inner: crate::google::firestore::v1::firestore_client::Firestore<T>,
+pub struct Firestore {
+    inner:
+        crate::google::firestore::v1::firestore_client::FirestoreClient<tonic::transport::Channel>,
 }
 
-impl<T> std::fmt::Debug for Firestore<T> {
+impl std::fmt::Debug for Firestore {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
         f.debug_struct("Firestore")
             .field("inner", &self.inner)
@@ -49,20 +50,20 @@ impl<T> std::fmt::Debug for Firestore<T> {
     }
 }
 
-impl<T> Firestore<T> {
+impl Firestore {
     pub async fn new(config: gax::options::ClientConfig) -> Result<Self> {
-        let inner = crate::google::firestore::v1::firestore_client::Firestore::connect(
+        let inner = crate::google::firestore::v1::firestore_client::FirestoreClient::connect(
             config
                 .endpoint()
                 .unwrap_or_else(|| DEFAULT_HOST.to_string()),
         )
         .await
-        .map_err(Error::other);
+        .map_err(Error::other)?;
         Ok(Self { inner })
     }
 }
 
-impl<T> super::stubs::Firestore for Firestore<T> {
+impl super::stubs::Firestore for Firestore {
     async fn get_document(
         &self,
         req: crate::model::GetDocumentRequest,
@@ -71,7 +72,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self.inner.get_document(request).await.map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.get_document(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }
@@ -84,11 +86,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self
-            .inner
-            .list_documents(request)
-            .await
-            .map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.list_documents(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }
@@ -101,11 +100,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self
-            .inner
-            .update_document(request)
-            .await
-            .map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.update_document(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }
@@ -118,11 +114,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self
-            .inner
-            .delete_document(request)
-            .await
-            .map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.delete_document(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }
@@ -135,11 +128,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self
-            .inner
-            .begin_transaction(request)
-            .await
-            .map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.begin_transaction(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }
@@ -152,7 +142,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self.inner.commit(request).await.map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.commit(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }
@@ -165,7 +156,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self.inner.rollback(request).await.map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.rollback(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }
@@ -178,11 +170,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self
-            .inner
-            .partition_query(request)
-            .await
-            .map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.partition_query(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }
@@ -195,8 +184,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self
-            .inner
+        let mut inner = self.inner.clone();
+        let response = inner
             .list_collection_ids(request)
             .await
             .map_err(Error::rpc)?;
@@ -212,7 +201,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self.inner.batch_write(request).await.map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.batch_write(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }
@@ -225,11 +215,8 @@ impl<T> super::stubs::Firestore for Firestore<T> {
         use wkt::prost::Convert;
         // TODO: .header(;
         let request = req.cnv();
-        let response = self
-            .inner
-            .create_document(request)
-            .await
-            .map_err(Error::rpc)?;
+        let mut inner = self.inner.clone();
+        let response = inner.create_document(request).await.map_err(Error::rpc)?;
         let response = response.into_inner();
         Ok(response.cnv())
     }

@@ -2196,6 +2196,7 @@ dependencies = [
  "google-cloud-rpc",
  "google-cloud-type",
  "google-cloud-wkt",
+ "lazy_static",
  "prost",
  "prost-types",
  "serde",
