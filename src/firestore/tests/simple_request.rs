@@ -24,7 +24,7 @@ pub fn project_id() -> Result<String> {
 }
 
 pub async fn hello_world() -> Result<()> {
-    let project_id = "coryan-test".to_string(); // project_id()?;
+    let project_id = project_id()?;
     let client = Firestore::new().await?;
     let response = client
         .create_document(
@@ -41,7 +41,7 @@ pub async fn hello_world() -> Result<()> {
     Ok(())
 }
 
-#[cfg(test)] // #[cfg(all(test, feature = "run-integration-tests"))]
+#[cfg(all(test, feature = "run-integration-tests"))]
 mod driver {
     use super::Error;
     use super::Result;
