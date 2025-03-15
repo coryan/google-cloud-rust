@@ -40,7 +40,7 @@ pub(crate) mod dynamic;
 /// implementation of each method. Most of these implementations just return an
 /// error.
 pub trait Firestore: std::fmt::Debug + Send + Sync {
-    /// Implements [csuper::client::Firestore::get_document].
+    /// Implements [super::client::Firestore::get_document].
     fn get_document(
         &self,
         _req: crate::model::GetDocumentRequest,
@@ -51,7 +51,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         )))
     }
 
-    /// Implements [csuper::client::Firestore::list_documents].
+    /// Implements [super::client::Firestore::list_documents].
     fn list_documents(
         &self,
         _req: crate::model::ListDocumentsRequest,
@@ -63,7 +63,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         )))
     }
 
-    /// Implements [csuper::client::Firestore::update_document].
+    /// Implements [super::client::Firestore::update_document].
     fn update_document(
         &self,
         _req: crate::model::UpdateDocumentRequest,
@@ -74,7 +74,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         )))
     }
 
-    /// Implements [csuper::client::Firestore::delete_document].
+    /// Implements [super::client::Firestore::delete_document].
     fn delete_document(
         &self,
         _req: crate::model::DeleteDocumentRequest,
@@ -83,7 +83,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         std::future::ready::<crate::Result<wkt::Empty>>(Err(Error::other("unimplemented")))
     }
 
-    /// Implements [csuper::client::Firestore::begin_transaction].
+    /// Implements [super::client::Firestore::begin_transaction].
     fn begin_transaction(
         &self,
         _req: crate::model::BeginTransactionRequest,
@@ -95,7 +95,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         ))
     }
 
-    /// Implements [csuper::client::Firestore::commit].
+    /// Implements [super::client::Firestore::commit].
     fn commit(
         &self,
         _req: crate::model::CommitRequest,
@@ -106,7 +106,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         )))
     }
 
-    /// Implements [csuper::client::Firestore::rollback].
+    /// Implements [super::client::Firestore::rollback].
     fn rollback(
         &self,
         _req: crate::model::RollbackRequest,
@@ -115,7 +115,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         std::future::ready::<crate::Result<wkt::Empty>>(Err(Error::other("unimplemented")))
     }
 
-    /// Implements [csuper::client::Firestore::partition_query].
+    /// Implements [super::client::Firestore::partition_query].
     fn partition_query(
         &self,
         _req: crate::model::PartitionQueryRequest,
@@ -127,7 +127,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         ))
     }
 
-    /// Implements [csuper::client::Firestore::list_collection_ids].
+    /// Implements [super::client::Firestore::list_collection_ids].
     fn list_collection_ids(
         &self,
         _req: crate::model::ListCollectionIdsRequest,
@@ -139,7 +139,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         ))
     }
 
-    /// Implements [csuper::client::Firestore::batch_write].
+    /// Implements [super::client::Firestore::batch_write].
     fn batch_write(
         &self,
         _req: crate::model::BatchWriteRequest,
@@ -151,7 +151,7 @@ pub trait Firestore: std::fmt::Debug + Send + Sync {
         )))
     }
 
-    /// Implements [csuper::client::Firestore::create_document].
+    /// Implements [super::client::Firestore::create_document].
     fn create_document(
         &self,
         _req: crate::model::CreateDocumentRequest,
