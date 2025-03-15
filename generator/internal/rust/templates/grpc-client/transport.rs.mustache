@@ -60,7 +60,10 @@ impl std::fmt::Debug for {{Codec.Name}} {
 impl {{Codec.Name}} {
     pub async fn new(config: gax::options::ClientConfig) -> Result<Self> {
         let inner = {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client::connect(
-            config.endpoint().unwrap_or_else(|| DEFAULT_HOST.to_string())
+            config
+            .endpoint()
+            .clone()
+            .unwrap_or_else(|| DEFAULT_HOST.to_string())
         )
         .await
         .map_err(Error::other)?;
@@ -78,7 +81,6 @@ impl super::stubs::{{Codec.Name}} for {{Codec.Name}} {
         use wkt::prost::Convert;
         {{! TODO(#1384) - add "x-goog-api-client", reqwest::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER)) }}
         {{! TODO(#1384) - add auth headers }}
-        // TODO: .header(;
         let request = req.cnv();
         let mut inner = self.inner.clone();
         let response = inner.{{Codec.Name}}(request).await.map_err(Error::rpc)?;
