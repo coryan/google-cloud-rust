@@ -85,10 +85,18 @@ impl {{Codec.Name}} {
                 .map_err(Error::authentication)
     }
 
-    fn metadata(&self) -> tonic::metadata::MetadataMap {
-        {{! TODO(#1384) - add "x-goog-api-client", reqwest::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER)) }}
-        {{! TODO(#1384) - add auth headers }}
-        tonic::metadata::MetadataMap::new()
+    async fn make_metadata(&self) -> Result<tonic::metadata::MetadataMap> {
+        let mut headers = self
+            .cred
+            .get_headers()
+            .await
+            .map_err(Error::authentication)?;
+        headers.push((
+            http::header::HeaderName::from_static("x-goog-api-client"),
+            http::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
+        ));
+        let headers = http::header::HeaderMap::from_iter(headers);
+        Ok(tonic::metadata::MetadataMap::from_headers(headers))
     }
 }
 
@@ -100,7 +108,9 @@ impl super::stubs::{{Codec.Name}} for {{Codec.Name}} {
         _options: gax::options::RequestOptions,
     ) -> Result<{{OutputType.Codec.QualifiedName}}> {
         use wkt::prost::Convert;
-        let request = tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
+        let metadata = self.make_metadata().await?;
+        {{! TODO(#1384) - insert the request parameters }}
+        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.{{Codec.Name}}(request).await.map_err(Error::rpc)?;
         {{! TODO(#1384) - we should do something with the metadata }}
