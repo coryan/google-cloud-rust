@@ -47,6 +47,7 @@ mod info {
 #[derive(Clone)]
 pub struct {{Codec.Name}} {
     inner: {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client<tonic::transport::Channel>,
+    cred: auth::credentials::Credential,
 }
 
 impl std::fmt::Debug for {{Codec.Name}} {
@@ -59,15 +60,35 @@ impl std::fmt::Debug for {{Codec.Name}} {
 
 impl {{Codec.Name}} {
     pub async fn new(config: gax::options::ClientConfig) -> Result<Self> {
-        let inner = {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client::connect(
+        let inner = Self::make_inner(&config).await?;
+        let cred = Self::make_credentials(&config).await?;
+        Ok(Self { inner, cred })
+    }
+
+    async fn make_inner(config: &gax::options::ClientConfig) -> Result<{{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client<tonic::transport::Channel>> {
+        {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client::connect(
             config
             .endpoint()
             .clone()
             .unwrap_or_else(|| DEFAULT_HOST.to_string())
         )
         .await
-        .map_err(Error::other)?;
-        Ok(Self { inner })
+        .map_err(Error::other)
+    }
+
+    async fn make_credentials(config: &gax::options::ClientConfig) -> Result<auth::credentials::Credential> {
+        if let Some(c) = config.credential().clone() {
+            return Ok(c);
+        }
+        auth::credentials::create_access_token_credential()
+                .await
+                .map_err(Error::authentication)
+    }
+
+    fn metadata(&self) -> tonic::metadata::MetadataMap {
+        {{! TODO(#1384) - add "x-goog-api-client", reqwest::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER)) }}
+        {{! TODO(#1384) - add auth headers }}
+        tonic::metadata::MetadataMap::new()
     }
 }
 
@@ -79,9 +100,7 @@ impl super::stubs::{{Codec.Name}} for {{Codec.Name}} {
         _options: gax::options::RequestOptions,
     ) -> Result<{{OutputType.Codec.QualifiedName}}> {
         use wkt::prost::Convert;
-        {{! TODO(#1384) - add "x-goog-api-client", reqwest::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER)) }}
-        {{! TODO(#1384) - add auth headers }}
-        let request = req.cnv();
+        let request = tonic::Request::from_parts(self.metadata(), tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.{{Codec.Name}}(request).await.map_err(Error::rpc)?;
         {{! TODO(#1384) - we should do something with the metadata }}
