@@ -116,12 +116,14 @@ type methodAnnotation struct {
 }
 
 type pathInfoAnnotation struct {
-	Method        string
-	MethodToLower string
-	PathFmt       string
-	PathArgs      []string
-	HasPathArgs   bool
-	HasBody       bool
+	Method           string
+	MethodToLower    string
+	PathFmt          string
+	PathArgs         []string
+	HasPathArgs      bool
+	RequestParams    []requestParam
+	HasRequestParams bool
+	HasBody          bool
 }
 
 type operationInfo struct {
@@ -407,9 +409,11 @@ func (c *codec) annotateMethod(m *api.Method, s *api.Service, state *api.APIStat
 		MethodToLower: strings.ToLower(m.PathInfo.Verb),
 		PathFmt:       httpPathFmt(m.PathInfo),
 		PathArgs:      httpPathArgs(m.PathInfo, m, state),
+		RequestParams: requestParams(m.PathInfo, m, state),
 		HasBody:       m.PathInfo.BodyFieldPath != "",
 	}
 	pathInfoAnnotation.HasPathArgs = len(pathInfoAnnotation.PathArgs) > 0
+	pathInfoAnnotation.HasRequestParams = len(pathInfoAnnotation.RequestParams) > 0
 
 	m.PathInfo.Codec = pathInfoAnnotation
 	annotation := &methodAnnotation{

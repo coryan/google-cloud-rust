@@ -84,7 +84,7 @@ impl Firestore {
             .map_err(Error::authentication)
     }
 
-    async fn make_metadata(&self) -> Result<tonic::metadata::MetadataMap> {
+    async fn make_headers(&self) -> Result<http::header::HeaderMap> {
         let mut headers = self
             .cred
             .get_headers()
@@ -94,8 +94,7 @@ impl Firestore {
             http::header::HeaderName::from_static("x-goog-api-client"),
             http::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
         ));
-        let headers = http::header::HeaderMap::from_iter(headers);
-        Ok(tonic::metadata::MetadataMap::from_headers(headers))
+        Ok(http::header::HeaderMap::from_iter(headers))
     }
 }
 
@@ -106,7 +105,15 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::Document> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [format!("name={}", req.name)]
+            .into_iter()
+            .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.get_document(request).await.map_err(Error::rpc)?;
@@ -120,7 +127,18 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::ListDocumentsResponse> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [
+            format!("parent={}", req.parent),
+            format!("collection_id={}", req.collection_id),
+        ]
+        .into_iter()
+        .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.list_documents(request).await.map_err(Error::rpc)?;
@@ -134,7 +152,21 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::Document> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [format!(
+            "document.name={}",
+            req.document
+                .as_ref()
+                .ok_or_else(|| gclient::path_parameter::missing("document"))?
+                .name
+        )]
+        .into_iter()
+        .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.update_document(request).await.map_err(Error::rpc)?;
@@ -148,7 +180,15 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<wkt::Empty> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [format!("name={}", req.name)]
+            .into_iter()
+            .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.delete_document(request).await.map_err(Error::rpc)?;
@@ -162,7 +202,15 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::BeginTransactionResponse> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [format!("database={}", req.database)]
+            .into_iter()
+            .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.begin_transaction(request).await.map_err(Error::rpc)?;
@@ -176,7 +224,15 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::CommitResponse> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [format!("database={}", req.database)]
+            .into_iter()
+            .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.commit(request).await.map_err(Error::rpc)?;
@@ -190,7 +246,15 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<wkt::Empty> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [format!("database={}", req.database)]
+            .into_iter()
+            .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.rollback(request).await.map_err(Error::rpc)?;
@@ -204,7 +268,15 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::PartitionQueryResponse> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [format!("parent={}", req.parent)]
+            .into_iter()
+            .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.partition_query(request).await.map_err(Error::rpc)?;
@@ -218,7 +290,15 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::ListCollectionIdsResponse> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [format!("parent={}", req.parent)]
+            .into_iter()
+            .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner
@@ -235,7 +315,15 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::BatchWriteResponse> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [format!("database={}", req.database)]
+            .into_iter()
+            .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.batch_write(request).await.map_err(Error::rpc)?;
@@ -249,7 +337,18 @@ impl super::stubs::Firestore for Firestore {
         _options: gax::options::RequestOptions,
     ) -> Result<crate::model::Document> {
         use wkt::prost::Convert;
-        let metadata = self.make_metadata().await?;
+        let mut headers = self.make_headers().await?;
+        let x_goog_request_params = [
+            format!("parent={}", req.parent),
+            format!("collection_id={}", req.collection_id),
+        ]
+        .into_iter()
+        .fold(String::new(), |b, p| b + "&" + &p);
+        headers.insert(
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
+        );
+        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
         let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
         let mut inner = self.inner.clone();
         let response = inner.create_document(request).await.map_err(Error::rpc)?;

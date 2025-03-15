@@ -2203,6 +2203,7 @@ dependencies = [
  "bytes",
  "google-cloud-auth",
  "google-cloud-gax",
+ "google-cloud-http-client",
  "google-cloud-rpc",
  "google-cloud-type",
  "google-cloud-wkt",
