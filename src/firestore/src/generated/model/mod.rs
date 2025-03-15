@@ -8163,3 +8163,6 @@ pub(crate) mod transport;
 
 #[allow(dead_code)]
 pub(crate) mod builders;
+
+#[allow(dead_code)]
+pub(crate) mod client;
