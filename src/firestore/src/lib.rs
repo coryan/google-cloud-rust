@@ -20,6 +20,10 @@ pub mod model {
     pub use super::generated::model::*;
 }
 
+pub mod client {
+    pub use super::generated::model::client::*;
+}
+
 pub(crate) mod google {
     pub mod firestore {
         #[allow(clippy::enum_variant_names)]

@@ -18,7 +18,7 @@ use crate::Result;
 #[allow(unused_imports)]
 use gax::error::Error;
 
-const DEFAULT_HOST: &str = "firestore.googleapis.com";
+const DEFAULT_HOST: &str = "https://firestore.googleapis.com";
 
 mod info {
     const NAME: &str = env!("CARGO_PKG_NAME");
