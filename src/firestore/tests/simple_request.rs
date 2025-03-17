@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use gax::options::RequestOptionsBuilder;
 use google_cloud_firestore::client::Firestore;
 use google_cloud_firestore::model;
 use google_cloud_firestore::Error;
@@ -41,6 +42,27 @@ pub async fn hello_world() -> Result<()> {
     Ok(())
 }
 
+pub async fn goodbye_retry() -> Result<()> {
+    use gax::retry_policy::RetryPolicyExt;
+
+    let project_id = project_id()?;
+    let client = Firestore::new().await?;
+    let response = client
+        .create_document(
+            format!("projects/{project_id}/databases/(default)/documents"),
+            "valediction",
+        )
+        .with_retry_policy(gax::retry_policy::AlwaysRetry.with_attempt_limit(3))
+        .set_document(model::Document::new().set_fields([(
+            "text",
+            model::Value::new().set_string_value("See you soon!"),
+        )]))
+        .send()
+        .await?;
+    println!("SUCCESS on create_document: {response:?}");
+    Ok(())
+}
+
 #[cfg(all(test, feature = "run-integration-tests"))]
 mod driver {
     use super::Error;
@@ -54,5 +76,10 @@ mod driver {
     #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
     async fn run_hello_world() -> Result<()> {
         super::hello_world().await.map_err(report)
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+    async fn run_goodbye_retry() -> Result<()> {
+        super::goodbye_retry().await.map_err(report)
     }
 }
