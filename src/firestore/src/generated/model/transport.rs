@@ -17,6 +17,7 @@
 use crate::Result;
 #[allow(unused_imports)]
 use gax::error::Error;
+use std::sync::Arc;
 
 const DEFAULT_HOST: &str = "https://firestore.googleapis.com";
 
@@ -41,6 +42,9 @@ pub struct Firestore {
     inner:
         crate::google::firestore::v1::firestore_client::FirestoreClient<tonic::transport::Channel>,
     cred: auth::credentials::Credential,
+    retry_policy: Option<Arc<dyn gax::retry_policy::RetryPolicy>>,
+    backoff_policy: Option<Arc<dyn gax::backoff_policy::BackoffPolicy>>,
+    retry_throttler: gax::retry_throttler::SharedRetryThrottler,
 }
 
 impl std::fmt::Debug for Firestore {
@@ -55,7 +59,13 @@ impl Firestore {
     pub async fn new(config: gax::options::ClientConfig) -> Result<Self> {
         let inner = Self::make_inner(&config).await?;
         let cred = Self::make_credentials(&config).await?;
-        Ok(Self { inner, cred })
+        Ok(Self {
+            inner,
+            cred,
+            retry_policy: config.retry_policy().clone(),
+            backoff_policy: config.backoff_policy().clone(),
+            retry_throttler: config.retry_throttler(),
+        })
     }
 
     async fn make_inner(
@@ -84,7 +94,11 @@ impl Firestore {
             .map_err(Error::authentication)
     }
 
-    async fn make_headers(&self) -> Result<http::header::HeaderMap> {
+    async fn make_headers(
+        &self,
+        options: &gax::options::RequestOptions,
+        request_params: &String,
+    ) -> Result<http::header::HeaderMap> {
         let mut headers = self
             .cred
             .get_headers()
@@ -94,7 +108,168 @@ impl Firestore {
             http::header::HeaderName::from_static("x-goog-api-client"),
             http::header::HeaderValue::from_static(&info::X_GOOG_API_CLIENT_HEADER),
         ));
+        headers.push((
+            http::header::HeaderName::from_static("x-goog-request-params"),
+            http::header::HeaderValue::from_str(request_params).map_err(Error::other)?,
+        ));
+        if let Some(user_agent) = options.user_agent() {
+            headers.push((
+                http::header::USER_AGENT,
+                http::header::HeaderValue::from_str(user_agent).map_err(Error::other)?,
+            ));
+        }
         Ok(http::header::HeaderMap::from_iter(headers))
+    }
+
+    async fn execute<Request, Response, F, RF>(
+        &self,
+        call: F,
+        req: Request,
+        options: &gax::options::RequestOptions,
+        request_params: String,
+    ) -> Result<Response>
+    where
+        F: Fn(Request, http::header::HeaderMap) -> RF + Send + Sync,
+        RF: std::future::Future<Output = Result<Response>>,
+        Request: std::clone::Clone,
+    {
+        match self.get_retry_policy(options) {
+            None => {
+                let headers = self.make_headers(options, &request_params).await?;
+                call(req, headers).await
+            },
+            Some(policy) => {
+                self.retry_loop(call, req, options, request_params, policy).await
+            },
+        }
+    }
+
+    async fn retry_loop<Request, Response, F, RF>(&self, call: F,
+         req: Request,
+         options: &gax::options::RequestOptions, 
+         request_params: String,
+         retry_policy: Arc<dyn gax::retry_policy::RetryPolicy>,
+    ) -> Result<Response> 
+    where
+        F: Fn(Request, http::header::HeaderMap) -> RF + Send + Sync,
+        RF: std::future::Future<Output = Result<Response>>,
+        Request: std::clone::Clone, 
+    {
+        let loop_start = std::time::Instant::now();
+        let throttler = self.get_retry_throttler(options);
+        let backoff = self.get_backoff_policy(options);
+        let mut attempt_count = 0;
+        loop {
+            let request = req.clone();
+            let remaining_time = retry_policy.remaining_time(loop_start, attempt_count);
+            let throttle = if attempt_count == 0 {
+                false
+            } else {
+                let t = throttler.lock().expect("retry throttler lock is poisoned");
+                t.throttle_retry_attempt()
+            };
+            if throttle {
+                // This counts as an error for the purposes of the retry policy.
+                if let Some(error) = retry_policy.on_throttle(loop_start, attempt_count) {
+                    return Err(error);
+                }
+                let delay = backoff.on_failure(loop_start, attempt_count);
+                tokio::time::sleep(delay).await;
+                continue;
+            }
+            attempt_count += 1;
+            match self.request_attempt(&call, request, options, &request_params, remaining_time).await {
+                Ok(r) => {
+                    throttler
+                        .lock()
+                        .expect("retry throttler lock is poisoned")
+                        .on_success();
+                    return Ok(r);
+                }
+                Err(e) => {
+                    let flow = retry_policy.on_error(
+                        loop_start,
+                        attempt_count,
+                        options.idempotent().unwrap_or(false),
+                        e,
+                    );
+                    let delay = backoff.on_failure(loop_start, attempt_count);
+                    {
+                        throttler
+                            .lock()
+                            .expect("retry throttler lock is poisoned")
+                            .on_retry_failure(&flow);
+                    };
+                    self.on_error(flow, delay).await?;
+                }
+            };
+        }
+    }
+
+    async fn request_attempt<Request, Response, F, RF>(
+        &self,
+        call: &F, 
+        req: Request,
+        options: &gax::options::RequestOptions,
+        request_params: &String,
+        _remaining_time: Option<std::time::Duration>,
+    ) -> Result<Response> 
+    where
+        F: Fn(Request, http::header::HeaderMap) -> RF + Send + Sync,
+        RF: std::future::Future<Output = Result<Response>>,
+        Request: std::clone::Clone, 
+    {
+        // TODO(#1384) - figure out the timeout stuff
+        let headers = self.make_headers(options, request_params).await?;
+        call(req, headers).await
+    }
+
+    async fn on_error(
+        &self,
+        retry_flow: gax::loop_state::LoopState,
+        backoff_delay: std::time::Duration,
+    ) -> Result<()> {
+        use gax::loop_state::LoopState;
+        match retry_flow {
+            LoopState::Permanent(e) | LoopState::Exhausted(e) => {
+                return Err(e);
+            }
+            LoopState::Continue(_e) => {
+                tokio::time::sleep(backoff_delay).await;
+            }
+        }
+        Ok(())
+    }
+
+    fn get_retry_policy(
+        &self,
+        options: &gax::options::RequestOptions,
+    ) -> Option<Arc<dyn gax::retry_policy::RetryPolicy>> {
+        options
+            .retry_policy()
+            .clone()
+            .or_else(|| self.retry_policy.clone())
+    }
+
+    fn get_backoff_policy(
+        &self,
+        options: &gax::options::RequestOptions,
+    ) -> Arc<dyn gax::backoff_policy::BackoffPolicy> {
+        options
+            .backoff_policy()
+            .clone()
+            .or_else(|| self.backoff_policy.clone())
+            .unwrap_or_else(|| Arc::new(gax::exponential_backoff::ExponentialBackoff::default()))
+    }
+
+    fn get_retry_throttler(
+        &self,
+        options: &gax::options::RequestOptions,
+    ) -> gax::retry_throttler::SharedRetryThrottler {
+        options
+            .retry_throttler()
+            .clone()
+            .unwrap_or_else(|| self.retry_throttler.clone())
     }
 }
 
@@ -102,32 +277,33 @@ impl super::stubs::Firestore for Firestore {
     async fn get_document(
         &self,
         req: crate::model::GetDocumentRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<crate::model::Document> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let inner = self.inner.clone();
+        let call = |r: crate::model::GetDocumentRequest, h: http::header::HeaderMap| async {
+            let metadata = tonic::metadata::MetadataMap::from_headers(h);
+            let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), r.cnv());
+            let mut inner = inner.clone();
+            let response = inner.get_document(request).await.map_err(Error::rpc)?;
+            let response = response.into_inner();
+            Ok(response.cnv())
+        };
+
         let x_goog_request_params = [format!("name={}", req.name)]
             .into_iter()
             .fold(String::new(), |b, p| b + "&" + &p);
-        headers.insert(
-            http::header::HeaderName::from_static("x-goog-request-params"),
-            http::header::HeaderValue::from_str(&x_goog_request_params).map_err(Error::other)?,
-        );
-        let metadata = tonic::metadata::MetadataMap::from_headers(headers);
-        let request = tonic::Request::from_parts(metadata, tonic::Extensions::new(), req.cnv());
-        let mut inner = self.inner.clone();
-        let response = inner.get_document(request).await.map_err(Error::rpc)?;
-        let response = response.into_inner();
-        Ok(response.cnv())
+
+        self.execute(call, req, &options, x_goog_request_params).await
     }
 
     async fn list_documents(
         &self,
         req: crate::model::ListDocumentsRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<crate::model::ListDocumentsResponse> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [
             format!("parent={}", req.parent),
             format!("collection_id={}", req.collection_id),
@@ -149,10 +325,10 @@ impl super::stubs::Firestore for Firestore {
     async fn update_document(
         &self,
         req: crate::model::UpdateDocumentRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<crate::model::Document> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [format!(
             "document.name={}",
             req.document
@@ -177,10 +353,10 @@ impl super::stubs::Firestore for Firestore {
     async fn delete_document(
         &self,
         req: crate::model::DeleteDocumentRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<wkt::Empty> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [format!("name={}", req.name)]
             .into_iter()
             .fold(String::new(), |b, p| b + "&" + &p);
@@ -199,10 +375,10 @@ impl super::stubs::Firestore for Firestore {
     async fn begin_transaction(
         &self,
         req: crate::model::BeginTransactionRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<crate::model::BeginTransactionResponse> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [format!("database={}", req.database)]
             .into_iter()
             .fold(String::new(), |b, p| b + "&" + &p);
@@ -221,10 +397,10 @@ impl super::stubs::Firestore for Firestore {
     async fn commit(
         &self,
         req: crate::model::CommitRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<crate::model::CommitResponse> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [format!("database={}", req.database)]
             .into_iter()
             .fold(String::new(), |b, p| b + "&" + &p);
@@ -243,10 +419,10 @@ impl super::stubs::Firestore for Firestore {
     async fn rollback(
         &self,
         req: crate::model::RollbackRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<wkt::Empty> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [format!("database={}", req.database)]
             .into_iter()
             .fold(String::new(), |b, p| b + "&" + &p);
@@ -265,10 +441,10 @@ impl super::stubs::Firestore for Firestore {
     async fn partition_query(
         &self,
         req: crate::model::PartitionQueryRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<crate::model::PartitionQueryResponse> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [format!("parent={}", req.parent)]
             .into_iter()
             .fold(String::new(), |b, p| b + "&" + &p);
@@ -287,10 +463,10 @@ impl super::stubs::Firestore for Firestore {
     async fn list_collection_ids(
         &self,
         req: crate::model::ListCollectionIdsRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<crate::model::ListCollectionIdsResponse> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [format!("parent={}", req.parent)]
             .into_iter()
             .fold(String::new(), |b, p| b + "&" + &p);
@@ -312,10 +488,10 @@ impl super::stubs::Firestore for Firestore {
     async fn batch_write(
         &self,
         req: crate::model::BatchWriteRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<crate::model::BatchWriteResponse> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [format!("database={}", req.database)]
             .into_iter()
             .fold(String::new(), |b, p| b + "&" + &p);
@@ -334,10 +510,10 @@ impl super::stubs::Firestore for Firestore {
     async fn create_document(
         &self,
         req: crate::model::CreateDocumentRequest,
-        _options: gax::options::RequestOptions,
+        options: gax::options::RequestOptions,
     ) -> Result<crate::model::Document> {
         use wkt::prost::Convert;
-        let mut headers = self.make_headers().await?;
+        let mut headers = self.make_headers(&options).await?;
         let x_goog_request_params = [
             format!("parent={}", req.parent),
             format!("collection_id={}", req.collection_id),
