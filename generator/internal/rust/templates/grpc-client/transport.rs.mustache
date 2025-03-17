@@ -23,6 +23,7 @@ use crate::Result;
 {{! Disable warnings about unused imports: sometimes there are no RPCs with query parameters and this goes unused }}
 #[allow(unused_imports)]
 use gax::error::Error;
+use std::sync::Arc;
 
 const DEFAULT_HOST: &str = "https://{{Codec.DefaultHost}}";
 
@@ -48,6 +49,9 @@ mod info {
 pub struct {{Codec.Name}} {
     inner: {{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client<tonic::transport::Channel>,
     cred: auth::credentials::Credential,
+    retry_policy: Option<Arc<dyn gax::retry_policy::RetryPolicy>>,
+    backoff_policy: Option<Arc<dyn gax::backoff_policy::BackoffPolicy>>,
+    retry_throttler: gax::retry_throttler::SharedRetryThrottler,
 }
 
 impl std::fmt::Debug for {{Codec.Name}} {
@@ -62,7 +66,13 @@ impl {{Codec.Name}} {
     pub async fn new(config: gax::options::ClientConfig) -> Result<Self> {
         let inner = Self::make_inner(&config).await?;
         let cred = Self::make_credentials(&config).await?;
-        Ok(Self { inner, cred })
+        Ok(Self {
+            inner,
+            cred,
+            retry_policy: config.retry_policy().clone(),
+            backoff_policy: config.backoff_policy().clone(),
+            retry_throttler: config.retry_throttler(),
+        })
     }
 
     async fn make_inner(config: &gax::options::ClientConfig) -> Result<{{Codec.GrpcClientModule}}::{{Codec.ModuleName}}_client::{{Codec.Name}}Client<tonic::transport::Channel>> {
@@ -210,7 +220,7 @@ impl {{Codec.Name}} {
         RF: std::future::Future<Output = Result<Response>>,
         Request: std::clone::Clone, 
     {
-        // TODO(#1384) - figure out the timeout stuff
+        {{! TODO(#1384) - we need to add the timeout handling }}
         let headers = self.make_headers(options, request_params).await?;
         call(req, headers).await
     }
@@ -290,7 +300,8 @@ impl super::stubs::{{Codec.Name}} for {{Codec.Name}} {
         {{/PathInfo.Codec.HasRequestParams}}
 
         {{! TODO(#1384) - we should do something with the metadata }}
-        self.execute(call, req, &options, x_goog_request_params).await
+        self.execute(call, req, &options, x_goog_request_params)
+            .await
     }
 
     {{/Codec.Methods}}
