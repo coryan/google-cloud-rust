@@ -14,7 +14,10 @@
 
 package api
 
-import "fmt"
+import (
+	"fmt"
+	"log/slog"
+)
 
 // CrossReference fills out the cross-references in `model` that the parser(s)
 // missed.
@@ -48,6 +51,20 @@ func CrossReference(model *API) error {
 		m.OutputType = output
 		if m.OperationInfo != nil {
 			m.OperationInfo.Method = m
+		}
+		if m.PathInfo.Verb == "PATCH" || m.PathInfo.Verb == "PUT" {
+			hasMask := false
+			for _, f := range input.Fields {
+				if f.TypezID == ".google.protobuf.FieldMask" {
+					hasMask = true
+					break
+				}
+			}
+			if !hasMask {
+				slog.Info("missing field mask in method", "id", m.ID)
+			} else {
+				slog.Info("field mask found in method", "id", m.ID)
+			}
 		}
 	}
 	for _, s := range model.State.ServiceByID {
