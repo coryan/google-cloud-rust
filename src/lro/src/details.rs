@@ -89,26 +89,27 @@ where
     M: wkt::message::Message + serde::de::DeserializeOwned,
 {
     if op.done() {
-        let result = as_result(op);
-        return (None, PollingResult::Completed(result));
+        if let Some(result) = as_result(&op) {
+            return (None, PollingResult::Completed(result));
+        }
     }
     let name = op.name().clone();
     let metadata = as_metadata(op);
     (Some(name), PollingResult::InProgress(metadata))
 }
 
-fn as_result<R, M>(op: Operation<R, M>) -> Result<R>
+fn as_result<R, M>(op: &Operation<R, M>) -> Option<Result<R>>
 where
     R: wkt::message::Message + serde::de::DeserializeOwned,
     M: wkt::message::Message + serde::de::DeserializeOwned,
 {
     if let Some(any) = op.response() {
-        return any.try_into_message::<R>().map_err(Error::other);
+        return Some(any.try_into_message::<R>().map_err(Error::other));
     }
     if let Some(e) = op.error() {
-        return Err(Error::rpc(gax::error::ServiceError::from(e.clone())));
+        return Some(Err(Error::rpc(gax::error::ServiceError::from(e.clone()))));
     }
-    Err(Error::other("missing result in completed operation"))
+    None
 }
 
 fn as_metadata<R, M>(op: Operation<R, M>) -> Option<M>
@@ -326,7 +327,7 @@ mod test {
             Any::try_from(&wkt::Duration::clamp(123, 0))?.into(),
         ));
         let op = O::new(op);
-        let result = as_result(op)?;
+        let result = as_result(&op).unwrap()?;
         assert_eq!(result, wkt::Duration::clamp(123, 0));
 
         Ok(())
@@ -344,7 +345,7 @@ mod test {
                 .into(),
         ));
         let op = O::new(op);
-        let result = as_result(op);
+        let result = as_result(&op).unwrap();
         let err = result.err().unwrap();
         assert_eq!(err.kind(), gax::error::ErrorKind::Rpc, "{err}");
 
@@ -361,7 +362,7 @@ mod test {
             Any::try_from(&wkt::Timestamp::clamp(123, 0))?.into(),
         ));
         let op = O::new(op);
-        let err = as_result(op).err().unwrap();
+        let err = as_result(&op).unwrap().err().unwrap();
         assert_eq!(err.kind(), gax::error::ErrorKind::Other, "{err}");
         assert!(
             format!("{err}").contains("/google.protobuf.Timestamp"),
@@ -378,9 +379,8 @@ mod test {
         type O = Operation<R, M>;
         let op = longrunning::model::Operation::default();
         let op = O::new(op);
-        let err = as_result(op).err().unwrap();
-        assert_eq!(err.kind(), gax::error::ErrorKind::Other, "{err}");
-        assert!(format!("{err}").contains("missing result"), "{err}");
+        let result = as_result(&op);
+        assert!(result.is_none(), "{result:?}");
 
         Ok(())
     }

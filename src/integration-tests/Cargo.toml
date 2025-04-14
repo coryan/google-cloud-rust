@@ -49,6 +49,10 @@ path    = "../../src/generated/cloud/secretmanager/v1"
 package = "secretmanager-openapi-v1"
 path    = "../../src/generated/openapi-validation"
 
+[dependencies.mscope]
+package = "google-cloud-monitoring-metricsscope-v1"
+path    = "../../src/generated/monitoring/metricsscope/v1"
+
 [dependencies.ta]
 package = "google-cloud-telcoautomation-v1"
 path    = "../../src/generated/cloud/telcoautomation/v1"

@@ -96,6 +96,9 @@ func loadMixins(serviceConfig *serviceconfig.Service, withLongrunning bool) (mix
 	}
 	enabledMixinMethods = loadMixinMethods(serviceConfig)
 	if withLongrunning {
+		if v, ok := enabledMixinMethods[".google.longrunning.Operations.GetOperation"]; !ok || !v {
+			slog.Warn("adding GetOperation", "service", serviceConfig.Apis, "name", serviceConfig.Name)
+		}
 		// We prefer using the `http.rules` section from the service config, but
 		// if we must implement the longrunning mixin, we must also implement
 		// the GetOperation method.

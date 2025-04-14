@@ -42,6 +42,17 @@ mod driver {
             .map_err(report)
     }
 
+    #[test_case(mscope::client::MetricsScopes::builder().with_tracing())]
+    #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+    async fn run_metrics_scopes(
+        builder: mscope::builder::metrics_scopes::ClientBuilder,
+    ) -> integration_tests::Result<()> {
+        integration_tests::metrics_scopes::run(builder)
+            .await
+            .map_err(report)
+    }
+
+
     #[test_case(sm::client::SecretManagerService::builder(); "default")]
     #[test_case(sm::client::SecretManagerService::builder().with_tracing(); "with tracing enabled")]
     #[test_case(sm::client::SecretManagerService::builder().with_retry_policy(retry_policy()); "with retry enabled")]
