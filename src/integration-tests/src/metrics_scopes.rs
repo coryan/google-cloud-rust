@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use mscope::Poller;
 use crate::Result;
+use mscope::Poller;
 
 pub async fn run(builder: mscope::builder::metrics_scopes::ClientBuilder) -> Result<()> {
     // Enable a basic subscriber. Useful to troubleshoot problems and visually
@@ -34,14 +34,25 @@ pub async fn run(builder: mscope::builder::metrics_scopes::ClientBuilder) -> Res
     let client = builder.build().await?;
 
     let name = format!("projects/{project_id}");
-    let response = client.list_metrics_scopes_by_monitored_project().set_monitored_resource_container(&name).send().await?;
-    response.metrics_scopes.into_iter().for_each(|item| println!("  ITEM={item:?}"));
+    let response = client
+        .list_metrics_scopes_by_monitored_project()
+        .set_monitored_resource_container(&name)
+        .send()
+        .await?;
+    response
+        .metrics_scopes
+        .into_iter()
+        .for_each(|item| println!("  ITEM={item:?}"));
 
     let parent = format!("locations/global/metricsScopes/{project_id}");
     let name = format!("{parent}/projects/rust-sdk-testing");
-    let create = client.create_monitored_project(&parent).set_monitored_project(mscope::model::MonitoredProject::new().set_name(&name)).poller().until_done().await?;
+    let create = client
+        .create_monitored_project(&parent)
+        .set_monitored_project(mscope::model::MonitoredProject::new().set_name(&name))
+        .poller()
+        .until_done()
+        .await?;
     println!("CREATE = {create:?}");
-
 
     Ok(())
 }

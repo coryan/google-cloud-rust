@@ -52,7 +52,6 @@ mod driver {
             .map_err(report)
     }
 
-
     #[test_case(sm::client::SecretManagerService::builder(); "default")]
     #[test_case(sm::client::SecretManagerService::builder().with_tracing(); "with tracing enabled")]
     #[test_case(sm::client::SecretManagerService::builder().with_retry_policy(retry_policy()); "with retry enabled")]
