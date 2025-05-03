@@ -13,7 +13,7 @@
 # limitations under the License.
 
 [package]
-name         = "auth-key-rotation"
+name         = "key-rotation"
 description  = "Automatically rotate keys for integration tests."
 version      = "0.0.0"
 edition      = "2024"
@@ -22,6 +22,7 @@ publish      = false
 
 [dependencies]
 anyhow.workspace     = true
+axum.workspace = true
 serde_json.workspace = true
 google-cloud-gax              = { path = "../../src/gax" }
 google-cloud-wkt              = { path = "../../src/wkt" }

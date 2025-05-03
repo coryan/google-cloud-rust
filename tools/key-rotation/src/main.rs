@@ -14,7 +14,6 @@
 
 use google_cloud_gax::{self as gax, retry_policy::RetryPolicyExt};
 use google_cloud_iam_admin_v1 as iam;
-use google_cloud_secretmanager_v1 as sm;
 use google_cloud_wkt as wkt;
 use serde_json::json;
 
@@ -55,13 +54,14 @@ async fn rotate() -> anyhow::Result<()> {
         .await?;
 
     let d = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH)?;
-    let deadline = wkt::Timestamp::new(d.as_secs() as i64, 0)?;
+    let now = wkt::Timestamp::new(d.as_secs() as i64, 0)?;
+    let refresh_deadline = wkt::Timestamp::new(d.as_secs() as i64 + 7 * 24 * 3600, 0)?;
     let expired: Vec<_> = list
         .keys
         .iter()
         .filter_map(|k| match &k.valid_before_time {
             None => None,
-            Some(t) if t >= &deadline => Some(k.name.clone()),
+            Some(t) if t >= &now => Some(k.name.clone()),
             Some(_) => None,
         })
         .collect();
@@ -69,7 +69,7 @@ async fn rotate() -> anyhow::Result<()> {
         client.delete_service_account_key(name).send().await?;
     }
 
-    let most_recent =
+    let expires_last =
         list.keys
             .into_iter()
             .reduce(|a, b| match (&a.valid_before_time, &b.valid_before_time) {
@@ -78,6 +78,17 @@ async fn rotate() -> anyhow::Result<()> {
                 (Some(ta), Some(tb)) if ta >= tb => a,
                 (Some(_), Some(_)) => b,
             });
+    let up_to_date = match &expires_last {
+        None => false,
+        Some(key) => key
+            .valid_before_time
+            .as_ref()
+            .and_then(|t| Some(t >= &refresh_deadline))
+            .unwrap_or(true),
+    };
+    if !up_to_date {
+        return Ok(());
+    }
 
     Ok(())
 }
