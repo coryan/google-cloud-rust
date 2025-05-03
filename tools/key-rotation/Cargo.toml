@@ -27,6 +27,7 @@ google-cloud-gax              = "0.21"
 google-cloud-iam-admin-v1     = "0.2" 
 google-cloud-secretmanager-v1 = "0.2" 
 google-cloud-wkt              = "0.3" 
+http                          = "1"
 serde_json                    = "1"
 
 [dependencies.tokio]

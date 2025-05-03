@@ -12,22 +12,68 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use axum::{
+    Router,
+    response::{Html, Json},
+    routing::get,
+};
 use google_cloud_gax::{self as gax, retry_policy::RetryPolicyExt};
 use google_cloud_iam_admin_v1 as iam;
 use google_cloud_wkt as wkt;
+use http::StatusCode;
 use serde_json::json;
 
 #[tokio::main]
 async fn main() {
+    let app = Router::new()
+        .route("/", get(handler))
+        .route("/rotate", get(rotate_handler));
+
+    let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    let addr = format!("0.0.0.0:{}", port);
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    println!(
+        "{}",
+        json!({"severity": "info", "message": format!("listening on {:?}", listener.local_addr()) })
+    );
+    axum::serve(listener, app).await.unwrap();
+}
+
+async fn handler() -> Html<String> {
+    let program_name = env!("CARGO_PKG_NAME");
+    let program_version = env!("CARGO_PKG_VERSION");
+    let service_account = std::env::var("SERVICE_ACCOUNT");
+    let secret_id = std::env::var("SECRET_ID");
+    Html(format!(
+        r###"<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Key Rotation Status</title>
+    </head>
+    <body>
+    <ul>
+        <li>Program name: {program_name}</li>
+        <li>Program version: {program_version}</li>
+        <li>Service Account: {service_account:?}</li>
+        <li>Secret ID: {secret_id:?}</li>
+    </ul>
+    </body>
+"###
+    ))
+}
+
+async fn rotate_handler() -> (StatusCode, Json<serde_json::Value>) {
     let result = rotate().await;
     match result {
-        Ok(_) => {}
+        Ok(_) => (StatusCode::OK, Json(json!({}))),
         Err(e) => {
             let error = json!({
                 "severity": "ERROR",
                 "message": format!("{e}"),
             });
-            eprintln!("{}", error.to_string())
+            eprintln!("{}", error.to_string());
+            (StatusCode::INTERNAL_SERVER_ERROR, Json(error))
         }
     }
 }

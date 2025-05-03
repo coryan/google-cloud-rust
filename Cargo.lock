@@ -5225,6 +5225,7 @@ dependencies = [
  "google-cloud-iam-admin-v1 0.2.0",
  "google-cloud-secretmanager-v1 0.2.0",
  "google-cloud-wkt 0.3.0",
+ "http",
  "serde_json",
  "tokio",
 ]
