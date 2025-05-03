@@ -21,14 +21,14 @@ rust-version = "1.85.0"
 publish      = false
 
 [dependencies]
-anyhow.workspace     = true
-axum.workspace = true
-serde_json.workspace = true
-google-cloud-gax              = { path = "../../src/gax" }
-google-cloud-wkt              = { path = "../../src/wkt" }
-google-cloud-iam-admin-v1     = { path = "../../src/generated/iam/admin/v1" }
-google-cloud-secretmanager-v1 = { path = "../../src/generated/cloud/secretmanager/v1" }
+anyhow                        = "1"
+axum                          = "0.8"
+google-cloud-gax              = "0.21"
+google-cloud-iam-admin-v1     = "0.2" 
+google-cloud-secretmanager-v1 = "0.2" 
+google-cloud-wkt              = "0.3" 
+serde_json                    = "1"
 
 [dependencies.tokio]
-workspace = true
-features  = ["macros", "rt-multi-thread"]
+version  = "1"
+features = ["macros", "rt-multi-thread"]

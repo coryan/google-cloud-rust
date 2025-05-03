@@ -18,6 +18,7 @@ COPY . /w
 RUN cargo build --release -p key-rotation
 
 FROM debian:bookworm
+RUN apt-get update && apt-get install -y libssl3 ca-certificates
 COPY --from=build /w/target/release/key-rotation /r/key-rotation
 EXPOSE 8080
 CMD ["r/key-rotation"]
