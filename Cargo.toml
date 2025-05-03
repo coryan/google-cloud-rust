@@ -250,6 +250,7 @@ members = [
   "src/storage-control",
   "src/wkt",
   "tools/check-copyright",
+  "tools/key-rotation",
 ]
 
 [workspace.package]
