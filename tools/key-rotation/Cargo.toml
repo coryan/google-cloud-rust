@@ -23,11 +23,10 @@ publish      = false
 [dependencies]
 anyhow.workspace     = true
 serde_json.workspace = true
-# We use the published crates to simplify building a Docker image.
-google-cloud-gax              = "0.2"
-google-cloud-wkt              = "0.3"
-google-cloud-iam-admin-v1     = "0.2"
-google-cloud-secretmanager-v1 = "0.2"
+google-cloud-gax              = { path = "../../src/gax" }
+google-cloud-wkt              = { path = "../../src/wkt" }
+google-cloud-iam-admin-v1     = { path = "../../src/generated/iam/admin/v1" }
+google-cloud-secretmanager-v1 = { path = "../../src/generated/cloud/secretmanager/v1" }
 
 [dependencies.tokio]
 workspace = true
