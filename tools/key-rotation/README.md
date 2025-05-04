@@ -8,5 +8,7 @@ daily using Cloud Scheduler.
 ## Deployment
 
 ```shell
-gcloud run deploy key-rotation --source=tools/key-rotation --region=us-central1
+GOOGLE_CLOUD_PROJECT="$(gcloud config get project)"
+gcloud run deploy key-rotation --source=tools/key-rotation --region=us-central1 \
+    --set-env-vars=GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT},SERVICE_ACCOUNT=test-sa-creds-json,SECRET_ID=test-sa-creds-secret
 ```

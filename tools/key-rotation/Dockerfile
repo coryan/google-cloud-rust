@@ -14,7 +14,10 @@
 
 FROM rust:1.85-bookworm as build
 WORKDIR /w
-COPY . /w
+COPY Cargo.toml /w
+RUN mkdir /w/src && touch /w/src/main.rs
+RUN cargo build --release -p google-cloud-secretmanager-v1 -p google-cloud-iam-admin-v1 -p axum -p anyhow
+COPY src/main.rs /w/src/main.rs
 RUN cargo build --release -p key-rotation
 
 FROM debian:bookworm

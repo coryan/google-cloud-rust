@@ -23,6 +23,8 @@ publish      = false
 [dependencies]
 anyhow                        = "1"
 axum                          = "0.8"
+bytes                         = "1"
+crc32c                        = "0.6.8"
 google-cloud-gax              = "0.21"
 google-cloud-iam-admin-v1     = "0.2" 
 google-cloud-secretmanager-v1 = "0.2" 
