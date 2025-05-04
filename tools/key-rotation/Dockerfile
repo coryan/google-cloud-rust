@@ -12,16 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM rust:1.85-bookworm as build
+FROM rust:1.86-alpine3.21 as build
+RUN apk add --no-cache musl-dev openssl-dev
 WORKDIR /w
 COPY Cargo.toml /w
 RUN mkdir /w/src && touch /w/src/main.rs
 RUN cargo build --release -p google-cloud-secretmanager-v1 -p google-cloud-iam-admin-v1 -p axum -p anyhow
 COPY src/main.rs /w/src/main.rs
+RUN apk add --no-cache openssl-libs-static
 RUN cargo build --release -p key-rotation
 
-FROM debian:bookworm
-RUN apt-get update && apt-get install -y libssl3 ca-certificates
+FROM alpine:3.21
 COPY --from=build /w/target/release/key-rotation /r/key-rotation
 EXPOSE 8080
 CMD ["r/key-rotation"]
