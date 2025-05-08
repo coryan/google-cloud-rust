@@ -322,6 +322,10 @@ where
         unreachable!("loop should exit via the `Completed` branch vs. this line");
     }
 
+    fn suspend(self) -> PollerSnapshot<ResponseType, MetadataType> {
+
+    }
+
     #[cfg(feature = "unstable-stream")]
     fn into_stream(self) -> impl futures::Stream<Item = PollingResult<ResponseType, MetadataType>>
     where

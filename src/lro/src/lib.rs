@@ -92,6 +92,7 @@ use gax::error::Error;
 use gax::polling_backoff_policy::PollingBackoffPolicy;
 use gax::polling_error_policy::PollingErrorPolicy;
 use std::future::Future;
+use std::marker::PhantomData;
 
 /// The result of polling a Long-Running Operation (LRO).
 ///
@@ -144,10 +145,41 @@ pub trait Poller<R, M>: Send + sealed::Poller {
     /// Poll the long-running operation until it completes.
     fn until_done(self) -> impl Future<Output = Result<R>> + Send;
 
+    /// Suspend the poller.
+    ///
+    /// The long-running operation continues in the background. The application
+    /// can create a new poller using the `resume_poller()` method in the
+    /// corresponding client.
+    fn suspend(self) -> PollerSnapshot<R, M>;
+
     /// Convert a poller to a [Stream][futures::Stream].
     #[cfg(feature = "unstable-stream")]
     #[cfg_attr(docsrs, doc(cfg(feature = "unstable-stream")))]
     fn into_stream(self) -> impl futures::Stream<Item = PollingResult<R, M>>;
+}
+
+#[derive(Clone, Debug, PartialEq)]
+struct PollerSnapshot<R, M> {
+    name: String,
+    response: PhantomData<R>,
+    metadata: PhantomData<M>,
+}
+
+impl<R, M> PollerSnapshot<R, M> {
+    pub fn new<T>(name: T) -> Self
+    where
+        T: Into<String>,
+    {
+        Self {
+            name: name.into(),
+            response: PhantomData,
+            metadata: PhantomData,
+        }
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
+    }
 }
 
 mod details;
