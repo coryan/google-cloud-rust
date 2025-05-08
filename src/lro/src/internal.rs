@@ -322,8 +322,8 @@ where
         unreachable!("loop should exit via the `Completed` branch vs. this line");
     }
 
-    fn suspend(self) -> PollerSnapshot<ResponseType, MetadataType> {
-
+    fn suspend(self) -> Option<super::PollerSnapshot<ResponseType, MetadataType>> {
+        self.operation.map(|name| super::PollerSnapshot::new(name))
     }
 
     #[cfg(feature = "unstable-stream")]

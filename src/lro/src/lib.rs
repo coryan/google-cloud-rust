@@ -150,7 +150,7 @@ pub trait Poller<R, M>: Send + sealed::Poller {
     /// The long-running operation continues in the background. The application
     /// can create a new poller using the `resume_poller()` method in the
     /// corresponding client.
-    fn suspend(self) -> PollerSnapshot<R, M>;
+    fn suspend(self) -> Option<PollerSnapshot<R, M>>;
 
     /// Convert a poller to a [Stream][futures::Stream].
     #[cfg(feature = "unstable-stream")]
@@ -159,7 +159,7 @@ pub trait Poller<R, M>: Send + sealed::Poller {
 }
 
 #[derive(Clone, Debug, PartialEq)]
-struct PollerSnapshot<R, M> {
+pub struct PollerSnapshot<R, M> {
     name: String,
     response: PhantomData<R>,
     metadata: PhantomData<M>,
