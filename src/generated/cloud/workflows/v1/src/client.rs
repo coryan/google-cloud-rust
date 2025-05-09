@@ -247,6 +247,28 @@ impl Workflows {
         super::builder::workflows::GetOperation::new(self.inner.clone()).set_name(name.into())
     }
 
+    /// Resumes polling for a long-running operation.
+    pub fn resume_poller<R, M>(
+        &self,
+        snapshot: lro::PollerSnapshot<R, M>,
+    ) -> super::builder::workflows::ResumePoller<R, M>
+    where
+        R: wkt::message::Message
+            + serde::ser::Serialize
+            + serde::de::DeserializeOwned
+            + Send
+            + Sync
+            + 'static,
+        M: wkt::message::Message
+            + serde::ser::Serialize
+            + serde::de::DeserializeOwned
+            + Send
+            + Sync
+            + 'static,
+    {
+        super::builder::workflows::ResumePoller::new(self.inner.clone(), snapshot)
+    }
+
     /// Provides the [Operations][google.longrunning.Operations] service functionality in this service.
     ///
     /// [google.longrunning.Operations]: longrunning::client::Operations

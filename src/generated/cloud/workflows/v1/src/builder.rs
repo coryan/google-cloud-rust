@@ -853,54 +853,6 @@ pub mod workflows {
                 .map(gax::response::Response::into_body)
         }
 
-        /// Resumes polling for a long-running operation.
-        pub fn resume_poller<R, M>(
-            &self,
-            snapshot: lro::PollerSnapshot<R, M>,
-        ) -> impl lro::Poller<R, M>
-        where
-            R: wkt::message::Message
-                + serde::ser::Serialize
-                + serde::de::DeserializeOwned
-                + Send
-                + Sync
-                + 'static,
-            M: wkt::message::Message
-                + serde::ser::Serialize
-                + serde::de::DeserializeOwned
-                + Send
-                + Sync
-                + 'static,
-        {
-            let polling_error_policy = self.0.stub.get_polling_error_policy(&self.0.options);
-            let polling_backoff_policy = self.0.stub.get_polling_backoff_policy(&self.0.options);
-
-            let stub = self.0.stub.clone();
-            let mut options = self.0.options.clone();
-            options.set_retry_policy(gax::retry_policy::NeverRetry);
-            let query = move |name| {
-                let stub = stub.clone();
-                let options = options.clone();
-                async {
-                    let op = GetOperation::new(stub)
-                        .set_name(name)
-                        .with_options(options)
-                        .send()
-                        .await?;
-                    Ok(lro::internal::Operation::<R, M>::new(op))
-                }
-            };
-
-            let inner = query.clone();
-            let start = move || {
-                let name = snapshot.name().to_string();
-                let q = inner.clone();
-                async move { q(name).await }
-            };
-
-            lro::internal::new_poller(polling_error_policy, polling_backoff_policy, start, query)
-        }
-
         /// Sets the value of [name][longrunning::model::GetOperationRequest::name].
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.name = v.into();
@@ -960,6 +912,91 @@ pub mod workflows {
     impl gax::options::internal::RequestBuilder for DeleteOperation {
         fn request_options(&mut self) -> &mut gax::options::RequestOptions {
             &mut self.0.options
+        }
+    }
+
+    /// The request builder for [::Workflows][super::super::client::::Workflows] calls.
+    #[derive(Clone, Debug)]
+    pub struct ResumePoller<R, M> {
+        inner: RequestBuilder<longrunning::model::GetOperationRequest>,
+        snapshot: lro::PollerSnapshot<R, M>,
+    }
+
+    impl<R, M> ResumePoller<R, M> {
+        /// Creates a new instance
+        pub(crate) fn new(
+            stub: std::sync::Arc<dyn super::super::stub::dynamic::Workflows>,
+            snapshot: lro::PollerSnapshot<R, M>,
+        ) -> Self {
+            Self {
+                inner: RequestBuilder::new(stub),
+                snapshot,
+            }
+        }
+
+        /// Resumes polling for a long-running operation.
+        pub fn resume(self) -> impl lro::Poller<R, M>
+        where
+            R: wkt::message::Message
+                + serde::ser::Serialize
+                + serde::de::DeserializeOwned
+                + Send
+                + Sync
+                + 'static,
+            M: wkt::message::Message
+                + serde::ser::Serialize
+                + serde::de::DeserializeOwned
+                + Send
+                + Sync
+                + 'static,
+        {
+            let polling_error_policy = self
+                .inner
+                .stub
+                .get_polling_error_policy(&self.inner.options);
+            let polling_backoff_policy = self
+                .inner
+                .stub
+                .get_polling_backoff_policy(&self.inner.options);
+
+            let stub = self.inner.stub.clone();
+            let mut options = self.inner.options.clone();
+            options.set_retry_policy(gax::retry_policy::NeverRetry);
+            let query = move |name| {
+                let stub = stub.clone();
+                let options = options.clone();
+                async {
+                    let op = GetOperation::new(stub)
+                        .set_name(name)
+                        .with_options(options)
+                        .send()
+                        .await?;
+                    Ok(lro::internal::Operation::<R, M>::new(op))
+                }
+            };
+
+            let inner = query.clone();
+            let snapshot = self.snapshot;
+            let start = move || {
+                let name = snapshot.name().to_string();
+                let q = inner.clone();
+                async move { q(name).await }
+            };
+
+            lro::internal::new_poller(polling_error_policy, polling_backoff_policy, start, query)
+        }
+
+        /// Sets all the options, replacing any prior values.
+        pub fn with_options<V: Into<gax::options::RequestOptions>>(mut self, v: V) -> Self {
+            self.inner.options = v.into();
+            self
+        }
+    }
+
+    #[doc(hidden)]
+    impl<R, M> gax::options::internal::RequestBuilder for ResumePoller<R, M> {
+        fn request_options(&mut self) -> &mut gax::options::RequestOptions {
+            &mut self.inner.options
         }
     }
 }

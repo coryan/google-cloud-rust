@@ -168,12 +168,12 @@ impl {{Codec.Name}} {
     {{#IsGetOperation}}
 
     /// Resumes polling for a long-running operation.
-    pub fn resume_poller<R, M>(&self, snapshot: lro::PollerSnapshot<R, M>) -> super::builder::ResumePoller<R, M>
+    pub fn resume_poller<R, M>(&self, snapshot: lro::PollerSnapshot<R, M>) -> super::builder::{{Codec.ServiceNameToSnake}}::ResumePoller<R, M>
     where
         R: wkt::message::Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send + Sync + 'static,
         M: wkt::message::Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send + Sync + 'static,
     {
-        super::builder::{{Codec.ServiceNameToSnake}}::ResumePoller::new(snapshot)
+        super::builder::{{Codec.ServiceNameToSnake}}::ResumePoller::new(self.inner.clone(), snapshot)
     }
     {{/IsGetOperation}}
     {{/Codec.Methods}}

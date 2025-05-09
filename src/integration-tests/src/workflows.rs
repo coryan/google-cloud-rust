@@ -243,7 +243,7 @@ main:
     }
 
     if let Some(s) = snapshot {
-        let w = client.resume_poller(s).until_done().await;
+        let w = client.resume_poller(s).resume().until_done().await;
         tracing::info!("create LRO completed after resume success={w:?}");
     }
 
@@ -254,21 +254,33 @@ main:
         ))
         .poller();
     let mut backoff = Duration::from_millis(100);
+    let mut snapshot = None;
     while let Some(status) = delete.poll().await {
         match status {
             wf::PollingResult::PollingError(e) => {
                 tracing::info!("error polling delete LRO, continuing {e:?}");
+                snapshot = delete.suspend();
+                break;
             }
             wf::PollingResult::InProgress(m) => {
                 tracing::info!("delete LRO still in progress, metadata={m:?}");
+                snapshot = delete.suspend();
+                break;
             }
-            wf::PollingResult::Completed(r) => {
-                tracing::info!("delete LRO finished, result={r:?}");
-                let _ = r?;
+            wf::PollingResult::Completed(Ok(_)) => {
+                tracing::info!("delete LRO finished successfully");
+            }
+            wf::PollingResult::Completed(Err(e)) => {
+                tracing::info!("delete LRO finished with an error {e}");
+                return Err(e);
             }
         }
         tokio::time::sleep(backoff).await;
         backoff = backoff.saturating_mul(2);
+    }
+    if let Some(s) = snapshot {
+        let w = client.resume_poller(s).resume().until_done().await;
+        tracing::info!("delete LRO completed after resume success={w:?}");
     }
 
     Ok(())
