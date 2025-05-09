@@ -131,11 +131,16 @@ impl<P, M> Poller<(), M> for UnitResponsePoller<P>
 where
     P: Poller<wkt::Empty, M>,
 {
+    type SuspendR = P::SuspendR;
+    type SuspendM = P::SuspendM;
     async fn poll(&mut self) -> Option<PollingResult<(), M>> {
         self.poller.poll().await.map(self::map_polling_result)
     }
     async fn until_done(self) -> Result<()> {
         self.poller.until_done().await.map(|_| ())
+    }
+    fn suspend(self) -> Option<super::PollerSnapshot<Self::SuspendR, Self::SuspendM>> {
+        self.poller.suspend()
     }
     #[cfg(feature = "unstable-stream")]
     fn into_stream(self) -> impl futures::Stream<Item = PollingResult<(), M>> {
@@ -160,11 +165,16 @@ impl<P, R> Poller<R, ()> for UnitMetadataPoller<P>
 where
     P: Poller<R, wkt::Empty>,
 {
+    type SuspendR = P::SuspendR;
+    type SuspendM = P::SuspendM;
     async fn poll(&mut self) -> Option<PollingResult<R, ()>> {
         self.poller.poll().await.map(self::map_polling_metadata)
     }
     async fn until_done(self) -> Result<R> {
         self.poller.until_done().await
+    }
+    fn suspend(self) -> Option<super::PollerSnapshot<Self::SuspendR, Self::SuspendM>> {
+        self.poller.suspend()
     }
     #[cfg(feature = "unstable-stream")]
     fn into_stream(self) -> impl futures::Stream<Item = PollingResult<R, ()>> {
@@ -275,6 +285,8 @@ where
         + Send
         + 'static,
 {
+    type SuspendR = ResponseType;
+    type SuspendM = MetadataType;
     async fn poll(&mut self) -> Option<PollingResult<ResponseType, MetadataType>> {
         if let Some(start) = self.start.take() {
             let result = start().await;

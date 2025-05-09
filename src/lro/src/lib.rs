@@ -139,6 +139,8 @@ mod sealed {
 /// * `M` - the metadata type, that is, the type returned by the service when
 ///   the long-running operation is still in progress.
 pub trait Poller<R, M>: Send + sealed::Poller {
+    type SuspendR;
+    type SuspendM;
     /// Query the current status of the long-running operation.
     fn poll(&mut self) -> impl Future<Output = Option<PollingResult<R, M>>> + Send;
 
@@ -150,7 +152,7 @@ pub trait Poller<R, M>: Send + sealed::Poller {
     /// The long-running operation continues in the background. The application
     /// can create a new poller using the `resume_poller()` method in the
     /// corresponding client.
-    fn suspend(self) -> Option<PollerSnapshot<R, M>>;
+    fn suspend(self) -> Option<PollerSnapshot<Self::SuspendR, Self::SuspendM>>;
 
     /// Convert a poller to a [Stream][futures::Stream].
     #[cfg(feature = "unstable-stream")]
