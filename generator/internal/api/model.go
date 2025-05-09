@@ -14,7 +14,10 @@
 
 package api
 
-import "slices"
+import (
+	"slices"
+	"strings"
+)
 
 // Typez represent different field types that may be found in messages.
 type Typez int
@@ -236,6 +239,12 @@ type Method struct {
 
 func (m *Method) HasRouting() bool {
 	return len(m.Routing) != 0
+}
+
+func (m *Method) IsGetOperation() bool {
+	return strings.HasSuffix(m.ID, ".GetOperation") &&
+		m.InputTypeID == ".google.longrunning.GetOperationRequest" &&
+		m.OutputTypeID == ".google.longrunning.Operation"
 }
 
 // Normalized request path information.

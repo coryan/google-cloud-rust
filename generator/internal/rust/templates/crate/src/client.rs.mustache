@@ -165,6 +165,17 @@ impl {{Codec.Name}} {
             .set_{{Codec.SetterName}} ( {{Codec.FieldName}}.into() )
         {{/Codec.PathParams}}
     }
+    {{#IsGetOperation}}
+
+    /// Resumes polling for a long-running operation.
+    pub fn resume_poller<R, M>(&self, snapshot: lro::PollerSnapshot<R, M>) -> super::builder::ResumePoller<R, M>
+    where
+        R: wkt::message::Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send + Sync + 'static,
+        M: wkt::message::Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send + Sync + 'static,
+    {
+        super::builder::{{Codec.ServiceNameToSnake}}::ResumePoller::new(snapshot)
+    }
+    {{/IsGetOperation}}
     {{/Codec.Methods}}
 }
 {{/Codec.Services}}

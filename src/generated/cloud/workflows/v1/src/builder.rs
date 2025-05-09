@@ -845,11 +845,33 @@ pub mod workflows {
             self
         }
 
-        pub fn resume_poller<R, M>(&self, snapshot: lro::PollerSnapshot<R, M>) -> impl lro::Poller<R, M> 
-        where 
-        R: wkt::message::Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send + Sync + 'static,
-        M: wkt::message::Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send + Sync + 'static,
-            {
+        /// Sends the request.
+        pub async fn send(self) -> Result<longrunning::model::Operation> {
+            (*self.0.stub)
+                .get_operation(self.0.request, self.0.options)
+                .await
+                .map(gax::response::Response::into_body)
+        }
+
+        /// Resumes polling for a long-running operation.
+        pub fn resume_poller<R, M>(
+            &self,
+            snapshot: lro::PollerSnapshot<R, M>,
+        ) -> impl lro::Poller<R, M>
+        where
+            R: wkt::message::Message
+                + serde::ser::Serialize
+                + serde::de::DeserializeOwned
+                + Send
+                + Sync
+                + 'static,
+            M: wkt::message::Message
+                + serde::ser::Serialize
+                + serde::de::DeserializeOwned
+                + Send
+                + Sync
+                + 'static,
+        {
             let polling_error_policy = self.0.stub.get_polling_error_policy(&self.0.options);
             let polling_backoff_policy = self.0.stub.get_polling_backoff_policy(&self.0.options);
 
@@ -870,24 +892,13 @@ pub mod workflows {
             };
 
             let inner = query.clone();
-            let start = move ||  {
+            let start = move || {
                 let name = snapshot.name().to_string();
                 let q = inner.clone();
-                async move {
-                    q(name).await
-                }
+                async move { q(name).await }
             };
 
             lro::internal::new_poller(polling_error_policy, polling_backoff_policy, start, query)
-        
-        }
-
-        /// Sends the request.
-        pub async fn send(self) -> Result<longrunning::model::Operation> {
-            (*self.0.stub)
-                .get_operation(self.0.request, self.0.options)
-                .await
-                .map(gax::response::Response::into_body)
         }
 
         /// Sets the value of [name][longrunning::model::GetOperationRequest::name].

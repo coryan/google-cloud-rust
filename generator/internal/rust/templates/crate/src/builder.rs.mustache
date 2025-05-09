@@ -310,5 +310,63 @@ pub mod {{Codec.ModuleName}} {
     }
 
     {{/Codec.Methods}}
+    {{#Codec.HasLROs}}
+    {{^Codec.SkipBuilderDocs}}
+    /// The request builder for [{{Codec.ServiceNameToPascal}}::{{Codec.Name}}][super::super::client::{{Codec.ServiceNameToPascal}}::{{Codec.Name}}] calls.
+    {{/Codec.SkipBuilderDocs}}
+    #[derive(Clone, Debug)]
+    pub struct ResumePoller<R, M> {
+        builder: RequestBuilder<google::longrunning::GetOperationRequest>,
+        snapshot: lro::PollerSnapshot<R, M>,
+    }
+
+    impl ResumePoller<R, M> {
+        /// Resumes polling for a long-running operation.
+        pub fn resume(self) -> impl lro::Poller<R, M>
+        where
+            R: wkt::message::Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send + Sync + 'static,
+            M: wkt::message::Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send + Sync + 'static,
+        {
+            let polling_error_policy = self.0.stub.get_polling_error_policy(&self.0.options);
+            let polling_backoff_policy = self.0.stub.get_polling_backoff_policy(&self.0.options);
+
+            let stub = self.builder.stub.clone();
+            let mut options = self.builder.options.clone();
+            options.set_retry_policy(gax::retry_policy::NeverRetry);
+            let query = move |name| {
+                let stub = stub.clone();
+                let options = options.clone();
+                async {
+                    let op = GetOperation::new(stub)
+                        .set_name(name)
+                        .with_options(options)
+                        .send()
+                        .await?;
+                    Ok(lro::internal::Operation::<R, M>::new(op))
+                }
+            };
+
+            let inner = query.clone();
+            let snapshot = self.snapshot;
+            let start = move || {
+                let name = snapshot.name().to_string();
+                let q = inner.clone();
+                async move {
+                    q(name).await
+                }
+            };
+
+            lro::internal::new_poller(polling_error_policy, polling_backoff_policy, start, query)
+        }
+        {{/IsGetOperation}}
+    }
+
+    #[doc(hidden)]
+    impl gax::options::internal::RequestBuilder for {{Codec.BuilderName}} {
+        fn request_options(&mut self) -> &mut gax::options::RequestOptions {
+            &mut self.0.options
+        }
+    }
+    {{/Codec.HasLROs}}
 }
 {{/Codec.Services}}
