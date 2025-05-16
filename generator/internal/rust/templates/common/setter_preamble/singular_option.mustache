@@ -77,3 +77,15 @@ limitations under the License.
 /// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}( None::<{{EnumType.Codec.Name}}> );
 /// ```
 {{/IsEnum}}
+{{#IsObject}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// use {{MessageType.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new()
+///     .set_or_clear_{{Codec.SetterName}}( Some({{MessageType.Codec.Name}}::default()/* use setters here */));
+/// let x = {{Parent.Codec.Name}}::new()
+///     .set_or_clear_{{Codec.SetterName}}( None::<{{MessageType.Codec.Name}}> );
+/// ```
+{{/IsObject}}
