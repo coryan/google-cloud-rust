@@ -32,8 +32,6 @@ pub async fn run(builder: sm::builder::secret_manager_service::ClientBuilder) ->
         tracing::subscriber::set_default(subscriber)
     };
 
-    let secret = sm::model::Secret::new().set_e
-
     let project_id = crate::project_id()?;
     let secret_id: String = rand::rng()
         .sample_iter(&Alphanumeric)
