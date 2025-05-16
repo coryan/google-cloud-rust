@@ -13,15 +13,39 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 }}
+/// Sets or clears the value of [{{Codec.FieldName}}][{{Codec.FQMessageName}}::{{Codec.SetterName}}].
+{{#Deprecated}}
+#[deprecated]
+{{/Deprecated}}
 {{#IsString}}
 ///
 /// # Example
 /// ```
 /// # use {{Parent.Codec.NameInExamples}};
 /// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}("example");
-{{#Optional}}
-/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(Some("example"));
-/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(None);
-{{/Optional}}
 /// ```
 {{/IsString}}
+{{#IsLikeInt}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}(42);
+/// ```
+{{/IsLikeInt}}
+{{#IsLikeFloat}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}(42.0);
+/// ```
+{{/IsLikeFloat}}
+{{#IsLikeBool}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}(true);
+/// ```
+{{/IsLikeBool}}

@@ -559,6 +559,14 @@ func (f *Field) IsBytes() bool {
 	return f.Typez == BYTES_TYPE
 }
 
+// IsBool returns true if the primitive type of a field is `BOOL_TYPE`.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+func (f *Field) IsBool() bool {
+	return f.Typez == BOOL_TYPE
+}
+
 // IsObject returns true if the primitive type of a field is `OBJECT_TYPE`.
 //
 // This is useful when the mustache templates need to samples or other code
