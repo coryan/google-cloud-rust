@@ -60,6 +60,7 @@ impl {{Codec.Name}} {
     {{#Codec.BasicFields}}
 
     /// Sets the value of [{{Codec.FieldName}}][{{Codec.FQMessageName}}::{{Codec.SetterName}}].
+    {{> /templates/common/singular_setter_example}}
     {{#Deprecated}}
     #[deprecated]
     {{/Deprecated}}

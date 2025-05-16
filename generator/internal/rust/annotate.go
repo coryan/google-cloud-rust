@@ -121,6 +121,10 @@ type messageAnnotation struct {
 	// The fully qualified name, including the `codec.modulePath` prefix. For
 	// messages in external packages this includes the package name.
 	QualifiedName string
+	// The fully qualified name for examples. For messages in external packages
+	// this is basically `QualifiedName`. For messages in the current package
+	// this includes `modelAnnotations.PackageName`
+	NameInExamples string
 	// The fully qualified name, relative to `codec.modulePath`. Typically this
 	// is the `QualifiedName` with the `crate::model::` prefix removed.
 	RelativeName string
@@ -290,8 +294,6 @@ func annotateModel(model *api.API, codec *codec) *modelAnnotations {
 
 	loadWellKnownTypes(model.State)
 	resolveUsedPackages(model, codec.extraPackages)
-	packageName := PackageName(model, codec.packageNameOverride)
-	packageNamespace := strings.ReplaceAll(packageName, "-", "_")
 	// Only annotate enums and messages that we intend to generate. In the
 	// process we discover the external dependencies and trim the list of
 	// packages used by this API.
@@ -299,7 +301,7 @@ func annotateModel(model *api.API, codec *codec) *modelAnnotations {
 		codec.annotateEnum(e, model.State, model.PackageName)
 	}
 	for _, m := range model.Messages {
-		codec.annotateMessage(m, model.State, model.PackageName)
+		codec.annotateMessage(m, model, model.PackageName)
 	}
 	hasLROs := false
 	for _, s := range model.Services {
@@ -310,12 +312,12 @@ func annotateModel(model *api.API, codec *codec) *modelAnnotations {
 			if !codec.generateMethod(m) {
 				continue
 			}
-			codec.annotateMethod(m, s, model.State, model.PackageName, packageNamespace)
+			codec.annotateMethod(m, s, model.State, model.PackageName)
 			if m := m.InputType; m != nil {
-				codec.annotateMessage(m, model.State, model.PackageName)
+				codec.annotateMessage(m, model, model.PackageName)
 			}
 			if m := m.OutputType; m != nil {
-				codec.annotateMessage(m, model.State, model.PackageName)
+				codec.annotateMessage(m, model, model.PackageName)
 			}
 		}
 		codec.annotateService(s, model)
@@ -347,8 +349,8 @@ func annotateModel(model *api.API, codec *codec) *modelAnnotations {
 		return defaultHost[:idx]
 	}()
 	ann := &modelAnnotations{
-		PackageName:      packageName,
-		PackageNamespace: packageNamespace,
+		PackageName:      codec.packageName(model),
+		PackageNamespace: codec.packageNamespace(model),
 		PackageVersion:   codec.version,
 		ReleaseLevel:     codec.releaseLevel,
 		RequiredPackages: requiredPackages(codec.extraPackages),
@@ -483,18 +485,18 @@ func (c *codec) annotateService(s *api.Service, model *api.API) {
 
 // annotateMessage annotates the message, its fields, its nested
 // messages, and its nested enums.
-func (c *codec) annotateMessage(m *api.Message, state *api.APIState, sourceSpecificationPackageName string) {
+func (c *codec) annotateMessage(m *api.Message, model *api.API, sourceSpecificationPackageName string) {
 	for _, f := range m.Fields {
-		c.annotateField(f, m, state, sourceSpecificationPackageName)
+		c.annotateField(f, m, model.State, sourceSpecificationPackageName)
 	}
 	for _, o := range m.OneOfs {
-		c.annotateOneOf(o, m, state, sourceSpecificationPackageName)
+		c.annotateOneOf(o, m, model.State, sourceSpecificationPackageName)
 	}
 	for _, e := range m.Enums {
-		c.annotateEnum(e, state, sourceSpecificationPackageName)
+		c.annotateEnum(e, model.State, sourceSpecificationPackageName)
 	}
 	for _, child := range m.Messages {
-		c.annotateMessage(child, state, sourceSpecificationPackageName)
+		c.annotateMessage(child, model, sourceSpecificationPackageName)
 	}
 	hasSyntheticFields := false
 	for _, f := range m.Fields {
@@ -508,14 +510,19 @@ func (c *codec) annotateMessage(m *api.Message, state *api.APIState, sourceSpeci
 	})
 	qualifiedName := fullyQualifiedMessageName(m, c.modulePath, sourceSpecificationPackageName, c.packageMapping)
 	relativeName := strings.TrimPrefix(qualifiedName, c.modulePath+"::")
+	nameInExamples := qualifiedName
+	if strings.HasPrefix(qualifiedName, c.modulePath+"::") {
+		nameInExamples = fmt.Sprintf("%s::model::%s", c.packageNamespace(model), relativeName)
+	}
 	m.Codec = &messageAnnotation{
 		Name:               toPascal(m.Name),
 		ModuleName:         toSnake(m.Name),
 		QualifiedName:      qualifiedName,
 		RelativeName:       relativeName,
+		NameInExamples:     nameInExamples,
 		PackageModuleName:  packageToModuleName(m.Package),
 		SourceFQN:          strings.TrimPrefix(m.ID, "."),
-		DocLines:           c.formatDocComments(m.Documentation, m.ID, state, m.Scopes()),
+		DocLines:           c.formatDocComments(m.Documentation, m.ID, model.State, m.Scopes()),
 		MessageAttributes:  messageAttributes(),
 		HasNestedTypes:     language.HasNestedTypes(m),
 		BasicFields:        basicFields,
@@ -523,7 +530,7 @@ func (c *codec) annotateMessage(m *api.Message, state *api.APIState, sourceSpeci
 	}
 }
 
-func (c *codec) annotateMethod(m *api.Method, s *api.Service, state *api.APIState, sourceSpecificationPackageName string, packageNamespace string) {
+func (c *codec) annotateMethod(m *api.Method, s *api.Service, state *api.APIState, sourceSpecificationPackageName string) {
 	pathInfoAnnotation := &pathInfoAnnotation{
 		Method:        m.PathInfo.Bindings[0].Verb,
 		MethodToLower: strings.ToLower(m.PathInfo.Bindings[0].Verb),
@@ -577,7 +584,7 @@ func (c *codec) annotateMethod(m *api.Method, s *api.Service, state *api.APIStat
 		m.OperationInfo.Codec = &operationInfo{
 			MetadataType:     metadataType,
 			ResponseType:     responseType,
-			PackageNamespace: packageNamespace,
+			PackageNamespace: c.packageNamespace(s.Model),
 		}
 	}
 	m.Codec = annotation
