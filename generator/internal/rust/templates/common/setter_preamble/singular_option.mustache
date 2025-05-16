@@ -25,10 +25,30 @@ limitations under the License.
 /// # Example
 /// ```
 /// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}("example");
 /// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(Some("example"));
-/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(None::<i32>);
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(None::<String>);
 /// ```
 {{/IsString}}
+{{#IsBytes}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(bytes::Bytes::from_static(b"example"));
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(Some(bytes::Bytes::from_static(b"example")));
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(None::<bytes::Bytes>);
+/// ```
+{{/IsBytes}}
+{{#IsLikeBool}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(Some(false));
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(None::<bool>);
+/// ```
+{{/IsLikeBool}}
 {{#IsLikeInt}}
 ///
 /// # Example
@@ -47,12 +67,3 @@ limitations under the License.
 /// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(None::<i32>);
 /// ```
 {{/IsLikeFloat}}
-{{#IsLikeBool}}
-///
-/// # Example
-/// ```
-/// # use {{Parent.Codec.NameInExamples}};
-/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(Some(false));
-/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(None::<bool>);
-/// ```
-{{/IsLikeBool}}

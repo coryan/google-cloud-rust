@@ -567,34 +567,6 @@ func (f *Field) IsBool() bool {
 	return f.Typez == BOOL_TYPE
 }
 
-// IsObject returns true if the primitive type of a field is `OBJECT_TYPE`.
-//
-// This is useful when the mustache templates need to samples or other code
-// that differs only in the broad category of field type involved.
-//
-// The templates *should* first check if the field is singular, as all maps are
-// also objects.
-func (f *Field) IsObject() bool {
-	return f.Typez == MESSAGE_TYPE
-}
-
-// IsEnum returns true if the primitive type of a field is `OBJECT_TYPE`.
-//
-// This is useful when the mustache templates need to samples or other code
-// that differs only in the broad category of field type involved.
-func (f *Field) IsEnum() bool {
-	return f.Typez == ENUM_TYPE
-}
-
-// IsLikeFloat returns true if the primitive type of a field is a float or
-// double.
-//
-// This is useful when the mustache templates need to samples or other code
-// that differs only in the broad category of field type involved.
-func (f *Field) IsLikeFloat() bool {
-	return f.Typez == DOUBLE_TYPE || f.Typez == FLOAT_TYPE
-}
-
 // IsLikeInt returns true if the primitive type of a field is one of the
 // integer types.
 //
@@ -609,6 +581,34 @@ func (f *Field) IsLikeInt() bool {
 	default:
 		return false
 	}
+}
+
+// IsLikeFloat returns true if the primitive type of a field is a float or
+// double.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+func (f *Field) IsLikeFloat() bool {
+	return f.Typez == DOUBLE_TYPE || f.Typez == FLOAT_TYPE
+}
+
+// IsEnum returns true if the primitive type of a field is `OBJECT_TYPE`.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+func (f *Field) IsEnum() bool {
+	return f.Typez == ENUM_TYPE
+}
+
+// IsObject returns true if the primitive type of a field is `OBJECT_TYPE`.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+//
+// The templates *should* first check if the field is singular, as all maps are
+// also objects.
+func (f *Field) IsObject() bool {
+	return f.Typez == MESSAGE_TYPE
 }
 
 // Pair is a key-value pair.
