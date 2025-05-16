@@ -185,6 +185,12 @@ impl Secret {
     }
 
     /// Sets the value of [name][crate::model::Secret::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::Secret;
+    /// let x = Secret::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
@@ -250,6 +256,12 @@ impl Secret {
     }
 
     /// Sets the value of [etag][crate::model::Secret::etag].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::Secret;
+    /// let x = Secret::new().set_etag("example");
+    /// ```
     pub fn set_etag<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.etag = v.into();
         self
@@ -539,6 +551,12 @@ impl SecretVersion {
     }
 
     /// Sets the value of [name][crate::model::SecretVersion::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::SecretVersion;
+    /// let x = SecretVersion::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
@@ -608,6 +626,12 @@ impl SecretVersion {
     }
 
     /// Sets the value of [etag][crate::model::SecretVersion::etag].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::SecretVersion;
+    /// let x = SecretVersion::new().set_etag("example");
+    /// ```
     pub fn set_etag<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.etag = v.into();
         self
@@ -1089,6 +1113,12 @@ pub mod replication {
             }
 
             /// Sets the value of [location][crate::model::replication::user_managed::Replica::location].
+            ///
+            /// # Example
+            /// ```
+            /// # use google_cloud_secretmanager_v1::model::replication::user_managed::Replica;
+            /// let x = Replica::new().set_location("example");
+            /// ```
             pub fn set_location<T: std::convert::Into<std::string::String>>(
                 mut self,
                 v: T,
@@ -1181,6 +1211,12 @@ impl CustomerManagedEncryption {
     }
 
     /// Sets the value of [kms_key_name][crate::model::CustomerManagedEncryption::kms_key_name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::CustomerManagedEncryption;
+    /// let x = CustomerManagedEncryption::new().set_kms_key_name("example");
+    /// ```
     pub fn set_kms_key_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.kms_key_name = v.into();
         self
@@ -1462,6 +1498,12 @@ pub mod replication_status {
             }
 
             /// Sets the value of [location][crate::model::replication_status::user_managed_status::ReplicaStatus::location].
+            ///
+            /// # Example
+            /// ```
+            /// # use google_cloud_secretmanager_v1::model::replication_status::user_managed_status::ReplicaStatus;
+            /// let x = ReplicaStatus::new().set_location("example");
+            /// ```
             pub fn set_location<T: std::convert::Into<std::string::String>>(
                 mut self,
                 v: T,
@@ -1555,6 +1597,12 @@ impl CustomerManagedEncryptionStatus {
     }
 
     /// Sets the value of [kms_key_version_name][crate::model::CustomerManagedEncryptionStatus::kms_key_version_name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::CustomerManagedEncryptionStatus;
+    /// let x = CustomerManagedEncryptionStatus::new().set_kms_key_version_name("example");
+    /// ```
     pub fn set_kms_key_version_name<T: std::convert::Into<std::string::String>>(
         mut self,
         v: T,
@@ -1595,6 +1643,12 @@ impl Topic {
     }
 
     /// Sets the value of [name][crate::model::Topic::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::Topic;
+    /// let x = Topic::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
@@ -1756,12 +1810,24 @@ impl SecretPayload {
     }
 
     /// Sets the value of [data][crate::model::SecretPayload::data].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::SecretPayload;
+    /// let x = SecretPayload::new().set_data(bytes::Bytes::from_static(b"example"));
+    /// ```
     pub fn set_data<T: std::convert::Into<::bytes::Bytes>>(mut self, v: T) -> Self {
         self.data = v.into();
         self
     }
 
     /// Sets the value of [data_crc32c][crate::model::SecretPayload::data_crc32c].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::SecretPayload;
+    /// let x = SecretPayload::new().set_data_crc32c(42);
+    /// ```
     pub fn set_data_crc32c<T>(mut self, v: T) -> Self
     where
         T: std::convert::Into<i64>,
@@ -1771,6 +1837,13 @@ impl SecretPayload {
     }
 
     /// Sets or clears the value of [data_crc32c][crate::model::SecretPayload::data_crc32c].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::SecretPayload;
+    /// let x = SecretPayload::new().set_or_clear_data_crc32c(Some(42));
+    /// let x = SecretPayload::new().set_or_clear_data_crc32c(None::<i32>);
+    /// ```
     pub fn set_or_clear_data_crc32c<T>(mut self, v: std::option::Option<T>) -> Self
     where
         T: std::convert::Into<i64>,
@@ -1834,24 +1907,48 @@ impl ListSecretsRequest {
     }
 
     /// Sets the value of [parent][crate::model::ListSecretsRequest::parent].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretsRequest;
+    /// let x = ListSecretsRequest::new().set_parent("example");
+    /// ```
     pub fn set_parent<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.parent = v.into();
         self
     }
 
     /// Sets the value of [page_size][crate::model::ListSecretsRequest::page_size].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretsRequest;
+    /// let x = ListSecretsRequest::new().set_page_size(42);
+    /// ```
     pub fn set_page_size<T: std::convert::Into<i32>>(mut self, v: T) -> Self {
         self.page_size = v.into();
         self
     }
 
     /// Sets the value of [page_token][crate::model::ListSecretsRequest::page_token].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretsRequest;
+    /// let x = ListSecretsRequest::new().set_page_token("example");
+    /// ```
     pub fn set_page_token<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.page_token = v.into();
         self
     }
 
     /// Sets the value of [filter][crate::model::ListSecretsRequest::filter].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretsRequest;
+    /// let x = ListSecretsRequest::new().set_filter("example");
+    /// ```
     pub fn set_filter<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.filter = v.into();
         self
@@ -1919,12 +2016,24 @@ impl ListSecretsResponse {
     }
 
     /// Sets the value of [next_page_token][crate::model::ListSecretsResponse::next_page_token].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretsResponse;
+    /// let x = ListSecretsResponse::new().set_next_page_token("example");
+    /// ```
     pub fn set_next_page_token<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.next_page_token = v.into();
         self
     }
 
     /// Sets the value of [total_size][crate::model::ListSecretsResponse::total_size].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretsResponse;
+    /// let x = ListSecretsResponse::new().set_total_size(42);
+    /// ```
     pub fn set_total_size<T: std::convert::Into<i32>>(mut self, v: T) -> Self {
         self.total_size = v.into();
         self
@@ -1993,12 +2102,24 @@ impl CreateSecretRequest {
     }
 
     /// Sets the value of [parent][crate::model::CreateSecretRequest::parent].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::CreateSecretRequest;
+    /// let x = CreateSecretRequest::new().set_parent("example");
+    /// ```
     pub fn set_parent<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.parent = v.into();
         self
     }
 
     /// Sets the value of [secret_id][crate::model::CreateSecretRequest::secret_id].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::CreateSecretRequest;
+    /// let x = CreateSecretRequest::new().set_secret_id("example");
+    /// ```
     pub fn set_secret_id<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.secret_id = v.into();
         self
@@ -2065,6 +2186,12 @@ impl AddSecretVersionRequest {
     }
 
     /// Sets the value of [parent][crate::model::AddSecretVersionRequest::parent].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::AddSecretVersionRequest;
+    /// let x = AddSecretVersionRequest::new().set_parent("example");
+    /// ```
     pub fn set_parent<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.parent = v.into();
         self
@@ -2122,6 +2249,12 @@ impl GetSecretRequest {
     }
 
     /// Sets the value of [name][crate::model::GetSecretRequest::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::GetSecretRequest;
+    /// let x = GetSecretRequest::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
@@ -2182,24 +2315,48 @@ impl ListSecretVersionsRequest {
     }
 
     /// Sets the value of [parent][crate::model::ListSecretVersionsRequest::parent].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretVersionsRequest;
+    /// let x = ListSecretVersionsRequest::new().set_parent("example");
+    /// ```
     pub fn set_parent<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.parent = v.into();
         self
     }
 
     /// Sets the value of [page_size][crate::model::ListSecretVersionsRequest::page_size].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretVersionsRequest;
+    /// let x = ListSecretVersionsRequest::new().set_page_size(42);
+    /// ```
     pub fn set_page_size<T: std::convert::Into<i32>>(mut self, v: T) -> Self {
         self.page_size = v.into();
         self
     }
 
     /// Sets the value of [page_token][crate::model::ListSecretVersionsRequest::page_token].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretVersionsRequest;
+    /// let x = ListSecretVersionsRequest::new().set_page_token("example");
+    /// ```
     pub fn set_page_token<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.page_token = v.into();
         self
     }
 
     /// Sets the value of [filter][crate::model::ListSecretVersionsRequest::filter].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretVersionsRequest;
+    /// let x = ListSecretVersionsRequest::new().set_filter("example");
+    /// ```
     pub fn set_filter<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.filter = v.into();
         self
@@ -2268,12 +2425,24 @@ impl ListSecretVersionsResponse {
     }
 
     /// Sets the value of [next_page_token][crate::model::ListSecretVersionsResponse::next_page_token].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretVersionsResponse;
+    /// let x = ListSecretVersionsResponse::new().set_next_page_token("example");
+    /// ```
     pub fn set_next_page_token<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.next_page_token = v.into();
         self
     }
 
     /// Sets the value of [total_size][crate::model::ListSecretVersionsResponse::total_size].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::ListSecretVersionsResponse;
+    /// let x = ListSecretVersionsResponse::new().set_total_size(42);
+    /// ```
     pub fn set_total_size<T: std::convert::Into<i32>>(mut self, v: T) -> Self {
         self.total_size = v.into();
         self
@@ -2333,6 +2502,12 @@ impl GetSecretVersionRequest {
     }
 
     /// Sets the value of [name][crate::model::GetSecretVersionRequest::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::GetSecretVersionRequest;
+    /// let x = GetSecretVersionRequest::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
@@ -2450,6 +2625,12 @@ impl AccessSecretVersionRequest {
     }
 
     /// Sets the value of [name][crate::model::AccessSecretVersionRequest::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::AccessSecretVersionRequest;
+    /// let x = AccessSecretVersionRequest::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
@@ -2494,6 +2675,12 @@ impl AccessSecretVersionResponse {
     }
 
     /// Sets the value of [name][crate::model::AccessSecretVersionResponse::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::AccessSecretVersionResponse;
+    /// let x = AccessSecretVersionResponse::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
@@ -2559,12 +2746,24 @@ impl DeleteSecretRequest {
     }
 
     /// Sets the value of [name][crate::model::DeleteSecretRequest::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::DeleteSecretRequest;
+    /// let x = DeleteSecretRequest::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
     }
 
     /// Sets the value of [etag][crate::model::DeleteSecretRequest::etag].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::DeleteSecretRequest;
+    /// let x = DeleteSecretRequest::new().set_etag("example");
+    /// ```
     pub fn set_etag<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.etag = v.into();
         self
@@ -2614,12 +2813,24 @@ impl DisableSecretVersionRequest {
     }
 
     /// Sets the value of [name][crate::model::DisableSecretVersionRequest::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::DisableSecretVersionRequest;
+    /// let x = DisableSecretVersionRequest::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
     }
 
     /// Sets the value of [etag][crate::model::DisableSecretVersionRequest::etag].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::DisableSecretVersionRequest;
+    /// let x = DisableSecretVersionRequest::new().set_etag("example");
+    /// ```
     pub fn set_etag<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.etag = v.into();
         self
@@ -2669,12 +2880,24 @@ impl EnableSecretVersionRequest {
     }
 
     /// Sets the value of [name][crate::model::EnableSecretVersionRequest::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::EnableSecretVersionRequest;
+    /// let x = EnableSecretVersionRequest::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
     }
 
     /// Sets the value of [etag][crate::model::EnableSecretVersionRequest::etag].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::EnableSecretVersionRequest;
+    /// let x = EnableSecretVersionRequest::new().set_etag("example");
+    /// ```
     pub fn set_etag<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.etag = v.into();
         self
@@ -2724,12 +2947,24 @@ impl DestroySecretVersionRequest {
     }
 
     /// Sets the value of [name][crate::model::DestroySecretVersionRequest::name].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::DestroySecretVersionRequest;
+    /// let x = DestroySecretVersionRequest::new().set_name("example");
+    /// ```
     pub fn set_name<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.name = v.into();
         self
     }
 
     /// Sets the value of [etag][crate::model::DestroySecretVersionRequest::etag].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::DestroySecretVersionRequest;
+    /// let x = DestroySecretVersionRequest::new().set_etag("example");
+    /// ```
     pub fn set_etag<T: std::convert::Into<std::string::String>>(mut self, v: T) -> Self {
         self.etag = v.into();
         self
