@@ -56,3 +56,12 @@ limitations under the License.
 /// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}([1.0, 2.0, 3.0]);
 /// ```
 {{/IsLikeFloat}}
+{{#IsEnum}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// use {{EnumType.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}([ {{EnumType.Codec.Name}}::default() ]);
+/// ```
+{{/IsEnum}}

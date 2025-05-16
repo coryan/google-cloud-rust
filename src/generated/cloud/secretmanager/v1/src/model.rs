@@ -599,6 +599,13 @@ impl SecretVersion {
     }
 
     /// Sets the value of [state][crate::model::SecretVersion::state].
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_secretmanager_v1::model::SecretVersion;
+    /// use google_cloud_secretmanager_v1::model::secret_version::State;
+    /// let x = SecretVersion::new().set_state( State::default() );
+    /// ```
     pub fn set_state<T: std::convert::Into<crate::model::secret_version::State>>(
         mut self,
         v: T,

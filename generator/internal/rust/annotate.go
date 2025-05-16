@@ -273,6 +273,10 @@ type enumAnnotation struct {
 	// The fully qualified name, relative to `codec.modulePath`. Typically this
 	// is the `QualifiedName` with the `crate::model::` prefix removed.
 	RelativeName string
+	// The fully qualified name for examples. For messages in external packages
+	// this is basically `QualifiedName`. For messages in the current package
+	// this includes `modelAnnotations.PackageName`
+	NameInExamples string
 	// If set, this enum is only enabled when some features are enabled
 	FeatureGates   []string
 	FeatureGatesOp string
@@ -298,7 +302,7 @@ func annotateModel(model *api.API, codec *codec) *modelAnnotations {
 	// process we discover the external dependencies and trim the list of
 	// packages used by this API.
 	for _, e := range model.Enums {
-		codec.annotateEnum(e, model.State, model.PackageName)
+		codec.annotateEnum(e, model, model.PackageName)
 	}
 	for _, m := range model.Messages {
 		codec.annotateMessage(m, model, model.PackageName)
@@ -493,7 +497,7 @@ func (c *codec) annotateMessage(m *api.Message, model *api.API, sourceSpecificat
 		c.annotateOneOf(o, m, model.State, sourceSpecificationPackageName)
 	}
 	for _, e := range m.Enums {
-		c.annotateEnum(e, model.State, sourceSpecificationPackageName)
+		c.annotateEnum(e, model, sourceSpecificationPackageName)
 	}
 	for _, child := range m.Messages {
 		c.annotateMessage(child, model, sourceSpecificationPackageName)
@@ -698,9 +702,9 @@ func (c *codec) annotateField(field *api.Field, message *api.Message, state *api
 	ann.ValueType = mapType(mapMessage.Fields[1], state, c.modulePath, sourceSpecificationPackageName, c.packageMapping)
 }
 
-func (c *codec) annotateEnum(e *api.Enum, state *api.APIState, sourceSpecificationPackageName string) {
+func (c *codec) annotateEnum(e *api.Enum, model *api.API, sourceSpecificationPackageName string) {
 	for _, ev := range e.Values {
-		c.annotateEnumValue(ev, e, state)
+		c.annotateEnumValue(ev, e, model.State)
 	}
 	// For BigQuery (and so far only BigQuery), the enum values conflict when
 	// converted to the Rust style [1]. Basically, there are several enum values
@@ -727,13 +731,18 @@ func (c *codec) annotateEnum(e *api.Enum, state *api.APIState, sourceSpecificati
 
 	qualifiedName := fullyQualifiedEnumName(e, c.modulePath, sourceSpecificationPackageName, c.packageMapping)
 	relativeName := strings.TrimPrefix(qualifiedName, c.modulePath+"::")
+	nameInExamples := qualifiedName
+	if strings.HasPrefix(qualifiedName, c.modulePath+"::") {
+		nameInExamples = fmt.Sprintf("%s::model::%s", c.packageNamespace(model), relativeName)
+	}
 	e.Codec = &enumAnnotation{
-		Name:          enumName(e),
-		ModuleName:    toSnake(enumName(e)),
-		DocLines:      c.formatDocComments(e.Documentation, e.ID, state, e.Scopes()),
-		UniqueNames:   unique,
-		QualifiedName: qualifiedName,
-		RelativeName:  relativeName,
+		Name:           enumName(e),
+		ModuleName:     toSnake(enumName(e)),
+		DocLines:       c.formatDocComments(e.Documentation, e.ID, model.State, e.Scopes()),
+		UniqueNames:    unique,
+		QualifiedName:  qualifiedName,
+		RelativeName:   relativeName,
+		NameInExamples: nameInExamples,
 	}
 }
 
