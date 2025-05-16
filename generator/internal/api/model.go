@@ -615,10 +615,15 @@ func (f *Field) IsObject() bool {
 	return f.Typez == MESSAGE_TYPE
 }
 
-// OtherFieldsInGroup returns the
+// OtherFieldsInGroup returns either:
+// - an empty list if the field is not in a oneof group
+// - the *other* fields in the oneof group if the field belongs to one
+//
+// This is useful in mustache templates to write examples or documentation and
+// list what other setters / fields are reset when setting the field value.
 func (f *Field) OtherFieldsInGroup() []*Field {
 	if f.Group == nil {
-		return nil
+		return []*Field{}
 	}
 	var fields []*Field
 	for _, field := range f.Group.Fields {
