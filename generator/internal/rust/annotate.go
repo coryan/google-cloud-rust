@@ -296,9 +296,8 @@ type enumValueAnnotation struct {
 func annotateModel(model *api.API, codec *codec) *modelAnnotations {
 	codec.hasServices = len(model.State.ServiceByID) > 0
 
-	loadWellKnownTypes(model.State)
 	resolveUsedPackages(model, codec.extraPackages)
-	// Only annotate enums and messages that we intend to generate. In the
+	// Annotate enums and messages that we intend to generate. In the
 	// process we discover the external dependencies and trim the list of
 	// packages used by this API.
 	for _, e := range model.Enums {
@@ -307,6 +306,15 @@ func annotateModel(model *api.API, codec *codec) *modelAnnotations {
 	for _, m := range model.Messages {
 		codec.annotateMessage(m, model, model.PackageName)
 	}
+	// External messages get minimal annotations to generate examples that use
+	// them.
+	for _, e := range model.State.EnumByID {
+		codec.annotateExternalEnum(e, model, model.PackageName)
+	}
+	for _, m := range model.State.MessageByID {
+		codec.annotateExternalMessage(m, model, model.PackageName)
+	}
+
 	hasLROs := false
 	for _, s := range model.Services {
 		for _, m := range s.Methods {
@@ -518,6 +526,9 @@ func (c *codec) annotateMessage(m *api.Message, model *api.API, sourceSpecificat
 	if strings.HasPrefix(qualifiedName, c.modulePath+"::") {
 		nameInExamples = fmt.Sprintf("%s::model::%s", c.packageNamespace(model), relativeName)
 	}
+	if m.ID == ".google.protobuf.FieldMask" {
+		slog.Info("annotating as local message", "message.ID", m.ID, "q", qualifiedName, "r", relativeName, "examples", nameInExamples)
+	}
 	m.Codec = &messageAnnotation{
 		Name:               toPascal(m.Name),
 		ModuleName:         toSnake(m.Name),
@@ -531,6 +542,30 @@ func (c *codec) annotateMessage(m *api.Message, model *api.API, sourceSpecificat
 		HasNestedTypes:     language.HasNestedTypes(m),
 		BasicFields:        basicFields,
 		HasSyntheticFields: hasSyntheticFields,
+	}
+}
+
+// annotateMessage annotates the message, its fields, its nested
+// messages, and its nested enums.
+func (c *codec) annotateExternalMessage(m *api.Message, model *api.API, sourceSpecificationPackageName string) {
+	if m.Codec != nil {
+		// Skip messages that are already annotated.
+		return
+	}
+	qualifiedName := fullyQualifiedMessageName(m, c.modulePath, sourceSpecificationPackageName, c.packageMapping)
+	relativeName := strings.TrimPrefix(qualifiedName, c.modulePath+"::")
+	nameInExamples := qualifiedName
+	if strings.HasPrefix(qualifiedName, c.modulePath+"::") {
+		nameInExamples = fmt.Sprintf("%s::model::%s", c.packageNamespace(model), relativeName)
+	}
+	m.Codec = &messageAnnotation{
+		Name:              toPascal(m.Name),
+		ModuleName:        toSnake(m.Name),
+		QualifiedName:     qualifiedName,
+		RelativeName:      relativeName,
+		NameInExamples:    nameInExamples,
+		PackageModuleName: packageToModuleName(m.Package),
+		SourceFQN:         strings.TrimPrefix(m.ID, "."),
 	}
 }
 
@@ -746,9 +781,45 @@ func (c *codec) annotateEnum(e *api.Enum, model *api.API, sourceSpecificationPac
 	}
 }
 
+func (c *codec) annotateExternalEnum(e *api.Enum, model *api.API, sourceSpecificationPackageName string) {
+	if e.Codec != nil {
+		// Skip enums that are already annotated.
+		return
+	}
+	for _, ev := range e.Values {
+		c.annotateExternalEnumValue(ev, e)
+	}
+
+	qualifiedName := fullyQualifiedEnumName(e, c.modulePath, sourceSpecificationPackageName, c.packageMapping)
+	relativeName := strings.TrimPrefix(qualifiedName, c.modulePath+"::")
+	nameInExamples := qualifiedName
+	if strings.HasPrefix(qualifiedName, c.modulePath+"::") {
+		nameInExamples = fmt.Sprintf("%s::model::%s", c.packageNamespace(model), relativeName)
+	}
+	e.Codec = &enumAnnotation{
+		Name:           enumName(e),
+		ModuleName:     toSnake(enumName(e)),
+		QualifiedName:  qualifiedName,
+		RelativeName:   relativeName,
+		NameInExamples: nameInExamples,
+	}
+}
+
 func (c *codec) annotateEnumValue(ev *api.EnumValue, e *api.Enum, state *api.APIState) {
 	ev.Codec = &enumValueAnnotation{
 		DocLines:    c.formatDocComments(ev.Documentation, ev.ID, state, ev.Scopes()),
+		Name:        enumValueName(ev),
+		EnumType:    enumName(e),
+		VariantName: enumValueVariantName(ev),
+	}
+}
+
+func (c *codec) annotateExternalEnumValue(ev *api.EnumValue, e *api.Enum) {
+	if ev.Codec != nil {
+		// Skip enums that are already annotated.
+		return
+	}
+	ev.Codec = &enumValueAnnotation{
 		Name:        enumValueName(ev),
 		EnumType:    enumName(e),
 		VariantName: enumValueVariantName(ev),
