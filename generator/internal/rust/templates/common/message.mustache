@@ -155,15 +155,8 @@ impl {{Codec.Name}} {
         })
     }
 
-    /// Sets the value of [{{Group.Codec.FieldName}}][{{Codec.FQMessageName}}::{{Group.Codec.FieldName}}]
-    /// to hold a `{{Codec.BranchName}}`.
-    ///
-    /// Note that all the setters affecting `{{Group.Codec.FieldName}}` are
-    /// mutually exclusive.
-    {{#Deprecated}}
-    #[deprecated]
-    {{/Deprecated}}
     {{#Singular}}
+    {{> /templates/common/setter_preamble/oneof_variant/singular}}
     pub fn set_{{Codec.SetterName}}<T: std::convert::Into<{{{Codec.FieldType}}}>>(mut self, v: T) -> Self {
         self.{{Group.Codec.FieldName}} = std::option::Option::Some(
             {{Group.Codec.QualifiedName}}::{{Codec.BranchName}}(
@@ -174,6 +167,7 @@ impl {{Codec.Name}} {
     }
     {{/Singular}}
     {{#Repeated}}
+    {{> /templates/common/setter_preamble/oneof_variant/repeated}}
     pub fn set_{{Codec.SetterName}}<T, V>(mut self, v: T) -> Self
     where
         T: std::iter::IntoIterator<Item = V>,
@@ -189,6 +183,7 @@ impl {{Codec.Name}} {
     }
     {{/Repeated}}
     {{#Map}}
+    {{> /templates/common/setter_preamble/oneof_variant/map}}
     pub fn set_{{Codec.SetterName}}<T, K, V>(mut self, v: T) -> Self
     where
         T: std::iter::IntoIterator<Item = (K, V)>,

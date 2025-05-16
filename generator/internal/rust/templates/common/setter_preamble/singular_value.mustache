@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 }}
 /// Sets the value of [{{Codec.FieldName}}][{{Codec.FQMessageName}}::{{Codec.SetterName}}].
-{{#Deprecated}}
-#[deprecated]
-{{/Deprecated}}
 {{#IsString}}
 ///
 /// # Example
@@ -76,3 +73,6 @@ limitations under the License.
 ///     .set_{{Codec.SetterName}}( {{MessageType.Codec.Name}}::default() );
 /// ```
 {{/IsObject}}
+{{#Deprecated}}
+#[deprecated]
+{{/Deprecated}}

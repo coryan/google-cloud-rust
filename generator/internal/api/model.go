@@ -615,6 +615,20 @@ func (f *Field) IsObject() bool {
 	return f.Typez == MESSAGE_TYPE
 }
 
+// OtherFieldsInGroup returns the
+func (f *Field) OtherFieldsInGroup() []*Field {
+	if f.Group == nil {
+		return nil
+	}
+	var fields []*Field
+	for _, field := range f.Group.Fields {
+		if field != f {
+			fields = append(fields, field)
+		}
+	}
+	return fields
+}
+
 // Pair is a key-value pair.
 type Pair struct {
 	// Key of the pair.

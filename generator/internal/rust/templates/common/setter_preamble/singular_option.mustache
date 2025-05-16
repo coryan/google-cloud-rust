@@ -14,12 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 }}
 /// Sets or clears the value of [{{Codec.FieldName}}][{{Codec.FQMessageName}}::{{Codec.SetterName}}].
-{{#Deprecated}}
-#[deprecated]
-{{/Deprecated}}
-{{#Deprecated}}
-#[deprecated]
-{{/Deprecated}}
 {{#IsString}}
 ///
 /// # Example
@@ -89,3 +83,6 @@ limitations under the License.
 ///     .set_or_clear_{{Codec.SetterName}}( None::<{{MessageType.Codec.Name}}> );
 /// ```
 {{/IsObject}}
+{{#Deprecated}}
+#[deprecated]
+{{/Deprecated}}
