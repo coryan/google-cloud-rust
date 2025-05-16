@@ -67,8 +67,8 @@ limitations under the License.
 /// ```
 /// # use {{Parent.Codec.NameInExamples}};
 /// use {{EnumType.Codec.NameInExamples}};
-/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}( {{EnumType.Codec.Name}}::default() );
-/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}( None::<{{EnumType.Codec.Name}}> );
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}({{EnumType.Codec.Name}}::default());
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(None::<{{EnumType.Codec.Name}}>);
 /// ```
 {{/IsEnum}}
 {{#IsObject}}
@@ -77,10 +77,9 @@ limitations under the License.
 /// ```
 /// # use {{Parent.Codec.NameInExamples}};
 /// use {{MessageType.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_or_clear_{{Codec.SetterName}}(Some({{MessageType.Codec.Name}}::default()/* use setters here */));
 /// let x = {{Parent.Codec.Name}}::new()
-///     .set_or_clear_{{Codec.SetterName}}( Some({{MessageType.Codec.Name}}::default()/* use setters here */));
-/// let x = {{Parent.Codec.Name}}::new()
-///     .set_or_clear_{{Codec.SetterName}}( None::<{{MessageType.Codec.Name}}> );
+///     .set_or_clear_{{Codec.SetterName}}(None::<{{MessageType.Codec.Name}}>);
 /// ```
 {{/IsObject}}
 {{#Deprecated}}

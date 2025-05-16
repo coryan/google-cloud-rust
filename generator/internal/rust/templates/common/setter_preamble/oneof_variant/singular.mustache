@@ -18,9 +18,6 @@ limitations under the License.
 ///
 /// Note that all the setters affecting `{{Group.Codec.FieldName}}` are
 /// mutually exclusive.
-{{#Deprecated}}
-#[deprecated]
-{{/Deprecated}}
 {{#IsString}}
 ///
 /// # Example
@@ -29,3 +26,20 @@ limitations under the License.
 /// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}("example");
 /// ```
 {{/IsString}}
+{{#IsObject}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// use {{MessageType.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new()
+///     .set_{{Codec.SetterName}}( {{MessageType.Codec.Name}}::default() );
+/// assert!(x.{{Codec.FieldName}}().is_some());
+{{#OtherFieldsInGroup}}
+/// assert!(x.{{Codec.FieldName}}().is_none());
+{{/OtherFieldsInGroup}}
+/// ```
+{{/IsObject}}
+{{#Deprecated}}
+#[deprecated]
+{{/Deprecated}}
