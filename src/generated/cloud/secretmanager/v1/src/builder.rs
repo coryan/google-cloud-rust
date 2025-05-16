@@ -145,6 +145,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [parent][crate::model::ListSecretsRequest::parent].
         ///
+        /// name = list_secrets builder = ListSecrets
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListSecrets;
+        /// let builder : ListSecrets = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_parent<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.parent = v.into();
@@ -152,18 +161,45 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [page_size][crate::model::ListSecretsRequest::page_size].
+        ///
+        /// name = list_secrets builder = ListSecrets
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListSecrets;
+        /// let builder : ListSecrets = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_page_size<T: Into<i32>>(mut self, v: T) -> Self {
             self.0.request.page_size = v.into();
             self
         }
 
         /// Sets the value of [page_token][crate::model::ListSecretsRequest::page_token].
+        ///
+        /// name = list_secrets builder = ListSecrets
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListSecrets;
+        /// let builder : ListSecrets = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_page_token<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.page_token = v.into();
             self
         }
 
         /// Sets the value of [filter][crate::model::ListSecretsRequest::filter].
+        ///
+        /// name = list_secrets builder = ListSecrets
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListSecrets;
+        /// let builder : ListSecrets = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_filter<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.filter = v.into();
             self
@@ -226,6 +262,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [parent][crate::model::CreateSecretRequest::parent].
         ///
+        /// name = create_secret builder = CreateSecret
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::CreateSecret;
+        /// let builder : CreateSecret = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_parent<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.parent = v.into();
@@ -234,6 +279,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [secret_id][crate::model::CreateSecretRequest::secret_id].
         ///
+        /// name = create_secret builder = CreateSecret
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::CreateSecret;
+        /// let builder : CreateSecret = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_secret_id<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.secret_id = v.into();
@@ -241,6 +295,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [secret][crate::model::CreateSecretRequest::secret].
+        ///
+        /// name = create_secret builder = CreateSecret
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::CreateSecret;
+        /// let builder : CreateSecret = /* */
+        /// # { panic!(); };
+        /// ```
         ///
         /// This is a **required** field for requests.
         pub fn set_secret<T>(mut self, v: T) -> Self
@@ -322,6 +385,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [parent][crate::model::AddSecretVersionRequest::parent].
         ///
+        /// name = add_secret_version builder = AddSecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::AddSecretVersion;
+        /// let builder : AddSecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_parent<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.parent = v.into();
@@ -329,6 +401,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [payload][crate::model::AddSecretVersionRequest::payload].
+        ///
+        /// name = add_secret_version builder = AddSecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::AddSecretVersion;
+        /// let builder : AddSecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
         ///
         /// This is a **required** field for requests.
         pub fn set_payload<T>(mut self, v: T) -> Self
@@ -407,6 +488,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [name][crate::model::GetSecretRequest::name].
         ///
+        /// name = get_secret builder = GetSecret
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::GetSecret;
+        /// let builder : GetSecret = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.name = v.into();
@@ -470,6 +560,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [secret][crate::model::UpdateSecretRequest::secret].
         ///
+        /// name = update_secret builder = UpdateSecret
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::UpdateSecret;
+        /// let builder : UpdateSecret = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_secret<T>(mut self, v: T) -> Self
         where
@@ -491,6 +590,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [update_mask][crate::model::UpdateSecretRequest::update_mask].
+        ///
+        /// name = update_secret builder = UpdateSecret
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::UpdateSecret;
+        /// let builder : UpdateSecret = /* */
+        /// # { panic!(); };
+        /// ```
         ///
         /// This is a **required** field for requests.
         pub fn set_update_mask<T>(mut self, v: T) -> Self
@@ -569,6 +677,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [name][crate::model::DeleteSecretRequest::name].
         ///
+        /// name = delete_secret builder = DeleteSecret
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::DeleteSecret;
+        /// let builder : DeleteSecret = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.name = v.into();
@@ -576,6 +693,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [etag][crate::model::DeleteSecretRequest::etag].
+        ///
+        /// name = delete_secret builder = DeleteSecret
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::DeleteSecret;
+        /// let builder : DeleteSecret = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_etag<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.etag = v.into();
             self
@@ -671,6 +797,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [parent][crate::model::ListSecretVersionsRequest::parent].
         ///
+        /// name = list_secret_versions builder = ListSecretVersions
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListSecretVersions;
+        /// let builder : ListSecretVersions = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_parent<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.parent = v.into();
@@ -678,18 +813,45 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [page_size][crate::model::ListSecretVersionsRequest::page_size].
+        ///
+        /// name = list_secret_versions builder = ListSecretVersions
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListSecretVersions;
+        /// let builder : ListSecretVersions = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_page_size<T: Into<i32>>(mut self, v: T) -> Self {
             self.0.request.page_size = v.into();
             self
         }
 
         /// Sets the value of [page_token][crate::model::ListSecretVersionsRequest::page_token].
+        ///
+        /// name = list_secret_versions builder = ListSecretVersions
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListSecretVersions;
+        /// let builder : ListSecretVersions = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_page_token<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.page_token = v.into();
             self
         }
 
         /// Sets the value of [filter][crate::model::ListSecretVersionsRequest::filter].
+        ///
+        /// name = list_secret_versions builder = ListSecretVersions
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListSecretVersions;
+        /// let builder : ListSecretVersions = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_filter<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.filter = v.into();
             self
@@ -754,6 +916,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [name][crate::model::GetSecretVersionRequest::name].
+        ///
+        /// name = get_secret_version builder = GetSecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::GetSecretVersion;
+        /// let builder : GetSecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
         ///
         /// This is a **required** field for requests.
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
@@ -821,6 +992,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [name][crate::model::AccessSecretVersionRequest::name].
         ///
+        /// name = access_secret_version builder = AccessSecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::AccessSecretVersion;
+        /// let builder : AccessSecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.name = v.into();
@@ -887,6 +1067,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [name][crate::model::DisableSecretVersionRequest::name].
         ///
+        /// name = disable_secret_version builder = DisableSecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::DisableSecretVersion;
+        /// let builder : DisableSecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.name = v.into();
@@ -894,6 +1083,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [etag][crate::model::DisableSecretVersionRequest::etag].
+        ///
+        /// name = disable_secret_version builder = DisableSecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::DisableSecretVersion;
+        /// let builder : DisableSecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_etag<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.etag = v.into();
             self
@@ -959,6 +1157,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [name][crate::model::EnableSecretVersionRequest::name].
         ///
+        /// name = enable_secret_version builder = EnableSecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::EnableSecretVersion;
+        /// let builder : EnableSecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.name = v.into();
@@ -966,6 +1173,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [etag][crate::model::EnableSecretVersionRequest::etag].
+        ///
+        /// name = enable_secret_version builder = EnableSecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::EnableSecretVersion;
+        /// let builder : EnableSecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_etag<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.etag = v.into();
             self
@@ -1031,6 +1247,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [name][crate::model::DestroySecretVersionRequest::name].
         ///
+        /// name = destroy_secret_version builder = DestroySecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::DestroySecretVersion;
+        /// let builder : DestroySecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.name = v.into();
@@ -1038,6 +1263,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [etag][crate::model::DestroySecretVersionRequest::etag].
+        ///
+        /// name = destroy_secret_version builder = DestroySecretVersion
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::DestroySecretVersion;
+        /// let builder : DestroySecretVersion = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_etag<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.etag = v.into();
             self
@@ -1100,6 +1334,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [resource][iam_v1::model::SetIamPolicyRequest::resource].
         ///
+        /// name = set_iam_policy builder = SetIamPolicy
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::SetIamPolicy;
+        /// let builder : SetIamPolicy = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_resource<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.resource = v.into();
@@ -1107,6 +1350,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [policy][iam_v1::model::SetIamPolicyRequest::policy].
+        ///
+        /// name = set_iam_policy builder = SetIamPolicy
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::SetIamPolicy;
+        /// let builder : SetIamPolicy = /* */
+        /// # { panic!(); };
+        /// ```
         ///
         /// This is a **required** field for requests.
         pub fn set_policy<T>(mut self, v: T) -> Self
@@ -1129,6 +1381,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [update_mask][iam_v1::model::SetIamPolicyRequest::update_mask].
+        ///
+        /// name = set_iam_policy builder = SetIamPolicy
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::SetIamPolicy;
+        /// let builder : SetIamPolicy = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_update_mask<T>(mut self, v: T) -> Self
         where
             T: std::convert::Into<wkt::FieldMask>,
@@ -1203,6 +1464,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [resource][iam_v1::model::GetIamPolicyRequest::resource].
         ///
+        /// name = get_iam_policy builder = GetIamPolicy
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::GetIamPolicy;
+        /// let builder : GetIamPolicy = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_resource<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.resource = v.into();
@@ -1210,6 +1480,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [options][iam_v1::model::GetIamPolicyRequest::options].
+        ///
+        /// name = get_iam_policy builder = GetIamPolicy
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::GetIamPolicy;
+        /// let builder : GetIamPolicy = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_options<T>(mut self, v: T) -> Self
         where
             T: std::convert::Into<iam_v1::model::GetPolicyOptions>,
@@ -1287,6 +1566,15 @@ pub mod secret_manager_service {
 
         /// Sets the value of [resource][iam_v1::model::TestIamPermissionsRequest::resource].
         ///
+        /// name = test_iam_permissions builder = TestIamPermissions
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::TestIamPermissions;
+        /// let builder : TestIamPermissions = /* */
+        /// # { panic!(); };
+        /// ```
+        ///
         /// This is a **required** field for requests.
         pub fn set_resource<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.resource = v.into();
@@ -1294,6 +1582,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [permissions][iam_v1::model::TestIamPermissionsRequest::permissions].
+        ///
+        /// name = test_iam_permissions builder = TestIamPermissions
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::TestIamPermissions;
+        /// let builder : TestIamPermissions = /* */
+        /// # { panic!(); };
+        /// ```
         ///
         /// This is a **required** field for requests.
         pub fn set_permissions<T, V>(mut self, v: T) -> Self
@@ -1393,24 +1690,60 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [name][location::model::ListLocationsRequest::name].
+        ///
+        /// name = list_locations builder = ListLocations
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListLocations;
+        /// let builder : ListLocations = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.name = v.into();
             self
         }
 
         /// Sets the value of [filter][location::model::ListLocationsRequest::filter].
+        ///
+        /// name = list_locations builder = ListLocations
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListLocations;
+        /// let builder : ListLocations = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_filter<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.filter = v.into();
             self
         }
 
         /// Sets the value of [page_size][location::model::ListLocationsRequest::page_size].
+        ///
+        /// name = list_locations builder = ListLocations
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListLocations;
+        /// let builder : ListLocations = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_page_size<T: Into<i32>>(mut self, v: T) -> Self {
             self.0.request.page_size = v.into();
             self
         }
 
         /// Sets the value of [page_token][location::model::ListLocationsRequest::page_token].
+        ///
+        /// name = list_locations builder = ListLocations
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::ListLocations;
+        /// let builder : ListLocations = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_page_token<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.page_token = v.into();
             self
@@ -1472,6 +1805,15 @@ pub mod secret_manager_service {
         }
 
         /// Sets the value of [name][location::model::GetLocationRequest::name].
+        ///
+        /// name = get_location builder = GetLocation
+        ///
+        /// # Example
+        /// ```no_run
+        /// use google_cloud_secretmanager_v1::builder::secret_manager_service::GetLocation;
+        /// let builder : GetLocation = /* */
+        /// # { panic!(); };
+        /// ```
         pub fn set_name<T: Into<std::string::String>>(mut self, v: T) -> Self {
             self.0.request.name = v.into();
             self

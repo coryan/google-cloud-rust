@@ -150,6 +150,15 @@ type API struct {
 	State *APIState
 }
 
+// ServiceCodec returns the Codec field with an alternative name.
+//
+// In some mustache templates we want to access the annotations for the
+// enclosing model. In mustache you can get a field from an enclosing context
+// *if* the name is unique.
+func (a *API) ModelCodec() any {
+	return a.Codec
+}
+
 // APIState contains helpful information that can be used when generating
 // clients.
 type APIState struct {
@@ -184,6 +193,15 @@ type Service struct {
 	Model *API
 	// Language specific annotations
 	Codec any
+}
+
+// ServiceCodec returns the Codec field with an alternative name.
+//
+// In some mustache templates we want to access the annotations for the
+// enclosing service. In mustache you can get a field from an enclosing context
+// *if* the name is unique.
+func (s *Service) ServiceCodec() any {
+	return s.Codec
 }
 
 // Method defines a RPC belonging to a Service.
@@ -236,6 +254,15 @@ type Method struct {
 
 func (m *Method) HasRouting() bool {
 	return len(m.Routing) != 0
+}
+
+// MethodCodec returns the Codec field with an alternative name.
+//
+// In some mustache templates we want to access the annotations for the
+// enclosing method. In mustache you can get a field from an enclosing context
+// *if* the name is unique.
+func (m *Method) MethodCodec() any {
+	return m.Codec
 }
 
 // Normalized request path information.

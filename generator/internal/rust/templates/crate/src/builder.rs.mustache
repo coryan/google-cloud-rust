@@ -243,6 +243,15 @@ pub mod {{Codec.ModuleName}} {
         {{#InputType.Codec.BasicFields}}
 
         /// Sets the value of [{{Codec.FieldName}}][{{Codec.FQMessageName}}::{{Codec.SetterName}}].
+        ///
+        /// name = {{MethodCodec.Name}} builder = {{MethodCodec.BuilderName}}
+        ///
+        /// # Example
+        /// ```no_run
+        /// use {{ModelCodec.PackageNamespace}}::builder::{{ServiceCodec.ModuleName}}::{{MethodCodec.BuilderName}};
+        /// let builder : {{MethodCodec.BuilderName}} = /* ... */
+        /// # { panic!(); };
+        /// ```
         {{#DocumentAsRequired}}
         ///
         /// This is a **required** field for requests.
