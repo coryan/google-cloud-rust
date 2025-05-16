@@ -531,6 +531,10 @@ type Field struct {
 	Group *OneOf
 	// The message that contains this field.
 	Parent *Message
+	// The message type for this field, can be nil.
+	MessageType *Message
+	// The enum type for this field, canl be nil.
+	EnumType *Enum
 	// A placeholder to put language specific annotations.
 	Codec any
 }
