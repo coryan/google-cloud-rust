@@ -83,6 +83,18 @@ limitations under the License.
 /// ]);
 /// ```
 {{/Codec.ValueField.IsEnum}}
+{{#Codec.ValueField.IsObject}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// use {{ValueType.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}([
+///     ("key0", {{ValueType.Codec.Name}}::default()),
+///     ("key1", {{ValueType.Codec.Name}}::default()),
+/// ]);
+/// ```
+{{/Codec.ValueField.IsObject}}
 {{/Codec.KeyField.IsString}}
 {{#Deprecated}}
 #[deprecated]
