@@ -18,6 +18,98 @@ limitations under the License.
 ///
 /// Note that all the setters affecting `{{Group.Codec.FieldName}}` are
 /// mutually exclusive.
+{{#IsString}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}(["a", "b", "c"]);
+/// assert!(x.{{Codec.FieldName}}().is_some());
+{{#OtherFieldsInGroup}}
+/// assert!(x.{{Codec.FieldName}}().is_none());
+{{/OtherFieldsInGroup}}
+/// ```
+{{/IsString}}
+{{#IsBytes}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let b1 = bytes::Bytes::from_static(b"abc");
+/// let b2 = bytes::Bytes::from_static(b"xyz");
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}([b1, b2]);
+/// assert!(x.{{Codec.FieldName}}().is_some());
+{{#OtherFieldsInGroup}}
+/// assert!(x.{{Codec.FieldName}}().is_none());
+{{/OtherFieldsInGroup}}
+/// ```
+{{/IsBytes}}
+{{#IsLikeBool}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}([true, false, true]);
+/// assert!(x.{{Codec.FieldName}}().is_some());
+{{#OtherFieldsInGroup}}
+/// assert!(x.{{Codec.FieldName}}().is_none());
+{{/OtherFieldsInGroup}}
+/// ```
+{{/IsLikeBool}}
+{{#IsLikeInt}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}([1, 2, 3]);
+/// assert!(x.{{Codec.FieldName}}().is_some());
+{{#OtherFieldsInGroup}}
+/// assert!(x.{{Codec.FieldName}}().is_none());
+{{/OtherFieldsInGroup}}
+/// ```
+{{/IsLikeInt}}
+{{#IsLikeFloat}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}([1.0, 2.0, 3.0]);
+/// assert!(x.{{Codec.FieldName}}().is_some());
+{{#OtherFieldsInGroup}}
+/// assert!(x.{{Codec.FieldName}}().is_none());
+{{/OtherFieldsInGroup}}
+/// ```
+{{/IsLikeFloat}}
+{{#IsEnum}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// use {{EnumType.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new().set_{{Codec.SetterName}}([ {{EnumType.Codec.Name}}::default() ]);
+/// assert!(x.{{Codec.FieldName}}().is_some());
+{{#OtherFieldsInGroup}}
+/// assert!(x.{{Codec.FieldName}}().is_none());
+{{/OtherFieldsInGroup}}
+/// ```
+{{/IsEnum}}
+{{#IsObject}}
+///
+/// # Example
+/// ```
+/// # use {{Parent.Codec.NameInExamples}};
+/// use {{MessageType.Codec.NameInExamples}};
+/// let x = {{Parent.Codec.Name}}::new()
+///     .set_{{Codec.SetterName}}([
+///         {{MessageType.Codec.Name}}::default()/* use setters here */,
+///         {{MessageType.Codec.Name}}::default()/* use setters here */,
+///     ]);
+/// assert!(x.{{Codec.FieldName}}().is_some());
+{{#OtherFieldsInGroup}}
+/// assert!(x.{{Codec.FieldName}}().is_none());
+{{/OtherFieldsInGroup}}
+/// ```
+{{/IsObject}}
 {{#Deprecated}}
 #[deprecated]
 {{/Deprecated}}
