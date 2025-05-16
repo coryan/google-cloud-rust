@@ -529,6 +529,8 @@ type Field struct {
 	// For fields that are part of a OneOf, the group of fields that makes the
 	// OneOf.
 	Group *OneOf
+	// The message that contains this field.
+	Parent *Message
 	// A placeholder to put language specific annotations.
 	Codec any
 }
@@ -539,6 +541,66 @@ func (field *Field) DocumentAsRequired() bool {
 
 func (f *Field) Singular() bool {
 	return !f.Map && !f.Repeated
+}
+
+// IsString returns true if the primitive type of a field is `STRING_TYPE`.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+func (f *Field) IsString() bool {
+	return f.Typez == STRING_TYPE
+}
+
+// IsBytes returns true if the primitive type of a field is `BYTES_TYPE`.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+func (f *Field) IsBytes() bool {
+	return f.Typez == BYTES_TYPE
+}
+
+// IsObject returns true if the primitive type of a field is `OBJECT_TYPE`.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+//
+// The templates *should* first check if the field is singular, as all maps are
+// also objects.
+func (f *Field) IsObject() bool {
+	return f.Typez == MESSAGE_TYPE
+}
+
+// IsEnum returns true if the primitive type of a field is `OBJECT_TYPE`.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+func (f *Field) IsEnum() bool {
+	return f.Typez == ENUM_TYPE
+}
+
+// IsLikeFloat returns true if the primitive type of a field is a float or
+// double.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+func (f *Field) IsLikeFloat() bool {
+	return f.Typez == DOUBLE_TYPE || f.Typez == FLOAT_TYPE
+}
+
+// IsLikeInt returns true if the primitive type of a field is one of the
+// integer types.
+//
+// This is useful when the mustache templates need to samples or other code
+// that differs only in the broad category of field type involved.
+func (f *Field) IsLikeInt() bool {
+	switch f.Typez {
+	case UINT32_TYPE, UINT64_TYPE, INT32_TYPE, INT64_TYPE:
+		return true
+	case FIXED32_TYPE, FIXED64_TYPE, SFIXED32_TYPE, SFIXED64_TYPE:
+		return true
+	default:
+		return false
+	}
 }
 
 // Pair is a key-value pair.

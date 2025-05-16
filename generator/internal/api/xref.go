@@ -29,9 +29,13 @@ import "fmt"
 // reference any types or names of the `OneOf` during their generation.
 func CrossReference(model *API) error {
 	for _, m := range model.State.MessageByID {
+		for _, f := range m.Fields {
+			f.Parent = m
+		}
 		for _, o := range m.OneOfs {
 			for _, f := range o.Fields {
 				f.Group = o
+				f.Parent = m
 			}
 		}
 	}

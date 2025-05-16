@@ -1658,6 +1658,15 @@ func PackageName(api *api.API, packageNameOverride string) string {
 	return "google-cloud-" + name
 }
 
+func (c *codec) packageName(model *api.API) string {
+	return PackageName(model, c.packageNameOverride)
+}
+
+func (c *codec) packageNamespace(model *api.API) string {
+	packageName := c.packageName(model)
+	return strings.ReplaceAll(packageName, "-", "_")
+}
+
 func (c *codec) generateMethod(m *api.Method) bool {
 	// Ignore methods without HTTP annotations, we cannot generate working
 	// RPCs for them.
