@@ -37,31 +37,56 @@ pub(crate) trait SubjectTokenProvider: std::fmt::Debug + Send + Sync {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 enum CredentialSource {
-    UrlSourced {},
-    File {},
-    Aws {},
-    Executable {},
+    Url(UrlCredentialsSource),
+    File(FileCredentialsSource),
+    Aws(AwsCredentialsSource),
+    Executable(ExecutableCredentialsSource),
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct UrlCredentialsSource {}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct FileCredentialsSource {}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct AwsCredentialsSource {}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct ExecutableCredentialsSource {}
+
+#[async_trait::async_trait]
+impl SubjectTokenProvider for UrlCredentialsSource {
+    async fn subject_token(&self) -> Result<String> { unimplemented!("blah") }
 }
 
 #[async_trait::async_trait]
-impl SubjectTokenProvider for CredentialSource {
-    async fn subject_token(&self) -> Result<String> {
-        match self.clone() {
-            CredentialSource::UrlSourced { .. } => {
-                unimplemented!("url sourced credential not supported yet")
-            }
-            CredentialSource::Executable { .. } => {
-                unimplemented!("executable sourced credential not supported yet")
-            }
-            CredentialSource::File { .. } => {
-                unimplemented!("file sourced credential not supported yet")
-            }
-            CredentialSource::Aws { .. } => {
-                unimplemented!("AWS sourced credential not supported yet")
-            }
-        }
+impl SubjectTokenProvider for FileCredentialsSource {
+    async fn subject_token(&self) -> Result<String> { unimplemented!("blah") }
+}
+
+#[async_trait::async_trait]
+impl SubjectTokenProvider for AwsCredentialsSource {
+    async fn subject_token(&self) -> Result<String> { unimplemented!("blah") }
+}
+
+#[async_trait::async_trait]
+impl SubjectTokenProvider for ExecutableCredentialsSource {
+    async fn subject_token(&self) -> Result<String> { unimplemented!("blah") }
+}
+
+impl CredentialSource {
+    fn make_credentials(self, config: ExternalAccountConfig) -> Arc<dyn crate::credentials::dynamic::CredentialsProvider + Send + Sync + 'static> {
+        match self {
+            Self::Url(source) => {
+                let token_provider = ExternalAccountTokenProvider { subject_token_provider: source, config };
+                let cache = TokenCache::new(token_provider);
+                Arc::new(ExternalAccountCredentials { token_provider: cache, quota_project_id: None })
+            },
+            _ => todo!("handle the other cases")
+        }        
     }
 }
+
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct ExternalAccountConfig {
@@ -242,17 +267,7 @@ impl Builder {
             config.scopes = Some(scopes);
         }
 
-        let token_provider = ExternalAccountTokenProvider {
-            subject_token_provider: external_account_config.credential_source,
-            config,
-        };
-
-        Ok(Credentials {
-            inner: Arc::new(ExternalAccountCredentials {
-                quota_project_id: self.quota_project_id.clone(),
-                token_provider: TokenCache::new(token_provider),
-            }),
-        })
+        Ok(Credentials { inner: external_account_config.credential_source.make_credentials(config) })
     }
 }
 
