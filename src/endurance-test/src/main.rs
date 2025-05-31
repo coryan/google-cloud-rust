@@ -88,6 +88,7 @@ async fn worker(
             + Duration::from_secs(60)
                 .mul_f32(total_workers as f32)
                 .div_f32(80_000_f32);
+        let start = std::time::Instant::now();
         let access = client
             .access_secret_version()
             .set_name(&version.name)
@@ -99,6 +100,8 @@ async fn worker(
                 success_count += 1;
             }
             Err(e) => {
+                let elapsed = std::time::Instant::now() - start; 
+                println!("ERROR elapsed={elapsed:?}, err={e:?}");
                 error_count += 1;
                 if error_count > TOO_MANY_ERRORS && success_count == 0 {
                     return Err(e.into());
