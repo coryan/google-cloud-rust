@@ -92,7 +92,7 @@ async fn worker(
         let access = client
             .access_secret_version()
             .set_name(&version.name)
-            .with_attempt_timeout(Duration::from_secs(1))
+            .with_attempt_timeout(Duration::from_secs(5))
             .send()
             .await;
         match access {
