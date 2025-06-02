@@ -27,7 +27,7 @@ static UPDATE_COUNT: AtomicU64 = AtomicU64::new(0);
 #[tokio::main(flavor = "multi_thread", worker_threads = 10)]
 async fn main() {
     if let Err(e) = start_workers().await {
-        report_error(e, "main");
+        report_error(&e, "main");
     }
 }
 
@@ -88,9 +88,9 @@ async fn worker(
             + Duration::from_secs(60)
                 .mul_f32(total_workers as f32)
                 .div_f32(80_000_f32);
-        let start = std::time::Instant::now();
         let access = client
             .access_secret_version()
+            .with_attempt_timeout(Duration::from_secs(5))
             .set_name(&version.name)
             .send()
             .await;
@@ -98,9 +98,9 @@ async fn worker(
             Ok(_) => {
                 success_count += 1;
             }
+            Err(e) if e.is_timeout() => {},
             Err(e) => {
-                let elapsed = std::time::Instant::now() - start; 
-                println!("ERROR elapsed={elapsed:?}, err={e:?}");
+                report_error(&e, format!("tasks[{task_id}]").as_str());
                 error_count += 1;
                 if error_count > TOO_MANY_ERRORS && success_count == 0 {
                     return Err(e.into());
@@ -171,7 +171,7 @@ async fn start_workers() -> anyhow::Result<()> {
                     let task = format!("worker[{secret}]");
                     worker(client.clone(), secret, id, total_workers)
                         .await
-                        .map_err(|e| report_error(e, &task))
+                        .map_err(|e| report_error(&e, &task))
                 }
             })
         })
@@ -206,7 +206,7 @@ async fn get_endurance_secrets(
     Ok(secrets)
 }
 
-fn report_error(error: anyhow::Error, task: &str) {
+fn report_error<E>(error: &E, task: &str) where E: std::fmt::Display {
     let structured = serde_json::json!({
         "severity": "error",
         "labels": {
