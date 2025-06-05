@@ -33,6 +33,34 @@ mod test {
             where
                 D: serde::Deserializer<'de>,
             {
+                enum FieldName { Field0, Field1, Field2, Unknown(String) }
+                impl<'de> serde::de::Deserialize<'de> for FieldName {
+                    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                        where
+                            D: serde::Deserializer<'de> {
+                        struct Visitor;
+                        impl<'de> serde::de::Visitor<'de> for Visitor {
+                            type Value = FieldName;
+                            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                                formatter.write_str("a MessageOneOf field name")
+                            }
+                            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+                                where
+                                    E: serde::de::Error, {
+                                match v {
+                                    "stringContents" => Ok(FieldName::Field0),
+                                    "stringContentsOne" => Ok(FieldName::Field1),
+                                    "stringContentsTwo" => Ok(FieldName::Field2),
+                                    _ => Ok(FieldName::Unknown(v.to_string()))
+                                }
+                            }
+                        }
+
+                        deserializer.deserialize_identifier(Visitor)
+                    }
+                
+                }
+
                 struct Visitor;
                 impl<'de> serde::de::Visitor<'de> for Visitor {
                     type Value = MessageWithOneOf;
@@ -63,9 +91,9 @@ mod test {
                     {
                         use serde::de::Error;
                         let mut result = MessageWithOneOf::new();
-                        while let Some(key) = map.next_key::<String>()? {
-                            match key.as_str() {
-                                "stringContents" => {
+                        while let Some(key) = map.next_key()? {
+                            match key {
+                                FieldName::Field0 => {
                                     if result.single_string.is_some() {
                                         return Err(A::Error::duplicate_field("single_string"));
                                     }
@@ -74,7 +102,7 @@ mod test {
                                         message_with_one_of::SingleString::StringContents(value),
                                     );
                                 }
-                                "stringContentsOne" => {
+                                FieldName::Field1 => {
                                     if result.two_strings.is_some() {
                                         return Err(A::Error::duplicate_field("two_strings"));
                                     }
@@ -83,7 +111,7 @@ mod test {
                                         message_with_one_of::TwoStrings::StringContentsOne(value),
                                     );
                                 }
-                                "stringContentsTwo" => {
+                                FieldName::Field2 => {
                                     if result.two_strings.is_some() {
                                         return Err(A::Error::duplicate_field("two_strings"));
                                     }
@@ -92,9 +120,9 @@ mod test {
                                         message_with_one_of::TwoStrings::StringContentsTwo(value),
                                     );
                                 }
-                                unknown => {
+                                FieldName::Unknown(name) => {
                                     let value = map.next_value::<serde_json::Value>()?;
-                                    result._unknown_fields.insert(unknown.to_string(), value);
+                                    result._unknown_fields.insert(name, value);
                                 }
                             }
                         }
