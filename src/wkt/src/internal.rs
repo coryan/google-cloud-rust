@@ -31,6 +31,9 @@ pub use int64::I64;
 mod uint64;
 pub use uint64::U64;
 
+mod oneof;
+pub use oneof::OnlyOne;
+
 mod value;
 pub use value::OptionalValue;
 

@@ -27,9 +27,107 @@ mod test {
     mod protos {
         use google_cloud_wkt as wkt;
         include!("generated/mod.rs");
+
+        impl<'de> serde::de::Deserialize<'de> for MessageWithOneOf {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct Visitor;
+                impl<'de> serde::de::Visitor<'de> for Visitor {
+                    type Value = MessageWithOneOf;
+                    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                        formatter.write_str("struct MessageWithOneOf")
+                    }
+                    fn visit_seq<V>(self, mut seq: V) -> Result<MessageWithOneOf, V::Error>
+                    where
+                        V: serde::de::SeqAccess<'de>,
+                    {
+                        use serde::de::Error;
+                        let result = MessageWithOneOf::new();
+                        let result = seq
+                            .next_element::<Option<message_with_one_of::SingleString>>()?
+                            .ok_or_else(|| V::Error::invalid_length(0, &self))?
+                            .into_iter()
+                            .fold(result, |r, v| r.set_single_string(v));
+                        let result = seq
+                            .next_element::<Option<message_with_one_of::TwoStrings>>()?
+                            .ok_or_else(|| V::Error::invalid_length(1, &self))?
+                            .into_iter()
+                            .fold(result, |r, v| r.set_two_strings(v));
+                        Ok(result)
+                    }
+                    fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+                    where
+                        A: serde::de::MapAccess<'de>,
+                    {
+                        use serde::de::Error;
+                        let mut result = MessageWithOneOf::new();
+                        while let Some(key) = map.next_key::<String>()? {
+                            match key.as_str() {
+                                "stringContents" => {
+                                    if result.single_string.is_some() {
+                                        return Err(A::Error::duplicate_field("single_string"));
+                                    }
+                                    let value = map.next_value::<String>()?;
+                                    result.single_string = Some(
+                                        message_with_one_of::SingleString::StringContents(value),
+                                    );
+                                }
+                                "stringContentsOne" => {
+                                    if result.two_strings.is_some() {
+                                        return Err(A::Error::duplicate_field("two_strings"));
+                                    }
+                                    let value = map.next_value::<String>()?;
+                                    result.two_strings = Some(
+                                        message_with_one_of::TwoStrings::StringContentsOne(value),
+                                    );
+                                }
+                                "stringContentsTwo" => {
+                                    if result.two_strings.is_some() {
+                                        return Err(A::Error::duplicate_field("two_strings"));
+                                    }
+                                    let value = map.next_value::<String>()?;
+                                    result.two_strings = Some(
+                                        message_with_one_of::TwoStrings::StringContentsTwo(value),
+                                    );
+                                }
+                                unknown => {
+                                    let value = map.next_value::<serde_json::Value>()?;
+                                    result._unknown_fields.insert(unknown.to_string(), value);
+                                }
+                            }
+                        }
+                        Ok(result)
+                    }
+                }
+                deserializer.deserialize_any(Visitor)
+            }
+        }
     }
     use protos::MessageWithOneOf;
     use protos::message_with_one_of::{Message, Mixed, SingleString, TwoStrings};
+
+    #[test]
+    fn test_oneof_overlapping_variants_v2() -> TestResult {
+        let input = json!({"stringContentsOne": "overlap1"});
+        let got = serde_json::from_value::<MessageWithOneOf>(input)?;
+        assert!(
+            matches!(&got.two_strings, Some(TwoStrings::StringContentsOne(s)) if s == "overlap1"),
+            "{got:?}"
+        );
+        let input = json!({"stringContentsTwo": "overlap2"});
+        let got = serde_json::from_value::<MessageWithOneOf>(input)?;
+        assert!(
+            matches!(&got.two_strings, Some(TwoStrings::StringContentsTwo(s)) if s == "overlap2"),
+            "{got:?}"
+        );
+
+        let input = json!({"stringContentsOne": "overlap1", "stringContentsTwo": "overlap2"});
+        let got = serde_json::from_value::<MessageWithOneOf>(input);
+        assert!(got.is_err(), "{got:?}");
+        Ok(())
+    }
 
     #[test]
     fn test_oneof_single_string() -> TestResult {

@@ -17,7 +17,7 @@
 
 /// A message with several interesting `oneof` fields.
 #[serde_with::serde_as]
-#[derive(Clone, Debug, Default, PartialEq, serde::Deserialize, serde::Serialize)]
+#[derive(Clone, Debug, Default, PartialEq, serde::Serialize)]
 #[serde(default, rename_all = "camelCase")]
 #[non_exhaustive]
 pub struct MessageWithOneOf {
@@ -37,6 +37,7 @@ pub struct MessageWithOneOf {
     #[serde(flatten, skip_serializing_if = "serde_json::Map::is_empty")]
     _unknown_fields: serde_json::Map<std::string::String, serde_json::Value>,
 }
+
 
 impl MessageWithOneOf {
     pub fn new() -> Self {
