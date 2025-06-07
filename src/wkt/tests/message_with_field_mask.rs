@@ -25,7 +25,21 @@ mod test {
         use google_cloud_wkt as wkt;
         include!("generated/mod.rs");
     }
-    use protos::MessageWithFieldMask;
+    use protos::{__MessageWithFieldMask, MessageWithFieldMask};
+
+    #[test_case(MessageWithFieldMask::new(), json!({}))]
+    fn test_ser(input: MessageWithFieldMask, want: Value) -> Result {
+        let got = serde_json::to_value(__MessageWithFieldMask(input))?;
+        assert_eq!(got, want);
+        Ok(())
+    }
+
+    #[test_case(MessageWithFieldMask::new(), json!({}))]
+    fn test_de(want: MessageWithFieldMask, input: Value) -> Result {
+        let got = serde_json::from_value::<__MessageWithFieldMask>(input)?;
+        assert_eq!(got.0, want);
+        Ok(())
+    }
 
     #[test_case(json!({"singular": ""}), FieldMask::default())]
     #[test_case(json!({"singular": "a,b,c"}), FieldMask::default().set_paths(["a", "b", "c"]))]

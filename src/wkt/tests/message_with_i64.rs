@@ -24,7 +24,21 @@ mod test {
         use google_cloud_wkt as wkt;
         include!("generated/mod.rs");
     }
-    use protos::MessageWithI64;
+    use protos::{__MessageWithI64, MessageWithI64};
+
+    #[test_case(MessageWithI64::new(), json!({}))]
+    fn test_ser(input: MessageWithI64, want: Value) -> Result {
+        let got = serde_json::to_value(__MessageWithI64(input))?;
+        assert_eq!(got, want);
+        Ok(())
+    }
+
+    #[test_case(MessageWithI64::new(), json!({}))]
+    fn test_de(want: MessageWithI64, input: Value) -> Result {
+        let got = serde_json::from_value::<__MessageWithI64>(input)?;
+        assert_eq!(got.0, want);
+        Ok(())
+    }
 
     #[test_case(123, 123)]
     #[test_case(-234, -234)]

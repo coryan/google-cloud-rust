@@ -23,7 +23,21 @@ mod test {
         use google_cloud_wkt as wkt;
         include!("generated/mod.rs");
     }
-    use protos::{MessageWithEnum, message_with_enum::TestEnum};
+    use protos::{__MessageWithEnum, MessageWithEnum, message_with_enum::TestEnum};
+
+    #[test_case(MessageWithEnum::new(), json!({}))]
+    fn test_ser(input: MessageWithEnum, want: Value) -> Result {
+        let got = serde_json::to_value(__MessageWithEnum(input))?;
+        assert_eq!(got, want);
+        Ok(())
+    }
+
+    #[test_case(MessageWithEnum::new(), json!({}))]
+    fn test_de(want: MessageWithEnum, input: Value) -> Result {
+        let got = serde_json::from_value::<__MessageWithEnum>(input)?;
+        assert_eq!(got.0, want);
+        Ok(())
+    }
 
     #[test_case(json!({"singular": "RED"}), TestEnum::Red)]
     #[test_case(json!({"singular": 1}), TestEnum::Red)]

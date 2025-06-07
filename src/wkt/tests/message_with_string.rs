@@ -23,7 +23,21 @@ mod test {
         use google_cloud_wkt as wkt;
         include!("generated/mod.rs");
     }
-    use protos::MessageWithString;
+    use protos::{__MessageWithString, MessageWithString};
+
+    #[test_case(MessageWithString::new(), json!({}))]
+    fn test_ser(input: MessageWithString, want: Value) -> Result {
+        let got = serde_json::to_value(__MessageWithString(input))?;
+        assert_eq!(got, want);
+        Ok(())
+    }
+
+    #[test_case(MessageWithString::new(), json!({}))]
+    fn test_de(want: MessageWithString, input: Value) -> Result {
+        let got = serde_json::from_value::<__MessageWithString>(input)?;
+        assert_eq!(got.0, want);
+        Ok(())
+    }
 
     #[test_case("the quick brown fox jumps over the lazy dog")]
     #[test_case(concat!("Benjamín pidió una bebida de kiwi y fresa. ",

@@ -24,7 +24,21 @@ mod test {
         use google_cloud_wkt as wkt;
         include!("generated/mod.rs");
     }
-    use protos::MessageWithU32;
+    use protos::{__MessageWithU32, MessageWithU32};
+
+    #[test_case(MessageWithU32::new(), json!({}))]
+    fn test_ser(input: MessageWithU32, want: Value) -> Result {
+        let got = serde_json::to_value(__MessageWithU32(input))?;
+        assert_eq!(got, want);
+        Ok(())
+    }
+
+    #[test_case(MessageWithU32::new(), json!({}))]
+    fn test_de(want: MessageWithU32, input: Value) -> Result {
+        let got = serde_json::from_value::<__MessageWithU32>(input)?;
+        assert_eq!(got.0, want);
+        Ok(())
+    }
 
     #[test_case(123, 123)]
     #[test_case("345", 345)]
