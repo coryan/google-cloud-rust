@@ -24,633 +24,320 @@
 /// submessages of this message.  So for example, a fuzz test of TestAllTypes
 /// could trigger bugs that occur in any message type in this file.  We verify
 /// this stays true in a unit test.
-#[serde_with::serde_as]
-#[derive(Clone, Debug, Default, PartialEq, serde::Deserialize, serde::Serialize)]
-#[serde(default, rename_all = "camelCase")]
+#[derive(Clone, Debug, Default, PartialEq)]
 #[non_exhaustive]
 pub struct TestAllTypesProto3 {
     /// Singular
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub optional_int32: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I64>")]
     pub optional_int64: i64,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::U32>")]
     pub optional_uint32: u32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::U64>")]
     pub optional_uint64: u64,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub optional_sint32: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I64>")]
     pub optional_sint64: i64,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::U32>")]
     pub optional_fixed32: u32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::U64>")]
     pub optional_fixed64: u64,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub optional_sfixed32: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I64>")]
     pub optional_sfixed64: i64,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::F32>")]
     pub optional_float: f32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::F64>")]
     pub optional_double: f64,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<_>")]
     pub optional_bool: bool,
 
-    #[serde(skip_serializing_if = "std::string::String::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<_>")]
     pub optional_string: std::string::String,
 
-    #[serde(skip_serializing_if = "::bytes::Bytes::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<serde_with::base64::Base64>")]
     pub optional_bytes: ::bytes::Bytes,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub optional_nested_message: std::option::Option<
         std::boxed::Box<crate::generated::test_protos::test_all_types_proto_3::NestedMessage>,
     >,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub optional_foreign_message:
         std::option::Option<crate::generated::test_protos::ForeignMessage>,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<_>")]
     pub optional_nested_enum: crate::generated::test_protos::test_all_types_proto_3::NestedEnum,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<_>")]
     pub optional_foreign_enum: crate::generated::test_protos::ForeignEnum,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<_>")]
     pub optional_aliased_enum: crate::generated::test_protos::test_all_types_proto_3::AliasedEnum,
 
-    #[serde(skip_serializing_if = "std::string::String::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<_>")]
     pub optional_string_piece: std::string::String,
 
-    #[serde(skip_serializing_if = "std::string::String::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<_>")]
     pub optional_cord: std::string::String,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub recursive_message:
         std::option::Option<std::boxed::Box<crate::generated::test_protos::TestAllTypesProto3>>,
 
     /// Repeated
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub repeated_int32: std::vec::Vec<i32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub repeated_int64: std::vec::Vec<i64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U32>>")]
     pub repeated_uint32: std::vec::Vec<u32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U64>>")]
     pub repeated_uint64: std::vec::Vec<u64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub repeated_sint32: std::vec::Vec<i32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub repeated_sint64: std::vec::Vec<i64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U32>>")]
     pub repeated_fixed32: std::vec::Vec<u32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U64>>")]
     pub repeated_fixed64: std::vec::Vec<u64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub repeated_sfixed32: std::vec::Vec<i32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub repeated_sfixed64: std::vec::Vec<i64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::F32>>")]
     pub repeated_float: std::vec::Vec<f32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::F64>>")]
     pub repeated_double: std::vec::Vec<f64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_bool: std::vec::Vec<bool>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_string: std::vec::Vec<std::string::String>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<serde_with::base64::Base64>>")]
     pub repeated_bytes: std::vec::Vec<::bytes::Bytes>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_nested_message:
         std::vec::Vec<crate::generated::test_protos::test_all_types_proto_3::NestedMessage>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_foreign_message: std::vec::Vec<crate::generated::test_protos::ForeignMessage>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_nested_enum:
         std::vec::Vec<crate::generated::test_protos::test_all_types_proto_3::NestedEnum>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_foreign_enum: std::vec::Vec<crate::generated::test_protos::ForeignEnum>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_string_piece: std::vec::Vec<std::string::String>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_cord: std::vec::Vec<std::string::String>,
 
     /// Packed
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub packed_int32: std::vec::Vec<i32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub packed_int64: std::vec::Vec<i64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U32>>")]
     pub packed_uint32: std::vec::Vec<u32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U64>>")]
     pub packed_uint64: std::vec::Vec<u64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub packed_sint32: std::vec::Vec<i32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub packed_sint64: std::vec::Vec<i64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U32>>")]
     pub packed_fixed32: std::vec::Vec<u32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U64>>")]
     pub packed_fixed64: std::vec::Vec<u64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub packed_sfixed32: std::vec::Vec<i32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub packed_sfixed64: std::vec::Vec<i64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::F32>>")]
     pub packed_float: std::vec::Vec<f32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::F64>>")]
     pub packed_double: std::vec::Vec<f64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub packed_bool: std::vec::Vec<bool>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub packed_nested_enum:
         std::vec::Vec<crate::generated::test_protos::test_all_types_proto_3::NestedEnum>,
 
     /// Unpacked
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub unpacked_int32: std::vec::Vec<i32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub unpacked_int64: std::vec::Vec<i64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U32>>")]
     pub unpacked_uint32: std::vec::Vec<u32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U64>>")]
     pub unpacked_uint64: std::vec::Vec<u64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub unpacked_sint32: std::vec::Vec<i32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub unpacked_sint64: std::vec::Vec<i64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U32>>")]
     pub unpacked_fixed32: std::vec::Vec<u32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U64>>")]
     pub unpacked_fixed64: std::vec::Vec<u64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub unpacked_sfixed32: std::vec::Vec<i32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub unpacked_sfixed64: std::vec::Vec<i64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::F32>>")]
     pub unpacked_float: std::vec::Vec<f32>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::F64>>")]
     pub unpacked_double: std::vec::Vec<f64>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub unpacked_bool: std::vec::Vec<bool>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub unpacked_nested_enum:
         std::vec::Vec<crate::generated::test_protos::test_all_types_proto_3::NestedEnum>,
 
     /// Map
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::I32, wkt::internal::I32>>"
-    )]
     pub map_int32_int32: std::collections::HashMap<i32, i32>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::I64, wkt::internal::I64>>"
-    )]
     pub map_int64_int64: std::collections::HashMap<i64, i64>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::U32, wkt::internal::U32>>"
-    )]
     pub map_uint32_uint32: std::collections::HashMap<u32, u32>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::U64, wkt::internal::U64>>"
-    )]
     pub map_uint64_uint64: std::collections::HashMap<u64, u64>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::I32, wkt::internal::I32>>"
-    )]
     pub map_sint32_sint32: std::collections::HashMap<i32, i32>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::I64, wkt::internal::I64>>"
-    )]
     pub map_sint64_sint64: std::collections::HashMap<i64, i64>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::U32, wkt::internal::U32>>"
-    )]
     pub map_fixed32_fixed32: std::collections::HashMap<u32, u32>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::U64, wkt::internal::U64>>"
-    )]
     pub map_fixed64_fixed64: std::collections::HashMap<u64, u64>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::I32, wkt::internal::I32>>"
-    )]
     pub map_sfixed32_sfixed32: std::collections::HashMap<i32, i32>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::I64, wkt::internal::I64>>"
-    )]
     pub map_sfixed64_sfixed64: std::collections::HashMap<i64, i64>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::I32, wkt::internal::F32>>"
-    )]
     pub map_int32_float: std::collections::HashMap<i32, f32>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<wkt::internal::I32, wkt::internal::F64>>"
-    )]
     pub map_int32_double: std::collections::HashMap<i32, f64>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<serde_with::DisplayFromStr, _>>"
-    )]
     pub map_bool_bool: std::collections::HashMap<bool, bool>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::collections::HashMap<_, _>>")]
     pub map_string_string: std::collections::HashMap<std::string::String, std::string::String>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(
-        as = "serde_with::DefaultOnNull<std::collections::HashMap<_, serde_with::base64::Base64>>"
-    )]
     pub map_string_bytes: std::collections::HashMap<std::string::String, ::bytes::Bytes>,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::collections::HashMap<_, _>>")]
     pub map_string_nested_message: std::collections::HashMap<
         std::string::String,
         crate::generated::test_protos::test_all_types_proto_3::NestedMessage,
     >,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::collections::HashMap<_, _>>")]
     pub map_string_foreign_message: std::collections::HashMap<
         std::string::String,
         crate::generated::test_protos::ForeignMessage,
     >,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::collections::HashMap<_, _>>")]
     pub map_string_nested_enum: std::collections::HashMap<
         std::string::String,
         crate::generated::test_protos::test_all_types_proto_3::NestedEnum,
     >,
 
-    #[serde(skip_serializing_if = "std::collections::HashMap::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::collections::HashMap<_, _>>")]
     pub map_string_foreign_enum:
         std::collections::HashMap<std::string::String, crate::generated::test_protos::ForeignEnum>,
 
     /// Well-known types
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub optional_bool_wrapper: std::option::Option<wkt::BoolValue>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
-    #[serde_as(as = "std::option::Option<wkt::internal::I32>")]
     pub optional_int32_wrapper: std::option::Option<wkt::Int32Value>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
-    #[serde_as(as = "std::option::Option<wkt::internal::I64>")]
     pub optional_int64_wrapper: std::option::Option<wkt::Int64Value>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
-    #[serde_as(as = "std::option::Option<wkt::internal::U32>")]
     pub optional_uint32_wrapper: std::option::Option<wkt::UInt32Value>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
-    #[serde_as(as = "std::option::Option<wkt::internal::U64>")]
     pub optional_uint64_wrapper: std::option::Option<wkt::UInt64Value>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
-    #[serde_as(as = "std::option::Option<wkt::internal::F32>")]
     pub optional_float_wrapper: std::option::Option<wkt::FloatValue>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
-    #[serde_as(as = "std::option::Option<wkt::internal::F64>")]
     pub optional_double_wrapper: std::option::Option<wkt::DoubleValue>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub optional_string_wrapper: std::option::Option<wkt::StringValue>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
-    #[serde_as(as = "std::option::Option<serde_with::base64::Base64>")]
     pub optional_bytes_wrapper: std::option::Option<wkt::BytesValue>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_bool_wrapper: std::vec::Vec<wkt::BoolValue>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I32>>")]
     pub repeated_int32_wrapper: std::vec::Vec<wkt::Int32Value>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::I64>>")]
     pub repeated_int64_wrapper: std::vec::Vec<wkt::Int64Value>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U32>>")]
     pub repeated_uint32_wrapper: std::vec::Vec<wkt::UInt32Value>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::U64>>")]
     pub repeated_uint64_wrapper: std::vec::Vec<wkt::UInt64Value>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::F32>>")]
     pub repeated_float_wrapper: std::vec::Vec<wkt::FloatValue>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<wkt::internal::F64>>")]
     pub repeated_double_wrapper: std::vec::Vec<wkt::DoubleValue>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_string_wrapper: std::vec::Vec<wkt::StringValue>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<serde_with::base64::Base64>>")]
     pub repeated_bytes_wrapper: std::vec::Vec<wkt::BytesValue>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub optional_duration: std::option::Option<wkt::Duration>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub optional_timestamp: std::option::Option<wkt::Timestamp>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub optional_field_mask: std::option::Option<wkt::FieldMask>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub optional_struct: std::option::Option<wkt::Struct>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
     pub optional_any: std::option::Option<wkt::Any>,
 
-    #[serde(skip_serializing_if = "std::option::Option::is_none")]
-    #[serde_as(as = "wkt::internal::OptionalValue")]
     pub optional_value: std::option::Option<wkt::Value>,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<_>")]
     pub optional_null_value: wkt::NullValue,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_duration: std::vec::Vec<wkt::Duration>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_timestamp: std::vec::Vec<wkt::Timestamp>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_fieldmask: std::vec::Vec<wkt::FieldMask>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_struct: std::vec::Vec<wkt::Struct>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_any: std::vec::Vec<wkt::Any>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_value: std::vec::Vec<wkt::Value>,
 
-    #[serde(skip_serializing_if = "std::vec::Vec::is_empty")]
-    #[serde_as(as = "serde_with::DefaultOnNull<std::vec::Vec<_>>")]
     pub repeated_list_value: std::vec::Vec<wkt::ListValue>,
 
     /// Test field-name-to-JSON-name convention.
     /// (protobuf says names can be any valid C/C++ identifier.)
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub fieldname1: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_name2: i32,
 
-    #[serde(rename = "FieldName3")]
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub _field_name3: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field__name4_: i32,
 
-    #[serde(rename = "field0name5")]
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field0name5: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_0_name6: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_name_7: i32,
 
-    #[serde(rename = "FieldName8")]
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_name_8: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_name_9: i32,
 
-    #[serde(rename = "FieldName10")]
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_name_10: i32,
 
-    #[serde(rename = "FIELDNAME11")]
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_name_11: i32,
 
-    #[serde(rename = "FIELDName12")]
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_name_12: i32,
 
-    #[serde(rename = "FieldName13")]
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub __field_name13: i32,
 
-    #[serde(rename = "FieldName14")]
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub __field_name_14: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field__name15: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field__name_16: i32,
 
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_name17__: i32,
 
-    #[serde(rename = "FieldName18")]
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub field_name_18__: i32,
 
-    #[serde(flatten, skip_serializing_if = "std::option::Option::is_none")]
     pub oneof_field:
         std::option::Option<crate::generated::test_protos::test_all_types_proto_3::OneofField>,
 
-    #[serde(flatten, skip_serializing_if = "serde_json::Map::is_empty")]
     _unknown_fields: serde_json::Map<std::string::String, serde_json::Value>,
 }
 
@@ -2485,25 +2172,3701 @@ impl wkt::message::Message for TestAllTypesProto3 {
     }
 }
 
+#[doc(hidden)]
+impl<'de> serde::de::Deserialize<'de> for TestAllTypesProto3 {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        #[allow(non_camel_case_types)]
+        #[doc(hidden)]
+        enum __FieldTag {
+            __optional_int32,
+            __optional_int64,
+            __optional_uint32,
+            __optional_uint64,
+            __optional_sint32,
+            __optional_sint64,
+            __optional_fixed32,
+            __optional_fixed64,
+            __optional_sfixed32,
+            __optional_sfixed64,
+            __optional_float,
+            __optional_double,
+            __optional_bool,
+            __optional_string,
+            __optional_bytes,
+            __optional_nested_message,
+            __optional_foreign_message,
+            __optional_nested_enum,
+            __optional_foreign_enum,
+            __optional_aliased_enum,
+            __optional_string_piece,
+            __optional_cord,
+            __recursive_message,
+            __repeated_int32,
+            __repeated_int64,
+            __repeated_uint32,
+            __repeated_uint64,
+            __repeated_sint32,
+            __repeated_sint64,
+            __repeated_fixed32,
+            __repeated_fixed64,
+            __repeated_sfixed32,
+            __repeated_sfixed64,
+            __repeated_float,
+            __repeated_double,
+            __repeated_bool,
+            __repeated_string,
+            __repeated_bytes,
+            __repeated_nested_message,
+            __repeated_foreign_message,
+            __repeated_nested_enum,
+            __repeated_foreign_enum,
+            __repeated_string_piece,
+            __repeated_cord,
+            __packed_int32,
+            __packed_int64,
+            __packed_uint32,
+            __packed_uint64,
+            __packed_sint32,
+            __packed_sint64,
+            __packed_fixed32,
+            __packed_fixed64,
+            __packed_sfixed32,
+            __packed_sfixed64,
+            __packed_float,
+            __packed_double,
+            __packed_bool,
+            __packed_nested_enum,
+            __unpacked_int32,
+            __unpacked_int64,
+            __unpacked_uint32,
+            __unpacked_uint64,
+            __unpacked_sint32,
+            __unpacked_sint64,
+            __unpacked_fixed32,
+            __unpacked_fixed64,
+            __unpacked_sfixed32,
+            __unpacked_sfixed64,
+            __unpacked_float,
+            __unpacked_double,
+            __unpacked_bool,
+            __unpacked_nested_enum,
+            __map_int32_int32,
+            __map_int64_int64,
+            __map_uint32_uint32,
+            __map_uint64_uint64,
+            __map_sint32_sint32,
+            __map_sint64_sint64,
+            __map_fixed32_fixed32,
+            __map_fixed64_fixed64,
+            __map_sfixed32_sfixed32,
+            __map_sfixed64_sfixed64,
+            __map_int32_float,
+            __map_int32_double,
+            __map_bool_bool,
+            __map_string_string,
+            __map_string_bytes,
+            __map_string_nested_message,
+            __map_string_foreign_message,
+            __map_string_nested_enum,
+            __map_string_foreign_enum,
+            __oneof_uint32,
+            __oneof_nested_message,
+            __oneof_string,
+            __oneof_bytes,
+            __oneof_bool,
+            __oneof_uint64,
+            __oneof_float,
+            __oneof_double,
+            __oneof_enum,
+            __oneof_null_value,
+            __optional_bool_wrapper,
+            __optional_int32_wrapper,
+            __optional_int64_wrapper,
+            __optional_uint32_wrapper,
+            __optional_uint64_wrapper,
+            __optional_float_wrapper,
+            __optional_double_wrapper,
+            __optional_string_wrapper,
+            __optional_bytes_wrapper,
+            __repeated_bool_wrapper,
+            __repeated_int32_wrapper,
+            __repeated_int64_wrapper,
+            __repeated_uint32_wrapper,
+            __repeated_uint64_wrapper,
+            __repeated_float_wrapper,
+            __repeated_double_wrapper,
+            __repeated_string_wrapper,
+            __repeated_bytes_wrapper,
+            __optional_duration,
+            __optional_timestamp,
+            __optional_field_mask,
+            __optional_struct,
+            __optional_any,
+            __optional_value,
+            __optional_null_value,
+            __repeated_duration,
+            __repeated_timestamp,
+            __repeated_fieldmask,
+            __repeated_struct,
+            __repeated_any,
+            __repeated_value,
+            __repeated_list_value,
+            __fieldname1,
+            __field_name2,
+            ___field_name3,
+            __field__name4_,
+            __field0name5,
+            __field_0_name6,
+            __field_name_7,
+            __field_name_8,
+            __field_name_9,
+            __field_name_10,
+            __field_name_11,
+            __field_name_12,
+            ____field_name13,
+            ____field_name_14,
+            __field__name15,
+            __field__name_16,
+            __field_name17__,
+            __field_name_18__,
+            Unknown(std::string::String),
+        }
+        impl<'de> serde::de::Deserialize<'de> for __FieldTag {
+            fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct Visitor;
+                impl<'de> serde::de::Visitor<'de> for Visitor {
+                    type Value = __FieldTag;
+                    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                        formatter.write_str("a field name for TestAllTypesProto3")
+                    }
+                    fn visit_str<E>(self, value: &str) -> std::result::Result<Self::Value, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        use std::result::Result::Ok;
+                        match value {
+                            "optionalInt32" => Ok(__FieldTag::__optional_int32),
+                            "optionalInt64" => Ok(__FieldTag::__optional_int64),
+                            "optionalUint32" => Ok(__FieldTag::__optional_uint32),
+                            "optionalUint64" => Ok(__FieldTag::__optional_uint64),
+                            "optionalSint32" => Ok(__FieldTag::__optional_sint32),
+                            "optionalSint64" => Ok(__FieldTag::__optional_sint64),
+                            "optionalFixed32" => Ok(__FieldTag::__optional_fixed32),
+                            "optionalFixed64" => Ok(__FieldTag::__optional_fixed64),
+                            "optionalSfixed32" => Ok(__FieldTag::__optional_sfixed32),
+                            "optionalSfixed64" => Ok(__FieldTag::__optional_sfixed64),
+                            "optionalFloat" => Ok(__FieldTag::__optional_float),
+                            "optionalDouble" => Ok(__FieldTag::__optional_double),
+                            "optionalBool" => Ok(__FieldTag::__optional_bool),
+                            "optionalString" => Ok(__FieldTag::__optional_string),
+                            "optionalBytes" => Ok(__FieldTag::__optional_bytes),
+                            "optionalNestedMessage" => Ok(__FieldTag::__optional_nested_message),
+                            "optionalForeignMessage" => Ok(__FieldTag::__optional_foreign_message),
+                            "optionalNestedEnum" => Ok(__FieldTag::__optional_nested_enum),
+                            "optionalForeignEnum" => Ok(__FieldTag::__optional_foreign_enum),
+                            "optionalAliasedEnum" => Ok(__FieldTag::__optional_aliased_enum),
+                            "optionalStringPiece" => Ok(__FieldTag::__optional_string_piece),
+                            "optionalCord" => Ok(__FieldTag::__optional_cord),
+                            "recursiveMessage" => Ok(__FieldTag::__recursive_message),
+                            "repeatedInt32" => Ok(__FieldTag::__repeated_int32),
+                            "repeatedInt64" => Ok(__FieldTag::__repeated_int64),
+                            "repeatedUint32" => Ok(__FieldTag::__repeated_uint32),
+                            "repeatedUint64" => Ok(__FieldTag::__repeated_uint64),
+                            "repeatedSint32" => Ok(__FieldTag::__repeated_sint32),
+                            "repeatedSint64" => Ok(__FieldTag::__repeated_sint64),
+                            "repeatedFixed32" => Ok(__FieldTag::__repeated_fixed32),
+                            "repeatedFixed64" => Ok(__FieldTag::__repeated_fixed64),
+                            "repeatedSfixed32" => Ok(__FieldTag::__repeated_sfixed32),
+                            "repeatedSfixed64" => Ok(__FieldTag::__repeated_sfixed64),
+                            "repeatedFloat" => Ok(__FieldTag::__repeated_float),
+                            "repeatedDouble" => Ok(__FieldTag::__repeated_double),
+                            "repeatedBool" => Ok(__FieldTag::__repeated_bool),
+                            "repeatedString" => Ok(__FieldTag::__repeated_string),
+                            "repeatedBytes" => Ok(__FieldTag::__repeated_bytes),
+                            "repeatedNestedMessage" => Ok(__FieldTag::__repeated_nested_message),
+                            "repeatedForeignMessage" => Ok(__FieldTag::__repeated_foreign_message),
+                            "repeatedNestedEnum" => Ok(__FieldTag::__repeated_nested_enum),
+                            "repeatedForeignEnum" => Ok(__FieldTag::__repeated_foreign_enum),
+                            "repeatedStringPiece" => Ok(__FieldTag::__repeated_string_piece),
+                            "repeatedCord" => Ok(__FieldTag::__repeated_cord),
+                            "packedInt32" => Ok(__FieldTag::__packed_int32),
+                            "packedInt64" => Ok(__FieldTag::__packed_int64),
+                            "packedUint32" => Ok(__FieldTag::__packed_uint32),
+                            "packedUint64" => Ok(__FieldTag::__packed_uint64),
+                            "packedSint32" => Ok(__FieldTag::__packed_sint32),
+                            "packedSint64" => Ok(__FieldTag::__packed_sint64),
+                            "packedFixed32" => Ok(__FieldTag::__packed_fixed32),
+                            "packedFixed64" => Ok(__FieldTag::__packed_fixed64),
+                            "packedSfixed32" => Ok(__FieldTag::__packed_sfixed32),
+                            "packedSfixed64" => Ok(__FieldTag::__packed_sfixed64),
+                            "packedFloat" => Ok(__FieldTag::__packed_float),
+                            "packedDouble" => Ok(__FieldTag::__packed_double),
+                            "packedBool" => Ok(__FieldTag::__packed_bool),
+                            "packedNestedEnum" => Ok(__FieldTag::__packed_nested_enum),
+                            "unpackedInt32" => Ok(__FieldTag::__unpacked_int32),
+                            "unpackedInt64" => Ok(__FieldTag::__unpacked_int64),
+                            "unpackedUint32" => Ok(__FieldTag::__unpacked_uint32),
+                            "unpackedUint64" => Ok(__FieldTag::__unpacked_uint64),
+                            "unpackedSint32" => Ok(__FieldTag::__unpacked_sint32),
+                            "unpackedSint64" => Ok(__FieldTag::__unpacked_sint64),
+                            "unpackedFixed32" => Ok(__FieldTag::__unpacked_fixed32),
+                            "unpackedFixed64" => Ok(__FieldTag::__unpacked_fixed64),
+                            "unpackedSfixed32" => Ok(__FieldTag::__unpacked_sfixed32),
+                            "unpackedSfixed64" => Ok(__FieldTag::__unpacked_sfixed64),
+                            "unpackedFloat" => Ok(__FieldTag::__unpacked_float),
+                            "unpackedDouble" => Ok(__FieldTag::__unpacked_double),
+                            "unpackedBool" => Ok(__FieldTag::__unpacked_bool),
+                            "unpackedNestedEnum" => Ok(__FieldTag::__unpacked_nested_enum),
+                            "mapInt32Int32" => Ok(__FieldTag::__map_int32_int32),
+                            "mapInt64Int64" => Ok(__FieldTag::__map_int64_int64),
+                            "mapUint32Uint32" => Ok(__FieldTag::__map_uint32_uint32),
+                            "mapUint64Uint64" => Ok(__FieldTag::__map_uint64_uint64),
+                            "mapSint32Sint32" => Ok(__FieldTag::__map_sint32_sint32),
+                            "mapSint64Sint64" => Ok(__FieldTag::__map_sint64_sint64),
+                            "mapFixed32Fixed32" => Ok(__FieldTag::__map_fixed32_fixed32),
+                            "mapFixed64Fixed64" => Ok(__FieldTag::__map_fixed64_fixed64),
+                            "mapSfixed32Sfixed32" => Ok(__FieldTag::__map_sfixed32_sfixed32),
+                            "mapSfixed64Sfixed64" => Ok(__FieldTag::__map_sfixed64_sfixed64),
+                            "mapInt32Float" => Ok(__FieldTag::__map_int32_float),
+                            "mapInt32Double" => Ok(__FieldTag::__map_int32_double),
+                            "mapBoolBool" => Ok(__FieldTag::__map_bool_bool),
+                            "mapStringString" => Ok(__FieldTag::__map_string_string),
+                            "mapStringBytes" => Ok(__FieldTag::__map_string_bytes),
+                            "mapStringNestedMessage" => Ok(__FieldTag::__map_string_nested_message),
+                            "mapStringForeignMessage" => {
+                                Ok(__FieldTag::__map_string_foreign_message)
+                            }
+                            "mapStringNestedEnum" => Ok(__FieldTag::__map_string_nested_enum),
+                            "mapStringForeignEnum" => Ok(__FieldTag::__map_string_foreign_enum),
+                            "oneofUint32" => Ok(__FieldTag::__oneof_uint32),
+                            "oneofNestedMessage" => Ok(__FieldTag::__oneof_nested_message),
+                            "oneofString" => Ok(__FieldTag::__oneof_string),
+                            "oneofBytes" => Ok(__FieldTag::__oneof_bytes),
+                            "oneofBool" => Ok(__FieldTag::__oneof_bool),
+                            "oneofUint64" => Ok(__FieldTag::__oneof_uint64),
+                            "oneofFloat" => Ok(__FieldTag::__oneof_float),
+                            "oneofDouble" => Ok(__FieldTag::__oneof_double),
+                            "oneofEnum" => Ok(__FieldTag::__oneof_enum),
+                            "oneofNullValue" => Ok(__FieldTag::__oneof_null_value),
+                            "optionalBoolWrapper" => Ok(__FieldTag::__optional_bool_wrapper),
+                            "optionalInt32Wrapper" => Ok(__FieldTag::__optional_int32_wrapper),
+                            "optionalInt64Wrapper" => Ok(__FieldTag::__optional_int64_wrapper),
+                            "optionalUint32Wrapper" => Ok(__FieldTag::__optional_uint32_wrapper),
+                            "optionalUint64Wrapper" => Ok(__FieldTag::__optional_uint64_wrapper),
+                            "optionalFloatWrapper" => Ok(__FieldTag::__optional_float_wrapper),
+                            "optionalDoubleWrapper" => Ok(__FieldTag::__optional_double_wrapper),
+                            "optionalStringWrapper" => Ok(__FieldTag::__optional_string_wrapper),
+                            "optionalBytesWrapper" => Ok(__FieldTag::__optional_bytes_wrapper),
+                            "repeatedBoolWrapper" => Ok(__FieldTag::__repeated_bool_wrapper),
+                            "repeatedInt32Wrapper" => Ok(__FieldTag::__repeated_int32_wrapper),
+                            "repeatedInt64Wrapper" => Ok(__FieldTag::__repeated_int64_wrapper),
+                            "repeatedUint32Wrapper" => Ok(__FieldTag::__repeated_uint32_wrapper),
+                            "repeatedUint64Wrapper" => Ok(__FieldTag::__repeated_uint64_wrapper),
+                            "repeatedFloatWrapper" => Ok(__FieldTag::__repeated_float_wrapper),
+                            "repeatedDoubleWrapper" => Ok(__FieldTag::__repeated_double_wrapper),
+                            "repeatedStringWrapper" => Ok(__FieldTag::__repeated_string_wrapper),
+                            "repeatedBytesWrapper" => Ok(__FieldTag::__repeated_bytes_wrapper),
+                            "optionalDuration" => Ok(__FieldTag::__optional_duration),
+                            "optionalTimestamp" => Ok(__FieldTag::__optional_timestamp),
+                            "optionalFieldMask" => Ok(__FieldTag::__optional_field_mask),
+                            "optionalStruct" => Ok(__FieldTag::__optional_struct),
+                            "optionalAny" => Ok(__FieldTag::__optional_any),
+                            "optionalValue" => Ok(__FieldTag::__optional_value),
+                            "optionalNullValue" => Ok(__FieldTag::__optional_null_value),
+                            "repeatedDuration" => Ok(__FieldTag::__repeated_duration),
+                            "repeatedTimestamp" => Ok(__FieldTag::__repeated_timestamp),
+                            "repeatedFieldmask" => Ok(__FieldTag::__repeated_fieldmask),
+                            "repeatedStruct" => Ok(__FieldTag::__repeated_struct),
+                            "repeatedAny" => Ok(__FieldTag::__repeated_any),
+                            "repeatedValue" => Ok(__FieldTag::__repeated_value),
+                            "repeatedListValue" => Ok(__FieldTag::__repeated_list_value),
+                            "fieldname1" => Ok(__FieldTag::__fieldname1),
+                            "fieldName2" => Ok(__FieldTag::__field_name2),
+                            "FieldName3" => Ok(__FieldTag::___field_name3),
+                            "fieldName4" => Ok(__FieldTag::__field__name4_),
+                            "field0name5" => Ok(__FieldTag::__field0name5),
+                            "field0Name6" => Ok(__FieldTag::__field_0_name6),
+                            "fieldName7" => Ok(__FieldTag::__field_name_7),
+                            "FieldName8" => Ok(__FieldTag::__field_name_8),
+                            "fieldName9" => Ok(__FieldTag::__field_name_9),
+                            "FieldName10" => Ok(__FieldTag::__field_name_10),
+                            "FIELDNAME11" => Ok(__FieldTag::__field_name_11),
+                            "FIELDName12" => Ok(__FieldTag::__field_name_12),
+                            "FieldName13" => Ok(__FieldTag::____field_name13),
+                            "FieldName14" => Ok(__FieldTag::____field_name_14),
+                            "fieldName15" => Ok(__FieldTag::__field__name15),
+                            "fieldName16" => Ok(__FieldTag::__field__name_16),
+                            "fieldName17" => Ok(__FieldTag::__field_name17__),
+                            "FieldName18" => Ok(__FieldTag::__field_name_18__),
+                            _ => Ok(__FieldTag::Unknown(value.to_string())),
+                        }
+                    }
+                }
+                deserializer.deserialize_identifier(Visitor)
+            }
+        }
+        struct Visitor;
+        impl<'de> serde::de::Visitor<'de> for Visitor {
+            type Value = TestAllTypesProto3;
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("struct TestAllTypesProto3")
+            }
+            fn visit_map<A>(self, mut map: A) -> std::result::Result<Self::Value, A::Error>
+            where
+                A: serde::de::MapAccess<'de>,
+            {
+                #[allow(unused_imports)]
+                use serde::de::Error;
+                #[allow(unused_imports)]
+                use std::option::Option::Some;
+                let mut result = Self::Value::new();
+                while let Some(tag) = map.next_key::<__FieldTag>()? {
+                    #[allow(clippy::match_single_binding)]
+                    match tag {
+                        __FieldTag::__optional_int32 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_int32 = value;
+                            }
+                        },
+                        __FieldTag::__optional_int64 => {
+                            struct __With( std::option::Option<i64> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_int64 = value;
+                            }
+                        },
+                        __FieldTag::__optional_uint32 => {
+                            struct __With( std::option::Option<u32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::U32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_uint32 = value;
+                            }
+                        },
+                        __FieldTag::__optional_uint64 => {
+                            struct __With( std::option::Option<u64> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::U64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_uint64 = value;
+                            }
+                        },
+                        __FieldTag::__optional_sint32 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_sint32 = value;
+                            }
+                        },
+                        __FieldTag::__optional_sint64 => {
+                            struct __With( std::option::Option<i64> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_sint64 = value;
+                            }
+                        },
+                        __FieldTag::__optional_fixed32 => {
+                            struct __With( std::option::Option<u32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::U32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_fixed32 = value;
+                            }
+                        },
+                        __FieldTag::__optional_fixed64 => {
+                            struct __With( std::option::Option<u64> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::U64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_fixed64 = value;
+                            }
+                        },
+                        __FieldTag::__optional_sfixed32 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_sfixed32 = value;
+                            }
+                        },
+                        __FieldTag::__optional_sfixed64 => {
+                            struct __With( std::option::Option<i64> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_sfixed64 = value;
+                            }
+                        },
+                        __FieldTag::__optional_float => {
+                            struct __With( std::option::Option<f32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::F32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_float = value;
+                            }
+                        },
+                        __FieldTag::__optional_double => {
+                            struct __With( std::option::Option<f64> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::F64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_double = value;
+                            }
+                        },
+                        __FieldTag::__optional_bool => {
+                            if let Some(value) = map.next_value::<std::option::Option<bool>>()?
+                            {
+                                result.optional_bool = value;
+                            }
+                        },
+                        __FieldTag::__optional_string => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::string::String>>()?
+                            {
+                                result.optional_string = value;
+                            }
+                        },
+                        __FieldTag::__optional_bytes => {
+                            struct __With( std::option::Option<::bytes::Bytes> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<serde_with::base64::Base64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_bytes = value;
+                            }
+                        },
+                        __FieldTag::__optional_nested_message => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::boxed::Box<crate::generated::test_protos::test_all_types_proto_3::NestedMessage>>>()?
+                            {
+                                result.optional_nested_message = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_foreign_message => {
+                            if let Some(value) = map.next_value::<std::option::Option<crate::generated::test_protos::ForeignMessage>>()?
+                            {
+                                result.optional_foreign_message = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_nested_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<crate::generated::test_protos::test_all_types_proto_3::NestedEnum>>()?
+                            {
+                                result.optional_nested_enum = value;
+                            }
+                        },
+                        __FieldTag::__optional_foreign_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<crate::generated::test_protos::ForeignEnum>>()?
+                            {
+                                result.optional_foreign_enum = value;
+                            }
+                        },
+                        __FieldTag::__optional_aliased_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<crate::generated::test_protos::test_all_types_proto_3::AliasedEnum>>()?
+                            {
+                                result.optional_aliased_enum = value;
+                            }
+                        },
+                        __FieldTag::__optional_string_piece => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::string::String>>()?
+                            {
+                                result.optional_string_piece = value;
+                            }
+                        },
+                        __FieldTag::__optional_cord => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::string::String>>()?
+                            {
+                                result.optional_cord = value;
+                            }
+                        },
+                        __FieldTag::__recursive_message => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::boxed::Box<crate::generated::test_protos::TestAllTypesProto3>>>()?
+                            {
+                                result.recursive_message = Some(value);
+                            }
+                        },
+                        __FieldTag::__repeated_int32 => {
+                            struct __With( std::option::Option<std::vec::Vec<i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_int32 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_int64 => {
+                            struct __With( std::option::Option<std::vec::Vec<i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_int64 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_uint32 => {
+                            struct __With( std::option::Option<std::vec::Vec<u32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_uint32 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_uint64 => {
+                            struct __With( std::option::Option<std::vec::Vec<u64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_uint64 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_sint32 => {
+                            struct __With( std::option::Option<std::vec::Vec<i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_sint32 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_sint64 => {
+                            struct __With( std::option::Option<std::vec::Vec<i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_sint64 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_fixed32 => {
+                            struct __With( std::option::Option<std::vec::Vec<u32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_fixed32 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_fixed64 => {
+                            struct __With( std::option::Option<std::vec::Vec<u64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_fixed64 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_sfixed32 => {
+                            struct __With( std::option::Option<std::vec::Vec<i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_sfixed32 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_sfixed64 => {
+                            struct __With( std::option::Option<std::vec::Vec<i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_sfixed64 = value;
+                            }
+                        },
+                        __FieldTag::__repeated_float => {
+                            struct __With( std::option::Option<std::vec::Vec<f32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::F32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_float = value;
+                            }
+                        },
+                        __FieldTag::__repeated_double => {
+                            struct __With( std::option::Option<std::vec::Vec<f64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::F64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_double = value;
+                            }
+                        },
+                        __FieldTag::__repeated_bool => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<bool>>>()? {
+                                result.repeated_bool = value;
+                            }
+                        },
+                        __FieldTag::__repeated_string => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<std::string::String>>>()? {
+                                result.repeated_string = value;
+                            }
+                        },
+                        __FieldTag::__repeated_bytes => {
+                            struct __With( std::option::Option<std::vec::Vec<::bytes::Bytes>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<serde_with::base64::Base64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_bytes = value;
+                            }
+                        },
+                        __FieldTag::__repeated_nested_message => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<crate::generated::test_protos::test_all_types_proto_3::NestedMessage>>>()? {
+                                result.repeated_nested_message = value;
+                            }
+                        },
+                        __FieldTag::__repeated_foreign_message => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<crate::generated::test_protos::ForeignMessage>>>()? {
+                                result.repeated_foreign_message = value;
+                            }
+                        },
+                        __FieldTag::__repeated_nested_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<crate::generated::test_protos::test_all_types_proto_3::NestedEnum>>>()? {
+                                result.repeated_nested_enum = value;
+                            }
+                        },
+                        __FieldTag::__repeated_foreign_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<crate::generated::test_protos::ForeignEnum>>>()? {
+                                result.repeated_foreign_enum = value;
+                            }
+                        },
+                        __FieldTag::__repeated_string_piece => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<std::string::String>>>()? {
+                                result.repeated_string_piece = value;
+                            }
+                        },
+                        __FieldTag::__repeated_cord => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<std::string::String>>>()? {
+                                result.repeated_cord = value;
+                            }
+                        },
+                        __FieldTag::__packed_int32 => {
+                            struct __With( std::option::Option<std::vec::Vec<i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_int32 = value;
+                            }
+                        },
+                        __FieldTag::__packed_int64 => {
+                            struct __With( std::option::Option<std::vec::Vec<i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_int64 = value;
+                            }
+                        },
+                        __FieldTag::__packed_uint32 => {
+                            struct __With( std::option::Option<std::vec::Vec<u32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_uint32 = value;
+                            }
+                        },
+                        __FieldTag::__packed_uint64 => {
+                            struct __With( std::option::Option<std::vec::Vec<u64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_uint64 = value;
+                            }
+                        },
+                        __FieldTag::__packed_sint32 => {
+                            struct __With( std::option::Option<std::vec::Vec<i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_sint32 = value;
+                            }
+                        },
+                        __FieldTag::__packed_sint64 => {
+                            struct __With( std::option::Option<std::vec::Vec<i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_sint64 = value;
+                            }
+                        },
+                        __FieldTag::__packed_fixed32 => {
+                            struct __With( std::option::Option<std::vec::Vec<u32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_fixed32 = value;
+                            }
+                        },
+                        __FieldTag::__packed_fixed64 => {
+                            struct __With( std::option::Option<std::vec::Vec<u64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_fixed64 = value;
+                            }
+                        },
+                        __FieldTag::__packed_sfixed32 => {
+                            struct __With( std::option::Option<std::vec::Vec<i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_sfixed32 = value;
+                            }
+                        },
+                        __FieldTag::__packed_sfixed64 => {
+                            struct __With( std::option::Option<std::vec::Vec<i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_sfixed64 = value;
+                            }
+                        },
+                        __FieldTag::__packed_float => {
+                            struct __With( std::option::Option<std::vec::Vec<f32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::F32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_float = value;
+                            }
+                        },
+                        __FieldTag::__packed_double => {
+                            struct __With( std::option::Option<std::vec::Vec<f64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::F64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.packed_double = value;
+                            }
+                        },
+                        __FieldTag::__packed_bool => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<bool>>>()? {
+                                result.packed_bool = value;
+                            }
+                        },
+                        __FieldTag::__packed_nested_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<crate::generated::test_protos::test_all_types_proto_3::NestedEnum>>>()? {
+                                result.packed_nested_enum = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_int32 => {
+                            struct __With( std::option::Option<std::vec::Vec<i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_int32 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_int64 => {
+                            struct __With( std::option::Option<std::vec::Vec<i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_int64 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_uint32 => {
+                            struct __With( std::option::Option<std::vec::Vec<u32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_uint32 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_uint64 => {
+                            struct __With( std::option::Option<std::vec::Vec<u64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_uint64 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_sint32 => {
+                            struct __With( std::option::Option<std::vec::Vec<i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_sint32 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_sint64 => {
+                            struct __With( std::option::Option<std::vec::Vec<i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_sint64 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_fixed32 => {
+                            struct __With( std::option::Option<std::vec::Vec<u32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_fixed32 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_fixed64 => {
+                            struct __With( std::option::Option<std::vec::Vec<u64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_fixed64 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_sfixed32 => {
+                            struct __With( std::option::Option<std::vec::Vec<i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_sfixed32 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_sfixed64 => {
+                            struct __With( std::option::Option<std::vec::Vec<i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_sfixed64 = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_float => {
+                            struct __With( std::option::Option<std::vec::Vec<f32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::F32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_float = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_double => {
+                            struct __With( std::option::Option<std::vec::Vec<f64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::F64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.unpacked_double = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_bool => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<bool>>>()? {
+                                result.unpacked_bool = value;
+                            }
+                        },
+                        __FieldTag::__unpacked_nested_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<crate::generated::test_protos::test_all_types_proto_3::NestedEnum>>>()? {
+                                result.unpacked_nested_enum = value;
+                            }
+                        },
+                        __FieldTag::__map_int32_int32 => {
+                            struct __With( std::option::Option<std::collections::HashMap<i32,i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::I32, wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_int32_int32 = value;
+                            }
+                        },
+                        __FieldTag::__map_int64_int64 => {
+                            struct __With( std::option::Option<std::collections::HashMap<i64,i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::I64, wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_int64_int64 = value;
+                            }
+                        },
+                        __FieldTag::__map_uint32_uint32 => {
+                            struct __With( std::option::Option<std::collections::HashMap<u32,u32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::U32, wkt::internal::U32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_uint32_uint32 = value;
+                            }
+                        },
+                        __FieldTag::__map_uint64_uint64 => {
+                            struct __With( std::option::Option<std::collections::HashMap<u64,u64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::U64, wkt::internal::U64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_uint64_uint64 = value;
+                            }
+                        },
+                        __FieldTag::__map_sint32_sint32 => {
+                            struct __With( std::option::Option<std::collections::HashMap<i32,i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::I32, wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_sint32_sint32 = value;
+                            }
+                        },
+                        __FieldTag::__map_sint64_sint64 => {
+                            struct __With( std::option::Option<std::collections::HashMap<i64,i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::I64, wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_sint64_sint64 = value;
+                            }
+                        },
+                        __FieldTag::__map_fixed32_fixed32 => {
+                            struct __With( std::option::Option<std::collections::HashMap<u32,u32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::U32, wkt::internal::U32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_fixed32_fixed32 = value;
+                            }
+                        },
+                        __FieldTag::__map_fixed64_fixed64 => {
+                            struct __With( std::option::Option<std::collections::HashMap<u64,u64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::U64, wkt::internal::U64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_fixed64_fixed64 = value;
+                            }
+                        },
+                        __FieldTag::__map_sfixed32_sfixed32 => {
+                            struct __With( std::option::Option<std::collections::HashMap<i32,i32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::I32, wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_sfixed32_sfixed32 = value;
+                            }
+                        },
+                        __FieldTag::__map_sfixed64_sfixed64 => {
+                            struct __With( std::option::Option<std::collections::HashMap<i64,i64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::I64, wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_sfixed64_sfixed64 = value;
+                            }
+                        },
+                        __FieldTag::__map_int32_float => {
+                            struct __With( std::option::Option<std::collections::HashMap<i32,f32>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::I32, wkt::internal::F32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_int32_float = value;
+                            }
+                        },
+                        __FieldTag::__map_int32_double => {
+                            struct __With( std::option::Option<std::collections::HashMap<i32,f64>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<wkt::internal::I32, wkt::internal::F64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_int32_double = value;
+                            }
+                        },
+                        __FieldTag::__map_bool_bool => {
+                            struct __With( std::option::Option<std::collections::HashMap<bool,bool>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<serde_with::DisplayFromStr, serde_with::Same>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_bool_bool = value;
+                            }
+                        },
+                        __FieldTag::__map_string_string => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::collections::HashMap<std::string::String,std::string::String>>>()? {
+                                result.map_string_string = value;
+                            }
+                        },
+                        __FieldTag::__map_string_bytes => {
+                            struct __With( std::option::Option<std::collections::HashMap<std::string::String,::bytes::Bytes>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::collections::HashMap<serde_with::Same, serde_with::base64::Base64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.map_string_bytes = value;
+                            }
+                        },
+                        __FieldTag::__map_string_nested_message => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::collections::HashMap<std::string::String,crate::generated::test_protos::test_all_types_proto_3::NestedMessage>>>()? {
+                                result.map_string_nested_message = value;
+                            }
+                        },
+                        __FieldTag::__map_string_foreign_message => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::collections::HashMap<std::string::String,crate::generated::test_protos::ForeignMessage>>>()? {
+                                result.map_string_foreign_message = value;
+                            }
+                        },
+                        __FieldTag::__map_string_nested_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::collections::HashMap<std::string::String,crate::generated::test_protos::test_all_types_proto_3::NestedEnum>>>()? {
+                                result.map_string_nested_enum = value;
+                            }
+                        },
+                        __FieldTag::__map_string_foreign_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::collections::HashMap<std::string::String,crate::generated::test_protos::ForeignEnum>>>()? {
+                                result.map_string_foreign_enum = value;
+                            }
+                        },
+                        __FieldTag::__oneof_uint32 => {
+                            struct __With( u32 );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< wkt::internal::U32 >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< std::option::Option<__With> >()? {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, latest field was oneofUint32"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofUint32(value.0),
+                                );
+                            }
+                        },
+                        __FieldTag::__oneof_nested_message => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::boxed::Box<crate::generated::test_protos::test_all_types_proto_3::NestedMessage>>>()?
+                            {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, a oneof with full ID .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_nested_message, latest field was oneofNestedMessage"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofNestedMessage(value),
+                                );
+                            }
+                        },
+                        __FieldTag::__oneof_string => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::string::String>>()?
+                            {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, a oneof with full ID .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_string, latest field was oneofString"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofString(value),
+                                );
+                            }
+                        },
+                        __FieldTag::__oneof_bytes => {
+                            struct __With( ::bytes::Bytes );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< serde_with::base64::Base64 >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< std::option::Option<__With> >()? {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, latest field was oneofBytes"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofBytes(value.0),
+                                );
+                            }
+                        },
+                        __FieldTag::__oneof_bool => {
+                            if let Some(value) = map.next_value::<std::option::Option<bool>>()?
+                            {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, a oneof with full ID .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_bool, latest field was oneofBool"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofBool(value),
+                                );
+                            }
+                        },
+                        __FieldTag::__oneof_uint64 => {
+                            struct __With( u64 );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< wkt::internal::U64 >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< std::option::Option<__With> >()? {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, latest field was oneofUint64"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofUint64(value.0),
+                                );
+                            }
+                        },
+                        __FieldTag::__oneof_float => {
+                            struct __With( f32 );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< wkt::internal::F32 >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< std::option::Option<__With> >()? {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, latest field was oneofFloat"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofFloat(value.0),
+                                );
+                            }
+                        },
+                        __FieldTag::__oneof_double => {
+                            struct __With( f64 );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< wkt::internal::F64 >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< std::option::Option<__With> >()? {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, latest field was oneofDouble"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofDouble(value.0),
+                                );
+                            }
+                        },
+                        __FieldTag::__oneof_enum => {
+                            if let Some(value) = map.next_value::<std::option::Option<crate::generated::test_protos::test_all_types_proto_3::NestedEnum>>()?
+                            {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, a oneof with full ID .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_enum, latest field was oneofEnum"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofEnum(value),
+                                );
+                            }
+                        },
+                        __FieldTag::__oneof_null_value => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::NullValue>>()?
+                                .or(Some(wkt::NullValue))
+                            {
+                                if result.oneof_field.is_some() {
+                                    return std::result::Result::Err(A::Error::duplicate_field(
+                                        "multiple values for .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_field, a oneof with full ID .protobuf_test_messages.proto3.TestAllTypesProto3.oneof_null_value, latest field was oneofNullValue"
+                                    ))
+                                }
+                                result.oneof_field = Some(
+                                    crate::generated::test_protos::test_all_types_proto_3::OneofField::OneofNullValue(value),
+                                );
+                            }
+                        },
+                        __FieldTag::__optional_bool_wrapper => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::BoolValue>>()?
+                            {
+                                result.optional_bool_wrapper = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_int32_wrapper => {
+                            struct __With( std::option::Option<wkt::Int32Value> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_int32_wrapper = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_int64_wrapper => {
+                            struct __With( std::option::Option<wkt::Int64Value> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_int64_wrapper = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_uint32_wrapper => {
+                            struct __With( std::option::Option<wkt::UInt32Value> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::U32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_uint32_wrapper = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_uint64_wrapper => {
+                            struct __With( std::option::Option<wkt::UInt64Value> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::U64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_uint64_wrapper = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_float_wrapper => {
+                            struct __With( std::option::Option<wkt::FloatValue> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::F32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_float_wrapper = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_double_wrapper => {
+                            struct __With( std::option::Option<wkt::DoubleValue> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::F64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_double_wrapper = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_string_wrapper => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::StringValue>>()?
+                            {
+                                result.optional_string_wrapper = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_bytes_wrapper => {
+                            struct __With( std::option::Option<wkt::BytesValue> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<serde_with::base64::Base64> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.optional_bytes_wrapper = Some(value);
+                            }
+                        },
+                        __FieldTag::__repeated_bool_wrapper => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<wkt::BoolValue>>>()? {
+                                result.repeated_bool_wrapper = value;
+                            }
+                        },
+                        __FieldTag::__repeated_int32_wrapper => {
+                            struct __With( std::option::Option<std::vec::Vec<wkt::Int32Value>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_int32_wrapper = value;
+                            }
+                        },
+                        __FieldTag::__repeated_int64_wrapper => {
+                            struct __With( std::option::Option<std::vec::Vec<wkt::Int64Value>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::I64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_int64_wrapper = value;
+                            }
+                        },
+                        __FieldTag::__repeated_uint32_wrapper => {
+                            struct __With( std::option::Option<std::vec::Vec<wkt::UInt32Value>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_uint32_wrapper = value;
+                            }
+                        },
+                        __FieldTag::__repeated_uint64_wrapper => {
+                            struct __With( std::option::Option<std::vec::Vec<wkt::UInt64Value>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::U64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_uint64_wrapper = value;
+                            }
+                        },
+                        __FieldTag::__repeated_float_wrapper => {
+                            struct __With( std::option::Option<std::vec::Vec<wkt::FloatValue>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::F32>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_float_wrapper = value;
+                            }
+                        },
+                        __FieldTag::__repeated_double_wrapper => {
+                            struct __With( std::option::Option<std::vec::Vec<wkt::DoubleValue>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<wkt::internal::F64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_double_wrapper = value;
+                            }
+                        },
+                        __FieldTag::__repeated_string_wrapper => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<wkt::StringValue>>>()? {
+                                result.repeated_string_wrapper = value;
+                            }
+                        },
+                        __FieldTag::__repeated_bytes_wrapper => {
+                            struct __With( std::option::Option<std::vec::Vec<wkt::BytesValue>> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<std::vec::Vec<serde_with::base64::Base64>> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.repeated_bytes_wrapper = value;
+                            }
+                        },
+                        __FieldTag::__optional_duration => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::Duration>>()?
+                            {
+                                result.optional_duration = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_timestamp => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::Timestamp>>()?
+                            {
+                                result.optional_timestamp = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_field_mask => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::FieldMask>>()?
+                            {
+                                result.optional_field_mask = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_struct => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::Struct>>()?
+                            {
+                                result.optional_struct = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_any => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::Any>>()?
+                            {
+                                result.optional_any = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_value => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::Value>>()?
+                                .or(Some(wkt::Value::Null))
+                            {
+                                result.optional_value = Some(value);
+                            }
+                        },
+                        __FieldTag::__optional_null_value => {
+                            if let Some(value) = map.next_value::<std::option::Option<wkt::NullValue>>()?
+                                .or(Some(wkt::NullValue))
+                            {
+                                result.optional_null_value = value;
+                            }
+                        },
+                        __FieldTag::__repeated_duration => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<wkt::Duration>>>()? {
+                                result.repeated_duration = value;
+                            }
+                        },
+                        __FieldTag::__repeated_timestamp => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<wkt::Timestamp>>>()? {
+                                result.repeated_timestamp = value;
+                            }
+                        },
+                        __FieldTag::__repeated_fieldmask => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<wkt::FieldMask>>>()? {
+                                result.repeated_fieldmask = value;
+                            }
+                        },
+                        __FieldTag::__repeated_struct => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<wkt::Struct>>>()? {
+                                result.repeated_struct = value;
+                            }
+                        },
+                        __FieldTag::__repeated_any => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<wkt::Any>>>()? {
+                                result.repeated_any = value;
+                            }
+                        },
+                        __FieldTag::__repeated_value => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<wkt::Value>>>()? {
+                                result.repeated_value = value;
+                            }
+                        },
+                        __FieldTag::__repeated_list_value => {
+                            if let Some(value) = map.next_value::<std::option::Option<std::vec::Vec<wkt::ListValue>>>()? {
+                                result.repeated_list_value = value;
+                            }
+                        },
+                        __FieldTag::__fieldname1 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.fieldname1 = value;
+                            }
+                        },
+                        __FieldTag::__field_name2 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_name2 = value;
+                            }
+                        },
+                        __FieldTag::___field_name3 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result._field_name3 = value;
+                            }
+                        },
+                        __FieldTag::__field__name4_ => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field__name4_ = value;
+                            }
+                        },
+                        __FieldTag::__field0name5 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field0name5 = value;
+                            }
+                        },
+                        __FieldTag::__field_0_name6 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_0_name6 = value;
+                            }
+                        },
+                        __FieldTag::__field_name_7 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_name_7 = value;
+                            }
+                        },
+                        __FieldTag::__field_name_8 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_name_8 = value;
+                            }
+                        },
+                        __FieldTag::__field_name_9 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_name_9 = value;
+                            }
+                        },
+                        __FieldTag::__field_name_10 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_name_10 = value;
+                            }
+                        },
+                        __FieldTag::__field_name_11 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_name_11 = value;
+                            }
+                        },
+                        __FieldTag::__field_name_12 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_name_12 = value;
+                            }
+                        },
+                        __FieldTag::____field_name13 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.__field_name13 = value;
+                            }
+                        },
+                        __FieldTag::____field_name_14 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.__field_name_14 = value;
+                            }
+                        },
+                        __FieldTag::__field__name15 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field__name15 = value;
+                            }
+                        },
+                        __FieldTag::__field__name_16 => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field__name_16 = value;
+                            }
+                        },
+                        __FieldTag::__field_name17__ => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_name17__ = value;
+                            }
+                        },
+                        __FieldTag::__field_name_18__ => {
+                            struct __With( std::option::Option<i32> );
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::< __With >()?.0 {
+                                result.field_name_18__ = value;
+                            }
+                        },
+                        __FieldTag::Unknown(key) => {
+                            let value = map.next_value::<serde_json::Value>()?;
+                            result._unknown_fields.insert(key, value);
+                        },
+                    }
+                }
+                Ok(result)
+            }
+        }
+        deserializer.deserialize_any(Visitor)
+    }
+}
+
+#[doc(hidden)]
+impl serde::ser::Serialize for TestAllTypesProto3 {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        use serde::ser::SerializeMap;
+        let mut state = serializer.serialize_map(None)?;
+        if !wkt::internal::is_default(&self.optional_int32) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalInt32", &__With(&self.optional_int32))?;
+        }
+        if !wkt::internal::is_default(&self.optional_int64) {
+            struct __With<'a>(&'a i64);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalInt64", &__With(&self.optional_int64))?;
+        }
+        if !wkt::internal::is_default(&self.optional_uint32) {
+            struct __With<'a>(&'a u32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::U32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalUint32", &__With(&self.optional_uint32))?;
+        }
+        if !wkt::internal::is_default(&self.optional_uint64) {
+            struct __With<'a>(&'a u64);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::U64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalUint64", &__With(&self.optional_uint64))?;
+        }
+        if !wkt::internal::is_default(&self.optional_sint32) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalSint32", &__With(&self.optional_sint32))?;
+        }
+        if !wkt::internal::is_default(&self.optional_sint64) {
+            struct __With<'a>(&'a i64);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalSint64", &__With(&self.optional_sint64))?;
+        }
+        if !wkt::internal::is_default(&self.optional_fixed32) {
+            struct __With<'a>(&'a u32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::U32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalFixed32", &__With(&self.optional_fixed32))?;
+        }
+        if !wkt::internal::is_default(&self.optional_fixed64) {
+            struct __With<'a>(&'a u64);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::U64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalFixed64", &__With(&self.optional_fixed64))?;
+        }
+        if !wkt::internal::is_default(&self.optional_sfixed32) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalSfixed32", &__With(&self.optional_sfixed32))?;
+        }
+        if !wkt::internal::is_default(&self.optional_sfixed64) {
+            struct __With<'a>(&'a i64);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalSfixed64", &__With(&self.optional_sfixed64))?;
+        }
+        if !wkt::internal::is_default(&self.optional_float) {
+            struct __With<'a>(&'a f32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::F32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalFloat", &__With(&self.optional_float))?;
+        }
+        if !wkt::internal::is_default(&self.optional_double) {
+            struct __With<'a>(&'a f64);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::F64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalDouble", &__With(&self.optional_double))?;
+        }
+        if !wkt::internal::is_default(&self.optional_bool) {
+            state.serialize_entry("optionalBool", &self.optional_bool)?;
+        }
+        if !self.optional_string.is_empty() {
+            state.serialize_entry("optionalString", &self.optional_string)?;
+        }
+        if !self.optional_bytes.is_empty() {
+            struct __With<'a>(&'a ::bytes::Bytes);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<serde_with::base64::Base64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("optionalBytes", &__With(&self.optional_bytes))?;
+        }
+        if self.optional_nested_message.is_some() {
+            state.serialize_entry("optionalNestedMessage", &self.optional_nested_message)?;
+        }
+        if self.optional_foreign_message.is_some() {
+            state.serialize_entry("optionalForeignMessage", &self.optional_foreign_message)?;
+        }
+        if !wkt::internal::is_default(&self.optional_nested_enum) {
+            state.serialize_entry("optionalNestedEnum", &self.optional_nested_enum)?;
+        }
+        if !wkt::internal::is_default(&self.optional_foreign_enum) {
+            state.serialize_entry("optionalForeignEnum", &self.optional_foreign_enum)?;
+        }
+        if !wkt::internal::is_default(&self.optional_aliased_enum) {
+            state.serialize_entry("optionalAliasedEnum", &self.optional_aliased_enum)?;
+        }
+        if !self.optional_string_piece.is_empty() {
+            state.serialize_entry("optionalStringPiece", &self.optional_string_piece)?;
+        }
+        if !self.optional_cord.is_empty() {
+            state.serialize_entry("optionalCord", &self.optional_cord)?;
+        }
+        if self.recursive_message.is_some() {
+            state.serialize_entry("recursiveMessage", &self.recursive_message)?;
+        }
+        if !self.repeated_int32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedInt32", &__With(&self.repeated_int32))?;
+        }
+        if !self.repeated_int64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedInt64", &__With(&self.repeated_int64))?;
+        }
+        if !self.repeated_uint32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedUint32", &__With(&self.repeated_uint32))?;
+        }
+        if !self.repeated_uint64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedUint64", &__With(&self.repeated_uint64))?;
+        }
+        if !self.repeated_sint32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedSint32", &__With(&self.repeated_sint32))?;
+        }
+        if !self.repeated_sint64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedSint64", &__With(&self.repeated_sint64))?;
+        }
+        if !self.repeated_fixed32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedFixed32", &__With(&self.repeated_fixed32))?;
+        }
+        if !self.repeated_fixed64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedFixed64", &__With(&self.repeated_fixed64))?;
+        }
+        if !self.repeated_sfixed32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedSfixed32", &__With(&self.repeated_sfixed32))?;
+        }
+        if !self.repeated_sfixed64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedSfixed64", &__With(&self.repeated_sfixed64))?;
+        }
+        if !self.repeated_float.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<f32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::F32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedFloat", &__With(&self.repeated_float))?;
+        }
+        if !self.repeated_double.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<f64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::F64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedDouble", &__With(&self.repeated_double))?;
+        }
+        if !self.repeated_bool.is_empty() {
+            state.serialize_entry("repeatedBool", &self.repeated_bool)?;
+        }
+        if !self.repeated_string.is_empty() {
+            state.serialize_entry("repeatedString", &self.repeated_string)?;
+        }
+        if !self.repeated_bytes.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<::bytes::Bytes>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<serde_with::base64::Base64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("repeatedBytes", &__With(&self.repeated_bytes))?;
+        }
+        if !self.repeated_nested_message.is_empty() {
+            state.serialize_entry("repeatedNestedMessage", &self.repeated_nested_message)?;
+        }
+        if !self.repeated_foreign_message.is_empty() {
+            state.serialize_entry("repeatedForeignMessage", &self.repeated_foreign_message)?;
+        }
+        if !self.repeated_nested_enum.is_empty() {
+            state.serialize_entry("repeatedNestedEnum", &self.repeated_nested_enum)?;
+        }
+        if !self.repeated_foreign_enum.is_empty() {
+            state.serialize_entry("repeatedForeignEnum", &self.repeated_foreign_enum)?;
+        }
+        if !self.repeated_string_piece.is_empty() {
+            state.serialize_entry("repeatedStringPiece", &self.repeated_string_piece)?;
+        }
+        if !self.repeated_cord.is_empty() {
+            state.serialize_entry("repeatedCord", &self.repeated_cord)?;
+        }
+        if !self.packed_int32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedInt32", &__With(&self.packed_int32))?;
+        }
+        if !self.packed_int64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedInt64", &__With(&self.packed_int64))?;
+        }
+        if !self.packed_uint32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedUint32", &__With(&self.packed_uint32))?;
+        }
+        if !self.packed_uint64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedUint64", &__With(&self.packed_uint64))?;
+        }
+        if !self.packed_sint32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedSint32", &__With(&self.packed_sint32))?;
+        }
+        if !self.packed_sint64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedSint64", &__With(&self.packed_sint64))?;
+        }
+        if !self.packed_fixed32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedFixed32", &__With(&self.packed_fixed32))?;
+        }
+        if !self.packed_fixed64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedFixed64", &__With(&self.packed_fixed64))?;
+        }
+        if !self.packed_sfixed32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedSfixed32", &__With(&self.packed_sfixed32))?;
+        }
+        if !self.packed_sfixed64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedSfixed64", &__With(&self.packed_sfixed64))?;
+        }
+        if !self.packed_float.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<f32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::F32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedFloat", &__With(&self.packed_float))?;
+        }
+        if !self.packed_double.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<f64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::F64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("packedDouble", &__With(&self.packed_double))?;
+        }
+        if !self.packed_bool.is_empty() {
+            state.serialize_entry("packedBool", &self.packed_bool)?;
+        }
+        if !self.packed_nested_enum.is_empty() {
+            state.serialize_entry("packedNestedEnum", &self.packed_nested_enum)?;
+        }
+        if !self.unpacked_int32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedInt32", &__With(&self.unpacked_int32))?;
+        }
+        if !self.unpacked_int64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedInt64", &__With(&self.unpacked_int64))?;
+        }
+        if !self.unpacked_uint32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedUint32", &__With(&self.unpacked_uint32))?;
+        }
+        if !self.unpacked_uint64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedUint64", &__With(&self.unpacked_uint64))?;
+        }
+        if !self.unpacked_sint32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedSint32", &__With(&self.unpacked_sint32))?;
+        }
+        if !self.unpacked_sint64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedSint64", &__With(&self.unpacked_sint64))?;
+        }
+        if !self.unpacked_fixed32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedFixed32", &__With(&self.unpacked_fixed32))?;
+        }
+        if !self.unpacked_fixed64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<u64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedFixed64", &__With(&self.unpacked_fixed64))?;
+        }
+        if !self.unpacked_sfixed32.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedSfixed32", &__With(&self.unpacked_sfixed32))?;
+        }
+        if !self.unpacked_sfixed64.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedSfixed64", &__With(&self.unpacked_sfixed64))?;
+        }
+        if !self.unpacked_float.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<f32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::F32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedFloat", &__With(&self.unpacked_float))?;
+        }
+        if !self.unpacked_double.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<f64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::F64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry("unpackedDouble", &__With(&self.unpacked_double))?;
+        }
+        if !self.unpacked_bool.is_empty() {
+            state.serialize_entry("unpackedBool", &self.unpacked_bool)?;
+        }
+        if !self.unpacked_nested_enum.is_empty() {
+            state.serialize_entry("unpackedNestedEnum", &self.unpacked_nested_enum)?;
+        }
+        if !self.map_int32_int32.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<i32, i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::I32, wkt::internal::I32>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapInt32Int32", &__With(&self.map_int32_int32))?;
+        }
+        if !self.map_int64_int64.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<i64, i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::I64, wkt::internal::I64>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapInt64Int64", &__With(&self.map_int64_int64))?;
+        }
+        if !self.map_uint32_uint32.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<u32, u32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::U32, wkt::internal::U32>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapUint32Uint32", &__With(&self.map_uint32_uint32))?;
+        }
+        if !self.map_uint64_uint64.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<u64, u64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::U64, wkt::internal::U64>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapUint64Uint64", &__With(&self.map_uint64_uint64))?;
+        }
+        if !self.map_sint32_sint32.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<i32, i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::I32, wkt::internal::I32>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapSint32Sint32", &__With(&self.map_sint32_sint32))?;
+        }
+        if !self.map_sint64_sint64.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<i64, i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::I64, wkt::internal::I64>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapSint64Sint64", &__With(&self.map_sint64_sint64))?;
+        }
+        if !self.map_fixed32_fixed32.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<u32, u32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::U32, wkt::internal::U32>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapFixed32Fixed32", &__With(&self.map_fixed32_fixed32))?;
+        }
+        if !self.map_fixed64_fixed64.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<u64, u64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::U64, wkt::internal::U64>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapFixed64Fixed64", &__With(&self.map_fixed64_fixed64))?;
+        }
+        if !self.map_sfixed32_sfixed32.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<i32, i32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::I32, wkt::internal::I32>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapSfixed32Sfixed32", &__With(&self.map_sfixed32_sfixed32))?;
+        }
+        if !self.map_sfixed64_sfixed64.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<i64, i64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::I64, wkt::internal::I64>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapSfixed64Sfixed64", &__With(&self.map_sfixed64_sfixed64))?;
+        }
+        if !self.map_int32_float.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<i32, f32>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::I32, wkt::internal::F32>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapInt32Float", &__With(&self.map_int32_float))?;
+        }
+        if !self.map_int32_double.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<i32, f64>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<wkt::internal::I32, wkt::internal::F64>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapInt32Double", &__With(&self.map_int32_double))?;
+        }
+        if !self.map_bool_bool.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<bool, bool>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<serde_with::DisplayFromStr, serde_with::Same>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapBoolBool", &__With(&self.map_bool_bool))?;
+        }
+        if !self.map_string_string.is_empty() {
+            state.serialize_entry("mapStringString", &self.map_string_string)?;
+        }
+        if !self.map_string_bytes.is_empty() {
+            struct __With<'a>(&'a std::collections::HashMap<std::string::String, ::bytes::Bytes>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<
+                        std::collections::HashMap<serde_with::Same, serde_with::base64::Base64>,
+                    >::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("mapStringBytes", &__With(&self.map_string_bytes))?;
+        }
+        if !self.map_string_nested_message.is_empty() {
+            state.serialize_entry("mapStringNestedMessage", &self.map_string_nested_message)?;
+        }
+        if !self.map_string_foreign_message.is_empty() {
+            state.serialize_entry("mapStringForeignMessage", &self.map_string_foreign_message)?;
+        }
+        if !self.map_string_nested_enum.is_empty() {
+            state.serialize_entry("mapStringNestedEnum", &self.map_string_nested_enum)?;
+        }
+        if !self.map_string_foreign_enum.is_empty() {
+            state.serialize_entry("mapStringForeignEnum", &self.map_string_foreign_enum)?;
+        }
+        if let Some(value) = self.oneof_uint32() {
+            struct __With<'a>(&'a u32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::U32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("oneofUint32", &__With(value))?;
+        }
+        if let Some(value) = self.oneof_nested_message() {
+            state.serialize_entry("oneofNestedMessage", value)?;
+        }
+        if let Some(value) = self.oneof_string() {
+            state.serialize_entry("oneofString", value)?;
+        }
+        if let Some(value) = self.oneof_bytes() {
+            struct __With<'a>(&'a ::bytes::Bytes);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<serde_with::base64::Base64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("oneofBytes", &__With(value))?;
+        }
+        if let Some(value) = self.oneof_bool() {
+            state.serialize_entry("oneofBool", value)?;
+        }
+        if let Some(value) = self.oneof_uint64() {
+            struct __With<'a>(&'a u64);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::U64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("oneofUint64", &__With(value))?;
+        }
+        if let Some(value) = self.oneof_float() {
+            struct __With<'a>(&'a f32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::F32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("oneofFloat", &__With(value))?;
+        }
+        if let Some(value) = self.oneof_double() {
+            struct __With<'a>(&'a f64);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::F64>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("oneofDouble", &__With(value))?;
+        }
+        if let Some(value) = self.oneof_enum() {
+            state.serialize_entry("oneofEnum", value)?;
+        }
+        if let Some(value) = self.oneof_null_value() {
+            state.serialize_entry("oneofNullValue", value)?;
+        }
+        if self.optional_bool_wrapper.is_some() {
+            state.serialize_entry("optionalBoolWrapper", &self.optional_bool_wrapper)?;
+        }
+        if self.optional_int32_wrapper.is_some() {
+            struct __With<'a>(&'a std::option::Option<wkt::Int32Value>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::option::Option<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "optionalInt32Wrapper",
+                &__With(&self.optional_int32_wrapper),
+            )?;
+        }
+        if self.optional_int64_wrapper.is_some() {
+            struct __With<'a>(&'a std::option::Option<wkt::Int64Value>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::option::Option<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "optionalInt64Wrapper",
+                &__With(&self.optional_int64_wrapper),
+            )?;
+        }
+        if self.optional_uint32_wrapper.is_some() {
+            struct __With<'a>(&'a std::option::Option<wkt::UInt32Value>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::option::Option<wkt::internal::U32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "optionalUint32Wrapper",
+                &__With(&self.optional_uint32_wrapper),
+            )?;
+        }
+        if self.optional_uint64_wrapper.is_some() {
+            struct __With<'a>(&'a std::option::Option<wkt::UInt64Value>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::option::Option<wkt::internal::U64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "optionalUint64Wrapper",
+                &__With(&self.optional_uint64_wrapper),
+            )?;
+        }
+        if self.optional_float_wrapper.is_some() {
+            struct __With<'a>(&'a std::option::Option<wkt::FloatValue>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::option::Option<wkt::internal::F32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "optionalFloatWrapper",
+                &__With(&self.optional_float_wrapper),
+            )?;
+        }
+        if self.optional_double_wrapper.is_some() {
+            struct __With<'a>(&'a std::option::Option<wkt::DoubleValue>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::option::Option<wkt::internal::F64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "optionalDoubleWrapper",
+                &__With(&self.optional_double_wrapper),
+            )?;
+        }
+        if self.optional_string_wrapper.is_some() {
+            state.serialize_entry("optionalStringWrapper", &self.optional_string_wrapper)?;
+        }
+        if self.optional_bytes_wrapper.is_some() {
+            struct __With<'a>(&'a std::option::Option<wkt::BytesValue>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::option::Option<serde_with::base64::Base64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "optionalBytesWrapper",
+                &__With(&self.optional_bytes_wrapper),
+            )?;
+        }
+        if !self.repeated_bool_wrapper.is_empty() {
+            state.serialize_entry("repeatedBoolWrapper", &self.repeated_bool_wrapper)?;
+        }
+        if !self.repeated_int32_wrapper.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<wkt::Int32Value>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "repeatedInt32Wrapper",
+                &__With(&self.repeated_int32_wrapper),
+            )?;
+        }
+        if !self.repeated_int64_wrapper.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<wkt::Int64Value>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::I64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "repeatedInt64Wrapper",
+                &__With(&self.repeated_int64_wrapper),
+            )?;
+        }
+        if !self.repeated_uint32_wrapper.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<wkt::UInt32Value>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "repeatedUint32Wrapper",
+                &__With(&self.repeated_uint32_wrapper),
+            )?;
+        }
+        if !self.repeated_uint64_wrapper.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<wkt::UInt64Value>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::U64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "repeatedUint64Wrapper",
+                &__With(&self.repeated_uint64_wrapper),
+            )?;
+        }
+        if !self.repeated_float_wrapper.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<wkt::FloatValue>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::F32>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "repeatedFloatWrapper",
+                &__With(&self.repeated_float_wrapper),
+            )?;
+        }
+        if !self.repeated_double_wrapper.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<wkt::DoubleValue>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<wkt::internal::F64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "repeatedDoubleWrapper",
+                &__With(&self.repeated_double_wrapper),
+            )?;
+        }
+        if !self.repeated_string_wrapper.is_empty() {
+            state.serialize_entry("repeatedStringWrapper", &self.repeated_string_wrapper)?;
+        }
+        if !self.repeated_bytes_wrapper.is_empty() {
+            struct __With<'a>(&'a std::vec::Vec<wkt::BytesValue>);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<std::vec::Vec<serde_with::base64::Base64>>::serialize(
+                        self.0, serializer,
+                    )
+                }
+            }
+            state.serialize_entry(
+                "repeatedBytesWrapper",
+                &__With(&self.repeated_bytes_wrapper),
+            )?;
+        }
+        if self.optional_duration.is_some() {
+            state.serialize_entry("optionalDuration", &self.optional_duration)?;
+        }
+        if self.optional_timestamp.is_some() {
+            state.serialize_entry("optionalTimestamp", &self.optional_timestamp)?;
+        }
+        if self.optional_field_mask.is_some() {
+            state.serialize_entry("optionalFieldMask", &self.optional_field_mask)?;
+        }
+        if self.optional_struct.is_some() {
+            state.serialize_entry("optionalStruct", &self.optional_struct)?;
+        }
+        if self.optional_any.is_some() {
+            state.serialize_entry("optionalAny", &self.optional_any)?;
+        }
+        if self.optional_value.is_some() {
+            state.serialize_entry("optionalValue", &self.optional_value)?;
+        }
+        if !wkt::internal::is_default(&self.optional_null_value) {
+            state.serialize_entry("optionalNullValue", &self.optional_null_value)?;
+        }
+        if !self.repeated_duration.is_empty() {
+            state.serialize_entry("repeatedDuration", &self.repeated_duration)?;
+        }
+        if !self.repeated_timestamp.is_empty() {
+            state.serialize_entry("repeatedTimestamp", &self.repeated_timestamp)?;
+        }
+        if !self.repeated_fieldmask.is_empty() {
+            state.serialize_entry("repeatedFieldmask", &self.repeated_fieldmask)?;
+        }
+        if !self.repeated_struct.is_empty() {
+            state.serialize_entry("repeatedStruct", &self.repeated_struct)?;
+        }
+        if !self.repeated_any.is_empty() {
+            state.serialize_entry("repeatedAny", &self.repeated_any)?;
+        }
+        if !self.repeated_value.is_empty() {
+            state.serialize_entry("repeatedValue", &self.repeated_value)?;
+        }
+        if !self.repeated_list_value.is_empty() {
+            state.serialize_entry("repeatedListValue", &self.repeated_list_value)?;
+        }
+        if !wkt::internal::is_default(&self.fieldname1) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("fieldname1", &__With(&self.fieldname1))?;
+        }
+        if !wkt::internal::is_default(&self.field_name2) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("fieldName2", &__With(&self.field_name2))?;
+        }
+        if !wkt::internal::is_default(&self._field_name3) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("FieldName3", &__With(&self._field_name3))?;
+        }
+        if !wkt::internal::is_default(&self.field__name4_) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("fieldName4", &__With(&self.field__name4_))?;
+        }
+        if !wkt::internal::is_default(&self.field0name5) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("field0name5", &__With(&self.field0name5))?;
+        }
+        if !wkt::internal::is_default(&self.field_0_name6) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("field0Name6", &__With(&self.field_0_name6))?;
+        }
+        if !wkt::internal::is_default(&self.field_name_7) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("fieldName7", &__With(&self.field_name_7))?;
+        }
+        if !wkt::internal::is_default(&self.field_name_8) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("FieldName8", &__With(&self.field_name_8))?;
+        }
+        if !wkt::internal::is_default(&self.field_name_9) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("fieldName9", &__With(&self.field_name_9))?;
+        }
+        if !wkt::internal::is_default(&self.field_name_10) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("FieldName10", &__With(&self.field_name_10))?;
+        }
+        if !wkt::internal::is_default(&self.field_name_11) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("FIELDNAME11", &__With(&self.field_name_11))?;
+        }
+        if !wkt::internal::is_default(&self.field_name_12) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("FIELDName12", &__With(&self.field_name_12))?;
+        }
+        if !wkt::internal::is_default(&self.__field_name13) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("FieldName13", &__With(&self.__field_name13))?;
+        }
+        if !wkt::internal::is_default(&self.__field_name_14) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("FieldName14", &__With(&self.__field_name_14))?;
+        }
+        if !wkt::internal::is_default(&self.field__name15) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("fieldName15", &__With(&self.field__name15))?;
+        }
+        if !wkt::internal::is_default(&self.field__name_16) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("fieldName16", &__With(&self.field__name_16))?;
+        }
+        if !wkt::internal::is_default(&self.field_name17__) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("fieldName17", &__With(&self.field_name17__))?;
+        }
+        if !wkt::internal::is_default(&self.field_name_18__) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("FieldName18", &__With(&self.field_name_18__))?;
+        }
+        if !self._unknown_fields.is_empty() {
+            for (key, value) in self._unknown_fields.iter() {
+                state.serialize_entry(key, &value)?;
+            }
+        }
+        state.end()
+    }
+}
+
 /// Defines additional types related to [TestAllTypesProto3].
 pub mod test_all_types_proto_3 {
     #[allow(unused_imports)]
     use super::*;
 
-    #[serde_with::serde_as]
-    #[derive(Clone, Debug, Default, PartialEq, serde::Deserialize, serde::Serialize)]
-    #[serde(default, rename_all = "camelCase")]
+    #[derive(Clone, Debug, Default, PartialEq)]
     #[non_exhaustive]
     pub struct NestedMessage {
-        #[serde(skip_serializing_if = "wkt::internal::is_default")]
-        #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
         pub a: i32,
 
-        #[serde(skip_serializing_if = "std::option::Option::is_none")]
         pub corecursive:
             std::option::Option<std::boxed::Box<crate::generated::test_protos::TestAllTypesProto3>>,
 
-        #[serde(flatten, skip_serializing_if = "serde_json::Map::is_empty")]
         _unknown_fields: serde_json::Map<std::string::String, serde_json::Value>,
     }
 
@@ -2540,6 +5903,136 @@ pub mod test_all_types_proto_3 {
     impl wkt::message::Message for NestedMessage {
         fn typename() -> &'static str {
             "type.googleapis.com/protobuf_test_messages.proto3.TestAllTypesProto3.NestedMessage"
+        }
+    }
+
+    #[doc(hidden)]
+    impl<'de> serde::de::Deserialize<'de> for NestedMessage {
+        fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+        where
+            D: serde::Deserializer<'de>,
+        {
+            #[allow(non_camel_case_types)]
+            #[doc(hidden)]
+            enum __FieldTag {
+                __a,
+                __corecursive,
+                Unknown(std::string::String),
+            }
+            impl<'de> serde::de::Deserialize<'de> for __FieldTag {
+                fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+                where
+                    D: serde::Deserializer<'de>,
+                {
+                    struct Visitor;
+                    impl<'de> serde::de::Visitor<'de> for Visitor {
+                        type Value = __FieldTag;
+                        fn expecting(
+                            &self,
+                            formatter: &mut std::fmt::Formatter,
+                        ) -> std::fmt::Result {
+                            formatter.write_str("a field name for NestedMessage")
+                        }
+                        fn visit_str<E>(self, value: &str) -> std::result::Result<Self::Value, E>
+                        where
+                            E: serde::de::Error,
+                        {
+                            use std::result::Result::Ok;
+                            match value {
+                                "a" => Ok(__FieldTag::__a),
+                                "corecursive" => Ok(__FieldTag::__corecursive),
+                                _ => Ok(__FieldTag::Unknown(value.to_string())),
+                            }
+                        }
+                    }
+                    deserializer.deserialize_identifier(Visitor)
+                }
+            }
+            struct Visitor;
+            impl<'de> serde::de::Visitor<'de> for Visitor {
+                type Value = NestedMessage;
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("struct NestedMessage")
+                }
+                fn visit_map<A>(self, mut map: A) -> std::result::Result<Self::Value, A::Error>
+                where
+                    A: serde::de::MapAccess<'de>,
+                {
+                    #[allow(unused_imports)]
+                    use serde::de::Error;
+                    #[allow(unused_imports)]
+                    use std::option::Option::Some;
+                    let mut result = Self::Value::new();
+                    while let Some(tag) = map.next_key::<__FieldTag>()? {
+                        #[allow(clippy::match_single_binding)]
+                        match tag {
+                            __FieldTag::__a => {
+                                struct __With(std::option::Option<i32>);
+                                impl<'de> serde::de::Deserialize<'de> for __With {
+                                    fn deserialize<D>(
+                                        deserializer: D,
+                                    ) -> std::result::Result<Self, D::Error>
+                                    where
+                                        D: serde::de::Deserializer<'de>,
+                                    {
+                                        serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                    }
+                                }
+                                if let Some(value) = map.next_value::<__With>()?.0 {
+                                    result.a = value;
+                                }
+                            }
+                            __FieldTag::__corecursive => {
+                                if let Some(value) = map.next_value::<std::option::Option<
+                                    std::boxed::Box<
+                                        crate::generated::test_protos::TestAllTypesProto3,
+                                    >,
+                                >>()? {
+                                    result.corecursive = Some(value);
+                                }
+                            }
+                            __FieldTag::Unknown(key) => {
+                                let value = map.next_value::<serde_json::Value>()?;
+                                result._unknown_fields.insert(key, value);
+                            }
+                        }
+                    }
+                    Ok(result)
+                }
+            }
+            deserializer.deserialize_any(Visitor)
+        }
+    }
+
+    #[doc(hidden)]
+    impl serde::ser::Serialize for NestedMessage {
+        fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+        where
+            S: serde::ser::Serializer,
+        {
+            use serde::ser::SerializeMap;
+            let mut state = serializer.serialize_map(None)?;
+            if !wkt::internal::is_default(&self.a) {
+                struct __With<'a>(&'a i32);
+                impl<'a> serde::ser::Serialize for __With<'a> {
+                    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                    where
+                        S: serde::ser::Serializer,
+                    {
+                        serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                    }
+                }
+                state.serialize_entry("a", &__With(&self.a))?;
+            }
+            if self.corecursive.is_some() {
+                state.serialize_entry("corecursive", &self.corecursive)?;
+            }
+            if !self._unknown_fields.is_empty() {
+                for (key, value) in self._unknown_fields.iter() {
+                    state.serialize_entry(key, &value)?;
+                }
+            }
+            state.end()
         }
     }
 
@@ -2816,42 +6309,29 @@ pub mod test_all_types_proto_3 {
         }
     }
 
-    #[serde_with::serde_as]
-    #[derive(Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
-    #[serde(rename_all = "camelCase")]
+    #[derive(Clone, Debug, PartialEq)]
     #[non_exhaustive]
     pub enum OneofField {
-        OneofUint32(#[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::U32>")] u32),
+        OneofUint32(u32),
         OneofNestedMessage(
             std::boxed::Box<crate::generated::test_protos::test_all_types_proto_3::NestedMessage>,
         ),
-        OneofString(#[serde_as(as = "serde_with::DefaultOnNull<_>")] std::string::String),
-        OneofBytes(
-            #[serde_as(as = "serde_with::DefaultOnNull<serde_with::base64::Base64>")]
-            ::bytes::Bytes,
-        ),
-        OneofBool(#[serde_as(as = "serde_with::DefaultOnNull<_>")] bool),
-        OneofUint64(#[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::U64>")] u64),
-        OneofFloat(#[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::F32>")] f32),
-        OneofDouble(#[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::F64>")] f64),
-        OneofEnum(
-            #[serde_as(as = "serde_with::DefaultOnNull<_>")]
-            crate::generated::test_protos::test_all_types_proto_3::NestedEnum,
-        ),
-        OneofNullValue(#[serde_as(as = "serde_with::DefaultOnNull<_>")] wkt::NullValue),
+        OneofString(std::string::String),
+        OneofBytes(::bytes::Bytes),
+        OneofBool(bool),
+        OneofUint64(u64),
+        OneofFloat(f32),
+        OneofDouble(f64),
+        OneofEnum(crate::generated::test_protos::test_all_types_proto_3::NestedEnum),
+        OneofNullValue(wkt::NullValue),
     }
 }
 
-#[serde_with::serde_as]
-#[derive(Clone, Debug, Default, PartialEq, serde::Deserialize, serde::Serialize)]
-#[serde(default, rename_all = "camelCase")]
+#[derive(Clone, Debug, Default, PartialEq)]
 #[non_exhaustive]
 pub struct ForeignMessage {
-    #[serde(skip_serializing_if = "wkt::internal::is_default")]
-    #[serde_as(as = "serde_with::DefaultOnNull<wkt::internal::I32>")]
     pub c: i32,
 
-    #[serde(flatten, skip_serializing_if = "serde_json::Map::is_empty")]
     _unknown_fields: serde_json::Map<std::string::String, serde_json::Value>,
 }
 
@@ -2873,12 +6353,122 @@ impl wkt::message::Message for ForeignMessage {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(Clone, Debug, Default, PartialEq, serde::Deserialize, serde::Serialize)]
-#[serde(default, rename_all = "camelCase")]
+#[doc(hidden)]
+impl<'de> serde::de::Deserialize<'de> for ForeignMessage {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        #[allow(non_camel_case_types)]
+        #[doc(hidden)]
+        enum __FieldTag {
+            __c,
+            Unknown(std::string::String),
+        }
+        impl<'de> serde::de::Deserialize<'de> for __FieldTag {
+            fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct Visitor;
+                impl<'de> serde::de::Visitor<'de> for Visitor {
+                    type Value = __FieldTag;
+                    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                        formatter.write_str("a field name for ForeignMessage")
+                    }
+                    fn visit_str<E>(self, value: &str) -> std::result::Result<Self::Value, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        use std::result::Result::Ok;
+                        match value {
+                            "c" => Ok(__FieldTag::__c),
+                            _ => Ok(__FieldTag::Unknown(value.to_string())),
+                        }
+                    }
+                }
+                deserializer.deserialize_identifier(Visitor)
+            }
+        }
+        struct Visitor;
+        impl<'de> serde::de::Visitor<'de> for Visitor {
+            type Value = ForeignMessage;
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("struct ForeignMessage")
+            }
+            fn visit_map<A>(self, mut map: A) -> std::result::Result<Self::Value, A::Error>
+            where
+                A: serde::de::MapAccess<'de>,
+            {
+                #[allow(unused_imports)]
+                use serde::de::Error;
+                #[allow(unused_imports)]
+                use std::option::Option::Some;
+                let mut result = Self::Value::new();
+                while let Some(tag) = map.next_key::<__FieldTag>()? {
+                    #[allow(clippy::match_single_binding)]
+                    match tag {
+                        __FieldTag::__c => {
+                            struct __With(std::option::Option<i32>);
+                            impl<'de> serde::de::Deserialize<'de> for __With {
+                                fn deserialize<D>(
+                                    deserializer: D,
+                                ) -> std::result::Result<Self, D::Error>
+                                where
+                                    D: serde::de::Deserializer<'de>,
+                                {
+                                    serde_with::As::< std::option::Option<wkt::internal::I32> >::deserialize(deserializer).map(__With)
+                                }
+                            }
+                            if let Some(value) = map.next_value::<__With>()?.0 {
+                                result.c = value;
+                            }
+                        }
+                        __FieldTag::Unknown(key) => {
+                            let value = map.next_value::<serde_json::Value>()?;
+                            result._unknown_fields.insert(key, value);
+                        }
+                    }
+                }
+                Ok(result)
+            }
+        }
+        deserializer.deserialize_any(Visitor)
+    }
+}
+
+#[doc(hidden)]
+impl serde::ser::Serialize for ForeignMessage {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        use serde::ser::SerializeMap;
+        let mut state = serializer.serialize_map(None)?;
+        if !wkt::internal::is_default(&self.c) {
+            struct __With<'a>(&'a i32);
+            impl<'a> serde::ser::Serialize for __With<'a> {
+                fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+                where
+                    S: serde::ser::Serializer,
+                {
+                    serde_with::As::<wkt::internal::I32>::serialize(self.0, serializer)
+                }
+            }
+            state.serialize_entry("c", &__With(&self.c))?;
+        }
+        if !self._unknown_fields.is_empty() {
+            for (key, value) in self._unknown_fields.iter() {
+                state.serialize_entry(key, &value)?;
+            }
+        }
+        state.end()
+    }
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
 #[non_exhaustive]
 pub struct NullHypothesisProto3 {
-    #[serde(flatten, skip_serializing_if = "serde_json::Map::is_empty")]
     _unknown_fields: serde_json::Map<std::string::String, serde_json::Value>,
 }
 
@@ -2894,12 +6484,90 @@ impl wkt::message::Message for NullHypothesisProto3 {
     }
 }
 
-#[serde_with::serde_as]
-#[derive(Clone, Debug, Default, PartialEq, serde::Deserialize, serde::Serialize)]
-#[serde(default, rename_all = "camelCase")]
+#[doc(hidden)]
+impl<'de> serde::de::Deserialize<'de> for NullHypothesisProto3 {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        #[allow(non_camel_case_types)]
+        #[doc(hidden)]
+        enum __FieldTag {
+            Unknown(std::string::String),
+        }
+        impl<'de> serde::de::Deserialize<'de> for __FieldTag {
+            fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct Visitor;
+                impl<'de> serde::de::Visitor<'de> for Visitor {
+                    type Value = __FieldTag;
+                    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                        formatter.write_str("a field name for NullHypothesisProto3")
+                    }
+                    fn visit_str<E>(self, value: &str) -> std::result::Result<Self::Value, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        use std::result::Result::Ok;
+                        Ok(__FieldTag::Unknown(value.to_string()))
+                    }
+                }
+                deserializer.deserialize_identifier(Visitor)
+            }
+        }
+        struct Visitor;
+        impl<'de> serde::de::Visitor<'de> for Visitor {
+            type Value = NullHypothesisProto3;
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("struct NullHypothesisProto3")
+            }
+            fn visit_map<A>(self, mut map: A) -> std::result::Result<Self::Value, A::Error>
+            where
+                A: serde::de::MapAccess<'de>,
+            {
+                #[allow(unused_imports)]
+                use serde::de::Error;
+                #[allow(unused_imports)]
+                use std::option::Option::Some;
+                let mut result = Self::Value::new();
+                while let Some(tag) = map.next_key::<__FieldTag>()? {
+                    #[allow(clippy::match_single_binding)]
+                    match tag {
+                        __FieldTag::Unknown(key) => {
+                            let value = map.next_value::<serde_json::Value>()?;
+                            result._unknown_fields.insert(key, value);
+                        }
+                    }
+                }
+                Ok(result)
+            }
+        }
+        deserializer.deserialize_any(Visitor)
+    }
+}
+
+#[doc(hidden)]
+impl serde::ser::Serialize for NullHypothesisProto3 {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        use serde::ser::SerializeMap;
+        let mut state = serializer.serialize_map(None)?;
+        if !self._unknown_fields.is_empty() {
+            for (key, value) in self._unknown_fields.iter() {
+                state.serialize_entry(key, &value)?;
+            }
+        }
+        state.end()
+    }
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
 #[non_exhaustive]
 pub struct EnumOnlyProto3 {
-    #[serde(flatten, skip_serializing_if = "serde_json::Map::is_empty")]
     _unknown_fields: serde_json::Map<std::string::String, serde_json::Value>,
 }
 
@@ -2912,6 +6580,87 @@ impl EnumOnlyProto3 {
 impl wkt::message::Message for EnumOnlyProto3 {
     fn typename() -> &'static str {
         "type.googleapis.com/protobuf_test_messages.proto3.EnumOnlyProto3"
+    }
+}
+
+#[doc(hidden)]
+impl<'de> serde::de::Deserialize<'de> for EnumOnlyProto3 {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        #[allow(non_camel_case_types)]
+        #[doc(hidden)]
+        enum __FieldTag {
+            Unknown(std::string::String),
+        }
+        impl<'de> serde::de::Deserialize<'de> for __FieldTag {
+            fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                struct Visitor;
+                impl<'de> serde::de::Visitor<'de> for Visitor {
+                    type Value = __FieldTag;
+                    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                        formatter.write_str("a field name for EnumOnlyProto3")
+                    }
+                    fn visit_str<E>(self, value: &str) -> std::result::Result<Self::Value, E>
+                    where
+                        E: serde::de::Error,
+                    {
+                        use std::result::Result::Ok;
+                        Ok(__FieldTag::Unknown(value.to_string()))
+                    }
+                }
+                deserializer.deserialize_identifier(Visitor)
+            }
+        }
+        struct Visitor;
+        impl<'de> serde::de::Visitor<'de> for Visitor {
+            type Value = EnumOnlyProto3;
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("struct EnumOnlyProto3")
+            }
+            fn visit_map<A>(self, mut map: A) -> std::result::Result<Self::Value, A::Error>
+            where
+                A: serde::de::MapAccess<'de>,
+            {
+                #[allow(unused_imports)]
+                use serde::de::Error;
+                #[allow(unused_imports)]
+                use std::option::Option::Some;
+                let mut result = Self::Value::new();
+                while let Some(tag) = map.next_key::<__FieldTag>()? {
+                    #[allow(clippy::match_single_binding)]
+                    match tag {
+                        __FieldTag::Unknown(key) => {
+                            let value = map.next_value::<serde_json::Value>()?;
+                            result._unknown_fields.insert(key, value);
+                        }
+                    }
+                }
+                Ok(result)
+            }
+        }
+        deserializer.deserialize_any(Visitor)
+    }
+}
+
+#[doc(hidden)]
+impl serde::ser::Serialize for EnumOnlyProto3 {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::ser::Serializer,
+    {
+        use serde::ser::SerializeMap;
+        let mut state = serializer.serialize_map(None)?;
+        if !self._unknown_fields.is_empty() {
+            for (key, value) in self._unknown_fields.iter() {
+                state.serialize_entry(key, &value)?;
+            }
+        }
+        state.end()
     }
 }
 

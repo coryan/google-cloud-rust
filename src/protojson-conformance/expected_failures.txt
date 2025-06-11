@@ -12,16 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-[general]
-language             = 'rust'
-specification-source = 'src/google/protobuf'
-
-[source]
-roots        = 'conformance'
-include-list = 'test_messages_proto3.proto'
-
-[codec]
-copyright-year        = '2025'
-template-override     = 'templates/mod'
-module-path           = 'crate::generated::test_protos'
-with-generated-serde  = 'true'
+# We believe Rust correctly accepts `t` and `z` and spaces for RFC 3339 dates.
+Required.Proto3.JsonInput.TimestampJsonInputLowercaseT # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.TimestampJsonInputLowercaseZ # Should have failed to parse, but didn't.
+Required.Proto3.JsonInput.TimestampJsonInputMissingT # Should have failed to parse, but didn't.

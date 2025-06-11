@@ -19,25 +19,37 @@ limitations under the License.
 {{^IsOneOf}}
 {{^Optional}}
 if let Some(value) = map.next_value::<std::option::Option<{{{Codec.FieldType}}}>>()?
-    {{#Codec.IsWktValue}}.or(Some(wkt::Value::Null)){{/Codec.IsWktValue}}
-    {{#Codec.IsWktNullValue}}.or(Some(wkt::NullValue)){{/Codec.IsWktNullValue}}
+    {{#Codec.IsWktValue}}
+    .or(Some(wkt::Value::Null))
+    {{/Codec.IsWktValue}}
+    {{#Codec.IsWktNullValue}}
+    .or(Some(wkt::NullValue))
+    {{/Codec.IsWktNullValue}}
 {
     result.{{Codec.FieldName}} = value;
 }
 {{/Optional}}
 {{#Optional}}
 if let Some(value) = map.next_value::<{{{Codec.FieldType}}}>()?
-    {{#Codec.IsWktValue}}.or(Some(wkt::Value::Null)){{/Codec.IsWktValue}}
-    {{#Codec.IsWktNullValue}}.or(Some(wkt::NullValue)){{/Codec.IsWktNullValue}}
+    {{#Codec.IsWktValue}}
+    .or(Some(wkt::Value::Null))
+    {{/Codec.IsWktValue}}
+    {{#Codec.IsWktNullValue}}
+    .or(Some(wkt::NullValue))
+    {{/Codec.IsWktNullValue}}
 {
     result.{{Codec.FieldName}} = Some(value);
 }
 {{/Optional}}
 {{/IsOneOf}}
 {{#IsOneOf}}
-if let Some(value) = map.next_value::<std::option::Option<{{{Codec.FieldType}}}>>()? 
-    {{#Codec.IsWktValue}}.or(Some(std::boxed::Box::new(wkt::Value::Null))){{/Codec.IsWktValue}}
-    {{#Codec.IsWktNullValue}}.or(Some(wkt::NullValue)){{/Codec.IsWktNullValue}}
+if let Some(value) = map.next_value::<std::option::Option<{{{Codec.FieldType}}}>>()?
+    {{#Codec.IsWktValue}}
+    .or(Some(std::boxed::Box::new(wkt::Value::Null)))
+    {{/Codec.IsWktValue}}
+    {{#Codec.IsWktNullValue}}
+    .or(Some(wkt::NullValue))
+    {{/Codec.IsWktNullValue}}
 {
     if result.{{Group.Codec.FieldName}}.is_some() {
         return std::result::Result::Err(A::Error::duplicate_field(
