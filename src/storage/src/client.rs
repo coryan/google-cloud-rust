@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use futures::stream::unfold;
 pub use crate::Error;
 pub use crate::Result;
 use auth::credentials::CacheableResource;
 use base64::Engine;
 use base64::prelude::BASE64_STANDARD;
 pub use control::model::Object;
+use futures::stream::unfold;
 use http::Extensions;
 use sha2::{Digest, Sha256};
 
@@ -415,8 +415,9 @@ impl<P> UploadObject<P> {
     /// # tokio_test::block_on(async {
     /// # use google_cloud_storage::client::Storage;
     /// # let client = Storage::builder().build().await?;
+    /// let payload = tokio::fs::File::open("my-source-file").await?;
     /// let response = client
-    ///     .insert_object("projects/_/buckets/my-bucket", "my-object", "the quick brown fox jumped over the lazy dog")
+    ///     .upload_object("projects/_/buckets/my-bucket", "my-object", payload)
     ///     .send()
     ///     .await?;
     /// println!("response details={response:?}");
@@ -427,11 +428,35 @@ impl<P> UploadObject<P> {
         P: crate::data_source::MultipassSource + Send + Sync + 'static,
         P::Error: std::error::Error + Send + Sync + 'static,
     {
-        match self.payload.size_hint() {
-            (_, None) => self.send_resumable().await,
-            (_, Some(s)) if s < MAXIMUM_ONESHOT_SIZE => self.send_oneshot().await,
-            (_, Some(_)) => self.send_resumable().await,
-        }
+        self.send_oneshot().await
+        // match self.payload.size_hint() {
+        // (_, None) => self.send_resumable().await,
+        // (_, Some(s)) if s < MAXIMUM_ONESHOT_SIZE => self.send_oneshot().await,
+        // (_, Some(_)) => self.send_resumable().await,
+        // }
+    }
+
+    /// The encryption key used with the Customer-Supplied Encryption Keys
+    /// feature. In raw bytes format (not base64-encoded).
+    ///
+    /// Example:
+    /// ```
+    /// # tokio_test::block_on(async {
+    /// # use google_cloud_storage::client::Storage;
+    /// # use google_cloud_storage::client::KeyAes256;
+    /// # let client = Storage::builder().build().await?;
+    /// let key: &[u8] = &[97; 32]; // Only good for an example.
+    /// let response = client
+    ///     .upload_object("projects/_/buckets/my-bucket", "my-object", "the quick brown fox jumped over the lazy dog")
+    ///     .with_key(KeyAes256::new(key)?)
+    ///     .send()
+    ///     .await?;
+    /// println!("response details={response:?}");
+    /// # Ok::<(), anyhow::Error>(()) });
+    /// ```
+    pub fn with_key(mut self, v: KeyAes256) -> Self {
+        self.request.common_object_request_params = Some(v.into());
+        self
     }
 
     fn new<B, O>(inner: std::sync::Arc<StorageInner>, bucket: B, object: O, payload: P) -> Self
@@ -451,13 +476,6 @@ impl<P> UploadObject<P> {
             request,
             payload,
         }
-    }
-
-    async fn send_resumable(self) -> crate::Result<Object> 
-    where
-        P: crate::data_source::MultipassSource,
-    {
-        panic!();
     }
 
     async fn send_oneshot(self) -> crate::Result<Object>
@@ -516,39 +534,24 @@ impl<P> UploadObject<P> {
         );
 
         let builder = self.inner.apply_auth_headers(builder).await?;
-                let stream = Box::pin(unfold(Some(self.payload), move |state| async move {
+            tracing::info!("stream [0]");
+        let stream = Box::pin(unfold(Some(self.payload), move |state| async move {
+            tracing::info!("stream [1]");
             if let Some(mut payload) = state {
+            tracing::info!("stream [2]");
                 if let Some(n) = payload.next().await {
+                    tracing::info!("stream [3] {n:?}");
                     return Some((n, Some(payload)));
                 }
             }
+                tracing::info!("stream [4]");
             None
         }));
+            tracing::info!("stream [5]");
         let builder = builder.body(reqwest::Body::wrap_stream(stream));
-        Ok(builder)
-    }
+                    tracing::info!("stream [6] {builder:?}");
 
-    /// The encryption key used with the Customer-Supplied Encryption Keys
-    /// feature. In raw bytes format (not base64-encoded).
-    ///
-    /// Example:
-    /// ```
-    /// # tokio_test::block_on(async {
-    /// # use google_cloud_storage::client::Storage;
-    /// # use google_cloud_storage::client::KeyAes256;
-    /// # let client = Storage::builder().build().await?;
-    /// let key: &[u8] = &[97; 32];
-    /// let response = client
-    ///     .upload_object("projects/_/buckets/my-bucket", "my-object", "the quick brown fox jumped over the lazy dog")
-    ///     .with_key(KeyAes256::new(key)?)
-    ///     .send()
-    ///     .await?;
-    /// println!("response details={response:?}");
-    /// # Ok::<(), anyhow::Error>(()) });
-    /// ```
-    pub fn with_key(mut self, v: KeyAes256) -> Self {
-        self.request.common_object_request_params = Some(v.into());
-        self
+        Ok(builder)
     }
 }
 

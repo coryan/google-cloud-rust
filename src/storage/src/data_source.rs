@@ -57,7 +57,9 @@ where T: tokio::io::AsyncSeek + tokio::io::AsyncRead + std::marker::Unpin + Send
         use tokio::io::AsyncReadExt;
         let mut buf = Vec::with_capacity(1024 * 1024);
         let mut a = pin!(self);
-        match a.read(&mut buf).await {
+        let r = a.read(&mut buf).await;
+        tracing::info!("*** READING FROM P {r:?}");
+        match r {
             Err(e) => Some(Err(e)),
             Ok(n) if n == 0 => None,
             Ok(_) => Some(Ok(bytes::Bytes::from_owner(buf))),

@@ -18,6 +18,8 @@ use gax::options::RequestOptionsBuilder;
 use gax::paginator::ItemPaginator as _;
 use gax::retry_policy::RetryPolicyExt;
 use lro::Poller;
+use tokio::io::AsyncReadExt;
+use std::io::Write;
 use std::time::Duration;
 use storage_control::client::StorageControl;
 use storage_control::model::Bucket;
@@ -67,6 +69,43 @@ pub async fn objects(builder: storage::client::ClientBuilder) -> Result<()> {
         .set_generation(insert.generation)
         .send()
         .await?;
+
+    let mut file = tempfile::NamedTempFile::new()?;
+    let read = file.reopen()?;
+    let r2 = file.reopen()?;
+    file.write_all(CONTENTS.as_bytes())?;
+
+    let mut p2 = tokio::fs::File::from(r2);
+    tracing::info!("testing upload() : {p2:?}");
+    let mut got = String::new();
+    p2.read_to_string(&mut got).await?;
+    assert_eq!(got.as_str(), CONTENTS);
+
+    tracing::info!("testing upload()");
+    let payload = tokio::fs::File::from(read);
+    let upload = client
+        .upload(&bucket.name, "upload.txt", payload)
+        .send()
+        .await?;
+    tracing::info!("success with upload={upload:?}");
+
+    tracing::info!("testing read_object() [2]");
+    let contents = client
+        .read_object(&bucket.name, &upload.name)
+        .with_generation(upload.generation)
+        .send()
+        .await?;
+    assert_eq!(contents, CONTENTS.as_bytes());
+    tracing::info!("success with contents={contents:?}");
+
+    control
+        .delete_object()
+        .set_bucket(&upload.bucket)
+        .set_object(&upload.name)
+        .set_generation(upload.generation)
+        .send()
+        .await?;
+
     control
         .delete_bucket()
         .set_name(&bucket.name)
