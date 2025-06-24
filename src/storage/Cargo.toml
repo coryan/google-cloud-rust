@@ -29,7 +29,8 @@ rust-version.workspace = true
 [dependencies]
 bytes.workspace       = true
 lazy_static.workspace = true
-reqwest.workspace     = true
+futures.workspace     = true
+reqwest               = { workspace = true, features = ["stream"] }
 serde.workspace       = true
 serde_json.workspace  = true
 serde_with.workspace  = true

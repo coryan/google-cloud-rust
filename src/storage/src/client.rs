@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use futures::stream::unfold;
 pub use crate::Error;
 pub use crate::Result;
 use auth::credentials::CacheableResource;
@@ -423,7 +424,8 @@ impl<P> UploadObject<P> {
     /// ```
     pub async fn send(self) -> crate::Result<Object>
     where
-        P: crate::data_source::MultipassSource,
+        P: crate::data_source::MultipassSource + Send + Sync + 'static,
+        P::Error: std::error::Error + Send + Sync + 'static,
     {
         match self.payload.size_hint() {
             (_, None) => self.send_resumable().await,
@@ -451,7 +453,18 @@ impl<P> UploadObject<P> {
         }
     }
 
-    async fn send_resumable(self) -> crate::Result<Object> {
+    async fn send_resumable(self) -> crate::Result<Object> 
+    where
+        P: crate::data_source::MultipassSource,
+    {
+        panic!();
+    }
+
+    async fn send_oneshot(self) -> crate::Result<Object>
+    where
+        P: crate::data_source::MultipassSource + Send + Sync + 'static,
+        P::Error: std::error::Error + Send + Sync + 'static,
+    {
         let builder = self.start_oneshot().await?;
         tracing::info!("builder={builder:?}");
 
@@ -464,22 +477,11 @@ impl<P> UploadObject<P> {
         Ok(Object::from(response))
     }
 
-    async fn send_oneshot(self) -> crate::Result<Object> {
-        let builder = self.start_oneshot().await?;
-        tracing::info!("builder={builder:?}");
-
-        let builder = builder.body(self.payload);
-
-        let response = builder.send().await.map_err(Error::io)?;
-        if !response.status().is_success() {
-            return gaxi::http::to_http_error(response).await;
-        }
-        let response = response.json::<v1::Object>().await.map_err(Error::io)?;
-
-        Ok(Object::from(response))
-    }
-
-    async fn start_oneshot(self) -> Result<reqwest::RequestBuilder> {
+    async fn start_oneshot(self) -> Result<reqwest::RequestBuilder>
+    where
+        P: crate::data_source::MultipassSource + Send + Sync + 'static,
+        P::Error: std::error::Error + Send + Sync + 'static,
+    {
         use control::model::write_object_request::*;
 
         let resource = match self.request.first_message {
@@ -513,7 +515,17 @@ impl<P> UploadObject<P> {
             self.request.common_object_request_params,
         );
 
-        self.inner.apply_auth_headers(builder).await
+        let builder = self.inner.apply_auth_headers(builder).await?;
+                let stream = Box::pin(unfold(Some(self.payload), move |state| async move {
+            if let Some(mut payload) = state {
+                if let Some(n) = payload.next().await {
+                    return Some((n, Some(payload)));
+                }
+            }
+            None
+        }));
+        let builder = builder.body(reqwest::Body::wrap_stream(stream));
+        Ok(builder)
     }
 
     /// The encryption key used with the Customer-Supplied Encryption Keys
