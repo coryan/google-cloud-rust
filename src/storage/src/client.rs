@@ -23,6 +23,9 @@ use sha2::{Digest, Sha256};
 
 mod v1;
 
+// TODO(#...) - this should be an option in the client or request
+const MAXIMUM_ONESHOT_SIZE: u64 = 4 * 1024 * 1024_u64;
+
 /// Implements a client for the Cloud Storage API.
 ///
 /// # Example
@@ -136,6 +139,15 @@ impl Storage {
         P: Into<bytes::Bytes>,
     {
         InsertObject::new(self.inner.clone(), bucket, object, payload)
+    }
+
+    pub fn upload<B, O, P>(&self, bucket: B, object: O, payload: P) -> UploadObject<P>
+    where
+        B: Into<String>,
+        O: Into<String>,
+        P: crate::data_source::MultipassSource,
+    {
+        UploadObject::new(self.inner.clone(), bucket, object, payload)
     }
 
     /// A simple download into a buffer.
@@ -376,6 +388,146 @@ impl InsertObject {
     /// let key: &[u8] = &[97; 32];
     /// let response = client
     ///     .insert_object("projects/_/buckets/my-bucket", "my-object", "the quick brown fox jumped over the lazy dog")
+    ///     .with_key(KeyAes256::new(key)?)
+    ///     .send()
+    ///     .await?;
+    /// println!("response details={response:?}");
+    /// # Ok::<(), anyhow::Error>(()) });
+    /// ```
+    pub fn with_key(mut self, v: KeyAes256) -> Self {
+        self.request.common_object_request_params = Some(v.into());
+        self
+    }
+}
+
+pub struct UploadObject<P> {
+    inner: std::sync::Arc<StorageInner>,
+    request: control::model::WriteObjectRequest,
+    payload: P,
+}
+
+impl<P> UploadObject<P> {
+    /// A simple upload from a buffer.
+    ///
+    /// # Example
+    /// ```
+    /// # tokio_test::block_on(async {
+    /// # use google_cloud_storage::client::Storage;
+    /// # let client = Storage::builder().build().await?;
+    /// let response = client
+    ///     .insert_object("projects/_/buckets/my-bucket", "my-object", "the quick brown fox jumped over the lazy dog")
+    ///     .send()
+    ///     .await?;
+    /// println!("response details={response:?}");
+    /// # Ok::<(), anyhow::Error>(()) });
+    /// ```
+    pub async fn send(self) -> crate::Result<Object>
+    where
+        P: crate::data_source::MultipassSource,
+    {
+        match self.payload.size_hint() {
+            (_, None) => self.send_resumable().await,
+            (_, Some(s)) if s < MAXIMUM_ONESHOT_SIZE => self.send_oneshot().await,
+            (_, Some(_)) => self.send_resumable().await,
+        }
+    }
+
+    fn new<B, O>(inner: std::sync::Arc<StorageInner>, bucket: B, object: O, payload: P) -> Self
+    where
+        B: Into<String>,
+        O: Into<String>,
+    {
+        let request = control::model::WriteObjectRequest::new().set_write_object_spec(
+            control::model::WriteObjectSpec::new().set_resource(
+                control::model::Object::new()
+                    .set_bucket(bucket)
+                    .set_name(object),
+            ),
+        );
+        UploadObject {
+            inner,
+            request,
+            payload,
+        }
+    }
+
+    async fn send_resumable(self) -> crate::Result<Object> {
+        let builder = self.start_oneshot().await?;
+        tracing::info!("builder={builder:?}");
+
+        let response = builder.send().await.map_err(Error::io)?;
+        if !response.status().is_success() {
+            return gaxi::http::to_http_error(response).await;
+        }
+        let response = response.json::<v1::Object>().await.map_err(Error::io)?;
+
+        Ok(Object::from(response))
+    }
+
+    async fn send_oneshot(self) -> crate::Result<Object> {
+        let builder = self.start_oneshot().await?;
+        tracing::info!("builder={builder:?}");
+
+        let builder = builder.body(self.payload);
+
+        let response = builder.send().await.map_err(Error::io)?;
+        if !response.status().is_success() {
+            return gaxi::http::to_http_error(response).await;
+        }
+        let response = response.json::<v1::Object>().await.map_err(Error::io)?;
+
+        Ok(Object::from(response))
+    }
+
+    async fn start_oneshot(self) -> Result<reqwest::RequestBuilder> {
+        use control::model::write_object_request::*;
+
+        let resource = match self.request.first_message {
+            Some(FirstMessage::WriteObjectSpec(spec)) => spec.resource.unwrap(),
+            _ => unreachable!("write object spec set in constructor"),
+        };
+        let bucket = &resource.bucket;
+        let bucket_id = bucket.strip_prefix("projects/_/buckets/").ok_or_else(|| {
+            Error::binding(format!(
+                "malformed bucket name, it must start with `projects/_/buckets/`: {bucket}"
+            ))
+        })?;
+        let object = &resource.name;
+        let builder = self
+            .inner
+            .client
+            .request(
+                reqwest::Method::POST,
+                format!("{}/upload/storage/v1/b/{bucket_id}/o", &self.inner.endpoint),
+            )
+            .query(&[("uploadType", "media")])
+            .query(&[("name", object)])
+            .header("content-type", "application/octet-stream")
+            .header(
+                "x-goog-api-client",
+                reqwest::header::HeaderValue::from_static(&self::info::X_GOOG_API_CLIENT_HEADER),
+            );
+
+        let builder = apply_customer_supplied_encryption_headers(
+            builder,
+            self.request.common_object_request_params,
+        );
+
+        self.inner.apply_auth_headers(builder).await
+    }
+
+    /// The encryption key used with the Customer-Supplied Encryption Keys
+    /// feature. In raw bytes format (not base64-encoded).
+    ///
+    /// Example:
+    /// ```
+    /// # tokio_test::block_on(async {
+    /// # use google_cloud_storage::client::Storage;
+    /// # use google_cloud_storage::client::KeyAes256;
+    /// # let client = Storage::builder().build().await?;
+    /// let key: &[u8] = &[97; 32];
+    /// let response = client
+    ///     .upload_object("projects/_/buckets/my-bucket", "my-object", "the quick brown fox jumped over the lazy dog")
     ///     .with_key(KeyAes256::new(key)?)
     ///     .send()
     ///     .await?;
