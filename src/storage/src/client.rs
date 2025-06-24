@@ -25,7 +25,7 @@ use sha2::{Digest, Sha256};
 mod v1;
 
 // TODO(#...) - this should be an option in the client or request
-const MAXIMUM_ONESHOT_SIZE: u64 = 4 * 1024 * 1024_u64;
+const _MAXIMUM_ONESHOT_SIZE: u64 = 4 * 1024 * 1024_u64;
 
 /// Implements a client for the Cloud Storage API.
 ///

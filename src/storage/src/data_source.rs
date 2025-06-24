@@ -56,21 +56,18 @@ where T: tokio::io::AsyncSeek + tokio::io::AsyncRead + std::marker::Unpin + Send
     async fn next(&mut self) -> Option<Result<bytes::Bytes, Self::Error>> {
         use tokio::io::AsyncReadExt;
         let mut buf = Vec::with_capacity(1024 * 1024);
+        buf.resize(buf.capacity(), 0);
         let mut a = pin!(self);
-        let r = a.read(&mut buf).await;
-        tracing::info!("*** READING FROM P {r:?}");
-        match r {
+        match a.read(&mut buf).await {
             Err(e) => Some(Err(e)),
             Ok(n) if n == 0 => None,
-            Ok(_) => Some(Ok(bytes::Bytes::from_owner(buf))),
+            Ok(n) => { buf.resize(n, 0); Some(Ok(bytes::Bytes::from_owner(buf))) },
         }
     }
     fn size_hint(&self) -> (u64, Option<u64>) {
         (0, None)
     }
 }
-
-
 
 impl<T> SinglePassSource for T where T: MultipassSource {
     type Error = T::Error;
@@ -80,5 +77,67 @@ impl<T> SinglePassSource for T where T: MultipassSource {
     }
     fn size_hint(&self) -> (u64, Option<u64>) {
         T::size_hint(&self)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    type Result = anyhow::Result<()>;
+
+    #[tokio::test]
+    async fn from_buffer() -> Result {
+        use std::io::Write;
+        const MB: usize = 1024 * 1024;
+
+        let mut file = tempfile::NamedTempFile::new()?;
+        let path = file.path().to_owned();
+        println!("{path:?}");
+        file.write_all(&[0_u8; MB])?;
+        file.write_all(&[1_u8; MB])?;
+        file.write_all(&[2_u8; MB])?;
+        let read = file.reopen()?;
+
+        let mut got = Vec::new();
+        let mut payload = std::fs::File::open(path.to_str().unwrap())?;
+        loop {
+            use std::io::Read;
+            let mut buf = Vec::with_capacity(MB);
+            buf.resize(MB, 0);
+            let n = payload.read(&mut buf)?;
+            if n == 0 {
+                break;
+            }
+            got.extend_from_slice(&buf);
+        }
+
+        assert_eq!(got.len(), 3 * MB);
+
+        let mut got = Vec::new();
+        let mut payload = tokio::fs::File::open(path.to_str().unwrap()).await?;
+        loop {
+            use tokio::io::AsyncReadExt;
+            let mut buf = Vec::with_capacity(MB);
+            buf.resize(MB, 0);
+            let n = payload.read(&mut buf).await?;
+            if n == 0 {
+                break;
+            }
+            got.extend_from_slice(&buf);
+        }
+
+        assert_eq!(got.len(), 3 * MB);
+
+
+        let mut got = Vec::new();
+        let mut payload = tokio::fs::File::from(read);
+        while let Some(r) = MultipassSource::next( &mut payload).await {
+            let bytes = r?;
+            got.extend_from_slice(&bytes);
+        }
+
+        assert_eq!(got.len(), 3 * MB);
+
+        Ok(())
     }
 }
