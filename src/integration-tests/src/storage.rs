@@ -18,13 +18,13 @@ use gax::options::RequestOptionsBuilder;
 use gax::paginator::ItemPaginator as _;
 use gax::retry_policy::RetryPolicyExt;
 use lro::Poller;
-use tokio::io::AsyncReadExt;
 use std::io::Write;
 use std::time::Duration;
 use storage_control::client::StorageControl;
 use storage_control::model::Bucket;
 use storage_control::model::bucket::iam_config::UniformBucketLevelAccess;
 use storage_control::model::bucket::{HierarchicalNamespace, IamConfig};
+use tokio::io::AsyncReadExt;
 
 pub async fn objects(builder: storage::client::ClientBuilder) -> Result<()> {
     // Enable a basic subscriber. Useful to troubleshoot problems and visually
@@ -90,6 +90,30 @@ pub async fn objects(builder: storage::client::ClientBuilder) -> Result<()> {
     tracing::info!("success with upload={upload:?}");
 
     tracing::info!("testing read_object() [2]");
+    let contents = client
+        .read_object(&bucket.name, &upload.name)
+        .with_generation(upload.generation)
+        .send()
+        .await?;
+    assert_eq!(contents, CONTENTS.as_bytes());
+    tracing::info!("success with contents={contents:?}");
+
+    control
+        .delete_object()
+        .set_bucket(&upload.bucket)
+        .set_object(&upload.name)
+        .set_generation(upload.generation)
+        .send()
+        .await?;
+
+    tracing::info!("testing upload() [2]");
+    let upload = client
+        .upload(&bucket.name, "upload-memory.txt", CONTENTS)
+        .send()
+        .await?;
+    tracing::info!("success with upload={upload:?}");
+
+    tracing::info!("testing read_object() [3]");
     let contents = client
         .read_object(&bucket.name, &upload.name)
         .with_generation(upload.generation)

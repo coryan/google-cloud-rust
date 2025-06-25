@@ -69,6 +69,83 @@ where T: tokio::io::AsyncSeek + tokio::io::AsyncRead + std::marker::Unpin + Send
     }
 }
 
+pub struct BytesSource {
+    data: bytes::Bytes,
+    current: bytes::Bytes,
+}
+
+impl BytesSource {
+    pub fn new(data: bytes::Bytes) -> Self {
+        let current = data.clone();
+        Self { data, current }
+    }
+}
+
+impl MultipassSource for BytesSource {
+    type Error = std::io::Error;
+
+    async fn seek(&mut self, offset: u64) -> std::result::Result<(), Self::Error> {
+        let start = if offset > self.data.len() as u64 {
+            self.data.len()
+        } else {
+            offset as usize
+        };
+        self.current = self.data.slice(start..);
+        Ok(())
+    }
+    async fn next(&mut self) -> Option<Result<bytes::Bytes, Self::Error>> {
+        if self.current.is_empty() {
+            return None;
+        }
+        let r = self.current.clone();
+        self.current.clear();
+        Some(Ok(r))
+    }
+    fn size_hint(&self) -> (u64, Option<u64>) {
+        let len = self.data.len() as u64;
+        (len, Some(len))
+    }
+}
+
+pub struct ObjectData<T> {
+    inner: T
+}
+
+impl<T> MultipassSource for ObjectData<T> where T: MultipassSource {
+    type Error = T::Error;
+
+    fn seek(&mut self, offset: u64) -> impl Future<Output = std::result::Result<(), Self::Error>> {
+        self.inner.seek(offset)    
+    }
+    fn next(&mut self) -> impl Future<Output = Option<Result<bytes::Bytes, Self::Error>>> + Send {
+        self.inner.next()
+    }
+    fn size_hint(&self) -> (u64, Option<u64>) {
+        self.inner.size_hint()
+    }
+}
+
+impl From<bytes::Bytes> for ObjectData<BytesSource> {
+    fn from(value: bytes::Bytes) -> Self {
+        let inner = BytesSource::new(value);
+        Self { inner }
+    }
+}
+
+impl From<&'static str> for ObjectData<BytesSource> {
+    fn from(value: &'static str) -> Self {
+        let inner = BytesSource::new(bytes::Bytes::from_static(value.as_bytes()));
+        Self { inner }
+    }
+}
+
+impl<T> From<T> for ObjectData<T> 
+where T: MultipassSource {
+    fn from(value: T) -> Self {
+        Self { inner: value }
+    }
+}
+
 impl<T> SinglePassSource for T where T: MultipassSource {
     type Error = T::Error;
 

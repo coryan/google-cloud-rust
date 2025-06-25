@@ -142,11 +142,11 @@ impl Storage {
         InsertObject::new(self.inner.clone(), bucket, object, payload)
     }
 
-    pub fn upload<B, O, P>(&self, bucket: B, object: O, payload: P) -> UploadObject<P>
+    pub fn upload<B, O, P, T>(&self, bucket: B, object: O, payload: T) -> UploadObject<P>
     where
         B: Into<String>,
         O: Into<String>,
-        P: crate::data_source::MultipassSource,
+        T: Into<crate::data_source::ObjectData<P>>,
     {
         UploadObject::new(self.inner.clone(), bucket, object, payload)
     }
@@ -404,7 +404,7 @@ impl InsertObject {
 pub struct UploadObject<P> {
     inner: std::sync::Arc<StorageInner>,
     request: control::model::WriteObjectRequest,
-    payload: P,
+    payload: crate::data_source::ObjectData<P>,
 }
 
 impl<P> UploadObject<P> {
@@ -459,10 +459,11 @@ impl<P> UploadObject<P> {
         self
     }
 
-    fn new<B, O>(inner: std::sync::Arc<StorageInner>, bucket: B, object: O, payload: P) -> Self
+    fn new<B, O, T>(inner: std::sync::Arc<StorageInner>, bucket: B, object: O, payload: T) -> Self
     where
         B: Into<String>,
         O: Into<String>,
+        T: Into<crate::data_source::ObjectData<P>>
     {
         let request = control::model::WriteObjectRequest::new().set_write_object_spec(
             control::model::WriteObjectSpec::new().set_resource(
@@ -474,7 +475,7 @@ impl<P> UploadObject<P> {
         UploadObject {
             inner,
             request,
-            payload,
+            payload: payload.into(),
         }
     }
 
@@ -539,6 +540,7 @@ impl<P> UploadObject<P> {
             tracing::info!("stream [1]");
             if let Some(mut payload) = state {
             tracing::info!("stream [2]");
+                use crate::data_source::MultipassSource;
                 if let Some(n) = payload.next().await {
                     tracing::info!("stream [3] {n:?}");
                     return Some((n, Some(payload)));
