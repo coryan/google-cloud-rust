@@ -42,8 +42,53 @@ To run this tutorial you will need some large objects in Cloud Storage. You
 can create such objects by seeding a smaller object and then repeatedly compose
 it to create objects of the desired size.
 
+We will put all the code for seeding the data in its own function:
+
 ```rust,ignore,noplayground
-{{#rustdoc_include ../../samples/tests/storage/striped.rs:seed-data}}
+{{#rustdoc_include ../../samples/tests/storage/striped.rs:seed-function}}
+    // ... details omitted ...
+{{#rustdoc_include ../../samples/tests/storage/striped.rs:seed-function-end}}
+```
+
+As usual, we start with some use declarations and initialize some Cloud Storage
+clients:
+
+```rust,ignore,noplayground
+{{#rustdoc_include ../../samples/tests/storage/striped.rs:seed-client}}
+```
+
+Using this client, we upload a 1MiB object:
+
+```rust,ignore,noplayground
+{{#rustdoc_include ../../samples/tests/storage/striped.rs:upload-1MiB}}
+```
+
+We then concatenate 32 copies of this object into a larger object. This
+operation does not require downloading or uploading any data, it is performed
+by the service:
+
+```rust,ignore,noplayground
+{{#rustdoc_include ../../samples/tests/storage/striped.rs:compose-32}}
+```
+
+We can repeat the operation to get a 1GiB, 2GiB, 4GiB, 8GiB, and 16GiB object:
+
+```rust,ignore,noplayground
+{{#rustdoc_include ../../samples/tests/storage/striped.rs:compose-1024}}
+```
+
+## Striped downloads
+
+```rust,ignore,noplayground
+{{#rustdoc_include ../../samples/tests/storage/striped.rs:download-function}}
+    // ... details omitted ...
+{{#rustdoc_include ../../samples/tests/storage/striped.rs:download-function-end}}
+```
+
+## Full program
+
+```rust,ignore,noplayground
+{{#rustdoc_include ../../samples/tests/storage/striped.rs:all}}
 ```
 
 [quickstart guide]: /storage.md#quickstart

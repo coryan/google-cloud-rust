@@ -19,7 +19,7 @@ pub mod storage {
 
     pub use integration_tests::random_bucket_id;
 
-    #[cfg(all(test, feature = "run-integration-tests"))]
+    // #[cfg(all(test, feature = "run-integration-tests"))]
     mod driver {
         use super::*;
 
@@ -44,8 +44,10 @@ pub mod storage {
 
         #[tokio::test(flavor = "multi_thread")]
         async fn striped() -> anyhow::Result<()> {
+            let destination = tempfile::NamedTempFile::new()?;
+            let path = destination.path().to_str().ok_or(anyhow::Error::msg("cannot open temporary file"))?;
             let (control, bucket) = integration_tests::storage::create_test_bucket().await?;
-            let response = super::striped::test(&bucket.name).await;
+            let response = super::striped::test(&bucket.name, path).await;
             // Ignore cleanup errors.
             let _ = integration_tests::storage::cleanup_bucket(control, bucket.name).await;
             response
