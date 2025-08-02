@@ -67,7 +67,9 @@ async fn main() -> anyhow::Result<()> {
         ("READ_ERROR", READ_ERROR.load(Ordering::Relaxed)),
         ("DELETE_ERROR", DELETE_ERROR.load(Ordering::Relaxed)),
         ("SEND_ERROR", SEND_ERROR.load(Ordering::Relaxed)),
-    ].into_iter().for_each(|(key, value)| {
+    ]
+    .into_iter()
+    .for_each(|(key, value)| {
         println!("# {key} = {value}");
     });
     println!("# EOF");
