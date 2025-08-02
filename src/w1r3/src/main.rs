@@ -20,13 +20,25 @@
 //! multiple tasks concurrently.
 
 use clap::Parser;
+use google_cloud_gax::options::RequestOptionsBuilder;
+use google_cloud_gax::retry_policy::RetryPolicyExt;
 use google_cloud_storage::client::{Storage, StorageControl};
+use google_cloud_storage::backoff_policy;
+use google_cloud_storage::retry_policy::RecommendedPolicy;
 use rand::{
     Rng,
     distr::{Alphanumeric, Uniform},
 };
-use std::time::{Duration, Instant};
-use tokio::sync::mpsc::Sender;
+use std::{
+    sync::atomic::{AtomicU64, Ordering},
+    time::{Duration, Instant},
+};
+use tokio::sync::broadcast::{Sender, error::RecvError};
+
+static WRITE_ERROR: AtomicU64 = AtomicU64::new(0);
+static READ_ERROR: AtomicU64 = AtomicU64::new(0);
+static DELETE_ERROR: AtomicU64 = AtomicU64::new(0);
+static SEND_ERROR: AtomicU64 = AtomicU64::new(0);
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -38,114 +50,205 @@ async fn main() -> anyhow::Result<()> {
     let client = Storage::builder().build().await?;
     let control = StorageControl::builder().build().await?;
 
-    let (tx, mut rx) = tokio::sync::mpsc::channel(128);
+    let (tx, mut rx) = tokio::sync::broadcast::channel(128);
     let test_start = Instant::now();
-    let tasks = (0..args.task_count)
-        .map(|i| {
-            tokio::spawn(runner(
-                client.clone(),
-                control.clone(),
-                test_start,
-                args.clone(),
-                i,
-                tx.clone(),
-            ))
-        })
-        .collect::<Vec<_>>();
-    drop(tx);
-
-    println!("{}", Sample::HEADER);
-    let mut sample_count = 0_usize;
-    while let Some(sample) = rx.recv().await {
-        println!("{}", sample.to_row());
-        sample_count += 1;
-    }
-    tracing::info!("Benchmark collected {sample_count} samples");
-
-    for t in tasks {
-        t.await??;
-    }
-    Ok(())
-}
-
-async fn runner(
-    client: Storage,
-    control: StorageControl,
-    _test_start: Instant,
-    args: Args,
-    id: i32,
-    tx: Sender<Sample>,
-) -> anyhow::Result<()> {
-    let _guard = enable_tracing();
     let buffer = bytes::Bytes::from_owner(
         rand::rng()
             .sample_iter(Uniform::new_inclusive(u8::MIN, u8::MAX)?)
             .take(args.max_object_size as usize)
             .collect::<Vec<_>>(),
     );
-    let size = Uniform::new_inclusive(args.min_object_size, args.max_object_size)?;
+    let tasks = (0..args.task_count)
+        .map(|id| {
+            let task = Task {
+                id,
+                start: test_start,
+                client: client.clone(),
+                control: control.clone(),
+                tx: tx.clone(),
+                buffer: buffer.clone(),
+            };
+            tokio::spawn(task.run(args.clone()))
+        })
+        .collect::<Vec<_>>();
+    drop(tx);
 
-    for iteration in 0..args.min_sample_count {
-        let size = rand::rng().sample(size) as usize;
-        let name = random_object_name();
+    let id = uuid::Uuid::new_v4().to_string();
+    println!("Experiment,{}", Sample::HEADER);
+    loop {
+        match rx.recv().await {
+            Ok(sample) => println!("{id},{}", sample.to_row()),
+            Err(RecvError::Closed) => break,
+            Err(RecvError::Lagged(_)) => continue,
+        }
+    }
 
-        let write_start = Instant::now();
-        let upload = client
-            .upload_object(
-                format!("projects/_/buckets/{}", &args.bucket_name),
-                &name,
-                buffer.slice(0..size),
-            )
-            .send_unbuffered()
-            .await;
+    for t in tasks {
+        t.await??;
+    }
+    [
+        ("WRITE_ERROR", WRITE_ERROR.load(Ordering::Relaxed)),
+        ("READ_ERROR", READ_ERROR.load(Ordering::Relaxed)),
+        ("DELETE_ERROR", DELETE_ERROR.load(Ordering::Relaxed)),
+        ("SEND_ERROR", SEND_ERROR.load(Ordering::Relaxed)),
+    ]
+    .into_iter()
+    .for_each(|(key, value)| {
+        println!("# {key} = {value}");
+    });
+    tracing::info!("# EOF");
+    Ok(())
+}
+
+#[derive(Clone)]
+struct Task {
+    client: Storage,
+    control: StorageControl,
+    start: Instant,
+    buffer: bytes::Bytes,
+    id: i32,
+    tx: Sender<Sample>,
+}
+
+type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Object>;
+
+impl Task {
+    async fn run(self, args: Args) -> anyhow::Result<()> {
+        let size = Uniform::new_inclusive(args.min_object_size, args.max_object_size)?;
+
+        for iteration in 0..args.min_sample_count {
+            let name = random_object_name();
+            let size = rand::rng().sample(size) as usize;
+            let (write_op, threshold) = if rand::rng().random_bool(0.5) {
+                (Operation::Resumable, 0_usize)
+            } else {
+                (Operation::SingleShot, size)
+            };
+
+            let write_start = Instant::now();
+            let ex = Experiment {
+                task: self.id,
+                relative: write_start - self.start,
+                iteration,
+                start: write_start,
+                op: write_op,
+                target_size: size,
+                name: &name,
+            };
+            let upload = self
+                .client
+                .upload_object(
+                    format!("projects/_/buckets/{}", &args.bucket_name),
+                    &name,
+                    self.buffer.slice(0..size),
+                )
+                .with_if_generation_match(0)
+                .with_resumable_upload_threshold(threshold)
+                .send_unbuffered()
+                .await;
+            let Ok(upload) = self.on_write(ex, upload).await else {
+                continue;
+            };
+            for op in [Operation::Read0, Operation::Read1, Operation::Read2] {
+                let read_start = Instant::now();
+                let ex = Experiment {
+                    task: self.id,
+                    relative: read_start - self.start,
+                    iteration,
+                    start: read_start,
+                    op,
+                    target_size: size,
+                    name: &upload.name,
+                };
+                let mut read = match self
+                    .client
+                    .read_object(&upload.bucket, &upload.name)
+                    .with_generation(upload.generation)
+                    .send()
+                    .await
+                {
+                    Ok(r) => r,
+                    Err(e) => {
+                        READ_ERROR.fetch_add(1, Ordering::SeqCst);
+                        self.on_error(ex.clone(), &e);
+                        continue;
+                    }
+                };
+                let mut transfer_size = 0;
+                while let Some(result) = read.next().await {
+                    match result {
+                        Ok(b) => transfer_size += b.len(),
+                        Err(e) => {
+                            READ_ERROR.fetch_add(1, Ordering::SeqCst);
+                            self.on_partial_error(ex.clone(), transfer_size, &e);
+                            break;
+                        }
+                    }
+                }
+                if transfer_size != size {
+                    continue;
+                }
+                let sample = Sample::success(ex);
+                if let Err(_) = self.tx.send(sample) {
+                    SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+                }
+            }
+            if self
+                .control
+                .delete_object()
+                .set_bucket(upload.bucket)
+                .set_object(upload.name)
+                .set_generation(upload.generation)
+                .with_idempotency(true)
+                .with_backoff_policy(backoff_policy::default())
+                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(30)))
+                .with_attempt_timeout(Duration::from_secs(5))
+                .send()
+                .await
+                .is_err()
+            {
+                DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
+            }
+        }
+        Ok(())
+    }
+
+    async fn on_write(&self, ex: Experiment<'_>, upload: ResultObject) -> ResultObject {
         let upload = match upload {
             Ok(u) => u,
             Err(e) => {
-                tracing::error!("# Error in upload {e}");
-                continue;
+                WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
+                self.on_error(ex, &e);
+                return Err(e);
             }
         };
-        tx.send(Sample {
-            id,
-            iteration,
-            size,
-            transfer_size: size,
-            op: Operation::Write,
-            elapsed: Instant::now() - write_start,
-        })
-        .await?;
-        for op in [Operation::Read0, Operation::Read1, Operation::Read2] {
-            let read_start = Instant::now();
-            let mut read = client
-                .read_object(&upload.bucket, &upload.name)
-                .with_generation(upload.generation)
-                .send()
-                .await?;
-            let mut transfer_size = 0;
-            while let Some(b) = read.next().await {
-                if let Ok(b) = b {
-                    transfer_size += b.len();
-                }
-            }
-            tx.send(Sample {
-                id,
-                iteration,
-                size,
-                transfer_size,
-                op,
-                elapsed: Instant::now() - read_start,
-            })
-            .await?;
+        let sample = Sample::success(ex);
+        if let Err(_) = self.tx.send(sample) {
+            SEND_ERROR.fetch_add(1, Ordering::SeqCst);
         }
-        let _ = control
-            .delete_object()
-            .set_bucket(upload.bucket)
-            .set_object(upload.name)
-            .set_generation(upload.generation)
-            .send()
-            .await;
+        Ok(upload)
     }
-    Ok(())
+
+    fn on_error(&self, ex: Experiment, error: &google_cloud_storage::Error) {
+        WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
+        let sample = Sample::error(ex, &error);
+        if let Err(_) = self.tx.send(sample) {
+            SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+        }
+    }
+
+    fn on_partial_error(
+        &self,
+        ex: Experiment,
+        transfer_size: usize,
+        error: &google_cloud_storage::Error,
+    ) {
+        WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
+        let sample = Sample::interrupted(ex, transfer_size, &error);
+        if let Err(_) = self.tx.send(sample) {
+            SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+        }
+    }
 }
 
 fn random_object_name() -> String {
@@ -156,33 +259,122 @@ fn random_object_name() -> String {
         .collect()
 }
 
-struct Sample {
-    id: i32,
+#[derive(Clone, Debug)]
+struct Experiment<'a> {
+    task: i32,
+    relative: Duration,
     iteration: u64,
+    start: Instant,
+    op: Operation,
+    target_size: usize,
+    name: &'a str,
+}
+
+#[derive(Clone, Debug)]
+struct Sample {
+    task: i32,
+    iteration: u64,
+    op_start: Duration,
     op: Operation,
     size: usize,
     transfer_size: usize,
     elapsed: Duration,
+    object: String,
+    result: Result,
+    details: String,
 }
 
 impl Sample {
-    const HEADER: &str = "Task,Iteration,Operation,Size,TransferSize,ElapsedMicroseconds";
+    const HEADER: &str = concat!(
+        "Task,Iteration,IterationStart,Operation",
+        ",Size,TransferSize,ElapsedMicroseconds,Object",
+        ",Result,Details"
+    );
+
+    fn error(ex: Experiment, error: &google_cloud_storage::Error) -> Self {
+        Self {
+            task: ex.task,
+            iteration: ex.iteration,
+            op_start: ex.relative,
+            size: ex.target_size,
+            transfer_size: 0,
+            op: ex.op,
+            elapsed: Instant::now() - ex.start,
+            object: ex.name.to_string(),
+            result: Result::Error,
+            details: format!(
+                "W={};R={};S={};D={};{}",
+                WRITE_ERROR.load(Ordering::SeqCst),
+                READ_ERROR.load(Ordering::SeqCst),
+                SEND_ERROR.load(Ordering::SeqCst),
+                DELETE_ERROR.load(Ordering::SeqCst),
+                format!("{error:?}").replace(",", ";")
+            ),
+        }
+    }
+
+    fn interrupted(
+        ex: Experiment,
+        transfer_size: usize,
+        error: &google_cloud_storage::Error,
+    ) -> Self {
+        Self {
+            task: ex.task,
+            iteration: ex.iteration,
+            op_start: ex.relative,
+            size: ex.target_size,
+            transfer_size,
+            op: ex.op,
+            elapsed: Instant::now() - ex.start,
+            object: ex.name.to_string(),
+            result: Result::Interrupted,
+            details: format!(
+                "W={};R={};S={};D={};{}",
+                WRITE_ERROR.load(Ordering::SeqCst),
+                READ_ERROR.load(Ordering::SeqCst),
+                SEND_ERROR.load(Ordering::SeqCst),
+                DELETE_ERROR.load(Ordering::SeqCst),
+                error.http_status_code().unwrap_or_default()
+            ),
+        }
+    }
+
+    fn success(ex: Experiment) -> Self {
+        Self {
+            task: ex.task,
+            iteration: ex.iteration,
+            op_start: ex.relative,
+            size: ex.target_size,
+            transfer_size: ex.target_size,
+            op: ex.op,
+            elapsed: Instant::now() - ex.start,
+            object: ex.name.to_string(),
+            result: Result::Success,
+            details: String::new(),
+        }
+    }
 
     fn to_row(&self) -> String {
         format!(
-            "{},{},{},{},{},{}",
-            self.id,
+            "{},{},{},{},{},{},{},{},{},{}",
+            self.task,
             self.iteration,
+            self.op_start.as_micros(),
             self.op.name(),
             self.size,
             self.transfer_size,
-            self.elapsed.as_micros()
+            self.elapsed.as_micros(),
+            self.object,
+            self.result.name(),
+            self.details,
         )
     }
 }
 
+#[derive(Clone, Debug)]
 enum Operation {
-    Write,
+    Resumable,
+    SingleShot,
     Read0,
     Read1,
     Read2,
@@ -191,10 +383,28 @@ enum Operation {
 impl Operation {
     fn name(&self) -> &str {
         match self {
-            Self::Write => "WRITE",
+            Self::Resumable => "RESUMABLE",
+            Self::SingleShot => "SINGLE_SHOT",
             Self::Read0 => "READ[0]",
             Self::Read1 => "READ[1]",
             Self::Read2 => "READ[2]",
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+enum Result {
+    Success,
+    Error,
+    Interrupted,
+}
+
+impl Result {
+    fn name(&self) -> &str {
+        match self {
+            Self::Success => "OK",
+            Self::Error => "ERR",
+            Self::Interrupted => "INT",
         }
     }
 }
@@ -211,6 +421,8 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
     tracing::subscriber::set_default(subscriber)
 }
 
+const MIB: u64 = 1024 * 1024;
+
 #[derive(Clone, Debug, Parser)]
 #[command(version, about)]
 struct Args {
@@ -219,7 +431,7 @@ struct Args {
 
     #[arg(long, default_value_t = 0, value_parser = parse_size_arg)]
     min_object_size: u64,
-    #[arg(long, default_value_t = 0, value_parser = parse_size_arg)]
+    #[arg(long, default_value_t = 4 * MIB, value_parser = parse_size_arg)]
     max_object_size: u64,
 
     #[arg(long, default_value_t = 1)]

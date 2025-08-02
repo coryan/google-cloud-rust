@@ -6580,6 +6580,7 @@ dependencies = [
  "bytes",
  "clap",
  "futures",
+ "google-cloud-gax",
  "google-cloud-storage",
  "humantime",
  "parse-size",
@@ -6587,6 +6588,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "uuid",
 ]
 
 [[package]]
