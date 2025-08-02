@@ -20,7 +20,7 @@
 //! multiple tasks concurrently.
 
 use clap::Parser;
-use google_cloud_storage::client::Storage;
+use google_cloud_storage::client::{Storage, StorageControl};
 use rand::{
     Rng,
     distr::{Alphanumeric, Uniform},
@@ -42,11 +42,21 @@ async fn main() -> anyhow::Result<()> {
     println!("# Args = {args:?}");
 
     let client = Storage::builder().build().await?;
+    let control = StorageControl::builder().build().await?;
 
     let (tx, mut rx) = tokio::sync::broadcast::channel(128);
-
+    let test_start = Instant::now();
     let tasks = (0..args.task_count)
-        .map(|i| tokio::spawn(runner(client.clone(), args.clone(), i, tx.clone())))
+        .map(|i| {
+            tokio::spawn(runner(
+                client.clone(),
+                control.clone(),
+                test_start,
+                args.clone(),
+                i,
+                tx.clone(),
+            ))
+        })
         .collect::<Vec<_>>();
     drop(tx);
 
@@ -76,10 +86,14 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> anyhow::Result<()> {
-    let control = google_cloud_storage::client::StorageControl::builder()
-        .build()
-        .await?;
+async fn runner(
+    client: Storage,
+    control: StorageControl,
+    test_start: Instant,
+    args: Args,
+    id: i32,
+    tx: Sender<Sample>,
+) -> anyhow::Result<()> {
     let buffer = bytes::Bytes::from_owner(
         rand::rng()
             .sample_iter(Uniform::new_inclusive(u8::MIN, u8::MAX)?)
@@ -88,7 +102,6 @@ async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> any
     );
     let size = Uniform::new_inclusive(args.min_object_size, args.max_object_size)?;
 
-    let start = Instant::now();
     for iteration in 0..args.min_sample_count {
         let size = rand::rng().sample(size) as usize;
         let name = random_object_name();
@@ -112,7 +125,7 @@ async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> any
         let sample = Sample {
             id,
             iteration,
-            op_start: write_start - start,
+            op_start: write_start - test_start,
             size,
             transfer_size: size,
             op: Operation::Write,
@@ -150,7 +163,7 @@ async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> any
             let sample = Sample {
                 id,
                 iteration,
-                op_start: read_start - start,
+                op_start: read_start - test_start,
                 size,
                 transfer_size,
                 op,
