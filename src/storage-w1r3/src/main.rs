@@ -20,38 +20,62 @@
 //! multiple tasks concurrently.
 
 use clap::Parser;
+use google_cloud_storage::client::Storage;
 use rand::{
     Rng,
     distr::{Alphanumeric, Uniform},
 };
-use std::time::{Duration, Instant};
-use tokio::sync::mpsc::Sender;
+use std::{
+    sync::atomic::{AtomicU64, Ordering},
+    time::{Duration, Instant},
+};
+use tokio::sync::broadcast::{Sender, error::RecvError};
+
+static WRITE_ERROR: AtomicU64 = AtomicU64::new(0);
+static READ_ERROR: AtomicU64 = AtomicU64::new(0);
+static DELETE_ERROR: AtomicU64 = AtomicU64::new(0);
+static SEND_ERROR: AtomicU64 = AtomicU64::new(0);
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let args = Args::parse();
-    println!("Hello, world! {args:?}");
+    println!("# Args = {args:?}");
 
-    let (tx, mut rx) = tokio::sync::mpsc::channel(128);
+    let client = Storage::builder().build().await?;
+
+    let (tx, mut rx) = tokio::sync::broadcast::channel(128);
 
     let tasks = (0..args.task_count)
-        .map(|i| runner(args.clone(), i, tx.clone()))
+        .map(|i| tokio::spawn(runner(client.clone(), args.clone(), i, tx.clone())))
         .collect::<Vec<_>>();
+    drop(tx);
 
     println!("{}", Sample::HEADER);
-    while let Some(sample) = rx.recv().await {
-        println!("{}", sample.to_row());
+    loop {
+        match rx.recv().await {
+            Ok(sample) => println!("{}", sample.to_row()),
+            Err(RecvError::Closed) => break,
+            Err(RecvError::Lagged(_)) => continue,
+        }
     }
 
-    futures::future::join_all(tasks)
-        .await
-        .into_iter()
-        .collect::<anyhow::Result<Vec<_>>>()?;
+    for t in tasks {
+        t.await??;
+    }
+    [
+        ("WRITE_ERROR", WRITE_ERROR.load(Ordering::Relaxed)),
+        ("READ_ERROR", READ_ERROR.load(Ordering::Relaxed)),
+        ("DELETE_ERROR", DELETE_ERROR.load(Ordering::Relaxed)),
+        ("SEND_ERROR", SEND_ERROR.load(Ordering::Relaxed)),
+    ].into_iter().for_each(|(key, value)| {
+        println!("# {key} = {value}");
+    });
+    println!("# EOF");
     Ok(())
 }
 
-async fn runner(args: Args, id: i32, tx: Sender<Sample>) -> anyhow::Result<()> {
-    let client = google_cloud_storage::client::Storage::builder()
+async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> anyhow::Result<()> {
+    let control = google_cloud_storage::client::StorageControl::builder()
         .build()
         .await?;
     let buffer = bytes::Bytes::from_owner(
@@ -77,42 +101,70 @@ async fn runner(args: Args, id: i32, tx: Sender<Sample>) -> anyhow::Result<()> {
             .await;
         let upload = match upload {
             Ok(u) => u,
-            Err(e) => {
-                println!("# Error in upload {e}");
+            Err(_) => {
+                WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
                 continue;
             }
         };
-        tx.send(Sample {
+        let sample = Sample {
             id,
             iteration,
             size,
             transfer_size: size,
             op: Operation::Write,
             elapsed: Instant::now() - write_start,
-        })
-        .await?;
+        };
+        match tx.send(sample) {
+            Ok(_) => {}
+            Err(_) => {
+                SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+            }
+        };
         for op in [Operation::Read0, Operation::Read1, Operation::Read2] {
             let read_start = Instant::now();
-            let mut read = client
+            let mut read = match client
                 .read_object(&upload.bucket, &upload.name)
                 .with_generation(upload.generation)
                 .send()
-                .await?;
+                .await
+            {
+                Ok(r) => r,
+                Err(_) => {
+                    READ_ERROR.fetch_add(1, Ordering::SeqCst);
+                    continue;
+                }
+            };
             let mut transfer_size = 0;
             while let Some(b) = read.next().await {
                 if let Ok(b) = b {
                     transfer_size += b.len();
+                } else {
                 }
             }
-            tx.send(Sample {
+            let sample = Sample {
                 id,
                 iteration,
                 size,
                 transfer_size,
                 op,
                 elapsed: Instant::now() - read_start,
-            })
-            .await?;
+            };
+            match tx.send(sample) {
+                Ok(_) => {}
+                Err(_) => {
+                    SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+                }
+            };
+        }
+        if let Err(_) = control
+            .delete_object()
+            .set_bucket(upload.bucket)
+            .set_object(upload.name)
+            .set_generation(upload.generation)
+            .send()
+            .await
+        {
+            DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
         }
     }
     Ok(())
@@ -126,6 +178,7 @@ fn random_object_name() -> String {
         .collect()
 }
 
+#[derive(Clone, Debug)]
 struct Sample {
     id: i32,
     iteration: u64,
@@ -151,6 +204,7 @@ impl Sample {
     }
 }
 
+#[derive(Clone, Debug)]
 enum Operation {
     Write,
     Read0,
@@ -169,6 +223,8 @@ impl Operation {
     }
 }
 
+const MIB: u64 = 1024 * 1024;
+
 #[derive(Clone, Debug, Parser)]
 #[command(version, about)]
 struct Args {
@@ -177,7 +233,7 @@ struct Args {
 
     #[arg(long, default_value_t = 0, value_parser = parse_size_arg)]
     min_object_size: u64,
-    #[arg(long, default_value_t = 0, value_parser = parse_size_arg)]
+    #[arg(long, default_value_t = 4 * MIB, value_parser = parse_size_arg)]
     max_object_size: u64,
 
     #[arg(long, default_value_t = 1)]
