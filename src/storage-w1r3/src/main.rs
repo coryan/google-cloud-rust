@@ -88,6 +88,7 @@ async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> any
     );
     let size = Uniform::new_inclusive(args.min_object_size, args.max_object_size)?;
 
+    let start = Instant::now();
     for iteration in 0..args.min_sample_count {
         let size = rand::rng().sample(size) as usize;
         let name = random_object_name();
@@ -111,6 +112,7 @@ async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> any
         let sample = Sample {
             id,
             iteration,
+            op_start: write_start - start,
             size,
             transfer_size: size,
             op: Operation::Write,
@@ -148,6 +150,7 @@ async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> any
             let sample = Sample {
                 id,
                 iteration,
+                op_start: read_start - start,
                 size,
                 transfer_size,
                 op,
@@ -187,6 +190,7 @@ fn random_object_name() -> String {
 struct Sample {
     id: i32,
     iteration: u64,
+    op_start: Duration,
     op: Operation,
     size: usize,
     transfer_size: usize,
@@ -194,13 +198,15 @@ struct Sample {
 }
 
 impl Sample {
-    const HEADER: &str = "Task,Iteration,Operation,Size,TransferSize,ElapsedMicroseconds";
+    const HEADER: &str =
+        "Task,Iteration,IterationStart,Operation,Size,TransferSize,ElapsedMicroseconds";
 
     fn to_row(&self) -> String {
         format!(
-            "{},{},{},{},{},{}",
+            "{},{},{},{},{},{},{}",
             self.id,
             self.iteration,
+            self.op_start.as_micros(),
             self.op.name(),
             self.size,
             self.transfer_size,
