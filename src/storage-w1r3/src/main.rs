@@ -141,6 +141,8 @@ async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> any
                 if let Ok(b) = b {
                     transfer_size += b.len();
                 } else {
+                    READ_ERROR.fetch_add(1, Ordering::SeqCst);
+                    break;
                 }
             }
             let sample = Sample {
@@ -158,13 +160,14 @@ async fn runner(client: Storage, args: Args, id: i32, tx: Sender<Sample>) -> any
                 }
             };
         }
-        if let Err(_) = control
+        if control
             .delete_object()
             .set_bucket(upload.bucket)
             .set_object(upload.name)
             .set_generation(upload.generation)
             .send()
             .await
+            .is_err()
         {
             DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
         }
