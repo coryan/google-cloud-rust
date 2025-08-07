@@ -41,20 +41,25 @@ static READ_ERROR: AtomicU64 = AtomicU64::new(0);
 static DELETE_ERROR: AtomicU64 = AtomicU64::new(0);
 static SEND_ERROR: AtomicU64 = AtomicU64::new(0);
 
+const DELETE_BATCH_SIZE: usize = 512;
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let _guard = enable_tracing();
 
     let args = Args::parse();
+    if args.min_object_size > args.max_object_size {
+        return Err(anyhow::Error::msg("invalid object size range"));
+    }
     tracing::info!("{args:?}");
 
     let client = Storage::builder().build().await?;
     let control = StorageControl::builder().build().await?;
 
     let (sample_tx, mut sample_rx) =
-        tokio::sync::mpsc::channel::<Vec<Sample>>(1024 * args.task_count as usize);
+        tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count as usize);
     let (delete_tx, mut delete_rx) =
-        tokio::sync::mpsc::channel::<Vec<Object>>(1024 * args.task_count as usize);
+        tokio::sync::mpsc::channel::<Object>(1024 * args.task_count as usize);
     let test_start = Instant::now();
     let buffer = bytes::Bytes::from_owner(
         rand::rng()
@@ -80,37 +85,31 @@ async fn main() -> anyhow::Result<()> {
 
     let deleter = tokio::spawn(async move {
         let _guard = enable_tracing();
-        while let Some(objects) = delete_rx.recv().await {
-            for object in objects {
-                if let Err(error) = control
-                    .delete_object()
-                    .set_bucket(object.bucket)
-                    .set_object(object.name)
-                    .set_generation(object.generation)
-                    .with_idempotency(true)
-                    .with_backoff_policy(backoff_policy::default())
-                    .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
-                    .send()
-                    .await
-                {
-                    use google_cloud_gax::error::rpc::Code;
-                    if error.status().is_some_and(|s| s.code != Code::NotFound) {
-                        tracing::info!("DELETE error = {error:?}");
-                        DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
-                    }
-                }
+        let mut batch = Vec::new();
+        while let Some(object) = delete_rx.recv().await {
+            let delete = control
+                .delete_object()
+                .set_bucket(object.bucket)
+                .set_object(object.name)
+                .set_generation(object.generation)
+                .with_idempotency(true)
+                .with_backoff_policy(backoff_policy::default())
+                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
+                .send();
+            batch.push(tokio::spawn(delete));
+            if batch.len() >= DELETE_BATCH_SIZE {
+                join_deletes(futures::future::join_all(batch.split_off(0)).await);
             }
         }
+        join_deletes(futures::future::join_all(batch).await);
     });
 
     let id = uuid::Uuid::new_v4().to_string();
     println!("Experiment,{}", Sample::HEADER);
     let mut sample_count = 0_u64;
     while let Some(sample) = sample_rx.recv().await {
-        for s in sample {
-            sample_count += 1;
-            println!("{id},{}", s.to_row())
-        }
+        sample_count += 1;
+        println!("{id},{}", sample.to_row());
     }
 
     if let Err(e) = deleter.await {
@@ -150,27 +149,41 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
     tracing::subscriber::set_default(subscriber)
 }
 
+fn join_deletes<I>(batch: I)
+where
+    I: IntoIterator<Item = Result<Result<(), google_cloud_storage::Error>, tokio::task::JoinError>>,
+{
+    for j in batch {
+        match j {
+            Err(e) => tracing::info!("JOIN ERROR for delete {e:?}"),
+            Ok(Err(e)) => {
+                tracing::info!("DELETE ERROR = {e:?}");
+                DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
+            }
+            Ok(Ok(_)) => {}
+        }
+    }
+}
+
 #[derive(Clone)]
 struct Task {
     client: Storage,
     start: Instant,
     buffer: bytes::Bytes,
     id: i32,
-    tx: Sender<Vec<Sample>>,
-    delete: Sender<Vec<Object>>,
+    tx: Sender<Sample>,
+    delete: Sender<Object>,
 }
 
 type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Object>;
 
 impl Task {
-    async fn run(self, args: Args) -> anyhow::Result<()> {
+    async fn run(self, args: Args) {
         let _guard = enable_tracing();
         if self.id % 128 == 0 {
             tracing::info!("Task::run({})", self.id);
         }
-        let size = Uniform::new_inclusive(args.min_object_size, args.max_object_size)?;
-        let mut samples = Vec::new();
-        let mut deletes = Vec::new();
+        let size = Uniform::new_inclusive(args.min_object_size, args.max_object_size).unwrap();
 
         for iteration in 0..args.min_sample_count {
             let name = random_object_name();
@@ -202,7 +215,7 @@ impl Task {
                 .with_resumable_upload_threshold(threshold)
                 .send_unbuffered()
                 .await;
-            let Ok(upload) = self.on_write(ex, upload, &mut samples) else {
+            let Ok(upload) = self.on_write(ex, upload).await else {
                 continue;
             };
             for op in [Operation::Read0, Operation::Read1, Operation::Read2] {
@@ -216,65 +229,61 @@ impl Task {
                     target_size: size,
                     name: &upload.name,
                 };
-                let mut read = match self
-                    .client
-                    .read_object(&upload.bucket, &upload.name)
-                    .with_generation(upload.generation)
-                    .send()
-                    .await
-                {
-                    Ok(r) => r,
-                    Err(e) => {
-                        READ_ERROR.fetch_add(1, Ordering::SeqCst);
-                        samples.push(Sample::error(ex, &e));
-                        tracing::error!("READ error {e:?}");
-                        continue;
-                    }
+                let sample = match self.download(&upload).await {
+                    (_, Ok(_)) => Sample::success(ex),
+                    (0, Err(e))  => Sample::error(ex, &e),
+                    (partial, Err(e)) => Sample::interrupted(ex, partial, &e),
                 };
-                let mut transfer_size = 0;
-                while let Some(result) = read.next().await {
-                    match result {
-                        Ok(b) => transfer_size += b.len(),
-                        Err(_) => {
-                            READ_ERROR.fetch_add(1, Ordering::SeqCst);
-                            break;
-                        }
-                    }
-                }
-                if transfer_size != size {
-                    samples.push(Sample::interrupted(ex, transfer_size));
-                    continue;
-                }
-                samples.push(Sample::success(ex));
-            }
-            if samples.len() >= 1024 {
-                if let Err(_) = self.tx.send(samples.split_off(0)).await {
+                if let Err(_) =  self.tx.send(sample).await {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
             }
-            deletes.push(upload);
-            if deletes.len() >= 1024 {
-                if let Err(_) = self.delete.send(deletes.split_off(0)).await {
-                    SEND_ERROR.fetch_add(1, Ordering::SeqCst);
-                }
+            if let Err(_) = self.delete.send(upload).await {
+                SEND_ERROR.fetch_add(1, Ordering::SeqCst);
             }
         }
-        Ok(())
     }
 
-    fn on_write(
+    async fn download(
+        &self,
+        object: &google_cloud_storage::model::Object,
+    ) -> (usize, Result<(), google_cloud_storage::Error>) {
+        let mut read = match self
+            .client
+            .read_object(&object.bucket, &object.name)
+            .with_generation(object.generation)
+            .send()
+            .await
+        {
+            Ok(r) => r,
+            Err(e) => return (0, Err(e)),
+        };
+        let mut transfer_size = 0;
+        while let Some(result) = read.next().await {
+            match result {
+                Ok(b) => transfer_size += b.len(),
+                Err(e) => return (transfer_size, Err(e)),
+            }
+        }
+        (transfer_size, Ok(()))
+    }
+
+    async fn on_write(
         &self,
         ex: Experiment<'_>,
         upload: ResultObject,
-        samples: &mut Vec<Sample>,
     ) -> ResultObject {
         let upload = match upload {
             Ok(u) => {
-                samples.push(Sample::success(ex));
+                if let Err(_) = self.tx.send(Sample::success(ex)).await {
+                    SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+                }
                 u
             }
             Err(e) => {
-                samples.push(Sample::error(ex, &e));
+                if let Err(_) = self.tx.send(Sample::error(ex, &e)).await {
+                    SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+                }
                 WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
                 return Err(e);
             }
@@ -312,7 +321,7 @@ struct Sample {
     transfer_size: usize,
     elapsed: Duration,
     object: String,
-    result: Result,
+    result: ExperimentResult,
     details: String,
 }
 
@@ -334,7 +343,7 @@ impl Sample {
             op: ex.op,
             elapsed: Instant::now() - ex.start,
             object: ex.name.to_string(),
-            result: Result::Error,
+            result: ExperimentResult::Error,
             details: format!(
                 "W={};R={};S={};D={};{}",
                 WRITE_ERROR.load(Ordering::SeqCst),
@@ -346,7 +355,7 @@ impl Sample {
         }
     }
 
-    fn interrupted(ex: Experiment, transfer_size: usize) -> Self {
+    fn interrupted(ex: Experiment, transfer_size: usize, error: &google_cloud_storage::Error) -> Self {
         tracing::error!("experiment = {ex:?} download interrupted");
         Self {
             task: ex.task,
@@ -357,14 +366,14 @@ impl Sample {
             op: ex.op,
             elapsed: Instant::now() - ex.start,
             object: ex.name.to_string(),
-            result: Result::Interrupted,
+            result: ExperimentResult::Interrupted,
             details: format!(
                 "W={};R={};S={};D={};{}",
                 WRITE_ERROR.load(Ordering::SeqCst),
                 READ_ERROR.load(Ordering::SeqCst),
                 SEND_ERROR.load(Ordering::SeqCst),
                 DELETE_ERROR.load(Ordering::SeqCst),
-                "download interrupted"
+                format!("{error:?}").replace(",", ";")
             ),
         }
     }
@@ -379,7 +388,7 @@ impl Sample {
             op: ex.op,
             elapsed: Instant::now() - ex.start,
             object: ex.name.to_string(),
-            result: Result::Success,
+            result: ExperimentResult::Success,
             details: String::new(),
         }
     }
@@ -423,13 +432,13 @@ impl Operation {
 }
 
 #[derive(Clone, Debug)]
-enum Result {
+enum ExperimentResult {
     Success,
     Error,
     Interrupted,
 }
 
-impl Result {
+impl ExperimentResult {
     fn name(&self) -> &str {
         match self {
             Self::Success => "OK",
