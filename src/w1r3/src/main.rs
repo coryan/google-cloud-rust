@@ -105,6 +105,18 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
+fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
+    use tracing_subscriber::fmt::format::FmtSpan;
+    let subscriber = tracing_subscriber::fmt()
+        .with_level(true)
+        .with_thread_ids(true)
+        .with_span_events(FmtSpan::NEW | FmtSpan::CLOSE)
+        .with_writer(std::io::stderr)
+        .finish();
+
+    tracing::subscriber::set_default(subscriber)
+}
+
 #[derive(Clone)]
 struct Task {
     client: Storage,
@@ -119,6 +131,10 @@ type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Ob
 
 impl Task {
     async fn run(self, args: Args) -> anyhow::Result<()> {
+        let _guard = enable_tracing();
+        if self.id % 128 == 0 {
+            tracing::info!("Task::run({})", self.id);
+        }
         let size = Uniform::new_inclusive(args.min_object_size, args.max_object_size)?;
 
         for iteration in 0..args.min_sample_count {
@@ -212,7 +228,7 @@ impl Task {
                 .send()
                 .await
             {
-                tracing::error!("DELETE error = {error:?}");
+                tracing::info!("DELETE error = {error:?}");
                 DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
             }
         }
