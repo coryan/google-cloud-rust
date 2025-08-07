@@ -85,23 +85,23 @@ async fn main() -> anyhow::Result<()> {
 
     let deleter = tokio::spawn(async move {
         let _guard = enable_tracing();
-        let mut batch = Vec::new();
-        while let Some(object) = delete_rx.recv().await {
-            let delete = control
-                .delete_object()
-                .set_bucket(object.bucket)
-                .set_object(object.name)
-                .set_generation(object.generation)
-                .with_idempotency(true)
-                .with_backoff_policy(backoff_policy::default())
-                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
-                .send();
-            batch.push(tokio::spawn(delete));
-            if batch.len() >= DELETE_BATCH_SIZE {
-                join_deletes(futures::future::join_all(batch.split_off(0)).await);
-            }
+//        let mut batch = Vec::new();
+        while let Some(_object) = delete_rx.recv().await {
         }
-        join_deletes(futures::future::join_all(batch).await);
+            // let delete = control
+                // .delete_object()
+                // .set_bucket(object.bucket)
+                // .set_object(object.name)
+                // .set_generation(object.generation)
+                // .with_idempotency(true)
+                // .with_backoff_policy(backoff_policy::default())
+                // .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
+                // .send();
+            // batch.push(delete);
+            // if batch.len() >= DELETE_BATCH_SIZE {
+                // join_deletes(futures::future::join_all(batch.split_off(0)).await);
+            // }
+//        join_deletes(futures::future::join_all(batch).await);
     });
 
     let id = uuid::Uuid::new_v4().to_string();
@@ -151,16 +151,12 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
 
 fn join_deletes<I>(batch: I)
 where
-    I: IntoIterator<Item = Result<Result<(), google_cloud_storage::Error>, tokio::task::JoinError>>,
+    I: IntoIterator<Item = Result<(), google_cloud_storage::Error>>,
 {
     for j in batch {
-        match j {
-            Err(e) => tracing::info!("JOIN ERROR for delete {e:?}"),
-            Ok(Err(e)) => {
-                tracing::info!("DELETE ERROR = {e:?}");
-                DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
-            }
-            Ok(Ok(_)) => {}
+        if let Err(e) = j {
+            tracing::info!("DELETE ERROR = {e:?}");
+            DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
         }
     }
 }
@@ -231,10 +227,10 @@ impl Task {
                 };
                 let sample = match self.download(&upload).await {
                     (_, Ok(_)) => Sample::success(ex),
-                    (0, Err(e))  => Sample::error(ex, &e),
+                    (0, Err(e)) => Sample::error(ex, &e),
                     (partial, Err(e)) => Sample::interrupted(ex, partial, &e),
                 };
-                if let Err(_) =  self.tx.send(sample).await {
+                if let Err(_) = self.tx.send(sample).await {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
             }
@@ -268,11 +264,7 @@ impl Task {
         (transfer_size, Ok(()))
     }
 
-    async fn on_write(
-        &self,
-        ex: Experiment<'_>,
-        upload: ResultObject,
-    ) -> ResultObject {
+    async fn on_write(&self, ex: Experiment<'_>, upload: ResultObject) -> ResultObject {
         let upload = match upload {
             Ok(u) => {
                 if let Err(_) = self.tx.send(Sample::success(ex)).await {
@@ -355,7 +347,11 @@ impl Sample {
         }
     }
 
-    fn interrupted(ex: Experiment, transfer_size: usize, error: &google_cloud_storage::Error) -> Self {
+    fn interrupted(
+        ex: Experiment,
+        transfer_size: usize,
+        error: &google_cloud_storage::Error,
+    ) -> Self {
         tracing::error!("experiment = {ex:?} download interrupted");
         Self {
             task: ex.task,
