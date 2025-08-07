@@ -24,6 +24,7 @@ use google_cloud_gax::options::RequestOptionsBuilder;
 use google_cloud_gax::retry_policy::RetryPolicyExt;
 use google_cloud_storage::backoff_policy;
 use google_cloud_storage::client::{Storage, StorageControl};
+use google_cloud_storage::model::Object;
 use google_cloud_storage::retry_policy::RecommendedPolicy;
 use rand::{
     Rng,
@@ -33,7 +34,7 @@ use std::{
     sync::atomic::{AtomicU64, Ordering},
     time::{Duration, Instant},
 };
-use tokio::sync::broadcast::{Sender, error::RecvError};
+use tokio::sync::mpsc::Sender;
 
 static WRITE_ERROR: AtomicU64 = AtomicU64::new(0);
 static READ_ERROR: AtomicU64 = AtomicU64::new(0);
@@ -50,7 +51,8 @@ async fn main() -> anyhow::Result<()> {
     let client = Storage::builder().build().await?;
     let control = StorageControl::builder().build().await?;
 
-    let (tx, mut rx) = tokio::sync::broadcast::channel(128);
+    let (sample_tx, mut sample_rx) = tokio::sync::mpsc::channel::<Sample>(128);
+    let (delete_tx, mut delete_rx) = tokio::sync::mpsc::channel::<Object>(128);
     let test_start = Instant::now();
     let buffer = bytes::Bytes::from_owner(
         rand::rng()
@@ -64,32 +66,54 @@ async fn main() -> anyhow::Result<()> {
                 id,
                 start: test_start,
                 client: client.clone(),
-                control: control.clone(),
-                tx: tx.clone(),
+                tx: sample_tx.clone(),
+                delete: delete_tx.clone(),
                 buffer: buffer.clone(),
             };
             tokio::spawn(task.run(args.clone()))
         })
         .collect::<Vec<_>>();
-    drop(tx);
+    drop(sample_tx);
+    drop(delete_tx);
+
+    let deleter = tokio::spawn(async move {
+        let _guard = enable_tracing();
+        while let Some(object) = delete_rx.recv().await {
+            if let Err(error) = control
+                .delete_object()
+                .set_bucket(object.bucket)
+                .set_object(object.name)
+                .set_generation(object.generation)
+                .with_idempotency(true)
+                .with_backoff_policy(backoff_policy::default())
+                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
+                .send()
+                .await
+            {
+                tracing::info!("DELETE error = {error:?}");
+                DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
+            }
+        }
+    });
 
     let id = uuid::Uuid::new_v4().to_string();
     println!("Experiment,{}", Sample::HEADER);
     let mut sample_count = 0_u64;
-    loop {
-        match rx.recv().await {
-            Ok(sample) => {
-                sample_count += 1;
-                println!("{id},{}", sample.to_row())
-            }
-            Err(RecvError::Closed) => break,
-            Err(RecvError::Lagged(_)) => continue,
-        }
+    while let Some(sample) = sample_rx.recv().await {
+        sample_count += 1;
+        println!("{id},{}", sample.to_row())
+    }
+
+    if let Err(e) = deleter.await {
+        tracing::error!("cannot join deleter {e}");
     }
 
     for t in tasks {
-        t.await??;
+        if let Err(e) = t.await {
+            tracing::error!("cannot join task {e}");
+        }
     }
+
     [
         ("WRITE_ERROR", WRITE_ERROR.load(Ordering::Relaxed)),
         ("READ_ERROR", READ_ERROR.load(Ordering::Relaxed)),
@@ -120,11 +144,11 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
 #[derive(Clone)]
 struct Task {
     client: Storage,
-    control: StorageControl,
     start: Instant,
     buffer: bytes::Bytes,
     id: i32,
     tx: Sender<Sample>,
+    delete: Sender<Object>,
 }
 
 type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Object>;
@@ -191,7 +215,7 @@ impl Task {
                     Ok(r) => r,
                     Err(e) => {
                         READ_ERROR.fetch_add(1, Ordering::SeqCst);
-                        self.on_error(ex.clone(), &e);
+                        self.on_error(ex.clone(), &e).await;
                         tracing::error!("READ error {e:?}");
                         continue;
                     }
@@ -202,7 +226,7 @@ impl Task {
                         Ok(b) => transfer_size += b.len(),
                         Err(e) => {
                             READ_ERROR.fetch_add(1, Ordering::SeqCst);
-                            self.on_partial_error(ex.clone(), transfer_size, &e);
+                            self.on_partial_error(ex.clone(), transfer_size, &e).await;
                             break;
                         }
                     }
@@ -211,24 +235,12 @@ impl Task {
                     continue;
                 }
                 let sample = Sample::success(ex);
-                if let Err(_) = self.tx.send(sample) {
+                if let Err(_) = self.tx.send(sample).await {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
             }
-            if let Err(error) = self
-                .control
-                .delete_object()
-                .set_bucket(upload.bucket)
-                .set_object(upload.name)
-                .set_generation(upload.generation)
-                .with_idempotency(true)
-                .with_backoff_policy(backoff_policy::default())
-                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
-                .send()
-                .await
-            {
-                tracing::info!("DELETE error = {error:?}");
-                DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
+            if let Err(_) = self.delete.send(upload).await {
+                SEND_ERROR.fetch_add(1, Ordering::SeqCst);
             }
         }
         Ok(())
@@ -239,34 +251,34 @@ impl Task {
             Ok(u) => u,
             Err(e) => {
                 WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
-                self.on_error(ex, &e);
+                self.on_error(ex, &e).await;
                 return Err(e);
             }
         };
         let sample = Sample::success(ex);
-        if let Err(_) = self.tx.send(sample) {
+        if let Err(_) = self.tx.send(sample).await {
             SEND_ERROR.fetch_add(1, Ordering::SeqCst);
         }
         Ok(upload)
     }
 
-    fn on_error(&self, ex: Experiment, error: &google_cloud_storage::Error) {
+    async fn on_error(&self, ex: Experiment<'_>, error: &google_cloud_storage::Error) {
         WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
         let sample = Sample::error(ex, &error);
-        if let Err(_) = self.tx.send(sample) {
+        if let Err(_) = self.tx.send(sample).await {
             SEND_ERROR.fetch_add(1, Ordering::SeqCst);
         }
     }
 
-    fn on_partial_error(
+    async fn on_partial_error(
         &self,
-        ex: Experiment,
+        ex: Experiment<'_>,
         transfer_size: usize,
         error: &google_cloud_storage::Error,
     ) {
         WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
         let sample = Sample::interrupted(ex, transfer_size, &error);
-        if let Err(_) = self.tx.send(sample) {
+        if let Err(_) = self.tx.send(sample).await {
             SEND_ERROR.fetch_add(1, Ordering::SeqCst);
         }
     }
