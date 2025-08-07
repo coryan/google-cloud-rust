@@ -24,7 +24,6 @@ use google_cloud_gax::options::RequestOptionsBuilder;
 use google_cloud_gax::retry_policy::RetryPolicyExt;
 use google_cloud_storage::backoff_policy;
 use google_cloud_storage::client::{Storage, StorageControl};
-use google_cloud_storage::model::Object;
 use google_cloud_storage::retry_policy::RecommendedPolicy;
 use rand::{
     Rng,
@@ -51,8 +50,7 @@ async fn main() -> anyhow::Result<()> {
     let client = Storage::builder().build().await?;
     let control = StorageControl::builder().build().await?;
 
-    let (sample_tx, mut sample_rx) = tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count as usize);
-    let (delete_tx, mut delete_rx) = tokio::sync::mpsc::channel::<Object>(1024 * args.task_count as usize);
+    let (tx, mut rx) = tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count as usize);
     let test_start = Instant::now();
     let buffer = bytes::Bytes::from_owner(
         rand::rng()
@@ -66,49 +64,21 @@ async fn main() -> anyhow::Result<()> {
                 id,
                 start: test_start,
                 client: client.clone(),
-                tx: sample_tx.clone(),
-                delete: delete_tx.clone(),
+                control: control.clone(),
+                tx: tx.clone(),
                 buffer: buffer.clone(),
             };
             tokio::spawn(task.run(args.clone()))
         })
         .collect::<Vec<_>>();
-    drop(sample_tx);
-    drop(delete_tx);
-
-    let deleter = tokio::spawn(async move {
-        let _guard = enable_tracing();
-        while let Some(object) = delete_rx.recv().await {
-            if let Err(error) = control
-                .delete_object()
-                .set_bucket(object.bucket)
-                .set_object(object.name)
-                .set_generation(object.generation)
-                .with_idempotency(true)
-                .with_backoff_policy(backoff_policy::default())
-                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
-                .send()
-                .await
-            {
-                use google_cloud_gax::error::rpc::Code;
-                if error.status().is_some_and(|s| s.code != Code::NotFound) {
-                    tracing::info!("DELETE error = {error:?}");
-                    DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
-                }
-            }
-        }
-    });
+    drop(tx);
 
     let id = uuid::Uuid::new_v4().to_string();
     println!("Experiment,{}", Sample::HEADER);
     let mut sample_count = 0_u64;
-    while let Some(sample) = sample_rx.recv().await {
+    while let Some(sample) = rx.recv().await {
         sample_count += 1;
         println!("{id},{}", sample.to_row())
-    }
-
-    if let Err(e) = deleter.await {
-        tracing::error!("cannot join deleter {e}");
     }
 
     for t in tasks {
@@ -147,11 +117,11 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
 #[derive(Clone)]
 struct Task {
     client: Storage,
+    control: StorageControl,
     start: Instant,
     buffer: bytes::Bytes,
     id: i32,
     tx: Sender<Sample>,
-    delete: Sender<Object>,
 }
 
 type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Object>;
@@ -242,8 +212,23 @@ impl Task {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
             }
-            if let Err(_) = self.delete.send(upload).await {
-                SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+            if let Err(error) = self
+                .control
+                .delete_object()
+                .set_bucket(upload.bucket)
+                .set_object(upload.name)
+                .set_generation(upload.generation)
+                .with_idempotency(true)
+                .with_backoff_policy(backoff_policy::default())
+                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
+                .send()
+                .await
+            {
+                use google_cloud_gax::error::rpc::Code;
+                if error.status().is_some_and(|s| s.code != Code::NotFound) {
+                    tracing::info!("DELETE error = {error:?}");
+                    DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
+                }
             }
         }
         Ok(())
