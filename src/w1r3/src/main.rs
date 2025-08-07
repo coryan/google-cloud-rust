@@ -22,8 +22,8 @@
 use clap::Parser;
 use google_cloud_gax::options::RequestOptionsBuilder;
 use google_cloud_gax::retry_policy::RetryPolicyExt;
-use google_cloud_storage::client::{Storage, StorageControl};
 use google_cloud_storage::backoff_policy;
+use google_cloud_storage::client::{Storage, StorageControl};
 use google_cloud_storage::retry_policy::RecommendedPolicy;
 use rand::{
     Rng,
@@ -75,9 +75,13 @@ async fn main() -> anyhow::Result<()> {
 
     let id = uuid::Uuid::new_v4().to_string();
     println!("Experiment,{}", Sample::HEADER);
+    let mut sample_count = 0_u64;
     loop {
         match rx.recv().await {
-            Ok(sample) => println!("{id},{}", sample.to_row()),
+            Ok(sample) => {
+                sample_count += 1;
+                println!("{id},{}", sample.to_row())
+            }
             Err(RecvError::Closed) => break,
             Err(RecvError::Lagged(_)) => continue,
         }
@@ -91,12 +95,13 @@ async fn main() -> anyhow::Result<()> {
         ("READ_ERROR", READ_ERROR.load(Ordering::Relaxed)),
         ("DELETE_ERROR", DELETE_ERROR.load(Ordering::Relaxed)),
         ("SEND_ERROR", SEND_ERROR.load(Ordering::Relaxed)),
+        ("SAMPLE_COUNT", sample_count),
     ]
     .into_iter()
     .for_each(|(key, value)| {
-        println!("# {key} = {value}");
+        tracing::info!("{key} = {value}");
     });
-    tracing::info!("# EOF");
+    tracing::info!("DONE");
     Ok(())
 }
 
@@ -171,6 +176,7 @@ impl Task {
                     Err(e) => {
                         READ_ERROR.fetch_add(1, Ordering::SeqCst);
                         self.on_error(ex.clone(), &e);
+                        tracing::error!("READ error {e:?}");
                         continue;
                     }
                 };
@@ -193,7 +199,7 @@ impl Task {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
             }
-            if self
+            if let Err(error) = self
                 .control
                 .delete_object()
                 .set_bucket(upload.bucket)
@@ -205,8 +211,8 @@ impl Task {
                 .with_attempt_timeout(Duration::from_secs(5))
                 .send()
                 .await
-                .is_err()
             {
+                tracing::error!("DELETE error = {error:?}");
                 DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
             }
         }
@@ -292,6 +298,7 @@ impl Sample {
     );
 
     fn error(ex: Experiment, error: &google_cloud_storage::Error) -> Self {
+        tracing::error!("experiment = {ex:?} error = {error:?}");
         Self {
             task: ex.task,
             iteration: ex.iteration,
@@ -318,6 +325,7 @@ impl Sample {
         transfer_size: usize,
         error: &google_cloud_storage::Error,
     ) -> Self {
+        tracing::error!("experiment = {ex:?} error = {error:?}");
         Self {
             task: ex.task,
             iteration: ex.iteration,
