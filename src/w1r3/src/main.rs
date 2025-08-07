@@ -51,8 +51,8 @@ async fn main() -> anyhow::Result<()> {
     let client = Storage::builder().build().await?;
     let control = StorageControl::builder().build().await?;
 
-    let (sample_tx, mut sample_rx) = tokio::sync::mpsc::channel::<Sample>(128);
-    let (delete_tx, mut delete_rx) = tokio::sync::mpsc::channel::<Object>(128);
+    let (sample_tx, mut sample_rx) = tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count as usize);
+    let (delete_tx, mut delete_rx) = tokio::sync::mpsc::channel::<Object>(1024 * args.task_count as usize);
     let test_start = Instant::now();
     let buffer = bytes::Bytes::from_owner(
         rand::rng()
