@@ -223,8 +223,7 @@ impl Task {
                 .set_generation(upload.generation)
                 .with_idempotency(true)
                 .with_backoff_policy(backoff_policy::default())
-                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(30)))
-                .with_attempt_timeout(Duration::from_secs(5))
+                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
                 .send()
                 .await
             {
