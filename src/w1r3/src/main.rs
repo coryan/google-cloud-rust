@@ -51,8 +51,10 @@ async fn main() -> anyhow::Result<()> {
     let client = Storage::builder().build().await?;
     let control = StorageControl::builder().build().await?;
 
-    let (sample_tx, mut sample_rx) = tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count as usize);
-    let (delete_tx, mut delete_rx) = tokio::sync::mpsc::channel::<Object>(1024 * args.task_count as usize);
+    let (sample_tx, mut sample_rx) =
+        tokio::sync::mpsc::channel::<Vec<Sample>>(1024 * args.task_count as usize);
+    let (delete_tx, mut delete_rx) =
+        tokio::sync::mpsc::channel::<Vec<Object>>(1024 * args.task_count as usize);
     let test_start = Instant::now();
     let buffer = bytes::Bytes::from_owner(
         rand::rng()
@@ -78,22 +80,24 @@ async fn main() -> anyhow::Result<()> {
 
     let deleter = tokio::spawn(async move {
         let _guard = enable_tracing();
-        while let Some(object) = delete_rx.recv().await {
-            if let Err(error) = control
-                .delete_object()
-                .set_bucket(object.bucket)
-                .set_object(object.name)
-                .set_generation(object.generation)
-                .with_idempotency(true)
-                .with_backoff_policy(backoff_policy::default())
-                .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
-                .send()
-                .await
-            {
-                use google_cloud_gax::error::rpc::Code;
-                if error.status().is_some_and(|s| s.code != Code::NotFound) {
-                    tracing::info!("DELETE error = {error:?}");
-                    DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
+        while let Some(objects) = delete_rx.recv().await {
+            for object in objects {
+                if let Err(error) = control
+                    .delete_object()
+                    .set_bucket(object.bucket)
+                    .set_object(object.name)
+                    .set_generation(object.generation)
+                    .with_idempotency(true)
+                    .with_backoff_policy(backoff_policy::default())
+                    .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
+                    .send()
+                    .await
+                {
+                    use google_cloud_gax::error::rpc::Code;
+                    if error.status().is_some_and(|s| s.code != Code::NotFound) {
+                        tracing::info!("DELETE error = {error:?}");
+                        DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
+                    }
                 }
             }
         }
@@ -103,8 +107,10 @@ async fn main() -> anyhow::Result<()> {
     println!("Experiment,{}", Sample::HEADER);
     let mut sample_count = 0_u64;
     while let Some(sample) = sample_rx.recv().await {
-        sample_count += 1;
-        println!("{id},{}", sample.to_row())
+        for s in sample {
+            sample_count += 1;
+            println!("{id},{}", s.to_row())
+        }
     }
 
     if let Err(e) = deleter.await {
@@ -150,8 +156,8 @@ struct Task {
     start: Instant,
     buffer: bytes::Bytes,
     id: i32,
-    tx: Sender<Sample>,
-    delete: Sender<Object>,
+    tx: Sender<Vec<Sample>>,
+    delete: Sender<Vec<Object>>,
 }
 
 type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Object>;
@@ -163,6 +169,8 @@ impl Task {
             tracing::info!("Task::run({})", self.id);
         }
         let size = Uniform::new_inclusive(args.min_object_size, args.max_object_size)?;
+        let mut samples = Vec::new();
+        let mut deletes = Vec::new();
 
         for iteration in 0..args.min_sample_count {
             let name = random_object_name();
@@ -194,7 +202,7 @@ impl Task {
                 .with_resumable_upload_threshold(threshold)
                 .send_unbuffered()
                 .await;
-            let Ok(upload) = self.on_write(ex, upload).await else {
+            let Ok(upload) = self.on_write(ex, upload, &mut samples) else {
                 continue;
             };
             for op in [Operation::Read0, Operation::Read1, Operation::Read2] {
@@ -218,7 +226,7 @@ impl Task {
                     Ok(r) => r,
                     Err(e) => {
                         READ_ERROR.fetch_add(1, Ordering::SeqCst);
-                        self.on_error(ex.clone(), &e).await;
+                        samples.push(Sample::error(ex, &e));
                         tracing::error!("READ error {e:?}");
                         continue;
                     }
@@ -227,63 +235,51 @@ impl Task {
                 while let Some(result) = read.next().await {
                     match result {
                         Ok(b) => transfer_size += b.len(),
-                        Err(e) => {
+                        Err(_) => {
                             READ_ERROR.fetch_add(1, Ordering::SeqCst);
-                            self.on_partial_error(ex.clone(), transfer_size, &e).await;
                             break;
                         }
                     }
                 }
                 if transfer_size != size {
+                    samples.push(Sample::interrupted(ex, transfer_size));
                     continue;
                 }
-                let sample = Sample::success(ex);
-                if let Err(_) = self.tx.send(sample).await {
+                samples.push(Sample::success(ex));
+            }
+            if samples.len() >= 1024 {
+                if let Err(_) = self.tx.send(samples.split_off(0)).await {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
             }
-            if let Err(_) = self.delete.send(upload).await {
-                SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+            deletes.push(upload);
+            if deletes.len() >= 1024 {
+                if let Err(_) = self.delete.send(deletes.split_off(0)).await {
+                    SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+                }
             }
         }
         Ok(())
     }
 
-    async fn on_write(&self, ex: Experiment<'_>, upload: ResultObject) -> ResultObject {
+    fn on_write(
+        &self,
+        ex: Experiment<'_>,
+        upload: ResultObject,
+        samples: &mut Vec<Sample>,
+    ) -> ResultObject {
         let upload = match upload {
-            Ok(u) => u,
+            Ok(u) => {
+                samples.push(Sample::success(ex));
+                u
+            }
             Err(e) => {
+                samples.push(Sample::error(ex, &e));
                 WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
-                self.on_error(ex, &e).await;
                 return Err(e);
             }
         };
-        let sample = Sample::success(ex);
-        if let Err(_) = self.tx.send(sample).await {
-            SEND_ERROR.fetch_add(1, Ordering::SeqCst);
-        }
         Ok(upload)
-    }
-
-    async fn on_error(&self, ex: Experiment<'_>, error: &google_cloud_storage::Error) {
-        WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
-        let sample = Sample::error(ex, &error);
-        if let Err(_) = self.tx.send(sample).await {
-            SEND_ERROR.fetch_add(1, Ordering::SeqCst);
-        }
-    }
-
-    async fn on_partial_error(
-        &self,
-        ex: Experiment<'_>,
-        transfer_size: usize,
-        error: &google_cloud_storage::Error,
-    ) {
-        WRITE_ERROR.fetch_add(1, Ordering::SeqCst);
-        let sample = Sample::interrupted(ex, transfer_size, &error);
-        if let Err(_) = self.tx.send(sample).await {
-            SEND_ERROR.fetch_add(1, Ordering::SeqCst);
-        }
     }
 }
 
@@ -350,12 +346,8 @@ impl Sample {
         }
     }
 
-    fn interrupted(
-        ex: Experiment,
-        transfer_size: usize,
-        error: &google_cloud_storage::Error,
-    ) -> Self {
-        tracing::error!("experiment = {ex:?} error = {error:?}");
+    fn interrupted(ex: Experiment, transfer_size: usize) -> Self {
+        tracing::error!("experiment = {ex:?} download interrupted");
         Self {
             task: ex.task,
             iteration: ex.iteration,
@@ -372,7 +364,7 @@ impl Sample {
                 READ_ERROR.load(Ordering::SeqCst),
                 SEND_ERROR.load(Ordering::SeqCst),
                 DELETE_ERROR.load(Ordering::SeqCst),
-                error.http_status_code().unwrap_or_default()
+                "download interrupted"
             ),
         }
     }
