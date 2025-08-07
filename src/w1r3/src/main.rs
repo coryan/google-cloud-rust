@@ -91,7 +91,7 @@ async fn main() -> anyhow::Result<()> {
                 .await
             {
                 use google_cloud_gax::error::rpc::Code;
-                if error.status().is_some_and(|s0| s.code != Code::NotFound) {
+                if error.status().is_some_and(|s| s.code != Code::NotFound) {
                     tracing::info!("DELETE error = {error:?}");
                     DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
