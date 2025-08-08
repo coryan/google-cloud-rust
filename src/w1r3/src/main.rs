@@ -20,12 +20,8 @@
 //! multiple tasks concurrently.
 
 use clap::Parser;
-use google_cloud_gax::options::RequestOptionsBuilder;
-use google_cloud_gax::paginator::ItemPaginator;
 use google_cloud_gax::retry_policy::RetryPolicyExt;
-use google_cloud_storage::backoff_policy;
-use google_cloud_storage::client::{Storage, StorageControl};
-use google_cloud_storage::model::Object;
+use google_cloud_storage::client::{Storage};
 use google_cloud_storage::retry_policy::RecommendedPolicy;
 use rand::{
     Rng,
@@ -39,7 +35,6 @@ use tokio::sync::mpsc::Sender;
 
 static WRITE_ERROR: AtomicU64 = AtomicU64::new(0);
 static READ_ERROR: AtomicU64 = AtomicU64::new(0);
-static DELETE_ERROR: AtomicU64 = AtomicU64::new(0);
 static SEND_ERROR: AtomicU64 = AtomicU64::new(0);
 
 #[tokio::main]
@@ -52,25 +47,12 @@ async fn main() -> anyhow::Result<()> {
     }
     tracing::info!("{args:?}");
 
-    let client = Storage::builder().build().await?;
-
-    let control = StorageControl::builder().build().await?;
-    let (delete_tx, mut delete_rx) = tokio::sync::mpsc::channel::<Object>(1024 * args.task_count);
-    let delete_batch_size = 1024_usize;
-    let delete_control = control.clone();
-    let deleter = tokio::spawn(async move {
-        let _guard = enable_tracing();
-        let mut batch = Vec::new();
-        while delete_rx.recv_many(&mut batch, delete_batch_size).await > 0 {
-            if batch.len() >= delete_batch_size {
-                join_deletes(
-                    batch.drain(..).map(|o| delete(&delete_control, o))
-                )
-                .await;
-            }
-        }
-        join_deletes(batch.drain(..).map(|o| delete(&delete_control, o))).await;
-    });
+    let client = Storage::builder()
+        .with_retry_policy(
+            RecommendedPolicy.with_time_limit(Duration::from_secs(args.retry_seconds)),
+        )
+        .build()
+        .await?;
 
     let (sample_tx, mut sample_rx) = tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count);
     let test_start = Instant::now();
@@ -89,7 +71,6 @@ async fn main() -> anyhow::Result<()> {
                 start: test_start,
                 client: client.clone(),
                 tx: sample_tx.clone(),
-                delete: delete_tx.clone(),
                 buffer: buffer.clone(),
             };
             tokio::spawn(task.run(args.clone()))
@@ -104,25 +85,6 @@ async fn main() -> anyhow::Result<()> {
         println!("{}", sample.to_row());
     }
 
-    tracing::info!("cleaning up");
-    let mut list = control
-        .list_objects()
-        .set_parent(format!("projects/_/buckets/{}", args.bucket_name))
-        .set_prefix(run.clone())
-        .set_page_size(5_000)
-        .by_item();
-    while let Some(o) = list.next().await {
-        let Ok(object) = o else {
-            break;
-        };
-        let _ = delete_tx.send(object).await;
-    }
-    drop(delete_tx);
-
-    if let Err(e) = deleter.await {
-        tracing::error!("cannot join deleter {e}");
-    }
-
     for t in tasks {
         if let Err(e) = t.await {
             tracing::error!("cannot join task {e}");
@@ -132,7 +94,6 @@ async fn main() -> anyhow::Result<()> {
     [
         ("WRITE_ERROR", WRITE_ERROR.load(Ordering::Relaxed)),
         ("READ_ERROR", READ_ERROR.load(Ordering::Relaxed)),
-        ("DELETE_ERROR", DELETE_ERROR.load(Ordering::Relaxed)),
         ("SEND_ERROR", SEND_ERROR.load(Ordering::Relaxed)),
         ("SAMPLE_COUNT", sample_count),
     ]
@@ -156,40 +117,6 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
     tracing::subscriber::set_default(subscriber)
 }
 
-fn delete(
-    control: &StorageControl,
-    object: Object,
-) -> impl Future<Output = Result<(), google_cloud_storage::Error>> {
-    control
-        .delete_object()
-        .set_bucket(object.bucket)
-        .set_object(object.name)
-        .set_generation(object.generation)
-        .with_idempotency(true)
-        .with_backoff_policy(backoff_policy::default())
-        .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
-        .send()
-}
-
-async fn join_deletes<I, F>(batch: I)
-where
-    I: Iterator<Item = F>,
-    F: Future<Output = Result<(), google_cloud_storage::Error>>,
-{
-    let done = futures::future::join_all(batch).await;
-    for j in done {
-        let Err(e) = j else {
-            continue;
-        };
-        use google_cloud_gax::error::rpc::Code;
-        if e.status().is_some_and(|s| s.code == Code::NotFound) {
-            continue;
-        }
-        tracing::error!("DELETE ERROR = {e:?}");
-        DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
-    }
-}
-
 #[derive(Clone)]
 struct Task {
     run: String,
@@ -198,7 +125,6 @@ struct Task {
     buffer: bytes::Bytes,
     id: usize,
     tx: Sender<Sample>,
-    delete: Sender<Object>,
 }
 
 type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Object>;
@@ -266,8 +192,6 @@ impl Task {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
             }
-            // Try to delete the object immediately, but do not block the test.
-            let _ = self.delete.try_send(upload);
         }
     }
 
@@ -372,11 +296,10 @@ impl Sample {
             object: ex.name.to_string(),
             result: ExperimentResult::Error,
             details: format!(
-                "W={};R={};S={};D={};{}",
+                "W={};R={};S={};{}",
                 WRITE_ERROR.load(Ordering::SeqCst),
                 READ_ERROR.load(Ordering::SeqCst),
                 SEND_ERROR.load(Ordering::SeqCst),
-                DELETE_ERROR.load(Ordering::SeqCst),
                 format!("{error:?}").replace(",", ";")
             ),
         }
@@ -400,11 +323,10 @@ impl Sample {
             object: ex.name.to_string(),
             result: ExperimentResult::Interrupted,
             details: format!(
-                "W={};R={};S={};D={};{}",
+                "W={};R={};S={};{}",
                 WRITE_ERROR.load(Ordering::SeqCst),
                 READ_ERROR.load(Ordering::SeqCst),
                 SEND_ERROR.load(Ordering::SeqCst),
-                DELETE_ERROR.load(Ordering::SeqCst),
                 format!("{error:?}").replace(",", ";")
             ),
         }
@@ -512,6 +434,9 @@ struct Args {
 
     #[arg(long, default_value_t = 1)]
     min_sample_count: u64,
+
+    #[arg(long, default_value_t = 60)]
+    retry_seconds: u64,
 }
 
 fn parse_size_arg(arg: &str) -> anyhow::Result<u64> {
