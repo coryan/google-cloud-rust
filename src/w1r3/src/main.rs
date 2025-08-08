@@ -54,6 +54,24 @@ async fn main() -> anyhow::Result<()> {
 
     let client = Storage::builder().build().await?;
 
+    let control = StorageControl::builder().build().await?;
+    let (delete_tx, mut delete_rx) = tokio::sync::mpsc::channel::<Object>(1024 * args.task_count);
+    let delete_batch_size = 1024_usize;
+    let delete_control = control.clone();
+    let deleter = tokio::spawn(async move {
+        let _guard = enable_tracing();
+        let mut batch = Vec::new();
+        while delete_rx.recv_many(&mut batch, delete_batch_size).await > 0 {
+            if batch.len() >= delete_batch_size {
+                join_deletes(
+                    batch.drain(..).map(|o| delete(&delete_control, o))
+                )
+                .await;
+            }
+        }
+        join_deletes(batch.drain(..).map(|o| delete(&delete_control, o))).await;
+    });
+
     let (sample_tx, mut sample_rx) = tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count);
     let test_start = Instant::now();
     let buffer = bytes::Bytes::from_owner(
@@ -71,6 +89,7 @@ async fn main() -> anyhow::Result<()> {
                 start: test_start,
                 client: client.clone(),
                 tx: sample_tx.clone(),
+                delete: delete_tx.clone(),
                 buffer: buffer.clone(),
             };
             tokio::spawn(task.run(args.clone()))
@@ -86,24 +105,6 @@ async fn main() -> anyhow::Result<()> {
     }
 
     tracing::info!("cleaning up");
-    let control = StorageControl::builder().build().await?;
-    let (delete_tx, mut delete_rx) = tokio::sync::mpsc::channel::<Object>(1024 * args.task_count);
-    let delete_batch_size = 1024_usize;
-    let delete_control = control.clone();
-    let deleter = tokio::spawn(async move {
-        let _guard = enable_tracing();
-        let mut batch = Vec::new();
-        while let Some(object) = delete_rx.recv().await {
-            batch.push(delete(&delete_control, object));
-            if batch.len() >= delete_batch_size {
-                join_deletes(
-                    batch.split_off(0)
-                )
-                .await;
-            }
-        }
-        join_deletes(batch).await;
-    });
     let mut list = control
         .list_objects()
         .set_parent(format!("projects/_/buckets/{}", args.bucket_name))
@@ -169,8 +170,9 @@ fn delete(
         .send()
 }
 
-async fn join_deletes<F>(batch: Vec<F>)
+async fn join_deletes<I, F>(batch: I)
 where
+    I: Iterator<Item = F>,
     F: Future<Output = Result<(), google_cloud_storage::Error>>,
 {
     let done = futures::future::join_all(batch).await;
@@ -190,6 +192,7 @@ struct Task {
     buffer: bytes::Bytes,
     id: usize,
     tx: Sender<Sample>,
+    delete: Sender<Object>,
 }
 
 type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Object>;
@@ -257,6 +260,8 @@ impl Task {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
             }
+            // Try to delete the object immediately, but do not block the test.
+            let _ = self.delete.try_send(upload);
         }
     }
 
