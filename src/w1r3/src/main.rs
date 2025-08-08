@@ -21,6 +21,7 @@
 
 use clap::Parser;
 use google_cloud_gax::options::RequestOptionsBuilder;
+use google_cloud_gax::paginator::ItemPaginator;
 use google_cloud_gax::retry_policy::RetryPolicyExt;
 use google_cloud_storage::backoff_policy;
 use google_cloud_storage::client::{Storage, StorageControl};
@@ -52,12 +53,8 @@ async fn main() -> anyhow::Result<()> {
     tracing::info!("{args:?}");
 
     let client = Storage::builder().build().await?;
-    let control = StorageControl::builder().build().await?;
 
-    let (sample_tx, mut sample_rx) =
-        tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count);
-    let (delete_tx, mut delete_rx) =
-        tokio::sync::mpsc::channel::<Object>(1024 * args.task_count);
+    let (sample_tx, mut sample_rx) = tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count);
     let test_start = Instant::now();
     let buffer = bytes::Bytes::from_owner(
         rand::rng()
@@ -65,42 +62,60 @@ async fn main() -> anyhow::Result<()> {
             .take(args.max_object_size as usize)
             .collect::<Vec<_>>(),
     );
+    let run = uuid::Uuid::new_v4().to_string();
     let tasks = (0..args.task_count)
         .map(|id| {
             let task = Task {
+                run: run.clone(),
                 id,
                 start: test_start,
                 client: client.clone(),
-                control: control.clone(),
                 tx: sample_tx.clone(),
-                delete: delete_tx.clone(),
                 buffer: buffer.clone(),
             };
             tokio::spawn(task.run(args.clone()))
         })
         .collect::<Vec<_>>();
+    drop(sample_tx);
 
-    let delete_batch_size = args.delete_batch_multiplier * args.task_count;
+    println!("{}", Sample::HEADER);
+    let mut sample_count = 0_u64;
+    while let Some(sample) = sample_rx.recv().await {
+        sample_count += 1;
+        println!("{}", sample.to_row());
+    }
+
+    tracing::info!("cleaning up");
+    let control = StorageControl::builder().build().await?;
+    let (delete_tx, mut delete_rx) = tokio::sync::mpsc::channel::<Object>(1024 * args.task_count);
+    let delete_batch_size = 1024_usize;
+    let delete_control = control.clone();
     let deleter = tokio::spawn(async move {
         let _guard = enable_tracing();
         let mut batch = Vec::new();
         while let Some(object) = delete_rx.recv().await {
-            batch.push(delete(&control, object));
+            batch.push(delete(&delete_control, object));
             if batch.len() >= delete_batch_size {
-                join_deletes(batch.split_off(0), test_start, &sample_tx).await;
+                join_deletes(
+                    batch.split_off(0)
+                )
+                .await;
             }
         }
-        join_deletes(batch, test_start, &sample_tx).await;
+        join_deletes(batch).await;
     });
-    drop(delete_tx);
-
-    let id = uuid::Uuid::new_v4().to_string();
-    println!("Experiment,{}", Sample::HEADER);
-    let mut sample_count = 0_u64;
-    while let Some(sample) = sample_rx.recv().await {
-        sample_count += 1;
-        println!("{id},{}", sample.to_row());
+    let mut list = control
+        .list_objects()
+        .set_parent(format!("projects/_/buckets/{}", args.bucket_name))
+        .set_prefix(run.clone())
+        .by_item();
+    while let Some(o) = list.next().await {
+        let Ok(object) = o else {
+            break;
+        };
+        let _ = delete_tx.send(object).await;
     }
+    drop(delete_tx);
 
     if let Err(e) = deleter.await {
         tracing::error!("cannot join deleter {e}");
@@ -154,25 +169,11 @@ fn delete(
         .send()
 }
 
-async fn join_deletes<F>(batch: Vec<F>, test_start: Instant, tx: &Sender<Sample>)
+async fn join_deletes<F>(batch: Vec<F>)
 where
     F: Future<Output = Result<(), google_cloud_storage::Error>>,
 {
-    let start = Instant::now();
-    let size = batch.len();
     let done = futures::future::join_all(batch).await;
-    let ex = Experiment {
-        task: 0,
-        relative: start - test_start,
-        iteration: 0,
-        start,
-        op: Operation::Delete,
-        target_size: size,
-        name: "many",
-    };
-    if let Err(_) = tx.send(Sample::success(ex)).await {
-        SEND_ERROR.fetch_add(1, Ordering::SeqCst);
-    }
     for j in done {
         if let Err(e) = j {
             tracing::info!("DELETE ERROR = {e:?}");
@@ -183,13 +184,12 @@ where
 
 #[derive(Clone)]
 struct Task {
+    run: String,
     client: Storage,
-    control: StorageControl,
     start: Instant,
     buffer: bytes::Bytes,
     id: usize,
     tx: Sender<Sample>,
-    delete: Sender<Object>,
 }
 
 type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Object>;
@@ -203,7 +203,7 @@ impl Task {
         let size = Uniform::new_inclusive(args.min_object_size, args.max_object_size).unwrap();
 
         for iteration in 0..args.min_sample_count {
-            let name = random_object_name();
+            let name = random_object_name(&self.run);
             let size = rand::rng().sample(size) as usize;
             let (write_op, threshold) = if rand::rng().random_bool(0.5) {
                 (Operation::Resumable, 0_usize)
@@ -213,6 +213,7 @@ impl Task {
 
             let write_start = Instant::now();
             let ex = Experiment {
+                run: self.run.clone(),
                 task: self.id,
                 relative: write_start - self.start,
                 iteration,
@@ -238,6 +239,7 @@ impl Task {
             for op in [Operation::Read0, Operation::Read1, Operation::Read2] {
                 let read_start = Instant::now();
                 let ex = Experiment {
+                    run: self.run.clone(),
                     task: self.id,
                     relative: read_start - self.start,
                     iteration,
@@ -254,28 +256,6 @@ impl Task {
                 if let Err(_) = self.tx.send(sample).await {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
-            }
-            if args.delete_inline {
-                let delete_start = Instant::now();
-                let ex = Experiment {
-                    task: self.id,
-                    relative: delete_start - self.start,
-                    iteration,
-                    start: delete_start,
-                    op: Operation::Delete,
-                    target_size: size,
-                    name: &upload.name.clone(),
-                };
-                let sample = if let Err(e) = delete(&self.control, upload).await {
-                    Sample::error(ex, &e)
-                } else {
-                    Sample::success(ex)
-                };
-                if let Err(_) = self.tx.send(sample).await {
-                    SEND_ERROR.fetch_add(1, Ordering::SeqCst);
-                }
-            } else if let Err(_) = self.delete.send(upload).await {
-                SEND_ERROR.fetch_add(1, Ordering::SeqCst);
             }
         }
     }
@@ -324,16 +304,18 @@ impl Task {
     }
 }
 
-fn random_object_name() -> String {
-    rand::rng()
+fn random_object_name(prefix: &str) -> String {
+    let suffix: String = rand::rng()
         .sample_iter(&Alphanumeric)
         .take(32)
         .map(char::from)
-        .collect()
+        .collect();
+    format!("{prefix}/{suffix}")
 }
 
 #[derive(Clone, Debug)]
 struct Experiment<'a> {
+    run: String,
     task: usize,
     relative: Duration,
     iteration: u64,
@@ -345,6 +327,7 @@ struct Experiment<'a> {
 
 #[derive(Clone, Debug)]
 struct Sample {
+    run: String,
     task: usize,
     iteration: u64,
     op_start: Duration,
@@ -359,7 +342,7 @@ struct Sample {
 
 impl Sample {
     const HEADER: &str = concat!(
-        "Task,Iteration,IterationStart,Operation",
+        "Experiment,Task,Iteration,IterationStart,Operation",
         ",Size,TransferSize,ElapsedMicroseconds,Object",
         ",Result,Details"
     );
@@ -367,6 +350,7 @@ impl Sample {
     fn error(ex: Experiment, error: &google_cloud_storage::Error) -> Self {
         tracing::error!("experiment = {ex:?} error = {error:?}");
         Self {
+            run: ex.run,
             task: ex.task,
             iteration: ex.iteration,
             op_start: ex.relative,
@@ -394,6 +378,7 @@ impl Sample {
     ) -> Self {
         tracing::error!("experiment = {ex:?} download interrupted");
         Self {
+            run: ex.run,
             task: ex.task,
             iteration: ex.iteration,
             op_start: ex.relative,
@@ -416,6 +401,7 @@ impl Sample {
 
     fn success(ex: Experiment) -> Self {
         Self {
+            run: ex.run,
             task: ex.task,
             iteration: ex.iteration,
             op_start: ex.relative,
@@ -431,7 +417,8 @@ impl Sample {
 
     fn to_row(&self) -> String {
         format!(
-            "{},{},{},{},{},{},{},{},{},{}",
+            "{},{},{},{},{},{},{},{},{},{},{}",
+            self.run,
             self.task,
             self.iteration,
             self.op_start.as_micros(),
@@ -453,7 +440,6 @@ enum Operation {
     Read0,
     Read1,
     Read2,
-    Delete,
 }
 
 impl Operation {
@@ -464,7 +450,6 @@ impl Operation {
             Self::Read0 => "READ[0]",
             Self::Read1 => "READ[1]",
             Self::Read2 => "READ[2]",
-            Self::Delete => "DELETE",
         }
     }
 }
@@ -516,12 +501,6 @@ struct Args {
 
     #[arg(long, default_value_t = 1)]
     min_sample_count: u64,
-
-    #[arg(long)]
-    delete_inline: bool,
-
-    #[arg(long, default_value_t = 8)]
-    delete_batch_multiplier: usize,
 }
 
 fn parse_size_arg(arg: &str) -> anyhow::Result<u64> {
