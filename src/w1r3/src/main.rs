@@ -109,6 +109,7 @@ async fn main() -> anyhow::Result<()> {
         .list_objects()
         .set_parent(format!("projects/_/buckets/{}", args.bucket_name))
         .set_prefix(run.clone())
+        .set_page_size(5_000)
         .by_item();
     while let Some(o) = list.next().await {
         let Ok(object) = o else {
@@ -177,10 +178,15 @@ where
 {
     let done = futures::future::join_all(batch).await;
     for j in done {
-        if let Err(e) = j {
-            tracing::info!("DELETE ERROR = {e:?}");
-            DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
+        let Err(e) = j else {
+            continue;
+        };
+        use google_cloud_gax::error::rpc::Code;
+        if e.status().is_some_and(|s| s.code == Code::NotFound) {
+            continue;
         }
+        tracing::error!("DELETE ERROR = {e:?}");
+        DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
     }
 }
 
@@ -353,7 +359,7 @@ impl Sample {
     );
 
     fn error(ex: Experiment, error: &google_cloud_storage::Error) -> Self {
-        tracing::error!("experiment = {ex:?} error = {error:?}");
+        tracing::error!("{} experiment = {ex:?} error = {error:?}", ex.op.name());
         Self {
             run: ex.run,
             task: ex.task,
