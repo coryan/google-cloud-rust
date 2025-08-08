@@ -105,18 +105,6 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
-    use tracing_subscriber::fmt::format::FmtSpan;
-    let subscriber = tracing_subscriber::fmt()
-        .with_level(true)
-        .with_thread_ids(true)
-        .with_span_events(FmtSpan::NEW | FmtSpan::CLOSE)
-        .with_writer(std::io::stderr)
-        .finish();
-
-    tracing::subscriber::set_default(subscriber)
-}
-
 #[derive(Clone)]
 struct Task {
     run: String,
