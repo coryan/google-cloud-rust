@@ -41,7 +41,7 @@ static READ_ERROR: AtomicU64 = AtomicU64::new(0);
 static DELETE_ERROR: AtomicU64 = AtomicU64::new(0);
 static SEND_ERROR: AtomicU64 = AtomicU64::new(0);
 
-const DELETE_BATCH_SIZE: usize = 512;
+const DELETE_BATCH_SIZE: usize = 2;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -73,6 +73,7 @@ async fn main() -> anyhow::Result<()> {
                 id,
                 start: test_start,
                 client: client.clone(),
+                control: control.clone(),
                 tx: sample_tx.clone(),
                 delete: delete_tx.clone(),
                 buffer: buffer.clone(),
@@ -80,29 +81,19 @@ async fn main() -> anyhow::Result<()> {
             tokio::spawn(task.run(args.clone()))
         })
         .collect::<Vec<_>>();
-    drop(sample_tx);
-    drop(delete_tx);
 
     let deleter = tokio::spawn(async move {
         let _guard = enable_tracing();
-//        let mut batch = Vec::new();
-        while let Some(_object) = delete_rx.recv().await {
+        let mut batch = Vec::new();
+        while let Some(object) = delete_rx.recv().await {
+            batch.push(delete(&control, object));
+            if batch.len() >= DELETE_BATCH_SIZE {
+                join_deletes(batch.split_off(0), test_start, &sample_tx).await;
+            }
         }
-            // let delete = control
-                // .delete_object()
-                // .set_bucket(object.bucket)
-                // .set_object(object.name)
-                // .set_generation(object.generation)
-                // .with_idempotency(true)
-                // .with_backoff_policy(backoff_policy::default())
-                // .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
-                // .send();
-            // batch.push(delete);
-            // if batch.len() >= DELETE_BATCH_SIZE {
-                // join_deletes(futures::future::join_all(batch.split_off(0)).await);
-            // }
-//        join_deletes(futures::future::join_all(batch).await);
+        join_deletes(batch, test_start, &sample_tx).await;
     });
+    drop(delete_tx);
 
     let id = uuid::Uuid::new_v4().to_string();
     println!("Experiment,{}", Sample::HEADER);
@@ -149,11 +140,41 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
     tracing::subscriber::set_default(subscriber)
 }
 
-fn join_deletes<I>(batch: I)
+fn delete(
+    control: &StorageControl,
+    object: Object,
+) -> impl Future<Output = Result<(), google_cloud_storage::Error>> {
+    control
+        .delete_object()
+        .set_bucket(object.bucket)
+        .set_object(object.name)
+        .set_generation(object.generation)
+        .with_idempotency(true)
+        .with_backoff_policy(backoff_policy::default())
+        .with_retry_policy(RecommendedPolicy.with_time_limit(Duration::from_secs(60)))
+        .send()
+}
+
+async fn join_deletes<F>(batch: Vec<F>, test_start: Instant, tx: &Sender<Sample>)
 where
-    I: IntoIterator<Item = Result<(), google_cloud_storage::Error>>,
+    F: Future<Output = Result<(), google_cloud_storage::Error>>,
 {
-    for j in batch {
+    let start = Instant::now();
+    let size = batch.len();
+    let done = futures::future::join_all(batch).await;
+    let ex = Experiment {
+        task: 0,
+        relative: start - test_start,
+        iteration: 0,
+        start,
+        op: Operation::Delete,
+        target_size: size,
+        name: "many",
+    };
+    if let Err(_) = tx.send(Sample::success(ex)).await {
+        SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+    }
+    for j in done {
         if let Err(e) = j {
             tracing::info!("DELETE ERROR = {e:?}");
             DELETE_ERROR.fetch_add(1, Ordering::SeqCst);
@@ -164,6 +185,7 @@ where
 #[derive(Clone)]
 struct Task {
     client: Storage,
+    control: StorageControl,
     start: Instant,
     buffer: bytes::Bytes,
     id: i32,
@@ -234,7 +256,26 @@ impl Task {
                     SEND_ERROR.fetch_add(1, Ordering::SeqCst);
                 }
             }
-            if let Err(_) = self.delete.send(upload).await {
+            if args.delete_inline {
+                let delete_start = Instant::now();
+                let ex = Experiment {
+                    task: self.id,
+                    relative: delete_start - self.start,
+                    iteration,
+                    start: delete_start,
+                    op: Operation::Delete,
+                    target_size: size,
+                    name: &upload.name.clone(),
+                };
+                let sample = if let Err(e) = delete(&self.control, upload).await {
+                    Sample::error(ex, &e)
+                } else {
+                    Sample::success(ex)
+                };
+                if let Err(_) = self.tx.send(sample).await {
+                    SEND_ERROR.fetch_add(1, Ordering::SeqCst);
+                }
+            } else if let Err(_) = self.delete.send(upload).await {
                 SEND_ERROR.fetch_add(1, Ordering::SeqCst);
             }
         }
@@ -413,6 +454,7 @@ enum Operation {
     Read0,
     Read1,
     Read2,
+    Delete,
 }
 
 impl Operation {
@@ -423,6 +465,7 @@ impl Operation {
             Self::Read0 => "READ[0]",
             Self::Read1 => "READ[1]",
             Self::Read2 => "READ[2]",
+            Self::Delete => "DELETE",
         }
     }
 }
@@ -474,6 +517,9 @@ struct Args {
 
     #[arg(long, default_value_t = 1)]
     min_sample_count: u64,
+
+    #[arg(long)]
+    delete_inline: bool,
 }
 
 fn parse_size_arg(arg: &str) -> anyhow::Result<u64> {
