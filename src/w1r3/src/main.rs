@@ -41,8 +41,6 @@ static READ_ERROR: AtomicU64 = AtomicU64::new(0);
 static DELETE_ERROR: AtomicU64 = AtomicU64::new(0);
 static SEND_ERROR: AtomicU64 = AtomicU64::new(0);
 
-const DELETE_BATCH_SIZE: usize = 2;
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let _guard = enable_tracing();
@@ -57,9 +55,9 @@ async fn main() -> anyhow::Result<()> {
     let control = StorageControl::builder().build().await?;
 
     let (sample_tx, mut sample_rx) =
-        tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count as usize);
+        tokio::sync::mpsc::channel::<Sample>(1024 * args.task_count);
     let (delete_tx, mut delete_rx) =
-        tokio::sync::mpsc::channel::<Object>(1024 * args.task_count as usize);
+        tokio::sync::mpsc::channel::<Object>(1024 * args.task_count);
     let test_start = Instant::now();
     let buffer = bytes::Bytes::from_owner(
         rand::rng()
@@ -82,12 +80,13 @@ async fn main() -> anyhow::Result<()> {
         })
         .collect::<Vec<_>>();
 
+    let delete_batch_size = args.delete_batch_multiplier * args.task_count;
     let deleter = tokio::spawn(async move {
         let _guard = enable_tracing();
         let mut batch = Vec::new();
         while let Some(object) = delete_rx.recv().await {
             batch.push(delete(&control, object));
-            if batch.len() >= DELETE_BATCH_SIZE {
+            if batch.len() >= delete_batch_size {
                 join_deletes(batch.split_off(0), test_start, &sample_tx).await;
             }
         }
@@ -188,7 +187,7 @@ struct Task {
     control: StorageControl,
     start: Instant,
     buffer: bytes::Bytes,
-    id: i32,
+    id: usize,
     tx: Sender<Sample>,
     delete: Sender<Object>,
 }
@@ -335,7 +334,7 @@ fn random_object_name() -> String {
 
 #[derive(Clone, Debug)]
 struct Experiment<'a> {
-    task: i32,
+    task: usize,
     relative: Duration,
     iteration: u64,
     start: Instant,
@@ -346,7 +345,7 @@ struct Experiment<'a> {
 
 #[derive(Clone, Debug)]
 struct Sample {
-    task: i32,
+    task: usize,
     iteration: u64,
     op_start: Duration,
     op: Operation,
@@ -513,13 +512,16 @@ struct Args {
     max_object_size: u64,
 
     #[arg(long, default_value_t = 1)]
-    task_count: i32,
+    task_count: usize,
 
     #[arg(long, default_value_t = 1)]
     min_sample_count: u64,
 
     #[arg(long)]
     delete_inline: bool,
+
+    #[arg(long, default_value_t = 8)]
+    delete_batch_multiplier: usize,
 }
 
 fn parse_size_arg(arg: &str) -> anyhow::Result<u64> {
