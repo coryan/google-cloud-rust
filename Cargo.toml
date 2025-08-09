@@ -252,6 +252,7 @@ members = [
   "src/generated/storagetransfer/v1",
   "src/generated/type",
   "src/integration-tests",
+  "src/lbd",
   "src/lro",
   "src/protojson-conformance",
   "src/pubsub",
