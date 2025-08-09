@@ -36,3 +36,10 @@ TS=$(date +%s); cargo run --release --package storage-lbd -- \
     --bucket-name ${BUCKET_NAME} \
     --min-sample-count=1000  >bm-${TS}.txt 2>bm-${TS}.log </dev/null &
 ```
+
+## Load data to BigQuer
+
+```shell
+bq load --skip_leading_rows=1 lbd.test01 bm-${TS}.txt \
+    "Iteration:int64,TargetSize:int64,BatchSize:int64,ElapsedMicroseconds:int64,RelativeMicroseconds:int64,ErrorCount:int64"
+```

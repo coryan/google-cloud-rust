@@ -33,9 +33,9 @@ async fn main() -> anyhow::Result<()> {
     tracing::info!("{args:?}");
 
     let control = StorageControl::builder().build().await?;
-
     let (tx, mut rx) = tokio::sync::mpsc::channel::<Object>(8 * args.max_batch_size);
 
+    let test_start = Instant::now();
     let list = tokio::spawn(list(control.clone(), args.clone(), tx));
 
     println!("{}", Sample::HEADER);
@@ -46,7 +46,7 @@ async fn main() -> anyhow::Result<()> {
         if rx.recv_many(&mut batch, size).await == 0 {
             break;
         }
-        let sample = delete_batch(&control, batch, size).await;
+        let sample = delete_batch(&control, batch, size, test_start).await;
         sample.print(iteration);
     }
     tracing::info!("DONE - collected all required samples");
@@ -64,25 +64,28 @@ struct Sample {
     target_size: usize,
     size: usize,
     elapsed: Duration,
+    relative: Duration,
     errors: usize,
 }
 
 impl Sample {
-    const HEADER: &str = "Iteration,TargetSize,BatchSize,ElapsedMicroseconds,ErrorCount";
+    const HEADER: &str = "Iteration,TargetSize,BatchSize,ElapsedMicroseconds,RelativeMicroseconds,ErrorCount";
 
     fn print(&self, iteration: usize) {
         println!(
-            "{iteration},{},{},{},{}",
+            "{iteration},{},{},{},{},{}",
             self.target_size,
             self.size,
             self.elapsed.as_micros(),
+            self.relative.as_micros(),
             self.errors
         )
     }
 }
 
-async fn delete_batch(control: &StorageControl, batch: Vec<Object>, target_size: usize) -> Sample {
+async fn delete_batch(control: &StorageControl, batch: Vec<Object>, target_size: usize, test_start: Instant) -> Sample {
     let start = Instant::now();
+    let relative = start - test_start;
     let results =
         futures::future::join_all(batch.into_iter().map(|o| delete_object(control, o))).await;
     let elapsed = Instant::now() - start;
@@ -93,6 +96,7 @@ async fn delete_batch(control: &StorageControl, batch: Vec<Object>, target_size:
         target_size,
         size,
         elapsed,
+        relative,
         errors,
     }
 }
