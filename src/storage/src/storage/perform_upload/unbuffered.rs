@@ -17,7 +17,7 @@ use super::{
     Seek, SizeHint, StreamingSource, X_GOOG_API_CLIENT_HEADER,
     apply_customer_supplied_encryption_headers, handle_object_response, v1,
 };
-use futures::stream::unfold;
+use futures::{FutureExt, stream::unfold};
 use std::sync::Arc;
 
 impl<C, S> PerformUpload<C, S>
@@ -196,6 +196,34 @@ where
             None
         }));
         Ok(reqwest::Body::wrap_stream(stream))
+    }
+}
+
+struct Body<S> {
+    inner: S,
+    size_hint: SizeHint,
+}
+
+impl<S, E> http_body::Body for Body<S>
+where
+    S: futures::Stream<Item = std::result::Result<bytes::Bytes, E>> + Unpin,
+{
+    type Data = bytes::Bytes;
+    type Error = E;
+
+    fn poll_frame(
+        self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Option<std::result::Result<http_body::Frame<Self::Data>, Self::Error>>>
+    {
+        use futures::Stream;
+        use std::task::Poll;
+        match self.inner.poll_next(cx) {
+            Poll::Pending => Poll::Pending,
+            Poll::Ready(None) => Poll::Ready(None),
+            Poll::Ready(Some(Err(e))) => Poll::Ready(Some(Err(e))),
+            Poll::Ready(Some(Ok(b))) => Poll::Ready(Some(Ok(http_body::Frame::data(b)))),
+        }
     }
 }
 
