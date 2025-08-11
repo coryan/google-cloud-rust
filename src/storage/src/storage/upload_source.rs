@@ -115,7 +115,9 @@ pub trait StreamingSource {
     type Error: std::error::Error + Send + Sync + 'static;
 
     /// Gets the next set of data to upload.
-    fn next(&mut self) -> impl Future<Output = Option<Result<bytes::Bytes, Self::Error>>> + Send;
+    fn next(
+        &mut self,
+    ) -> impl Future<Output = Option<Result<bytes::Bytes, Self::Error>>> + Send + Sync;
 
     /// An estimate of the upload size.
     ///
@@ -124,7 +126,7 @@ pub trait StreamingSource {
     ///
     /// If the maximum size is known and sufficiently small, the client library
     /// may be able to use a more efficient protocol for the upload.
-    fn size_hint(&self) -> impl Future<Output = Result<SizeHint, Self::Error>> + Send {
+    fn size_hint(&self) -> impl Future<Output = Result<SizeHint, Self::Error>> + Send + Sync {
         std::future::ready(Ok(SizeHint::new()))
     }
 }

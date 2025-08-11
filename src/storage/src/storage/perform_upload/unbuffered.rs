@@ -178,7 +178,8 @@ where
 
     async fn payload_to_body(&self) -> Result<reqwest::Body> {
         let payload = self.payload.clone();
-        let stream = Box::pin(unfold(Some(payload), move |state| async move {
+        let hint = payload.lock().await.size_hint().await.map_err(Error::ser)?;
+        let stream = unfold(Some(payload), move |state| async move {
             if let Some(payload) = state {
                 let mut guard = payload.lock().await;
                 if let Some(next) = guard.next().await {
@@ -187,8 +188,48 @@ where
                 }
             }
             None
-        }));
-        Ok(reqwest::Body::wrap_stream(stream))
+        });
+        Ok(reqwest::Body::wrap(Body::new(stream, hint)))
+    }
+}
+
+struct Body<S> {
+    inner: std::pin::Pin<Box<S>>,
+    size_hint: SizeHint,
+}
+
+impl<S> Body<S> {
+    fn new(inner: S, size_hint: SizeHint) -> Self {
+        Self {
+            inner: Box::pin(inner),
+            size_hint,
+        }
+    }
+}
+
+impl<S, E> http_body::Body for Body<S>
+where
+    S: futures::Stream<Item = std::result::Result<bytes::Bytes, E>> + Send + 'static,
+    E: Send + Sync + 'static,
+{
+    type Data = bytes::Bytes;
+    type Error = E;
+
+    fn poll_frame(
+        mut self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Option<std::result::Result<http_body::Frame<Self::Data>, Self::Error>>>
+    {
+        use std::task::{Poll, ready};
+        match ready!(self.inner.as_mut().poll_next(cx)) {
+            None => Poll::Ready(None),
+            Some(Err(e)) => Poll::Ready(Some(Err(e))),
+            Some(Ok(b)) => Poll::Ready(Some(Ok(http_body::Frame::data(b)))),
+        }
+    }
+
+    fn size_hint(&self) -> http_body::SizeHint {
+        self.size_hint.clone()
     }
 }
 
@@ -321,7 +362,6 @@ mod tests {
         source.expect_seek().times(1..).returning(|_| Ok(()));
         source
             .expect_size_hint()
-            .once()
             .returning(|| Ok(SizeHint::with_exact(1024)));
         let err = client
             .upload_object("projects/_/buckets/test-bucket", "test-object", source)
@@ -361,7 +401,6 @@ mod tests {
             .returning(|_| Err(IoError::new(ErrorKind::ConnectionAborted, "test-only")));
         source
             .expect_size_hint()
-            .once()
             .returning(|| Ok(SizeHint::with_exact(1024_u64)));
         let err = client
             .upload_object("projects/_/buckets/test-bucket", "test-object", source)
