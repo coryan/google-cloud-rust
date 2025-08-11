@@ -370,7 +370,6 @@ mod tests {
         source.expect_seek().times(1..).returning(|_| Ok(()));
         source
             .expect_size_hint()
-            .once()
             .returning(|| Ok(SizeHint::with_exact(1024)));
         let err = client
             .upload_object("projects/_/buckets/test-bucket", "test-object", source)
@@ -410,7 +409,6 @@ mod tests {
             .returning(|_| Err(IoError::new(ErrorKind::ConnectionAborted, "test-only")));
         source
             .expect_size_hint()
-            .once()
             .returning(|| Ok(SizeHint::with_exact(1024_u64)));
         let err = client
             .upload_object("projects/_/buckets/test-bucket", "test-object", source)
