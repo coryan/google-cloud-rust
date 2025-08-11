@@ -17,7 +17,7 @@ use super::{
     Seek, SizeHint, StreamingSource, X_GOOG_API_CLIENT_HEADER,
     apply_customer_supplied_encryption_headers, handle_object_response, v1,
 };
-use futures::{FutureExt, stream::unfold};
+use futures::stream::unfold;
 use std::sync::Arc;
 
 impl<C, S> PerformUpload<C, S>
@@ -185,7 +185,8 @@ where
 
     async fn payload_to_body(&self) -> Result<reqwest::Body> {
         let payload = self.payload.clone();
-        let stream = Box::pin(unfold(Some(payload), move |state| async move {
+        let hint = payload.lock().await.size_hint().await.map_err(Error::ser)?;
+        let stream = unfold(Some(payload), move |state| async move {
             if let Some(payload) = state {
                 let mut guard = payload.lock().await;
                 if let Some(next) = guard.next().await {
@@ -194,36 +195,48 @@ where
                 }
             }
             None
-        }));
-        Ok(reqwest::Body::wrap_stream(stream))
+        });
+        Ok(reqwest::Body::wrap(Body::new(stream, hint)))
     }
 }
 
 struct Body<S> {
-    inner: S,
+    inner: std::pin::Pin<Box<S>>,
     size_hint: SizeHint,
+}
+
+impl<S> Body<S> {
+    fn new(inner: S, size_hint: SizeHint) -> Self {
+        Self {
+            inner: Box::pin(inner),
+            size_hint,
+        }
+    }
 }
 
 impl<S, E> http_body::Body for Body<S>
 where
-    S: futures::Stream<Item = std::result::Result<bytes::Bytes, E>> + Unpin,
+    S: futures::Stream<Item = std::result::Result<bytes::Bytes, E>> + Send + 'static,
+    E: Send + Sync + 'static,
 {
     type Data = bytes::Bytes;
     type Error = E;
 
     fn poll_frame(
-        self: std::pin::Pin<&mut Self>,
+        mut self: std::pin::Pin<&mut Self>,
         cx: &mut std::task::Context<'_>,
     ) -> std::task::Poll<Option<std::result::Result<http_body::Frame<Self::Data>, Self::Error>>>
     {
-        use futures::Stream;
-        use std::task::Poll;
-        match self.inner.poll_next(cx) {
-            Poll::Pending => Poll::Pending,
-            Poll::Ready(None) => Poll::Ready(None),
-            Poll::Ready(Some(Err(e))) => Poll::Ready(Some(Err(e))),
-            Poll::Ready(Some(Ok(b))) => Poll::Ready(Some(Ok(http_body::Frame::data(b)))),
+        use std::task::{Poll, ready};
+        match ready!(self.inner.as_mut().poll_next(cx)) {
+            None => Poll::Ready(None),
+            Some(Err(e)) => Poll::Ready(Some(Err(e))),
+            Some(Ok(b)) => Poll::Ready(Some(Ok(http_body::Frame::data(b)))),
         }
+    }
+
+    fn size_hint(&self) -> http_body::SizeHint {
+        self.size_hint.clone()
     }
 }
 
