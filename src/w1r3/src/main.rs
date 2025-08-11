@@ -21,7 +21,7 @@
 
 use clap::Parser;
 use google_cloud_gax::retry_policy::RetryPolicyExt;
-use google_cloud_storage::client::{Storage};
+use google_cloud_storage::client::Storage;
 use google_cloud_storage::retry_policy::RecommendedPolicy;
 use rand::{
     Rng,
@@ -46,6 +46,16 @@ async fn main() -> anyhow::Result<()> {
         return Err(anyhow::Error::msg("invalid object size range"));
     }
     tracing::info!("{args:?}");
+
+    let handle = tokio::runtime::Handle::current();
+    let runtime_monitor = tokio_metrics::RuntimeMonitor::new(&handle);
+    let frequency = std::time::Duration::from_millis(5000);
+    tokio::spawn(async move {
+        for metrics in runtime_monitor.intervals() {
+            tracing::info!("Metrics = {:?}", metrics);
+            tokio::time::sleep(frequency).await;
+        }
+    });
 
     let client = Storage::builder()
         .with_retry_policy(
