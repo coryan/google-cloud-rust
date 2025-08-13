@@ -60,6 +60,7 @@ longrunning.workspace = true
 lro.workspace         = true
 rpc.workspace         = true
 wkt.workspace         = true
+tower = { version = "0.5.2", features = ["balance", "limit", "discover"] }
 
 [features]
 unstable-stream = ["reqwest/stream"]

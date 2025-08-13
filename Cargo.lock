@@ -4378,6 +4378,7 @@ dependencies = [
  "tokio",
  "tokio-test",
  "tonic",
+ "tower",
  "tracing",
  "uuid",
 ]

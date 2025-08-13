@@ -211,6 +211,7 @@ impl Storage {
             .no_deflate()
             .no_gzip()
             .no_zstd()
+            .connector_layer(tower::limit::concurrency::ConcurrencyLimitLayer::new(64))
             .build()
             .map_err(Error::transport)?;
         let mut builder = builder;
