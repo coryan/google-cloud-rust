@@ -142,7 +142,7 @@ impl Task {
             let (write_op, threshold) = if rand::rng().random_bool(0.5) {
                 (Operation::Resumable, 0_usize)
             } else {
-                (Operation::SingleShot, size)
+                (Operation::SingleShot, 2 * size)
             };
 
             let write_start = Instant::now();
