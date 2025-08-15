@@ -88,6 +88,7 @@ impl RetryPolicy for RecommendedPolicy {
             return RetryResult::Continue(error);
         }
         if !idempotent {
+            tracing::info!("error in non idempotent request");
             return RetryResult::Permanent(error);
         }
         if error.is_io() {
@@ -96,7 +97,10 @@ impl RetryPolicy for RecommendedPolicy {
         if let Some(code) = error.http_status_code() {
             return match code {
                 408 | 429 | 500..600 => RetryResult::Continue(error),
-                _ => RetryResult::Permanent(error),
+                _ => {
+                    tracing::info!("permanent error (http_status_code) with {error:?}");
+                    RetryResult::Permanent(error)
+                }
             };
         }
         if let Some(code) = error.status().map(|s| s.code) {
@@ -105,9 +109,13 @@ impl RetryPolicy for RecommendedPolicy {
                 Code::Internal | Code::ResourceExhausted | Code::Unavailable => {
                     RetryResult::Continue(error)
                 }
-                _ => RetryResult::Permanent(error),
+                _ => {
+                    tracing::info!("permanent error (status) with {error:?}");
+                    RetryResult::Permanent(error)
+                }
             };
         }
+        tracing::info!("permanent error with {error:?}");
         RetryResult::Permanent(error)
     }
 }

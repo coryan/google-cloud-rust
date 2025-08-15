@@ -699,6 +699,7 @@ async fn start_resumable_upload_request_retry_options() -> Result {
     retry
         .expect_on_error()
         .times(1..)
+        .withf(|_, _, idempotent, _| *idempotent)
         .returning(|_, _, _, e| RetryResult::Continue(e));
 
     let mut backoff = MockBackoffPolicy::new();
@@ -760,6 +761,7 @@ async fn start_resumable_upload_client_retry_options() -> Result {
     retry
         .expect_on_error()
         .times(1..)
+        .withf(|_, _, idempotent, _| *idempotent)
         .returning(|_, _, _, e| RetryResult::Continue(e));
 
     let mut backoff = MockBackoffPolicy::new();
