@@ -413,7 +413,7 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
             if v.contains(" read: b") {
                 write!(writer, "{}: {}", field, &v[..std::cmp::min(64, v.len())])
             } else if v.contains(" write (vectored): ") {
-                write!(writer, "{}: {}", field, &v[..std::cmp::min(512, v.len())])
+                write!(writer, "{}: {}", field, &v[..std::cmp::min(2048, v.len())])
             } else {
                 write!(writer, "{}: {v}", field)
             }
