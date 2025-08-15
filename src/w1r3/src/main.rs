@@ -39,6 +39,7 @@ static SEND_ERROR: AtomicU64 = AtomicU64::new(0);
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    tracing_log::LogTracer::init()?;
     let _guard = enable_tracing();
 
     let args = Args::parse();
@@ -403,12 +404,33 @@ impl ExperimentResult {
 }
 
 fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
-    use tracing_subscriber::fmt::format::FmtSpan;
+    use tracing_subscriber::fmt::format::{self, FmtSpan};
+    use tracing_subscriber::prelude::*;
+
+    let formatter = format::debug_fn(|writer, field, value| match field.name() {
+        "message" => {
+            let v = format!("{value:?}");
+            if v.contains(" read: b") {
+                write!(writer, "{}: {}", field, &v[..std::cmp::min(64, v.len())])
+            } else if v.contains(" write (vectored): ") {
+                write!(writer, "{}: {}", field, &v[..std::cmp::min(512, v.len())])
+            } else {
+                write!(writer, "{}: {v}", field)
+            }
+        }
+        _ => write!(writer, "{}: {:?}", field, value),
+    })
+    // Use the `tracing_subscriber::MakeFmtExt` trait to wrap the
+    // formatter so that a delimiter is added between fields.
+    .delimited("; ");
+
     let subscriber = tracing_subscriber::fmt()
         .with_level(true)
+        .with_max_level(tracing::Level::TRACE)
         .with_thread_ids(true)
         .with_span_events(FmtSpan::NEW | FmtSpan::CLOSE)
         .with_writer(std::io::stderr)
+        .fmt_fields(formatter)
         .finish();
 
     tracing::subscriber::set_default(subscriber)
