@@ -410,12 +410,21 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
     let formatter = format::debug_fn(|writer, field, value| match field.name() {
         "message" => {
             let v = format!("{value:?}");
-            if v.contains(" read: b") {
-                write!(writer, "{}: {}", field, &v[..std::cmp::min(64, v.len())])
-            } else if v.contains(" write (vectored): ") {
-                write!(writer, "{}: {}", field, &v[..std::cmp::min(2048, v.len())])
+            let clean = if !v.contains("authorization: Bearer ") {
+                std::borrow::Cow::Owned(v)
             } else {
-                write!(writer, "{}: {v}", field)
+                let re = regex::Regex::new("authorization: Bearer [A-Z0-9a-z_\\-\\.]*\r\n").unwrap();
+                re.replace(&v, "authorization: Bearer [censored]\r\n")
+            };
+            if clean.contains(" read: b") || clean.contains(" write (vectored): ") {
+                write!(
+                    writer,
+                    "{}: {}",
+                    field,
+                    &clean[..std::cmp::min(256, clean.len())]
+                )
+            } else {
+                write!(writer, "{}: {}", field, clean)
             }
         }
         _ => write!(writer, "{}: {:?}", field, value),

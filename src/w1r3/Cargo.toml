@@ -33,6 +33,7 @@ google-cloud-storage.workspace = true
 humantime.workspace            = true
 parse-size.workspace           = true
 rand.workspace                 = true
+regex.workspace                = true
 tokio                          = { workspace = true, features = ["macros"] }
 tokio-metrics = "0.4.4"
 tracing.workspace              = true
