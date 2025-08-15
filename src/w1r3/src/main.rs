@@ -39,13 +39,14 @@ static SEND_ERROR: AtomicU64 = AtomicU64::new(0);
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    tracing_log::LogTracer::init()?;
-    let _guard = enable_tracing();
-
     let args = Args::parse();
     if args.min_object_size > args.max_object_size {
         return Err(anyhow::Error::msg("invalid object size range"));
     }
+    if !args.no_reqwest_logs {
+        tracing_log::LogTracer::init()?;
+    }
+    let _guard = enable_tracing();
     tracing::info!("{args:?}");
 
     let handle = tokio::runtime::Handle::current();
@@ -462,6 +463,9 @@ struct Args {
 
     #[arg(long, default_value_t = 60)]
     retry_seconds: u64,
+
+    #[arg(long)]
+    no_reqwest_logs: bool,
 }
 
 fn parse_size_arg(arg: &str) -> anyhow::Result<u64> {
