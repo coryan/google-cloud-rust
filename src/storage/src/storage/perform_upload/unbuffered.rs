@@ -68,7 +68,8 @@ where
                 ResumableUploadStatus::Partial(offset) => (offset, upload_url),
             }
         } else {
-            let upload_url = self.start_resumable_upload_attempt().await?;
+            let ins = super::Instrumented::new(self.start_resumable_upload_attempt());
+            let upload_url = ins.await?;
             (0_u64, url.insert(upload_url).as_str())
         };
 
@@ -126,7 +127,8 @@ where
 
     async fn single_shot_attempt(&self, hint: SizeHint) -> Result<Object> {
         let builder = self.single_shot_builder(hint).await?;
-        let response = builder.send().await.map_err(Self::send_err)?;
+        let ins = super::Instrumented::new(builder.send());
+        let response = ins.await.map_err(Self::send_err)?;
         let object = super::handle_object_response(response).await?;
         self.validate_response_object(object).await
     }

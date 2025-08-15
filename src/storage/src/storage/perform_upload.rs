@@ -200,6 +200,54 @@ async fn parse_range(response: reqwest::Response) -> Result<ResumableUploadStatu
     Ok(ResumableUploadStatus::Partial(persisted_size))
 }
 
+use pin_project::pin_project;
+
+#[pin_project]
+#[derive(Debug, Clone)]
+struct Instrumented<F> {
+    #[pin]
+    inner: F,
+    details: Vec<String>,
+    start: std::time::Instant,
+}
+
+impl<F> Instrumented<F> {
+    fn new(inner: F) -> Self {
+        Self {
+            inner,
+            details: Vec::new(),
+            start: std::time::Instant::now(),
+        }
+    }
+}
+
+impl<F, O, E> std::future::Future for Instrumented<F>
+where
+    F: std::future::Future<Output = std::result::Result<O, E>>,
+    E: std::fmt::Debug,
+{
+    type Output = F::Output;
+    fn poll(
+        self: std::pin::Pin<&mut Self>,
+        cx: &mut std::task::Context<'_>,
+    ) -> std::task::Poll<Self::Output> {
+        use std::task::Poll;
+        use std::time::Instant;
+
+        let this = self.project();
+        let d = Instant::now() - *this.start;
+        this.details.push(format!("poll / {d:?}"));
+        match this.inner.poll(cx) {
+            Poll::Pending => Poll::Pending,
+            Poll::Ready(Ok(v)) => Poll::Ready(Ok(v)),
+            Poll::Ready(Err(e)) => {
+                tracing::error!("instrumented future got {e:?}: {:?}", this.details);
+                Poll::Ready(Err(e))
+            }
+        }
+    }
+}
+
 #[derive(Debug, PartialEq)]
 enum ResumableUploadStatus {
     Finalized(Box<Object>),
