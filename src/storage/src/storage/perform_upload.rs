@@ -204,7 +204,7 @@ use pin_project::pin_project;
 
 #[pin_project]
 #[derive(Debug, Clone)]
-struct Instrumented<F> {
+pub(crate) struct Instrumented<F> {
     #[pin]
     inner: F,
     details: Vec<String>,
@@ -212,7 +212,7 @@ struct Instrumented<F> {
 }
 
 impl<F> Instrumented<F> {
-    fn new(inner: F) -> Self {
+    pub fn new(inner: F) -> Self {
         Self {
             inner,
             details: Vec::new(),

@@ -1022,7 +1022,7 @@ where
     /// # Ok(()) }
     /// ```
     pub async fn send_unbuffered(self) -> Result<Object> {
-        self.build().send_unbuffered().await
+        perform_upload::Instrumented::new( self.build().send_unbuffered()).await
     }
 
     /// Precompute the payload checksums before uploading the data.
@@ -1095,7 +1095,7 @@ where
     /// # Ok(()) }
     /// ```
     pub async fn send_buffered(self) -> crate::Result<Object> {
-        self.build().send().await
+        perform_upload::Instrumented::new( self.build().send()).await
     }
 }
 
