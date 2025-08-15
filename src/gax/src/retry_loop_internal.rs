@@ -23,18 +23,46 @@ use super::retry_throttler::RetryThrottler;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
+#[derive(Debug)]
+struct RetryLoopExhausted {
+    errors: Vec<Error>,
+}
+
+impl RetryLoopExhausted {
+    fn new(error: Error, mut errors: Vec<Error>) -> Self {
+        errors.push(error);
+        Self { errors }
+    }
+}
+
+impl std::fmt::Display for RetryLoopExhausted {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if let Some(e) = self.errors.last() {
+            write!(f, "retry loop exhausted after {e}")
+        } else {
+            write!(f, "retry loop exhausted without errors")
+        }
+    }
+}
+
+impl std::error::Error for RetryLoopExhausted {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        self.errors.last().map(|e| e as &dyn std::error::Error)
+    }
+}
+
 enum RetryLoopAttempt {
     // The first attempt
     Initial,
     // (Attempt count, backoff delay, previous error)
-    Retry(u32, Duration, Error),
+    Retry(u32, Duration, Error, Vec<Error>),
 }
 
 impl RetryLoopAttempt {
     fn count(&self) -> u32 {
         match self {
             RetryLoopAttempt::Initial => 0,
-            RetryLoopAttempt::Retry(count, _, _) => *count,
+            RetryLoopAttempt::Retry(count, _, _, _) => *count,
         }
     }
 }
@@ -65,9 +93,10 @@ where
         let mut attempt_count = attempt.count();
         let remaining_time = retry_policy.remaining_time(loop_start, attempt_count);
 
-        if let RetryLoopAttempt::Retry(attempt_count, delay, prev_error) = attempt {
+        let mut errors = Vec::new();
+        if let RetryLoopAttempt::Retry(attempt_count, delay, prev_error, history) = attempt {
             if remaining_time.is_some_and(|remaining| remaining < delay) {
-                return Err(Error::exhausted(prev_error));
+                return Err(Error::exhausted(RetryLoopExhausted::new(prev_error, history)));
             }
             sleep(delay).await;
 
@@ -79,15 +108,17 @@ where
                 // This counts as an error for the purposes of the retry policy.
                 let error = match retry_policy.on_throttle(loop_start, attempt_count, prev_error) {
                     ThrottleResult::Exhausted(e) => {
-                        return Err(e);
+                        return Err(Error::exhausted(RetryLoopExhausted::new(e, history)));
                     }
                     ThrottleResult::Continue(e) => e,
                 };
                 let delay = backoff_policy.on_failure(loop_start, attempt_count);
-                attempt = RetryLoopAttempt::Retry(attempt_count, delay, error);
+                attempt = RetryLoopAttempt::Retry(attempt_count, delay, error, history);
                 continue;
             }
+            errors = history;
         }
+        let errors = errors;
         attempt_count += 1;
         match inner(remaining_time).await {
             Ok(r) => {
@@ -107,7 +138,7 @@ where
                 match flow {
                     RetryResult::Permanent(e) | RetryResult::Exhausted(e) => return Err(e),
                     RetryResult::Continue(e) => {
-                        attempt = RetryLoopAttempt::Retry(attempt_count, delay, e);
+                        attempt = RetryLoopAttempt::Retry(attempt_count, delay, e, errors);
                         continue;
                     }
                 }
