@@ -46,7 +46,7 @@ async fn main() -> anyhow::Result<()> {
     if !args.no_reqwest_logs {
         tracing_log::LogTracer::init()?;
     }
-    let _guard = enable_tracing();
+    let _guard = enable_tracing(&args);
     tracing::info!("{args:?}");
 
     let handle = tokio::runtime::Handle::current();
@@ -131,7 +131,7 @@ type ResultObject = google_cloud_storage::Result<google_cloud_storage::model::Ob
 
 impl Task {
     async fn run(self, args: Args) {
-        let _guard = enable_tracing();
+        let _guard = enable_tracing(&args);
         if self.id % 128 == 0 {
             tracing::info!("Task::run({})", self.id);
         }
@@ -407,7 +407,7 @@ impl ExperimentResult {
     }
 }
 
-fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
+fn enable_tracing(args: &Args) -> tracing::dispatcher::DefaultGuard {
     use tracing_subscriber::fmt::format::{self, FmtSpan};
     use tracing_subscriber::prelude::*;
 
@@ -442,12 +442,16 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
 
     let subscriber = tracing_subscriber::fmt()
         .with_level(true)
-        .with_max_level(tracing::Level::TRACE)
         .with_thread_ids(true)
         .with_span_events(FmtSpan::NEW | FmtSpan::CLOSE)
         .with_writer(std::io::stderr)
-        .fmt_fields(formatter)
-        .finish();
+        .fmt_fields(formatter);
+    let subscriber = if args.no_reqwest_logs {
+        subscriber.with_max_level(tracing::Level::INFO)
+    } else {
+        subscriber.with_max_level(tracing::Level::TRACE)
+    };
+    let subscriber = subscriber.finish();
 
     tracing::subscriber::set_default(subscriber)
 }
