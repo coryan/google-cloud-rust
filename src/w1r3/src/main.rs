@@ -459,29 +459,51 @@ fn enable_tracing(args: &Args) -> tracing::dispatcher::DefaultGuard {
 const MIB: u64 = 1024 * 1024;
 
 #[derive(Clone, Debug, Parser)]
-#[command(version, about)]
+#[command(version, about, long_about = None)]
 struct Args {
+    /// The name of the bucket used by the benchmark.
+    /// 
+    /// You should use a regional bucket in the same region as the VM running
+    /// the benchmark.
     #[arg(long)]
     bucket_name: String,
 
+    /// The minimum object size.
+    /// 
+    /// See `--maximum-object-size` for more details.
     #[arg(long, default_value_t = 0, value_parser = parse_size_arg)]
     min_object_size: u64,
+
     #[arg(long, default_value_t = 4 * MIB, value_parser = parse_size_arg)]
+    /// The maximum object size.
+    /// 
+    /// In each iteration, the benchmark picks a size at random between
+    /// `--minimum-object-size` and `--maximum-object-size`, both inclusive. The
+    /// benchmark uploads an object of that size and then reads it back
     max_object_size: u64,
 
     #[arg(long, default_value_t = 1)]
+    /// The number of concurrent tasks running the benchmark.
     task_count: usize,
 
     #[arg(long, default_value_t = 1)]
+    /// The number of iterations for each task.
     min_sample_count: u64,
 
-    #[arg(long, default_value_t = 60)]
+    #[arg(long, default_value_t = 900)]
+    /// The maximum time for the retry loop.
     retry_seconds: u64,
 
+    #[arg(long, default_value_t = 300)]
+    /// The maximum time for each attempt.
+    timeout_seconds: u64,
+
     #[arg(long)]
+    /// Disable logs in the `reqwest` layer.
     no_reqwest_logs: bool,
 
     #[arg(long)]
+    /// Skip the read steps in each iteration.
     no_reads: bool,
 }
 
