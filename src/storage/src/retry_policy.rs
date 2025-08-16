@@ -84,8 +84,9 @@ impl RetryPolicy for RecommendedPolicy {
         idempotent: bool,
         error: Error,
     ) -> RetryResult {
+        tracing::info!("apply retry policy for {error:?}");
         if error.is_transient_and_before_rpc() {
-            tracing::trace!("transient error (before RPC) with {error:?}");
+            tracing::info!("transient error (before RPC) with {error:?}");
             return RetryResult::Continue(error);
         }
         if !idempotent {
@@ -93,13 +94,17 @@ impl RetryPolicy for RecommendedPolicy {
             return RetryResult::Permanent(error);
         }
         if error.is_io() {
-            tracing::trace!("transient error (I/O) with {error:?}");
+            tracing::info!("transient error (I/O) with {error:?}");
+            return RetryResult::Continue(error);
+        }
+        if error.is_timeout() {
+            tracing::info!("transient error (timeout) with {error:?}");
             return RetryResult::Continue(error);
         }
         if let Some(code) = error.http_status_code() {
             return match code {
                 408 | 429 | 500..600 => {
-                    tracing::trace!("transient error (http_status_code) with {error:?}");
+                    tracing::info!("transient error (http_status_code) with {error:?}");
                     RetryResult::Continue(error)
                 }
                 _ => {
@@ -112,7 +117,7 @@ impl RetryPolicy for RecommendedPolicy {
             use gax::error::rpc::Code;
             return match code {
                 Code::Internal | Code::ResourceExhausted | Code::Unavailable => {
-                    tracing::trace!("transient error (status) with {error:?}");
+                    tracing::info!("transient error (status) with {error:?}");
                     RetryResult::Continue(error)
                 }
                 _ => {
