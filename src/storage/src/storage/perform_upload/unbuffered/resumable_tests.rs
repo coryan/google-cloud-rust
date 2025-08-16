@@ -775,7 +775,11 @@ async fn resumable_put_partial_and_recover_known_size() -> Result {
         .build()
         .await?;
     let response = client
-        .upload_object("projects/_/buckets/test-bucket", "test-object", UnknownSize::new(BytesSource::new(payload)))
+        .upload_object(
+            "projects/_/buckets/test-bucket",
+            "test-object",
+            UnknownSize::new(BytesSource::new(payload)),
+        )
         .with_retry_policy(crate::retry_policy::RecommendedPolicy.with_attempt_limit(3))
         .with_if_generation_match(0_i64)
         .send_unbuffered()

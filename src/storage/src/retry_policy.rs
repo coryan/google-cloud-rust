@@ -101,7 +101,7 @@ impl RetryPolicy for RecommendedPolicy {
                 408 | 429 | 500..600 => {
                     tracing::trace!("transient error (http_status_code) with {error:?}");
                     RetryResult::Continue(error)
-                },
+                }
                 _ => {
                     tracing::info!("permanent error (http_status_code) with {error:?}");
                     RetryResult::Permanent(error)
