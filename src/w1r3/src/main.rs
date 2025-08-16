@@ -171,6 +171,9 @@ impl Task {
             let Ok(upload) = self.on_write(ex, upload).await else {
                 continue;
             };
+            if args.no_reads {
+                continue;
+            }
             for op in [Operation::Read0, Operation::Read1, Operation::Read2] {
                 let read_start = Instant::now();
                 let ex = Experiment {
@@ -413,12 +416,19 @@ fn enable_tracing() -> tracing::dispatcher::DefaultGuard {
             let v = format!("{value:?}");
             let re = regex::Regex::new("authorization: Bearer [A-Z0-9a-z_\\-\\.]*").unwrap();
             let clean = re.replace(&v, "authorization: Bearer [censored]");
-            if clean.contains(" read: b") || clean.contains(" write (vectored): b") {
+            if clean.contains(" read: b") {
                 write!(
                     writer,
                     "{}: {}",
                     field,
-                    &clean[..std::cmp::min(512, clean.len())]
+                    &clean[..std::cmp::min(256, clean.len())]
+                )
+            } else if clean.contains(" write (vectored): b") {
+                write!(
+                    writer,
+                    "{}: {}",
+                    field,
+                    &clean[..std::cmp::min(1024, clean.len())]
                 )
             } else {
                 write!(writer, "{}: {}", field, clean)
@@ -466,6 +476,9 @@ struct Args {
 
     #[arg(long)]
     no_reqwest_logs: bool,
+
+    #[arg(long)]
+    no_reads: bool,
 }
 
 fn parse_size_arg(arg: &str) -> anyhow::Result<u64> {
