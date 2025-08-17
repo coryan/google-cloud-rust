@@ -108,8 +108,9 @@ where
         let idempotent = self.options.idempotency.unwrap_or(
             self.spec.if_generation_match.is_some() || self.spec.if_metageneration_match.is_some(),
         );
+        assert!(idempotent, "all uploads should be idempotent spec={:?}, options={:?}", self.options.idempotency, self.spec);
         let throttler = self.options.retry_throttler.clone();
-        let retry = Arc::new(ContinueOn308::new(self.options.retry_policy.clone()));
+        let retry = self.options.retry_policy.clone();
         let backoff = self.options.backoff_policy.clone();
         gax::retry_loop_internal::retry_loop(
             // TODO(#2044) - we need to apply any timeouts here.

@@ -194,7 +194,8 @@ async fn runner(
                 continue;
             }
         };
-        for op in [Operation::Read0, Operation::Read1, Operation::Read2] {
+        for i in 0..(args.read_count) {
+            let op = Operation::Read(i);
             let builder = SampleBuilder::new(&task, iteration, op, size, upload.name.clone());
             let sample = match download(&client, &args, &upload).await {
                 (_, Ok(_)) => builder.success(),
@@ -361,6 +362,7 @@ async fn delete(control: &StorageControl, args: &Args, object: Object) -> Storag
     if let Err(e) = result {
         // Ignore NotFound errors as they may be the result of a retry.
         if e.status().is_some_and(|s| s.code == Code::NotFound) {
+            tracing::info!("ignore NotFound error on DELETE, they are safe");
             return Ok(());
         }
         return Err(e);
@@ -402,14 +404,10 @@ impl SampleBuilder {
 
     fn error(self, error: &google_cloud_storage::Error) -> Sample {
         tracing::error!(
-            "{} sample_builder = {self:?} error = {error:?}",
+            "ERR {} sample_builder = {self:?} error = {error:?}",
             self.op.name()
         );
-        let details = counters()
-            .map(|(name, value)| format!("{name}={value}"))
-            .chain([format!("error={error:?}")])
-            .collect::<Vec<_>>()
-            .join(";");
+        let details = Self::error_details(error);
         Sample {
             task: self.task,
             iteration: self.iteration,
@@ -425,12 +423,11 @@ impl SampleBuilder {
     }
 
     fn interrupted(self, transfer_size: usize, error: &google_cloud_storage::Error) -> Sample {
-        tracing::error!("experiment = {self:?} download interrupted");
-        let details = counters()
-            .map(|(name, value)| format!("{name}={value}"))
-            .chain([format!("error={error:?}")])
-            .collect::<Vec<_>>()
-            .join(";");
+        tracing::error!(
+            "INT {} sample_builder = {self:?} error = {error:?}",
+            self.op.name()
+        );
+        let details = Self::error_details(error);
         Sample {
             task: self.task,
             iteration: self.iteration,
@@ -458,6 +455,15 @@ impl SampleBuilder {
             result: ExperimentResult::Success,
             details: String::new(),
         }
+    }
+
+    fn error_details(error: &google_cloud_storage::Error) -> String {
+        counters()
+            .map(|(name, value)| format!("{name}={value}"))
+            .chain([format!("error={error:?}")])
+            .collect::<Vec<_>>()
+            .join(";")
+            .replace(",", ";")
     }
 }
 
@@ -503,21 +509,17 @@ impl Sample {
 enum Operation {
     Resumable,
     SingleShot,
-    Read0,
-    Read1,
-    Read2,
+    Read(i32),
     Delete,
 }
 
 impl Operation {
-    fn name(&self) -> &str {
+    fn name(&self) -> std::borrow::Cow<'static, str> {
         match self {
-            Self::Resumable => "RESUMABLE",
-            Self::SingleShot => "SINGLE_SHOT",
-            Self::Read0 => "READ[0]",
-            Self::Read1 => "READ[1]",
-            Self::Read2 => "READ[2]",
-            Self::Delete => "DELETE",
+            Self::Resumable => "RESUMABLE".into(),
+            Self::SingleShot => "SINGLE_SHOT".into(),
+            Self::Read(i) => format!("READ[{i}]").into(),
+            Self::Delete => "DELETE".into(),
         }
     }
 }
@@ -696,6 +698,10 @@ struct Args {
     /// The rampup period between new tasks.
     #[arg(long, value_parser = parse_duration, default_value = "500ms")]
     rampup_period: Duration,
+
+    /// Sets the number of reads on each object.
+    #[arg(long, default_value_t = 2)]
+    read_count: i32,
 
     /// Disable logs in the `reqwest` layer.
     #[arg(long)]
