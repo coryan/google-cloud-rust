@@ -260,6 +260,7 @@ pub async fn run_object_examples(buckets: &mut Vec<String>) -> anyhow::Result<()
         "prefixes/are-not-always/folders-004/def",
         "object-to-update",
         "deleted-object-name",
+        "object-with-contexts",
     ]
     .map(|name| make_object(&client, &id, name));
     let _ = futures::future::join_all(writers)
@@ -291,6 +292,13 @@ pub async fn run_object_examples(buckets: &mut Vec<String>) -> anyhow::Result<()
 
     tracing::info!("running control::delete_folder example");
     control::delete_folder::sample(&control, &id).await?;
+
+    tracing::info!("running set_object_contexts example");
+    objects::set_object_contexts::sample(&control, &id).await?;
+    tracing::info!("running list_object_contexts example");
+    objects::list_object_contexts::sample(&control, &id).await?;
+    tracing::info!("running get_object_contexts example");
+    objects::get_object_contexts::sample(&control, &id).await?;
 
     Ok(())
 }

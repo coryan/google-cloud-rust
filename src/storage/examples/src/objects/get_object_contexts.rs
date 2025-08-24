@@ -12,12 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod delete_file;
-pub mod get_object_contexts;
-pub mod list_files;
-pub mod list_files_with_prefix;
-pub mod list_object_contexts;
-pub mod set_metadata;
-pub mod set_object_contexts;
-pub mod stream_file_download;
-pub mod stream_file_upload;
+// [START storage_get_object_contexts]
+use google_cloud_storage::client::StorageControl;
+
+pub async fn sample(client: &StorageControl, bucket_id: &str) -> anyhow::Result<()> {
+    const NAME: &str = "object-with-contexts";
+    let object = client
+        .get_object()
+        .set_bucket(format!("projects/_/buckets/{bucket_id}"))
+        .set_object(NAME)
+        .send()
+        .await?;
+    println!(
+        "The contexts field for object {NAME} in bucket {bucket_id} is: {:?}",
+        object.contexts
+    );
+    Ok(())
+}
+// [END storage_get_object_contexts]
