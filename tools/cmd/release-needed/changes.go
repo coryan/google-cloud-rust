@@ -12,13 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-module github.com/googleapis/google-cloud-rust/tools
+package main
 
-go 1.25.1
-
-require (
-	github.com/cbroglie/mustache v1.4.0
-	github.com/google/go-cmp v0.7.0
-	github.com/pelletier/go-toml/v2 v2.2.4
-	github.com/yuin/goldmark v1.7.13
+import (
+	"path"
+	"slices"
+	"strings"
 )
+
+func filesChangedSince(config *releaseConfig, ref string) ([]string, error) {
+	diff, err := cmdOutput(config.GitExe, "diff", "--name-only", ref)
+	if err != nil {
+		return nil, err
+	}
+	files := strings.Split(string(diff), "\n")
+	files = slices.DeleteFunc(files, func(a string) bool {
+		name := path.Base(a)
+		if name == "." || config.SkippedFiles[name] == true {
+			return true
+		}
+		return false
+	})
+	return files, nil
+}

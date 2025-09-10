@@ -12,13 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-module github.com/googleapis/google-cloud-rust/tools
+package preflight
 
-go 1.25.1
+import "testing"
 
-require (
-	github.com/cbroglie/mustache v1.4.0
-	github.com/google/go-cmp v0.7.0
-	github.com/pelletier/go-toml/v2 v2.2.4
-	github.com/yuin/goldmark v1.7.13
-)
+func TestSuccess(t *testing.T) {
+	if err := TestExternalCommand("cargo", "help"); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestFailure(t *testing.T) {
+	if err := TestExternalCommand("cargo", "not-a-valid-cargo-subcommand"); err == nil {
+		t.Errorf("expected an error with cargo and an invalid subcommand")
+	}
+}

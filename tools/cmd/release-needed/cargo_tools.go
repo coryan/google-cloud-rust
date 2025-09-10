@@ -12,13 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-module github.com/googleapis/google-cloud-rust/tools
+package main
 
-go 1.25.1
+import (
+	"fmt"
 
-require (
-	github.com/cbroglie/mustache v1.4.0
-	github.com/google/go-cmp v0.7.0
-	github.com/pelletier/go-toml/v2 v2.2.4
-	github.com/yuin/goldmark v1.7.13
+	"github.com/googleapis/google-cloud-rust/tools/internal/preflight"
 )
+
+func installCargoTools(config *releaseConfig) error {
+	tools := []string{
+		fmt.Sprintf("release-plz@%s", config.ReleasePlzVersion),
+		fmt.Sprintf("cargo-workspaces@%s", config.WorkspacesVersion),
+		fmt.Sprintf("cargo-semver-checks@%s", config.SemverChecksVersion),
+	}
+
+	for _, target := range tools {
+		if err := preflight.TestExternalCommand(config.CargoExe, "install", "--locked", target); err != nil {
+			return err
+		}
+	}
+	return nil
+}

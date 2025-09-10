@@ -12,13 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-module github.com/googleapis/google-cloud-rust/tools
+package preflight
 
-go 1.25.1
-
-require (
-	github.com/cbroglie/mustache v1.4.0
-	github.com/google/go-cmp v0.7.0
-	github.com/pelletier/go-toml/v2 v2.2.4
-	github.com/yuin/goldmark v1.7.13
+import (
+	"fmt"
+	"os/exec"
 )
+
+// TestExternalCommand verifies that a give command can be executed with some
+// arguments.
+//
+// This is used to check the development environment before running a complex
+// pipeline, providing better error messages compared to a failure in the
+// middle of the pipeline.
+func TestExternalCommand(command string, arg ...string) error {
+	cmd := exec.Command(command, arg...)
+	cmd.Dir = "."
+	if output, err := cmd.CombinedOutput(); err != nil {
+		return fmt.Errorf("%v: %v\n%s", cmd, err, output)
+	}
+	return nil
+}
