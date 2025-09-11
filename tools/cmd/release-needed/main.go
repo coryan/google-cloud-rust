@@ -15,6 +15,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os/exec"
@@ -28,7 +29,7 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, p := range packages {
-		fmt.Printf("%s\n", p)
+		fmt.Printf("* `%s`\n", p)
 	}
 }
 
@@ -62,6 +63,18 @@ func run(config *releaseConfig) ([]string, error) {
 			packages = append(packages, info.Name)
 		}
 	}
+	var errs []error
+	for _, p := range packages {
+		cmd := exec.Command("release-plz", "update", "--no-changelog", "--allow-dirty", "-p", p)
+		cmd.Dir = "."
+		if err := cmd.Run(); err != nil {
+			errs = append(errs, err)
+		}
+	}
+	if len(errs) > 0 {
+		return nil, fmt.Errorf("errors updating packages: %w", errors.Join(errs...))
+	}
+
 	return packages, nil
 }
 
