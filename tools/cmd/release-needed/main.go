@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"log/slog"
 	"os/exec"
 	"strings"
 )
@@ -34,25 +35,31 @@ func main() {
 }
 
 func run(config *releaseConfig) ([]string, error) {
+	slog.Info("verifying Rust release bootstrapping tools are installed")
 	if err := runPreflight(config); err != nil {
 		return nil, err
 	}
+	slog.Info("installing tools for Rust release")
 	if err := installCargoTools(config); err != nil {
 		return nil, err
 	}
+	slog.Info("detecting last release tag")
 	lastTag, err := cmdOutput(config.GitExe, "describe", "--abbrev=0", "--tags", "upstream/main")
 	if err != nil {
 		return nil, err
 	}
 	tag := strings.TrimSuffix(string(lastTag), "\n")
+	slog.Info("found last release tag", "tag", tag)
 	files, err := filesChangedSince(config, tag)
 	if err != nil {
 		return nil, err
 	}
+	slog.Info("number of files changed since lat tag", "count", len(files))
 	manifests, err := findCargoManifests(files)
 	if err != nil {
 		return nil, err
 	}
+	slog.Info("number of manifest files affected", "count", len(manifests))
 	var packages []string
 	for _, m := range manifests {
 		info, err := manifestInfo(m)
@@ -63,8 +70,10 @@ func run(config *releaseConfig) ([]string, error) {
 			packages = append(packages, info.Name)
 		}
 	}
+	slog.Info("packages affected", "names", packages)
 	var errs []error
 	for _, p := range packages {
+		slog.Info("updating version", "package", p)
 		cmd := exec.Command("release-plz", "update", "--no-changelog", "--allow-dirty", "-p", p)
 		cmd.Dir = "."
 		if err := cmd.Run(); err != nil {
