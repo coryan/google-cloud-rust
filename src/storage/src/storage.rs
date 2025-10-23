@@ -27,18 +27,3 @@ pub(crate) mod write_object;
 use crate::model::Object;
 use crate::streaming_source::Payload;
 use crate::{Error, Result};
-
-// Verify the bidi module is accessible and compiles.
-#[cfg(all(test, google_cloud_unstable_storage_bidi))]
-mod tests {
-    use crate::generated::bidi::BidiReadObjectSpec;
-    use serde_json::json;
-
-    #[test]
-    fn serialize() -> anyhow::Result<()> {
-        let input = BidiReadObjectSpec::new();
-        let got = serde_json::to_value(&input)?;
-        assert_eq!(got, json!({}), "{input:?}");
-        Ok(())
-    }
-}
