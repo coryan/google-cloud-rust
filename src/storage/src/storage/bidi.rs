@@ -38,12 +38,6 @@ impl Bidi {
     }
 }
 
-impl super::client::ClientBuilder {
-    pub async fn build_bidi(self) -> gax::client_builder::Result<Bidi> {
-        Bidi::new(self).await
-    }
-}
-
 trait BidiStub: std::fmt::Debug + Send + Sync {}
 
 #[derive(Debug)]
@@ -58,6 +52,12 @@ impl BidiTransport {
 }
 
 impl BidiStub for BidiTransport {}
+
+impl super::client::ClientBuilder {
+    pub async fn build_bidi(self) -> gax::client_builder::Result<Bidi> {
+        Bidi::new(self).await
+    }
+}
 
 #[cfg(test)]
 mod tests {
