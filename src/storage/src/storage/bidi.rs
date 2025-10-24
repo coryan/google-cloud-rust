@@ -13,35 +13,42 @@
 // limitations under the License.
 
 use super::request_options::RequestOptions;
-use crate::Error;
 use std::sync::Arc;
 
 #[derive(Clone, Debug)]
-pub struct Bidi<S = BidiTransport>
-where
-    S: BidiStub + 'static,
-{
+pub struct Bidi<S = BidiTransport> {
     stub: std::sync::Arc<S>,
     options: RequestOptions,
 }
 
-impl<S> Bidi<S> {
-    pub(crate) fn new(builder: super::client::ClientBuilder) -> gax::client_builder::Result<Self> {
-        use gax::client_builder::Error;
-        let client = gaxi::grpc::Client::new(builder.config, DEFAULT_HOST);
+impl Bidi {
+    pub(crate) async fn new(
+        builder: super::client::ClientBuilder,
+    ) -> gax::client_builder::Result<Self> {
+        let (client_config, options) = builder.into_client_config();
+        let client = gaxi::grpc::Client::new(client_config, super::DEFAULT_HOST).await?;
+        let stub = Arc::new(BidiTransport::new(client));
         Ok(Self { stub, options })
     }
 }
 
-impl crate::storage::client::ClientBuilder {
-    pub fn build_bidi(self) -> gax::client_builder::Result<Bidi> {
-        Bidi::new(self)
+impl super::client::ClientBuilder {
+    pub async fn build_bidi(self) -> gax::client_builder::Result<Bidi> {
+        Bidi::new(self).await
     }
 }
 
 trait BidiStub: std::fmt::Debug + Send + Sync {}
 
 #[derive(Debug)]
-struct BidiTransport {}
+struct BidiTransport {
+    client: gaxi::grpc::Client,
+}
+
+impl BidiTransport {
+    pub fn new(client: gaxi::grpc::Client) -> Self {
+        Self { client }
+    }
+}
 
 impl BidiStub for BidiTransport {}
