@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::storage::client::ClientBuilder;
+
 use super::request_options::RequestOptions;
 use std::sync::Arc;
 
@@ -22,6 +24,10 @@ pub struct Bidi<S = BidiTransport> {
 }
 
 impl Bidi {
+    pub fn builder() -> ClientBuilder {
+        ClientBuilder::new()
+    }
+
     pub(crate) async fn new(
         builder: super::client::ClientBuilder,
     ) -> gax::client_builder::Result<Self> {
@@ -41,7 +47,7 @@ impl super::client::ClientBuilder {
 trait BidiStub: std::fmt::Debug + Send + Sync {}
 
 #[derive(Debug)]
-struct BidiTransport {
+pub struct BidiTransport {
     client: gaxi::grpc::Client,
 }
 
@@ -52,3 +58,18 @@ impl BidiTransport {
 }
 
 impl BidiStub for BidiTransport {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use auth::credentials::anonymous::Builder as Anonymous;
+
+    #[tokio::test]
+    async fn create_new_client() -> anyhow::Result<()> {
+        let _client = Bidi::builder()
+            .with_credentials(Anonymous::new().build())
+            .build_bidi()
+            .await?;
+        Ok(())
+    }
+}
