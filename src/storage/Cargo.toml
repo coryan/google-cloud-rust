@@ -69,6 +69,7 @@ wkt.workspace         = true
 
 [features]
 unstable-stream = ["reqwest/stream"]
+_internal-run-integration-tests = []
 
 [dev-dependencies]
 anyhow.workspace         = true
@@ -83,3 +84,5 @@ tempfile.workspace       = true
 tokio-test.workspace     = true
 tokio.workspace          = true
 google-cloud-storage     = { path = ".", features = ["unstable-stream"] }
+storage-samples          = { path = "examples" }
+tracing-subscriber       = { workspace = true }

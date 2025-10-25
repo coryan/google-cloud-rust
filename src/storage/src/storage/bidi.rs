@@ -17,9 +17,11 @@ mod object;
 
 use super::request_options::RequestOptions;
 use crate::Result;
+use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse};
 use crate::storage::client::ClientBuilder;
 use builder::OpenObject;
 use std::sync::Arc;
+use tokio::sync::mpsc::Receiver;
 
 #[derive(Clone, Debug)]
 pub struct Bidi<S = BidiTransport> {
@@ -36,7 +38,12 @@ impl Bidi {
         builder: super::client::ClientBuilder,
     ) -> gax::client_builder::Result<Self> {
         let (client_config, options) = builder.into_client_config();
+        println!(
+            "DEBUG DEBUG client_config={client_config:?} default={}",
+            super::DEFAULT_HOST
+        );
         let client = gaxi::grpc::Client::new(client_config, super::DEFAULT_HOST).await?;
+        println!("DEBUG DEBUG client={client:?}");
         let stub = Arc::new(BidiTransport::new(client));
         Ok(Self { stub, options })
     }
@@ -64,13 +71,9 @@ pub trait BidiStub: std::fmt::Debug + Send + Sync {
     fn streaming_read(
         &self,
         bucket_name: &str,
+        rx: Receiver<BidiReadObjectRequest>,
         options: gax::options::RequestOptions,
-    ) -> impl Future<
-        Output = Result<(
-            ReadSender,
-            tonic::Response<tonic::codec::Streaming<BidiReadObjectResponse>>,
-        )>,
-    >;
+    ) -> impl Future<Output = Result<tonic::Response<tonic::codec::Streaming<BidiReadObjectResponse>>>>;
 }
 
 #[derive(Debug)]
@@ -84,19 +87,14 @@ impl BidiTransport {
     }
 }
 
-use crate::google::storage::v2::BidiReadObjectRequest;
-use crate::google::storage::v2::BidiReadObjectResponse;
-type ReadSender = tokio::sync::mpsc::Sender<BidiReadObjectRequest>;
-
 impl BidiStub for BidiTransport {
     async fn streaming_read(
         &self,
         bucket_name: &str,
+        rx: Receiver<BidiReadObjectRequest>,
         options: gax::options::RequestOptions,
-    ) -> Result<(
-        ReadSender,
-        tonic::Response<tonic::codec::Streaming<BidiReadObjectResponse>>,
-    )> {
+    ) -> Result<tonic::Response<tonic::codec::Streaming<BidiReadObjectResponse>>> {
+        println!("DEBUG DEBUG - streaming_read(self={self:?} {bucket_name})");
         let options = gax::options::internal::set_default_idempotency(options, true);
         let extensions = {
             let mut e = tonic::Extensions::new();
@@ -109,7 +107,7 @@ impl BidiStub for BidiTransport {
         let path =
             http::uri::PathAndQuery::from_static("/google.storage.v2.Storage/BidiReadObject");
         let x_goog_request_params = format!("bucket={bucket_name}");
-        let (tx, rx) = tokio::sync::mpsc::channel::<BidiReadObjectRequest>(0);
+        println!("DEBUG DEBUG - streaming_read({bucket_name}) - {x_goog_request_params}");
         let stream = tokio_stream::wrappers::ReceiverStream::new(rx);
         self.client
             .bidi_stream::<BidiReadObjectRequest, BidiReadObjectResponse>(
@@ -121,7 +119,6 @@ impl BidiStub for BidiTransport {
                 &x_goog_request_params,
             )
             .await
-            .map(|r| (tx, r))
     }
 }
 

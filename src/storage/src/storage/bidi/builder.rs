@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use tokio_stream::StreamExt;
-
 use super::object::ObjectDescriptor;
 use crate::google::storage::v2::BidiReadObjectRequest;
 use crate::google::storage::v2::BidiReadObjectSpec;
@@ -52,26 +50,39 @@ where
     S: super::BidiStub,
 {
     pub async fn send(self) -> Result<ObjectDescriptor> {
-        let (tx, response) = self
-            .stub
-            .streaming_read(&self.spec.bucket, gax::options::RequestOptions::default())
-            .await?;
+        println!("DEBUG DEBUG - send() spec={:?}", &self.spec);
+        use gaxi::prost::FromProto;
+
+        let (tx, rx) = tokio::sync::mpsc::channel::<BidiReadObjectRequest>(100);
         let request = BidiReadObjectRequest {
             read_object_spec: Some(self.spec.clone()),
             ..BidiReadObjectRequest::default()
         };
+        println!("DEBUG DEBUG - sending {request:?}");
         tx.send(request).await.map_err(Error::io)?;
+
+        let response = self
+            .stub
+            .streaming_read(
+                &self.spec.bucket,
+                rx,
+                gax::options::RequestOptions::default(),
+            )
+            .await?;
+        println!("DEBUG DEBUG - received response {response:?}");
+
         // TODO(coryan) - preserve metadata for debugging.
         let (_metadata, mut stream, _extensions) = response.into_parts();
+        println!("DEBUG DEBUG - metadata {_metadata:?},, stream={stream:?}");
         // TODO(coryan) - handle redirect errors.
         // If the start is None, then the stream closed successfully without any data. That is really an error.
-        let Some(start) = stream.next().await.transpose().map_err(Error::io)? else {
+        let Some(start) = stream.message().await.map_err(Error::io)? else {
             return Err(Error::io("bidi_read_object stream closed before start"));
         };
-        use gaxi::prost::FromProto;
+        drop(tx);
         let metadata = start
             .metadata
-            .map(crate::google::storage::v2::Object::cnv)
+            .map(FromProto::cnv)
             .transpose()
             .map_err(Error::deser)?
             .ok_or_else(|| Error::deser("bidi_read_object is missing the object metadata value"))?;

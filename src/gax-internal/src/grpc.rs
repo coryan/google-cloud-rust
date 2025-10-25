@@ -125,6 +125,7 @@ impl Client {
         Request: prost::Message + 'static + Clone,
         Response: prost::Message + Default + 'static,
     {
+        println!("DEBUG DEBUG - grpc::Client::bidi_stream()");
         use tonic::IntoStreamingRequest;
 
         let cached_auth_headers = self
@@ -143,14 +144,20 @@ impl Client {
         let mut headers = Self::make_headers(api_client_header, request_params, &options).await?;
         headers.extend(auth_headers?);
         let metadata = tonic::metadata::MetadataMap::from_headers(headers);
+        println!("DEBUG DEBUG - grpc::Client::bidi_stream() - metadata={metadata:?}");
+        println!("DEBUG DEBUG - grpc::Client::bidi_stream() - extensions={extensions:?}");
         let request = tonic::Request::from_parts(metadata, extensions, request);
         let codec = tonic_prost::ProstCodec::<Request, Response>::default();
         let mut inner = self.inner.clone();
+        println!("DEBUG DEBUG - grpc::Client::bidi_stream() - inner={inner:?}");
         inner.ready().await.map_err(Error::io)?;
-        inner
+        println!("DEBUG DEBUG - grpc::Client::bidi_stream() - inner={inner:?}");
+        let result = inner
             .streaming(request.into_streaming_request(), path, codec)
             .await
-            .map_err(to_gax_error)
+            .map_err(to_gax_error);
+        println!("DEBUG DEBUG - grpc::Client::bidi_stream() - result={result:?}");
+        result
     }
 
     /// Runs the retry loop.

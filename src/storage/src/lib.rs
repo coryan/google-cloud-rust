@@ -46,6 +46,9 @@ pub mod client {
     //! Clients to interact with Google Cloud Storage.
     pub use crate::control::client::StorageControl;
     pub use crate::storage::client::Storage;
+
+    #[cfg(google_cloud_unstable_storage_bidi)]
+    pub use crate::storage::bidi::Bidi;
 }
 pub mod builder {
     //! Request builders.

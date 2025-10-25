@@ -4413,6 +4413,7 @@ dependencies = [
  "serde_json",
  "serde_with",
  "sha2",
+ "storage-samples",
  "tempfile",
  "test-case",
  "thiserror",
@@ -4421,6 +4422,7 @@ dependencies = [
  "tokio-test",
  "tonic",
  "tracing",
+ "tracing-subscriber",
  "uuid",
 ]
 

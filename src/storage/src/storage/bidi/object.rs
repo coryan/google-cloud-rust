@@ -15,6 +15,7 @@
 use crate::model::Object;
 
 /// Represents an open object in Cloud Storage.
+#[derive(Debug)]
 pub struct ObjectDescriptor {
     object: Object,
 }
