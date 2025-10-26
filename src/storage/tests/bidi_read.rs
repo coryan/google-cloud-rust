@@ -47,12 +47,14 @@ mod bidi_read {
         println!("created bidi client: {client:?}");
         let open = client.open_object(bucket_name, &write.name).send().await?;
         println!("open returns: {open:?}");
-        let metadata = open.object();
-        assert_eq!(metadata.bucket, write.bucket, "{metadata:?}");
-        assert_eq!(metadata.name, write.name, "{metadata:?}");
-        assert_eq!(metadata.generation, write.generation, "{metadata:?}");
-        assert_eq!(metadata.size, write.size, "{metadata:?}");
-        assert_eq!(metadata.etag, write.etag, "{metadata:?}");
+        let got = open.object();
+        let mut want = write.clone();
+        // This field is a mismatch, but both `Some(false)` and `None` represent
+        // the same value.
+        want.event_based_hold = want.event_based_hold.or(Some(false));
+        // There is a submillisecond difference, maybe rounding?
+        want.finalize_time = got.finalize_time;
+        assert_eq!(got, &want);
         Ok(())
     }
 }
