@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::object::ObjectDescriptor;
+use super::object_descriptor::ObjectDescriptor;
 use crate::google::storage::v2::BidiReadObjectRequest;
 use crate::google::storage::v2::BidiReadObjectSpec;
 use crate::request_options::RequestOptions;
@@ -86,6 +86,9 @@ where
             .transpose()
             .map_err(Error::deser)?
             .ok_or_else(|| Error::deser("bidi_read_object is missing the object metadata value"))?;
+
+        let handle = start.read_handle;
+        println!("DEBUG DEBUG - handle = {handle:?}");
         Ok(ObjectDescriptor::new(metadata))
     }
 }
