@@ -15,7 +15,7 @@
 #[cfg(all(
     test,
     google_cloud_unstable_storage_bidi,
-    feature = "_internal-run-integration-tests"
+    feature = "run-integration-tests"
 ))]
 mod bidi_read {
     use google_cloud_storage::client::{Bidi, Storage};

@@ -69,7 +69,7 @@ wkt.workspace         = true
 
 [features]
 unstable-stream = ["reqwest/stream"]
-_internal-run-integration-tests = []
+run-integration-tests = []
 
 [dev-dependencies]
 anyhow.workspace         = true
