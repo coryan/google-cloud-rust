@@ -130,6 +130,11 @@ pub enum ReadError {
         &'static str,
         #[source] Box<dyn std::error::Error + Send + Sync + 'static>,
     ),
+
+    /// A bidi read was interrupted with an unrecoverable error.
+    #[cfg(google_cloud_unstable_storage_bidi)]
+    #[error("cannot recover from an underlying read error: {0}")]
+    UnrecoverableBidiReadInterrupt(#[source] Arc<crate::Error>),
 }
 
 /// An unrecoverable problem in the upload protocol.
