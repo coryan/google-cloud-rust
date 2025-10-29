@@ -15,6 +15,8 @@
 mod object_descriptor;
 mod range_reader;
 pub mod stub;
+mod transport;
 
+#[allow(unused_imports)]
 pub use object_descriptor::ObjectDescriptor;
 pub use range_reader::RangeReader;

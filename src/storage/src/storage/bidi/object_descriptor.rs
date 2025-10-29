@@ -13,15 +13,12 @@
 // limitations under the License.
 
 use super::RangeReader;
-use super::stub::dynamic::ObjectDescriptor as DynObjectDescriptor;
-use crate::error::ReadError;
+use super::stub::dynamic::ObjectDescriptor as ObjectDescriptorStub;
 use crate::model::Object;
 use crate::model_ext::ReadRange;
-use tokio::sync::mpsc::Sender;
-use tokio::sync::oneshot::Receiver;
 
 pub struct ObjectDescriptor {
-    inner: Box<dyn DynObjectDescriptor>,
+    inner: Box<dyn ObjectDescriptorStub>,
 }
 
 impl ObjectDescriptor {
@@ -32,35 +29,6 @@ impl ObjectDescriptor {
     pub async fn read_range(&self, range: ReadRange) -> RangeReader {
         self.inner.read_range(range).await
     }
-}
-
-pub mod stub {}
-
-use crate::google::storage::v2::{
-    BidiReadObjectRequest, BidiReadObjectResponse, BidiReadObjectSpec,
-};
-
-#[async_trait::async_trait]
-trait GrpcStreamMaker {
-    async fn new(
-        client: &gaxi::grpc::Client,
-        request: BidiReadObjectSpec,
-    ) -> crate::Result<(
-        Receiver<BidiReadObjectRequest>,
-        crate::Result<tonic::Response<tonic::Streaming<BidiReadObjectResponse>>>,
-    )>;
-}
-
-pub struct ObjectDescriptorTransport {
-    object: Object,
-    ranges: std::collections::HashMap<i32, PendingRange>,
-    next_range_id: i32,
-}
-
-struct PendingRange {
-    offset: i64,
-    remaining: i64,
-    sender: Sender<Result<bytes::Bytes, ReadError>>,
 }
 
 #[cfg(test)]
