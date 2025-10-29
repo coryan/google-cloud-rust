@@ -24,8 +24,8 @@ pub struct RangeReader {
 
 impl RangeReader {
     // Get the next chunk of data.
-    async pub fn next(&mut self) -> Option<Result<bytes::Bytes, ReadError>> {
-        self.inner.next().await
+    pub async fn next(&mut self) -> Option<Result<bytes::Bytes, ReadError>> {
+        self.inner.recv().await
     }
 
     /// Create a new instance.
