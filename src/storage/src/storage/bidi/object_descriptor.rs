@@ -13,13 +13,15 @@
 // limitations under the License.
 
 use super::RangeReader;
+use super::stub::dynamic::ObjectDescriptor as DynObjectDescriptor;
 use crate::error::ReadError;
 use crate::model::Object;
 use crate::model_ext::ReadRange;
 use tokio::sync::mpsc::Sender;
+use tokio::sync::oneshot::Receiver;
 
 pub struct ObjectDescriptor {
-    inner: Box<dyn stub::dynamic::ObjectDescriptor>,
+    inner: Box<dyn DynObjectDescriptor>,
 }
 
 impl ObjectDescriptor {
@@ -32,34 +34,21 @@ impl ObjectDescriptor {
     }
 }
 
-pub mod stub {
-    use super::{Object, RangeReader, ReadRange};
+pub mod stub {}
 
-    pub trait ObjectDescriptor: std::fmt::Debug + Send + Sync {
-        fn object(&self) -> &Object;
-        fn read_range(&self, range: ReadRange) -> impl Future<Output = RangeReader> + Send + Sync;
-    }
+use crate::google::storage::v2::{
+    BidiReadObjectRequest, BidiReadObjectResponse, BidiReadObjectSpec,
+};
 
-    pub(crate) mod dynamic {
-        use super::{Object, RangeReader, ReadRange};
-
-        #[async_trait::async_trait]
-        pub trait ObjectDescriptor: std::fmt::Debug + Send + Sync {
-            fn object(&self) -> &Object;
-            async fn read_range(&self, range: ReadRange) -> RangeReader;
-        }
-
-        #[async_trait::async_trait]
-        impl<T: super::ObjectDescriptor> ObjectDescriptor for T {
-            fn object(&self) -> &Object {
-                T::object(self)
-            }
-
-            async fn read_range(&self, range: ReadRange) -> RangeReader {
-                T::read_range(self, range).await
-            }
-        }
-    }
+#[async_trait::async_trait]
+trait GrpcStreamMaker {
+    async fn new(
+        client: &gaxi::grpc::Client,
+        request: BidiReadObjectSpec,
+    ) -> crate::Result<(
+        Receiver<BidiReadObjectRequest>,
+        crate::Result<tonic::Response<tonic::Streaming<BidiReadObjectResponse>>>,
+    )>;
 }
 
 pub struct ObjectDescriptorTransport {
@@ -75,6 +64,4 @@ struct PendingRange {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-}
+mod tests {}

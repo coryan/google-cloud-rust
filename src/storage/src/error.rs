@@ -18,6 +18,7 @@
 //! as the `source()` of an [Error][crate::Error].
 
 use crate::model::{Object, ObjectChecksums};
+use std::sync::Arc;
 
 /// Indicates that a checksum mismatch was detected while reading or writing
 /// Cloud Storage object.
