@@ -13,6 +13,7 @@
 // limitations under the License.
 
 mod object_descriptor;
+mod pending_range;
 mod range_reader;
 pub mod stub;
 mod transport;

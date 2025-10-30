@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use super::pending_range::PendingRange;
 use crate::error::ReadError;
 use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse};
-use crate::google::storage::v2::{ChecksummedData, ObjectRangeData, ReadRange as ProtoRange};
+use crate::google::storage::v2::{ObjectRangeData, ReadRange as ProtoRange};
 use crate::model::Object;
 use crate::model_ext::ReadRange;
 use crate::storage::bidi::RangeReader;
@@ -22,6 +23,8 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use tokio::sync::mpsc::Sender;
+
+type ReadResult<T> = std::result::Result<T, ReadError>;
 
 #[async_trait::async_trait]
 trait Reconnect {
@@ -34,8 +37,6 @@ trait Reconnect {
     )>;
 }
 
-type ReadResult<T> = std::result::Result<T, ReadError>;
-
 pub struct ObjectDescriptorTransport {
     object: Object,
     stream_maker: Box<dyn Reconnect>,
@@ -45,12 +46,7 @@ pub struct ObjectDescriptorTransport {
 impl ObjectDescriptorTransport {
     async fn read_range(&mut self, range: ReadRange) -> RangeReader {
         let (tx, rx) = tokio::sync::mpsc::channel(1);
-        let (offset, limit) = range.normalize(self.object.size);
-        let range = PendingRange {
-            sender: tx,
-            offset,
-            limit,
-        };
+        let range = PendingRange::new(tx, range, self.object.size);
         let mut guard = self.state.lock().await;
         guard.insert_range(range).await;
         drop(guard);
@@ -92,13 +88,7 @@ impl ObjectDescriptorTransport {
                     let closing: Vec<_> = guard
                         .ranges
                         .iter_mut()
-                        .map(|(_, pending)| {
-                            pending
-                                .sender
-                                .send(Err(ReadError::UnrecoverableBidiReadInterrupt(
-                                    error.clone(),
-                                )))
-                        })
+                        .map(|(_, pending)| pending.interrupted(error.clone()))
                         .collect();
                     let _ = futures::future::join_all(closing).await;
                     return None;
@@ -156,46 +146,6 @@ impl TransportState {
                 .get_mut(&range.read_id)
                 .ok_or(ReadError::UnknownRange(range.read_id))?;
             pending.handle_data(range, response.checksummed_data).await
-        }
-    }
-}
-
-struct PendingRange {
-    offset: i64,
-    limit: i64,
-    sender: Sender<Result<bytes::Bytes, ReadError>>,
-}
-
-impl PendingRange {
-    async fn handle_data(
-        &mut self,
-        range: ProtoRange,
-        data: Option<ChecksummedData>,
-    ) -> ReadResult<()> {
-        let Some(data) = data else {
-            if self.limit == 0 {
-                return Ok(());
-            }
-            return Err(ReadError::ShortRead(self.limit as u64));
-        };
-        if self.offset == range.read_offset {
-            self.offset += range.read_length;
-            self.limit -= range.read_length;
-            self.limit = self.limit.clamp(0, i64::MAX);
-            let _ = self.sender.send(Ok(data.content)).await;
-            return Ok(());
-        }
-        Err(ReadError::OutOfOrderBidiResponse {
-            got: range.read_offset,
-            expected: range.read_offset,
-        })
-    }
-
-    fn as_proto(&self, id: i64) -> ProtoRange {
-        ProtoRange {
-            read_id: id,
-            read_offset: self.offset,
-            read_length: self.limit,
         }
     }
 }
