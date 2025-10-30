@@ -39,7 +39,7 @@ trait Reconnect {
 
 pub struct ObjectDescriptorTransport {
     object: Object,
-    stream_maker: Box<dyn Reconnect>,
+    reconnect: Box<dyn Reconnect>,
     state: Arc<Mutex<TransportState>>,
 }
 
@@ -82,7 +82,7 @@ impl ObjectDescriptorTransport {
                 }
             };
             let ranges: Vec<_> = guard.ranges.iter().map(|(id, r)| r.as_proto(*id)).collect();
-            match self.stream_maker.connect(ranges).await {
+            match self.reconnect.connect(ranges).await {
                 Err(e) => {
                     let error = Arc::new(e);
                     let closing: Vec<_> = guard
