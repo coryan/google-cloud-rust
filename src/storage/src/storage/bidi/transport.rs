@@ -78,13 +78,17 @@ impl ObjectDescriptorTransport {
         state: Arc<Mutex<TransportState>>,
         reconnect: T,
     ) {
-        while let Some(message) = state.clone().lock().await.next_message(&reconnect).await {
+        while let Some(message) = state.lock().await.next_message(&reconnect).await {
             let pending = message
                 .object_data_ranges
                 .into_iter()
                 .map(|r| Self::handle_response(state.clone(), r))
                 .collect::<Vec<_>>();
-            let _ = futures::future::join_all(pending).await;
+            futures::future::join_all(pending)
+                .await
+                .into_iter()
+                .filter_map(|r| r.err())
+                .for_each(|e| tracing::error!("error while delivering bidi read response: {e:?}"));
         }
     }
 
