@@ -28,7 +28,7 @@ use tokio::task::JoinHandle;
 type ReadResult<T> = std::result::Result<T, ReadError>;
 
 #[async_trait::async_trait]
-trait Reconnect {
+pub trait Reconnect {
     async fn connect(
         &self,
         request: Vec<ProtoRange>,
@@ -38,14 +38,14 @@ trait Reconnect {
     )>;
 }
 
-pub struct ObjectDescriptorTransport {
+pub(super) struct ObjectDescriptorTransport {
     object: Object,
     state: Arc<Mutex<TransportState>>,
     background: JoinHandle<()>,
 }
 
 impl ObjectDescriptorTransport {
-    fn new<T>(
+    pub fn new<T>(
         object: Object,
         reconnect: T,
         tx: Sender<BidiReadObjectRequest>,
@@ -54,12 +54,7 @@ impl ObjectDescriptorTransport {
     where
         T: Reconnect + Send + Sync + 'static,
     {
-        let state = TransportState {
-            ranges: HashMap::new(),
-            next_range_id: 0_i64,
-            tx,
-            stream,
-        };
+        let state = TransportState::new(tx, stream);
         let state = Arc::new(Mutex::new(state));
         let bg = state.clone();
         let handle = tokio::spawn(async move { Self::run_background(bg, reconnect).await });
@@ -110,6 +105,18 @@ struct TransportState {
 }
 
 impl TransportState {
+    fn new(
+        tx: Sender<BidiReadObjectRequest>,
+        stream: tonic::Streaming<BidiReadObjectResponse>,
+    ) -> Self {
+        Self {
+            ranges: HashMap::new(),
+            next_range_id: 0_i64,
+            tx,
+            stream,
+        }
+    }
+
     async fn next_message<T: Reconnect>(
         &mut self,
         reconnect: &T,
