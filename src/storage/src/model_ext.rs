@@ -260,6 +260,17 @@ impl ReadRange {
             limit: count,
         })
     }
+
+    pub(crate) fn normalize(self, object_size: i64) -> (i64, i64) {
+        match self.0 {
+            Range::All => (0, object_size),
+            Range::Offset(o) => (o as i64, object_size - (o as i64)),
+            Range::Tail(t) => (object_size - (t as i64), t as i64),
+            Range::Segment { offset, limit } => {
+                (offset.clamp(0, object_size as u64) as i64, limit as i64)
+            }
+        }
+    }
 }
 
 impl crate::model::ReadObjectRequest {

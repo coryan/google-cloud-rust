@@ -13,32 +13,189 @@
 // limitations under the License.
 
 use crate::error::ReadError;
-use crate::google::storage::v2::{
-    BidiReadObjectRequest, BidiReadObjectResponse, BidiReadObjectSpec,
-};
+use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse};
+use crate::google::storage::v2::{ChecksummedData, ObjectRangeData, ReadRange as ProtoRange};
 use crate::model::Object;
+use crate::model_ext::ReadRange;
+use crate::storage::bidi::RangeReader;
+use std::collections::HashMap;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 use tokio::sync::mpsc::Sender;
-use tokio::sync::oneshot::Receiver;
 
 #[async_trait::async_trait]
-trait GrpcStreamMaker {
-    async fn new(
-        client: &gaxi::grpc::Client,
-        request: BidiReadObjectSpec,
+trait Reconnect {
+    async fn connect(
+        &self,
+        request: Vec<ProtoRange>,
     ) -> crate::Result<(
-        Receiver<BidiReadObjectRequest>,
-        crate::Result<tonic::Response<tonic::Streaming<BidiReadObjectResponse>>>,
+        Sender<BidiReadObjectRequest>,
+        tonic::Response<tonic::Streaming<BidiReadObjectResponse>>,
     )>;
 }
 
+type ReadResult<T> = std::result::Result<T, ReadError>;
+
 pub struct ObjectDescriptorTransport {
     object: Object,
-    ranges: std::collections::HashMap<i32, PendingRange>,
-    next_range_id: i32,
+    stream_maker: Box<dyn Reconnect>,
+    state: Arc<Mutex<TransportState>>,
+}
+
+impl ObjectDescriptorTransport {
+    async fn read_range(&mut self, range: ReadRange) -> RangeReader {
+        let (tx, rx) = tokio::sync::mpsc::channel(1);
+        let (offset, limit) = range.normalize(self.object.size);
+        let range = PendingRange {
+            sender: tx,
+            offset,
+            limit,
+        };
+        let mut guard = self.state.lock().await;
+        guard.insert_range(range).await;
+        drop(guard);
+        RangeReader::new(rx)
+    }
+
+    async fn background(&self) {
+        while let Some(message) = self.next_message().await {
+            let pending = message
+                .object_data_ranges
+                .into_iter()
+                .map(|r| self.handle_response(r))
+                .collect::<Vec<_>>();
+            let _ = futures::future::join_all(pending).await;
+        }
+    }
+
+    async fn handle_response(&self, response: ObjectRangeData) -> ReadResult<()> {
+        let mut guard = self.state.lock().await;
+        guard.handle_response(response).await
+    }
+
+    async fn next_message(&self) -> Option<BidiReadObjectResponse> {
+        let mut guard = self.state.lock().await;
+        loop {
+            let message = guard.stream.message().await;
+            match message {
+                Ok(Some(m)) => return Some(m),
+                Ok(None) => {}
+                Err(e) => {
+                    // TODO: query the resume policy
+                    println!("error reading from bi-di stream: {e:?}");
+                }
+            };
+            let ranges: Vec<_> = guard.ranges.iter().map(|(id, r)| r.as_proto(*id)).collect();
+            match self.stream_maker.connect(ranges).await {
+                Err(e) => {
+                    let error = Arc::new(e);
+                    let closing: Vec<_> = guard
+                        .ranges
+                        .iter_mut()
+                        .map(|(_, pending)| {
+                            pending
+                                .sender
+                                .send(Err(ReadError::UnrecoverableBidiReadInterrupt(
+                                    error.clone(),
+                                )))
+                        })
+                        .collect();
+                    let _ = futures::future::join_all(closing).await;
+                    return None;
+                }
+                Ok((tx, response)) => {
+                    guard.tx = tx;
+                    let (_, stream, _) = response.into_parts();
+                    guard.stream = stream;
+                }
+            };
+        }
+    }
+}
+
+struct TransportState {
+    ranges: HashMap<i64, PendingRange>,
+    next_range_id: i64,
+    tx: Sender<BidiReadObjectRequest>,
+    stream: tonic::Streaming<BidiReadObjectResponse>,
+}
+
+impl TransportState {
+    async fn insert_range(&mut self, range: PendingRange) {
+        let id = self.next_range_id;
+        self.next_range_id += 1;
+
+        let request = range.as_proto(id);
+        self.ranges.insert(id, range);
+        let request = BidiReadObjectRequest {
+            read_ranges: vec![request],
+            ..BidiReadObjectRequest::default()
+        };
+        // Any errors here are recovered by the main background loop.
+        if let Err(e) = self.tx.send(request).await {
+            tracing::error!("error sending read range request: {e:?}");
+        }
+    }
+
+    async fn handle_response(
+        &mut self,
+        response: crate::google::storage::v2::ObjectRangeData,
+    ) -> ReadResult<()> {
+        let range = response
+            .read_range
+            .ok_or(ReadError::MissingRangeInBidiResponse)?;
+        if response.range_end {
+            let mut pending = self
+                .ranges
+                .remove(&range.read_id)
+                .ok_or(ReadError::UnknownRange(range.read_id))?;
+            pending.handle_data(range, response.checksummed_data).await
+        } else {
+            let pending = self
+                .ranges
+                .get_mut(&range.read_id)
+                .ok_or(ReadError::UnknownRange(range.read_id))?;
+            pending.handle_data(range, response.checksummed_data).await
+        }
+    }
 }
 
 struct PendingRange {
     offset: i64,
-    remaining: i64,
+    limit: i64,
     sender: Sender<Result<bytes::Bytes, ReadError>>,
+}
+
+impl PendingRange {
+    async fn handle_data(
+        &mut self,
+        range: ProtoRange,
+        data: Option<ChecksummedData>,
+    ) -> ReadResult<()> {
+        let Some(data) = data else {
+            if self.limit == 0 {
+                return Ok(());
+            }
+            return Err(ReadError::ShortRead(self.limit as u64));
+        };
+        if self.offset == range.read_offset {
+            self.offset += range.read_length;
+            self.limit -= range.read_length;
+            self.limit = self.limit.clamp(0, i64::MAX);
+            let _ = self.sender.send(Ok(data.content)).await;
+            return Ok(());
+        }
+        Err(ReadError::OutOfOrderBidiResponse {
+            got: range.read_offset,
+            expected: range.read_offset,
+        })
+    }
+
+    fn as_proto(&self, id: i64) -> ProtoRange {
+        ProtoRange {
+            read_id: id,
+            read_offset: self.offset,
+            read_length: self.limit,
+        }
+    }
 }
