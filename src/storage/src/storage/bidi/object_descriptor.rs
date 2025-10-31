@@ -22,6 +22,15 @@ pub struct ObjectDescriptor {
 }
 
 impl ObjectDescriptor {
+    pub fn new<T>(inner: T) -> Self
+    where
+        T: ObjectDescriptorStub + 'static,
+    {
+        Self {
+            inner: Box::new(inner),
+        }
+    }
+
     pub fn object(&self) -> &Object {
         self.inner.object()
     }

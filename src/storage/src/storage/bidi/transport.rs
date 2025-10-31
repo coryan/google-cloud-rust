@@ -31,13 +31,14 @@ type ReadResult<T> = std::result::Result<T, ReadError>;
 pub trait Reconnect {
     async fn connect(
         &self,
-        request: Vec<ProtoRange>,
+        ranges: Vec<ProtoRange>,
     ) -> crate::Result<(
         Sender<BidiReadObjectRequest>,
         tonic::Response<tonic::Streaming<BidiReadObjectResponse>>,
     )>;
 }
 
+#[derive(Debug)]
 pub(super) struct ObjectDescriptorTransport {
     object: Object,
     state: Arc<Mutex<TransportState>>,
@@ -63,15 +64,6 @@ impl ObjectDescriptorTransport {
             state,
             background: handle,
         }
-    }
-
-    async fn read_range(&mut self, range: ReadRange) -> RangeReader {
-        let (tx, rx) = tokio::sync::mpsc::channel(1);
-        let range = PendingRange::new(tx, range, self.object.size);
-        let mut guard = self.state.lock().await;
-        guard.insert_range(range).await;
-        drop(guard);
-        RangeReader::new(rx)
     }
 
     async fn run_background<T: Reconnect + Send + Sync + 'static>(
@@ -101,6 +93,22 @@ impl ObjectDescriptorTransport {
     }
 }
 
+impl super::stub::ObjectDescriptor for ObjectDescriptorTransport {
+    fn object(&self) -> &Object {
+        &self.object
+    }
+
+    async fn read_range(&self, range: ReadRange) -> RangeReader {
+        let (tx, rx) = tokio::sync::mpsc::channel(1);
+        let range = PendingRange::new(tx, range, self.object.size);
+        let mut guard = self.state.lock().await;
+        guard.insert_range(range).await;
+        drop(guard);
+        RangeReader::new(rx)
+    }
+}
+
+#[derive(Debug)]
 struct TransportState {
     ranges: HashMap<i64, PendingRange>,
     next_range_id: i64,

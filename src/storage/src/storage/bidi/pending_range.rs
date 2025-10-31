@@ -20,6 +20,7 @@ use tokio::sync::mpsc::Sender;
 
 type ReadResult<T> = std::result::Result<T, ReadError>;
 
+#[derive(Debug)]
 pub(crate) struct PendingRange {
     offset: i64,
     limit: i64,
