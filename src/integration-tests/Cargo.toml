@@ -19,6 +19,9 @@ name              = "integration-tests"
 publish           = false
 version           = "0.0.0"
 
+[lints]
+workspace   = true
+
 [features]
 log-integration-tests = []
 # These are normally disabled because they run against production.

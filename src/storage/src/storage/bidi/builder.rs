@@ -69,9 +69,12 @@ impl OpenObject {
             .transpose()
             .map_err(Error::deser)?
             .ok_or_else(|| Error::deser("bidi_read_object is missing the object metadata value"))?;
+        self.spec.generation = metadata.generation;
+        if let Some(handle) = start.read_handle {
+            println!("DEBUG DEBUG - handle = {handle:?}");
+            self.spec.read_handle = Some(handle);
+        }
 
-        let handle = start.read_handle;
-        println!("DEBUG DEBUG - handle = {handle:?}");
         let transport = super::ObjectDescriptorTransport::new(metadata, self, tx, stream);
 
         Ok(ObjectDescriptor::new(transport))

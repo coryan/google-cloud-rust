@@ -17,6 +17,7 @@ use super::stub::dynamic::ObjectDescriptor as ObjectDescriptorStub;
 use crate::model::Object;
 use crate::model_ext::ReadRange;
 
+#[derive(Debug)]
 pub struct ObjectDescriptor {
     inner: Box<dyn ObjectDescriptorStub>,
 }
