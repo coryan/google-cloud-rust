@@ -14,7 +14,7 @@
 
 use super::object_descriptor::ObjectDescriptor;
 use crate::google::storage::v2::{
-    BidiReadObjectRequest, BidiReadObjectResponse, BidiReadObjectSpec,
+    BidiReadObjectRequest, BidiReadObjectResponse, BidiReadObjectSpec, ReadRange as ProtoRange,
 };
 use crate::request_options::RequestOptions;
 use crate::{Error, Result};
@@ -84,6 +84,35 @@ impl OpenObject {
         Sender<BidiReadObjectRequest>,
         tonic::Response<tonic::Streaming<BidiReadObjectResponse>>,
     )> {
+        let bucket_name = request
+            .read_object_spec
+            .as_ref()
+            .map(|s| s.bucket.as_str())
+            .unwrap_or_default();
+        if bucket_name
+            .strip_prefix("projects/_/buckets/")
+            .is_none_or(|x| x.is_empty())
+        {
+            use gax::error::binding::*;
+            let problem = SubstitutionFail::MismatchExpecting(
+                bucket_name.to_string(),
+                "projects/_/buckets/*",
+            );
+            let mismatch = SubstitutionMismatch {
+                field_name: "bucket",
+                problem,
+            };
+            let mismatch = PathMismatch {
+                subs: vec![mismatch],
+            };
+            let mismatch = BindingError {
+                paths: vec![mismatch],
+            };
+
+            return Err(crate::Error::binding(mismatch));
+        }
+        let bucket_name = bucket_name.to_string();
+
         println!("DEBUG DEBUG - sending {request:?}");
         let (tx, rx) = tokio::sync::mpsc::channel::<BidiReadObjectRequest>(100);
         tx.send(request).await.map_err(Error::io)?;
@@ -98,34 +127,30 @@ impl OpenObject {
         };
         let path =
             http::uri::PathAndQuery::from_static("/google.storage.v2.Storage/BidiReadObject");
-        let bucket_name = request
-            .read_object_spec
-            .map(|s| s.bucket.as_str())
-            .unwrap_or_default();
         let x_goog_request_params = format!("bucket={bucket_name}",);
         println!("DEBUG DEBUG - streaming_read({bucket_name}) - {x_goog_request_params}");
         let stream = tokio_stream::wrappers::ReceiverStream::new(rx);
 
+        let mut request_options = self.options.gax();
+        request_options.set_idempotency(true);
         let response = self
             .client
             .bidi_stream::<BidiReadObjectRequest, BidiReadObjectResponse>(
                 extensions,
                 path,
                 stream,
-                options,
-                &super::info::X_GOOG_API_CLIENT_HEADER,
+                request_options,
+                &crate::storage::info::X_GOOG_API_CLIENT_HEADER,
                 &x_goog_request_params,
             )
             .await?;
         println!("DEBUG DEBUG - received response {response:?}");
 
-        // TODO(coryan) - preserve metadata for debugging.
-        let (_metadata, stream, _extensions) = response.into_parts();
-        println!("DEBUG DEBUG - metadata {_metadata:?},, stream={stream:?}");
-        Ok((tx, stream))
+        Ok((tx, response))
     }
 }
 
+#[async_trait::async_trait]
 impl super::Reconnect for OpenObject {
     async fn connect(
         &self,

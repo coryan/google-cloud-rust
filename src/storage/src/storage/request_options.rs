@@ -117,4 +117,15 @@ impl RequestOptions {
             automatic_decompression: false,
         }
     }
+
+    pub(crate) fn gax(&self) -> gax::options::RequestOptions {
+        let mut options = gax::options::RequestOptions::default();
+        options.set_backoff_policy(self.backoff_policy.clone());
+        options.set_retry_policy(self.retry_policy.clone());
+        options.set_retry_throttler(self.retry_throttler.clone());
+        if let Some(ref i) = self.idempotency {
+            options.set_idempotency(*i);
+        }
+        options
+    }
 }
