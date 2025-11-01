@@ -70,7 +70,9 @@ impl ObjectDescriptorTransport {
         state: Arc<Mutex<TransportState>>,
         reconnect: T,
     ) {
-        while let Some(message) = state.lock().await.next_message(&reconnect).await {
+        println!("DEBUG DEBUG - run_background() {state:?}");
+        while let Some(message) = Self::next_message(state.clone(), &reconnect).await {
+            println!("DEBUG DEBUG - run_background() {state:?} message = {message:?}");
             let pending = message
                 .object_data_ranges
                 .into_iter()
@@ -82,13 +84,24 @@ impl ObjectDescriptorTransport {
                 .filter_map(|r| r.err())
                 .for_each(|e| tracing::error!("error while delivering bidi read response: {e:?}"));
         }
+        println!("DEBUG DEBUG - run_background() END");
+    }
+
+    async fn next_message<T: Reconnect + Send + Sync + 'static>(
+        state: Arc<Mutex<TransportState>>,
+        reconnect: &T,
+    ) -> Option<BidiReadObjectResponse> {
+        let mut guard = state.lock().await;
+        guard.next_message(reconnect).await
     }
 
     async fn handle_response(
         state: Arc<Mutex<TransportState>>,
         response: ObjectRangeData,
     ) -> ReadResult<()> {
+        println!("DEBUG DEBUG - handle_response() {response:?} state={state:?}");
         let mut guard = state.lock().await;
+        println!("DEBUG DEBUG - handle_response() guard acquired {response:?}");
         guard.handle_response(response).await
     }
 }
@@ -99,7 +112,7 @@ impl super::stub::ObjectDescriptor for ObjectDescriptorTransport {
     }
 
     async fn read_range(&self, range: ReadRange) -> RangeReader {
-        let (tx, rx) = tokio::sync::mpsc::channel(1);
+        let (tx, rx) = tokio::sync::mpsc::channel(100);
         let range = PendingRange::new(tx, range, self.object.size);
         let mut guard = self.state.lock().await;
         guard.insert_range(range).await;
