@@ -40,6 +40,7 @@ impl PendingRange {
             limit,
         }
     }
+
     pub(super) async fn handle_data(
         &mut self,
         range: ProtoRange,
@@ -62,6 +63,11 @@ impl PendingRange {
             got: range.read_offset,
             expected: range.read_offset,
         })
+    }
+
+    pub(super) async fn handle_error(&mut self, error: ReadError) -> ReadResult<()> {
+        let _ = self.sender.send(Err(error)).await;
+        Ok(())
     }
 
     pub(super) async fn interrupted(&mut self, error: Arc<crate::Error>) {
