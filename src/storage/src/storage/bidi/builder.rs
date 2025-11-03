@@ -21,6 +21,7 @@ use crate::{Error, Result};
 use gaxi::grpc::Client as GrpcClient;
 use tokio::sync::mpsc::Sender;
 
+#[derive(Clone, Debug)]
 pub struct OpenObject {
     spec: BidiReadObjectSpec,
     options: RequestOptions,
@@ -47,8 +48,42 @@ impl OpenObject {
     }
 
     pub async fn send(mut self) -> Result<ObjectDescriptor> {
-        println!("DEBUG DEBUG - send() spec={:?}", &self.spec);
         use gaxi::prost::FromProto;
+
+        let throttler = self.options.retry_throttler.clone();
+        let retry = self.options.retry_policy.clone();
+        let backoff = self.options.backoff_policy.clone();
+        let this = self.clone();
+        let call = async move |_| this.start().await;
+        let sleep = async |backoff| tokio::time::sleep(backoff).await;
+        let (start, tx, stream) =
+            gax::retry_loop_internal::retry_loop(call, sleep, true, throttler, retry, backoff)
+                .await?;
+
+        if let Some(handle) = start.read_handle {
+            println!("DEBUG DEBUG - handle = {handle:?}");
+            self.spec.read_handle = Some(handle);
+        }
+        let object = start
+            .metadata
+            .map(FromProto::cnv)
+            .transpose()
+            .map_err(Error::deser)?
+            .ok_or_else(|| Error::deser("bidi_read_object is missing the object metadata value"))?;
+        self.spec.generation = object.generation;
+
+        let transport = super::ObjectDescriptorTransport::new(object, self, tx, stream);
+        Ok(ObjectDescriptor::new(transport))
+    }
+
+    async fn start(
+        &self,
+    ) -> Result<(
+        BidiReadObjectResponse,
+        Sender<BidiReadObjectRequest>,
+        tonic::Streaming<BidiReadObjectResponse>,
+    )> {
+        println!("DEBUG DEBUG - send() spec={:?}", &self.spec);
 
         let request = BidiReadObjectRequest {
             read_object_spec: Some(self.spec.clone()),
@@ -63,21 +98,7 @@ impl OpenObject {
         let Some(start) = stream.message().await.map_err(Error::io)? else {
             return Err(Error::io("bidi_read_object stream closed before start"));
         };
-        let metadata = start
-            .metadata
-            .map(FromProto::cnv)
-            .transpose()
-            .map_err(Error::deser)?
-            .ok_or_else(|| Error::deser("bidi_read_object is missing the object metadata value"))?;
-        self.spec.generation = metadata.generation;
-        if let Some(handle) = start.read_handle {
-            println!("DEBUG DEBUG - handle = {handle:?}");
-            self.spec.read_handle = Some(handle);
-        }
-
-        let transport = super::ObjectDescriptorTransport::new(metadata, self, tx, stream);
-
-        Ok(ObjectDescriptor::new(transport))
+        Ok((start, tx, stream))
     }
 
     async fn connect_stream(
@@ -162,11 +183,19 @@ impl super::Reconnect for OpenObject {
         Sender<BidiReadObjectRequest>,
         tonic::Response<tonic::Streaming<BidiReadObjectResponse>>,
     )> {
-        let request = BidiReadObjectRequest {
-            read_object_spec: Some(self.spec.clone()),
-            read_ranges: ranges,
-            ..BidiReadObjectRequest::default()
+        let throttler = self.options.retry_throttler.clone();
+        let retry = self.options.retry_policy.clone();
+        let backoff = self.options.backoff_policy.clone();
+        let this = self.clone();
+        let inner = async move |_| {
+            let request = BidiReadObjectRequest {
+                read_object_spec: Some(this.spec.clone()),
+                read_ranges: ranges.clone(),
+                ..BidiReadObjectRequest::default()
+            };
+            this.connect_stream(request).await
         };
-        self.connect_stream(request).await
+        let sleep = async |backoff| tokio::time::sleep(backoff).await;
+        gax::retry_loop_internal::retry_loop(inner, sleep, true, throttler, retry, backoff).await
     }
 }
