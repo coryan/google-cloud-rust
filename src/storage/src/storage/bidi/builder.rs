@@ -79,7 +79,6 @@ where
         let Some(start) = stream.message().await.map_err(Error::io)? else {
             return Err(Error::io("bidi_read_object stream closed before start"));
         };
-        drop(tx);
         let metadata = start
             .metadata
             .map(FromProto::cnv)
@@ -87,8 +86,11 @@ where
             .map_err(Error::deser)?
             .ok_or_else(|| Error::deser("bidi_read_object is missing the object metadata value"))?;
 
+        let descriptor = ObjectDescriptor::new(metadata, tx);
+        tokio::spawn(descriptor.clone().background(stream));
+
         let handle = start.read_handle;
         println!("DEBUG DEBUG - handle = {handle:?}");
-        Ok(ObjectDescriptor::new(metadata))
+        Ok(descriptor)
     }
 }

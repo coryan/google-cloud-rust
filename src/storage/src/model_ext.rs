@@ -262,21 +262,27 @@ impl ReadRange {
     }
 
     #[cfg(google_cloud_unstable_storage_bidi)]
-    pub(crate) fn to_bidi_range(self) -> crate::google::storage::v2::ReadRange {
+    pub fn to_bidi_range(self, read_id: i64) -> crate::google::storage::v2::ReadRange {
         use crate::google::storage::v2::ReadRange as Proto;
         match self.0 {
-            Range::All => Proto::default(),
+            Range::All => Proto {
+                read_id,
+                ..Proto::default()
+            },
             Range::Offset(o) => Proto {
                 read_offset: o as i64,
+                read_id,
                 ..Proto::default()
             },
             Range::Tail(c) => Proto {
                 read_offset: -(c as i64),
+                read_id,
                 ..Proto::default()
             },
             Range::Segment { offset, limit } => Proto {
                 read_offset: offset as i64,
                 read_length: limit as i64,
+                read_id,
                 ..Proto::default()
             },
         }
