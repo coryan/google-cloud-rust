@@ -13,7 +13,7 @@
 // limitations under the License.
 
 mod builder;
-mod object_descriptor;
+pub mod object_descriptor;
 
 use super::request_options::RequestOptions;
 use crate::Result;

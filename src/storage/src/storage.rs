@@ -13,8 +13,7 @@
 // limitations under the License.
 
 #[allow(dead_code)]
-#[cfg(google_cloud_unstable_storage_bidi)]
-pub(crate) mod bidi;
+pub mod bidi;
 pub(crate) mod checksum;
 pub(crate) mod client;
 pub(crate) mod common_options;

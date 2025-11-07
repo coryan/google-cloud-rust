@@ -40,7 +40,7 @@ pub use crate::storage::request_options;
 pub use crate::storage::streaming_source;
 
 mod control;
-mod storage;
+pub mod storage;
 
 pub mod client {
     //! Clients to interact with Google Cloud Storage.

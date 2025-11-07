@@ -110,7 +110,6 @@ impl Client {
             .await
     }
 
-    #[cfg(google_cloud_unstable_storage_bidi)]
     /// Opens a bidirectional stream.
     pub async fn bidi_stream<Request, Response>(
         &self,

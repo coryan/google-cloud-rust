@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::google::storage::v2::BidiReadObjectResponse;
+use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse};
 use crate::model::Object;
 use crate::{Error, Result};
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
-use tokio::sync::mpsc::{Receiver, Sender};
+use std::sync::Arc;
+use tokio::sync::mpsc::{channel, Receiver, Sender};
+use tokio::sync::Mutex;
 
 /// Represents an open object in Cloud Storage.
 #[derive(Clone, Debug)]
@@ -27,10 +28,10 @@ pub struct ObjectDescriptor {
 }
 
 impl ObjectDescriptor {
-    pub(crate) fn new(object: Object) -> Self {
+    pub(crate) fn new(object: Object, tx: Sender<BidiReadObjectRequest>) -> Self {
         Self {
             object,
-            inner: Arc::new(Mutex::new(ObjectDescriptorInner::new())),
+            inner: Arc::new(Mutex::new(ObjectDescriptorInner::new(tx))),
         }
     }
 
@@ -39,23 +40,18 @@ impl ObjectDescriptor {
     }
 
     pub async fn read_range(&mut self, range: crate::model_ext::ReadRange) -> RangeResponse {
-        self.inner
-            .clone()
-            .lock()
-            .expect("never poisoned")
-            .read_range(range)
-            .await
+        self.inner.lock().await.read_range(range).await
     }
 
-    async fn background(
-        &self,
+    pub(crate) async fn background(
+        self,
         mut source: tonic::codec::Streaming<BidiReadObjectResponse>,
     ) -> Result<()> {
         let inner = self.inner.clone();
         while let Some(m) = source.message().await.transpose() {
             match m {
                 Err(e) => {
-                    for (_, pending) in inner.lock().expect("never poisoned").ranges.drain() {
+                    for (_, pending) in inner.lock().await.ranges.drain() {
                         let _ = pending
                             .tx
                             .send(Err(Error::io(format!("TODO - pass on the error: {e:?}"))))
@@ -68,7 +64,7 @@ impl ObjectDescriptor {
                             continue;
                         };
                         let id = range.read_id;
-                        let mut guard = inner.lock().expect("never poisoned");
+                        let mut guard = inner.lock().await;
 
                         let payload = Payload {
                             data: data.content,
@@ -95,22 +91,32 @@ impl ObjectDescriptor {
 struct ObjectDescriptorInner {
     read_id: i64,
     ranges: HashMap<i64, PendingRangeRead>,
+    tx: Sender<BidiReadObjectRequest>,
 }
 
 impl ObjectDescriptorInner {
-    pub fn new() -> Self {
+    pub fn new(tx: Sender<BidiReadObjectRequest>) -> Self {
         Self {
             read_id: 0,
             ranges: HashMap::new(),
+            tx,
         }
     }
 
     pub async fn read_range(&mut self, range: crate::model_ext::ReadRange) -> RangeResponse {
-        let (tx, rx) = tokio::sync::mpsc::channel(1);
+        let (tx, rx) = channel(1);
         let id = self.read_id;
-        let pending = PendingRangeRead { range, tx };
+        let pending = PendingRangeRead {
+            range: range.clone(),
+            tx,
+        };
         self.read_id += 1;
         self.ranges.insert(id, pending);
+        let req = BidiReadObjectRequest {
+            read_object_spec: None,
+            read_ranges: vec![range.to_bidi_range(id)],
+        };
+        let _ = self.tx.send(req).await;
         RangeResponse { rx }
     }
 }
