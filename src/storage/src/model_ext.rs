@@ -261,7 +261,6 @@ impl ReadRange {
         })
     }
 
-    #[cfg(google_cloud_unstable_storage_bidi)]
     pub fn to_bidi_range(self, read_id: i64) -> crate::google::storage::v2::ReadRange {
         use crate::google::storage::v2::ReadRange as Proto;
         match self.0 {
