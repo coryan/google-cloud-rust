@@ -12,23 +12,66 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+pub mod stub;
+
 mod active_read;
 mod builder;
 mod connector;
 mod normalized_range;
+mod object_descriptor;
 mod range_reader;
 mod redirect;
 mod remaining_range;
 mod requested_range;
 mod resume_redirect;
 mod retry_redirect;
-mod stub;
 mod transport;
 mod worker;
 
 use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse};
 use crate::request_options::RequestOptions;
+use crate::storage::client::ClientBuilder;
+use builder::OpenObject;
 use tokio::sync::mpsc::Receiver;
+
+#[derive(Clone, Debug)]
+pub struct Bidi {
+    client: gaxi::grpc::Client,
+    options: RequestOptions,
+}
+
+impl Bidi {
+    pub fn builder() -> ClientBuilder {
+        ClientBuilder::new()
+    }
+
+    pub(crate) async fn new(
+        builder: super::client::ClientBuilder,
+    ) -> gax::client_builder::Result<Self> {
+        let (client_config, options) = builder.into_client_config();
+        let client = gaxi::grpc::Client::new(client_config, super::DEFAULT_HOST).await?;
+        Ok(Self { client, options })
+    }
+
+    pub fn open_object<B, O>(&self, bucket: B, object: O) -> OpenObject
+    where
+        B: Into<String>,
+        O: Into<String>,
+    {
+        OpenObject::new(
+            bucket.into(),
+            object.into(),
+            self.client.clone(),
+            self.options.clone(),
+        )
+    }
+}
+
+impl super::client::ClientBuilder {
+    pub async fn build_bidi(self) -> gax::client_builder::Result<Bidi> {
+        Bidi::new(self).await
+    }
+}
 
 /// A trait to mock `tonic::Streaming<T>` in the unit tests.
 ///
@@ -91,14 +134,25 @@ mod mocks;
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use crate::Error;
     use crate::google::storage::v2::{
         BidiReadHandle, BidiReadObjectRedirectedError, ReadRange as ProtoRange,
     };
     use crate::request_options::RequestOptions;
+    use auth::credentials::anonymous::Builder as Anonymous;
     use gax::error::rpc::{Code, Status};
     use prost::Message as _;
     use std::sync::Arc;
+
+    #[tokio::test]
+    async fn create_new_client() -> anyhow::Result<()> {
+        let _client = Bidi::builder()
+            .with_credentials(Anonymous::new().build())
+            .build_bidi()
+            .await?;
+        Ok(())
+    }
 
     pub(super) fn redirect_handle() -> BidiReadHandle {
         BidiReadHandle {
