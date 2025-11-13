@@ -14,6 +14,7 @@
 
 use super::active_read::ActiveRead;
 use super::connector::{Connection, Connector};
+use super::{Client, TonicStreaming};
 use crate::error::ReadError;
 use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse, ObjectRangeData};
 use std::collections::HashMap;
@@ -24,14 +25,14 @@ use tokio::sync::mpsc::Receiver;
 type ReadResult<T> = std::result::Result<T, ReadError>;
 
 #[derive(Debug)]
-pub struct Worker {
+pub struct Worker<S> {
     next_range_id: i64,
     ranges: Arc<Mutex<HashMap<i64, ActiveRead>>>,
-    connection: Connection,
+    connection: Connection<S>,
 }
 
-impl Worker {
-    pub fn new(connection: Connection) -> Self {
+impl<S> Worker<S> {
+    pub fn new(connection: Connection<S>) -> Self {
         let ranges = Arc::new(Mutex::new(HashMap::new()));
         Self {
             next_range_id: 0_i64,
@@ -39,10 +40,15 @@ impl Worker {
             connection,
         }
     }
+}
 
-    pub async fn run<T>(mut self, mut connector: Connector<T>, mut rx: Receiver<ActiveRead>)
+impl<S> Worker<S>
+where
+    S: TonicStreaming,
+{
+    pub async fn run<C>(mut self, mut connector: Connector<C>, mut rx: Receiver<ActiveRead>)
     where
-        T: super::Client<Stream = tonic::Streaming<BidiReadObjectResponse>> + Clone + Sync,
+        C: Client<Stream = S> + Clone + 'static,
     {
         println!("DEBUG DEBUG - run_background() {self:?}");
         loop {
@@ -69,15 +75,15 @@ impl Worker {
         println!("DEBUG DEBUG - run_background() END");
     }
 
-    async fn next_message<T>(
+    async fn next_message<C>(
         &mut self,
-        connector: &mut Connector<T>,
+        connector: &mut Connector<C>,
     ) -> Option<BidiReadObjectResponse>
     where
-        T: super::Client<Stream = tonic::Streaming<BidiReadObjectResponse>> + Clone + Sync,
+        C: Client<Stream = S> + Clone + 'static,
     {
         println!("DEBUG DEBUG - State::next_message()");
-        let message = self.connection.rx.message().await;
+        let message = self.connection.rx.next_message().await;
         println!("DEBUG DEBUG - State::next_message() = {message:?}");
         let status = match message {
             Ok(m) => return m,
@@ -177,5 +183,20 @@ impl Worker {
 
 #[cfg(test)]
 mod tests {
+    use super::super::mocks::{MockStream, MockStreamSender};
     use super::*;
+
+    #[tokio::test]
+    async fn run_immediately_closed() {
+        let (request_tx, request_rx) = tokio::sync::mpsc::channel(1);
+        let (response_tx, response_rx) = mock_stream();
+        let connection = Connection::new(request_tx, response_rx);
+        let worker = Worker::new(connection);
+
+        worker.run()
+    }
+
+    fn mock_stream() -> (MockStreamSender, MockStream) {
+        tokio::sync::mpsc::channel(10)
+    }
 }

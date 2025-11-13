@@ -16,6 +16,7 @@ use super::{
     BidiReadObjectRequest, BidiReadObjectResponse, Client, Receiver, RequestOptions, TonicStreaming,
 };
 use std::sync::Arc;
+use tokio::sync::mpsc::Sender;
 
 // mockall mocks are not `Clone` and we need a thing that can be cloned.
 // The solution is to wrap the mock in a think that implements the right
@@ -72,3 +73,4 @@ pub trait TestClient: std::fmt::Debug {
 }
 
 pub type MockStream = Receiver<tonic::Result<BidiReadObjectResponse>>;
+pub type MockStreamSender = Sender<tonic::Result<BidiReadObjectResponse>>;
