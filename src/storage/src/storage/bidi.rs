@@ -28,13 +28,11 @@ mod retry_redirect;
 mod transport;
 mod worker;
 
-pub use crate::request_options::RequestOptions;
+use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse};
+use crate::request_options::RequestOptions;
 use crate::storage::client::ClientBuilder;
-pub use builder::OpenObject;
-#[allow(unused_imports)]
-pub use object_descriptor::ObjectDescriptor;
-pub use range_reader::RangeReader;
-use transport::ObjectDescriptorTransport;
+use builder::OpenObject;
+use tokio::sync::mpsc::Receiver;
 
 #[derive(Clone, Debug)]
 pub struct Bidi {
@@ -72,6 +70,55 @@ impl Bidi {
 impl super::client::ClientBuilder {
     pub async fn build_bidi(self) -> gax::client_builder::Result<Bidi> {
         Bidi::new(self).await
+    }
+}
+
+/// A trait to mock `tonic::Streaming<T>`.
+pub trait TonicStreaming: std::fmt::Debug + Send + 'static {
+    async fn next_message(&mut self) -> tonic::Result<Option<BidiReadObjectResponse>>;
+}
+
+impl TonicStreaming for tonic::codec::Streaming<BidiReadObjectResponse> {
+    async fn next_message(&mut self) -> tonic::Result<Option<BidiReadObjectResponse>> {
+        self.message().await
+    }
+}
+
+/// Dependency injection for [gaxi::grpc::Client].
+pub trait Client: std::fmt::Debug + Send + 'static {
+    type Stream: Sized;
+    fn start(
+        &self,
+        extensions: tonic::Extensions,
+        path: http::uri::PathAndQuery,
+        rx: Receiver<BidiReadObjectRequest>,
+        options: &RequestOptions,
+        api_client_header: &'static str,
+        request_params: &str,
+    ) -> impl Future<Output = crate::Result<tonic::Result<tonic::Response<Self::Stream>>>> + Send;
+}
+
+impl Client for gaxi::grpc::Client {
+    type Stream = tonic::codec::Streaming<BidiReadObjectResponse>;
+    async fn start(
+        &self,
+        extensions: tonic::Extensions,
+        path: http::uri::PathAndQuery,
+        rx: Receiver<BidiReadObjectRequest>,
+        options: &RequestOptions,
+        api_client_header: &'static str,
+        request_params: &str,
+    ) -> crate::Result<tonic::Result<tonic::Response<Self::Stream>>> {
+        let request = tokio_stream::wrappers::ReceiverStream::new(rx);
+        self.bidi_stream_with_status(
+            extensions,
+            path,
+            request,
+            options.gax(),
+            api_client_header,
+            request_params,
+        )
+        .await
     }
 }
 
@@ -162,3 +209,6 @@ mod tests {
         }
     }
 }
+
+#[cfg(test)]
+mod mocks;

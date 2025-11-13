@@ -13,12 +13,12 @@
 // limitations under the License.
 
 use super::active_read::ActiveRead;
+use super::range_reader::RangeReader;
 use crate::error::ReadError;
 use crate::google::storage::v2::BidiReadObjectResponse;
 use crate::model::Object;
 use crate::model_ext::ReadRange;
 use crate::read_object::dynamic::ReadObjectResponse;
-use crate::storage::bidi::RangeReader;
 use crate::{Error, Result};
 use std::sync::Arc;
 use tokio::sync::mpsc::Sender;
@@ -34,9 +34,7 @@ pub(super) struct ObjectDescriptorTransport {
 impl ObjectDescriptorTransport {
     pub async fn new<T>(mut connector: super::connector::Connector<T>) -> Result<Self>
     where
-        T: super::connector::Client<Stream = tonic::Streaming<BidiReadObjectResponse>>
-            + Clone
-            + Sync,
+        T: super::Client<Stream = tonic::Streaming<BidiReadObjectResponse>> + Clone + Sync,
     {
         use gaxi::prost::FromProto;
 

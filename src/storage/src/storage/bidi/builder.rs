@@ -14,6 +14,7 @@
 
 use super::connector::Connector;
 use super::object_descriptor::ObjectDescriptor;
+use super::transport::ObjectDescriptorTransport;
 use crate::Result;
 use crate::google::storage::v2::BidiReadObjectSpec;
 use crate::model_ext::KeyAes256;
@@ -89,7 +90,7 @@ impl OpenObject {
     /// ```
     pub async fn send(self) -> Result<ObjectDescriptor> {
         let connector = Connector::new(self.spec, self.options, self.client);
-        let transport = super::ObjectDescriptorTransport::new(connector).await?;
+        let transport = ObjectDescriptorTransport::new(connector).await?;
 
         Ok(ObjectDescriptor::new(transport))
     }

@@ -42,9 +42,7 @@ impl Worker {
 
     pub async fn run<T>(mut self, mut connector: Connector<T>, mut rx: Receiver<ActiveRead>)
     where
-        T: super::connector::Client<Stream = tonic::Streaming<BidiReadObjectResponse>>
-            + Clone
-            + Sync,
+        T: super::Client<Stream = tonic::Streaming<BidiReadObjectResponse>> + Clone + Sync,
     {
         println!("DEBUG DEBUG - run_background() {self:?}");
         loop {
@@ -76,9 +74,7 @@ impl Worker {
         connector: &mut Connector<T>,
     ) -> Option<BidiReadObjectResponse>
     where
-        T: super::connector::Client<Stream = tonic::Streaming<BidiReadObjectResponse>>
-            + Clone
-            + Sync,
+        T: super::Client<Stream = tonic::Streaming<BidiReadObjectResponse>> + Clone + Sync,
     {
         println!("DEBUG DEBUG - State::next_message()");
         let message = self.connection.rx.message().await;
@@ -177,4 +173,9 @@ impl Worker {
                 .await
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
 }
