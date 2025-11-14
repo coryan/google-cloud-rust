@@ -23,6 +23,7 @@ use tokio::sync::Mutex;
 use tokio::sync::mpsc::Receiver;
 
 type ReadResult<T> = std::result::Result<T, ReadError>;
+type LoopResult = std::result::Result<(), Arc<crate::Error>>;
 
 #[derive(Debug)]
 pub struct Worker<S> {
@@ -50,7 +51,7 @@ where
         mut self,
         mut connector: Connector<C>,
         mut rx: Receiver<ActiveRead>,
-    ) -> crate::Result<()>
+    ) -> LoopResult
     where
         C: Client<Stream = S> + Clone + 'static,
     {
@@ -64,7 +65,7 @@ where
                         // An error in the response. These are not recoverable.
                         let error = Arc::new(e);
                         self.close_readers(error.clone()).await;
-                        return Err(crate::Error::io(error));
+                        return Err(error);
                     }
                 },
                 r = rx.recv() => {
@@ -107,6 +108,16 @@ where
                 Some(m)
             }
         }
+    }
+
+    async fn handle_message(&mut self, message: BidiReadObjectResponse) -> LoopResult {
+        if let Err(e) = self.handle_response(message).await {
+            // An error in the response. These are not recoverable.
+            let error = Arc::new(e);
+            self.close_readers(error.clone()).await;
+            return Err(error);
+        }
+        Ok(())
     }
 
     async fn close_readers(&mut self, error: Arc<crate::Error>) {
@@ -180,9 +191,10 @@ where
 #[cfg(test)]
 mod tests {
     use super::super::mocks::{MockStream, MockStreamSender, MockTestClient, SharedMockClient};
-    use super::super::tests::test_options;
+    use super::super::tests::{proto_range_id, test_options};
     use super::*;
     use crate::google::storage::v2::BidiReadObjectSpec;
+    use std::error::Error as _;
 
     #[tokio::test]
     async fn run_immediately_closed() -> anyhow::Result<()> {
@@ -200,6 +212,37 @@ mod tests {
         let connector = mock_connector(mock);
         let result = worker.run(connector, rx).await;
         assert!(result.is_ok(), "{result:?}");
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn run_bad_response() -> anyhow::Result<()> {
+        let (request_tx, _request_rx) = tokio::sync::mpsc::channel(1);
+        let (response_tx, response_rx) = mock_stream();
+        let (_tx, rx) = tokio::sync::mpsc::channel(1);
+        let connection = Connection::new(request_tx, response_rx);
+        let worker = Worker::new(connection);
+
+        // Simulate a response for an unexpected read id.
+        let response = BidiReadObjectResponse {
+            object_data_ranges: vec![ObjectRangeData {
+                read_range: Some(proto_range_id(0, 100, -123)),
+                ..ObjectRangeData::default()
+            }],
+            ..BidiReadObjectResponse::default()
+        };
+        response_tx.send(Ok(response)).await?;
+        let mut mock = MockTestClient::new();
+        mock.expect_start().never();
+
+        let connector = mock_connector(mock);
+        let err = worker.run(connector, rx).await.unwrap_err();
+        assert!(err.is_transport(), "{err:?}");
+        let source = err.source().and_then(|e| e.downcast_ref::<ReadError>());
+        assert!(
+            matches!(source, Some(ReadError::UnknownRange(r)) if *r == -123),
+            "{err:?}"
+        );
         Ok(())
     }
 

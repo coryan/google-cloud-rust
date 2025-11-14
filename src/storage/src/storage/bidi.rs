@@ -208,6 +208,12 @@ mod tests {
             ..ProtoRange::default()
         }
     }
+
+    pub(super) fn proto_range_id(offset: i64, length: i64, id: i64) -> ProtoRange {
+        let mut range = proto_range(offset, length);
+        range.read_id = id;
+        range
+    }
 }
 
 #[cfg(test)]
