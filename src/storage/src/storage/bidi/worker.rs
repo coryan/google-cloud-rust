@@ -50,7 +50,6 @@ where
     where
         C: Client<Stream = S> + Clone + 'static,
     {
-        println!("DEBUG DEBUG - run_background() {self:?}");
         loop {
             tokio::select! {
                 m = self.next_message(&mut connector) => {
@@ -183,8 +182,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::super::mocks::{MockStream, MockStreamSender};
+    use futures::future::Shared;
+
+    use super::super::mocks::{MockStream, MockStreamSender, MockTestClient, SharedMockClient};
+    use super::super::tests::test_options;
     use super::*;
+    use crate::google::storage::v2::BidiReadObjectSpec;
 
     #[tokio::test]
     async fn run_immediately_closed() {
@@ -193,7 +196,25 @@ mod tests {
         let connection = Connection::new(request_tx, response_rx);
         let worker = Worker::new(connection);
 
-        worker.run()
+        let (mock, connector) = mock_connector();
+
+        let handle = tokio::spawn(worker.run(connector, request_rx));
+        drop(response_tx);
+        Ok(())
+    }
+
+    fn mock_connector() -> (SharedMockClient, Connector<SharedMockClient>) {
+        let mock = MockTestClient::new();
+        let client = SharedMockClient::new(mock);
+
+        let spec = BidiReadObjectSpec {
+            bucket: "projects/_/buckets/test-bucket".into(),
+            object: "test-object".into(),
+            ..BidiReadObjectSpec::default()
+        };
+
+        let connector = Connector::new(spec, test_options(), client.clone());
+        (client, connector)
     }
 
     fn mock_stream() -> (MockStreamSender, MockStream) {
