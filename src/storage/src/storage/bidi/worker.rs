@@ -255,6 +255,23 @@ mod tests {
         Ok(())
     }
 
+    #[tokio::test]
+    async fn run_stop_on_closed_requests() -> anyhow::Result<()> {
+        let (request_tx, _request_rx) = tokio::sync::mpsc::channel(1);
+        let (_response_tx, response_rx) = mock_stream();
+        let (tx, rx) = tokio::sync::mpsc::channel(1);
+        let connection = Connection::new(request_tx, response_rx);
+
+        let mut mock = MockTestClient::new();
+        mock.expect_start().never();
+
+        let connector = mock_connector(mock);
+        let worker = Worker::new(connector);
+        drop(tx);
+        worker.run(connection, rx).await?;
+        Ok(())
+    }
+
     fn mock_connector(mock: MockTestClient) -> Connector<SharedMockClient> {
         let client = SharedMockClient::new(mock);
 
