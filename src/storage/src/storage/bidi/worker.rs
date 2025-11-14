@@ -324,6 +324,56 @@ mod tests {
         Ok(())
     }
 
+    #[tokio::test]
+    async fn run_full_read() -> anyhow::Result<()> {
+        let (request_tx, mut request_rx) = tokio::sync::mpsc::channel(1);
+        let (response_tx, response_rx) = mock_stream();
+        let (tx, rx) = tokio::sync::mpsc::channel(1);
+        let connection = Connection::new(request_tx, response_rx);
+
+        let mut mock = MockTestClient::new();
+        mock.expect_start().never();
+        let connector = mock_connector(mock);
+        let worker = Worker::new(connector);
+        let join = tokio::spawn(async move { worker.run(connection, rx).await });
+
+        let mut reader = mock_reader(&tx, ReadRange::segment(100, 100)).await;
+        let request = request_rx
+            .recv()
+            .await
+            .expect("request queue is not closed");
+        assert!(request.read_object_spec.is_none(), "{request:?}");
+        assert_eq!(request.read_ranges.len(), 1, "{request:?}");
+        let request = request.read_ranges.first().unwrap();
+        assert_eq!(request.read_offset, 100);
+        assert_eq!(request.read_length, 100);
+
+        // Simulate a response for an unexpected read id.
+        let content = bytes::Bytes::from_owner(String::from_iter((0..100).map(|_| 'x')));
+        let response = BidiReadObjectResponse {
+            object_data_ranges: vec![ObjectRangeData {
+                read_range: Some(proto_range_id(100, content.len() as i64, request.read_id)),
+                range_end: true,
+                checksummed_data: Some(ChecksummedData {
+                    content: content.clone(),
+                    ..ChecksummedData::default()
+                }),
+                ..ObjectRangeData::default()
+            }],
+            ..BidiReadObjectResponse::default()
+        };
+        response_tx.send(Ok(response)).await?;
+
+        let got = reader.recv().await;
+        assert!(matches!(got, Some(Ok(ref b)) if *b == content), "{got:?}");
+        let got = reader.recv().await;
+        assert!(got.is_none(), "{got:?}");
+
+        drop(tx);
+        join.await??;
+        Ok(())
+    }
+
     async fn mock_reader(
         requests: &Sender<ActiveRead>,
         range: ReadRange,
