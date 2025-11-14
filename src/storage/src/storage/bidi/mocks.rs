@@ -22,7 +22,7 @@ use tokio::sync::mpsc::Sender;
 // The solution is to wrap the mock in a think that implements the right
 // trait.
 #[derive(Clone, Debug)]
-pub struct SharedMockClient(Arc<MockTestClient>);
+pub struct SharedMockClient(pub(crate) Arc<MockTestClient>);
 
 impl SharedMockClient {
     pub fn new(mock: MockTestClient) -> Self {

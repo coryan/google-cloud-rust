@@ -46,7 +46,11 @@ impl<S> Worker<S>
 where
     S: TonicStreaming,
 {
-    pub async fn run<C>(mut self, mut connector: Connector<C>, mut rx: Receiver<ActiveRead>)
+    pub async fn run<C>(
+        mut self,
+        mut connector: Connector<C>,
+        mut rx: Receiver<ActiveRead>,
+    ) -> crate::Result<()>
     where
         C: Client<Stream = S> + Clone + 'static,
     {
@@ -58,20 +62,20 @@ where
                     };
                     if let Err(e) = self.handle_response(message).await {
                         // An error in the response. These are not recoverable.
-                        self.close_readers(Arc::new(e)).await;
-                        return;
+                        let error = Arc::new(e);
+                        self.close_readers(error.clone()).await;
+                        return Err(crate::Error::io(error));
                     }
                 },
                 r = rx.recv() => {
                     let Some(range) = r else {
-                        println!("DEBUG DEBUG - run_background() {self:?} shutdown");
-                        return;
+                        return Ok(());
                     };
                     self.insert_range(range).await;
                 },
             }
         }
-        println!("DEBUG DEBUG - run_background() END");
+        Ok(())
     }
 
     async fn next_message<C>(
@@ -81,15 +85,10 @@ where
     where
         C: Client<Stream = S> + Clone + 'static,
     {
-        println!("DEBUG DEBUG - State::next_message()");
         let message = self.connection.rx.next_message().await;
-        println!("DEBUG DEBUG - State::next_message() = {message:?}");
         let status = match message {
             Ok(m) => return m,
-            Err(status) => {
-                println!("error reading from bi-di stream: {status:?}");
-                status
-            }
+            Err(status) => status,
         };
         let ranges: Vec<_> = self
             .ranges
@@ -120,7 +119,6 @@ where
     }
 
     async fn insert_range(&mut self, range: ActiveRead) {
-        println!("DEBUG DEBUG - State::next_message() - {range:?}");
         let id = self.next_range_id;
         self.next_range_id += 1;
 
@@ -137,7 +135,6 @@ where
     }
 
     async fn handle_response(&mut self, message: BidiReadObjectResponse) -> crate::Result<()> {
-        println!("DEBUG DEBUG - handle_response() {self:?} message = {message:?}");
         let ranges = self.ranges.clone();
         let pending = message
             .object_data_ranges
@@ -182,29 +179,31 @@ where
 
 #[cfg(test)]
 mod tests {
-    use futures::future::Shared;
-
     use super::super::mocks::{MockStream, MockStreamSender, MockTestClient, SharedMockClient};
     use super::super::tests::test_options;
     use super::*;
     use crate::google::storage::v2::BidiReadObjectSpec;
 
     #[tokio::test]
-    async fn run_immediately_closed() {
-        let (request_tx, request_rx) = tokio::sync::mpsc::channel(1);
+    async fn run_immediately_closed() -> anyhow::Result<()> {
+        let (request_tx, _request_rx) = tokio::sync::mpsc::channel(1);
         let (response_tx, response_rx) = mock_stream();
+        let (_tx, rx) = tokio::sync::mpsc::channel(1);
         let connection = Connection::new(request_tx, response_rx);
         let worker = Worker::new(connection);
 
-        let (mock, connector) = mock_connector();
-
-        let handle = tokio::spawn(worker.run(connector, request_rx));
+        // Closing the stream without an error should not attempt a reconnect.
         drop(response_tx);
+        let mut mock = MockTestClient::new();
+        mock.expect_start().never();
+
+        let connector = mock_connector(mock);
+        let result = worker.run(connector, rx).await;
+        assert!(result.is_ok(), "{result:?}");
         Ok(())
     }
 
-    fn mock_connector() -> (SharedMockClient, Connector<SharedMockClient>) {
-        let mock = MockTestClient::new();
+    fn mock_connector(mock: MockTestClient) -> Connector<SharedMockClient> {
         let client = SharedMockClient::new(mock);
 
         let spec = BidiReadObjectSpec {
@@ -213,8 +212,7 @@ mod tests {
             ..BidiReadObjectSpec::default()
         };
 
-        let connector = Connector::new(spec, test_options(), client.clone());
-        (client, connector)
+        Connector::new(spec, test_options(), client.clone())
     }
 
     fn mock_stream() -> (MockStreamSender, MockStream) {
