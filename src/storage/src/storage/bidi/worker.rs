@@ -153,12 +153,12 @@ where
         let _ = futures::future::join_all(closing).await;
     }
 
-    async fn insert_range(&mut self, tx: Sender<BidiReadObjectRequest>, range: ActiveRead) {
+    async fn insert_range(&mut self, tx: Sender<BidiReadObjectRequest>, reader: ActiveRead) {
         let id = self.next_range_id;
         self.next_range_id += 1;
 
-        let request = range.as_proto(id);
-        self.ranges.lock().await.insert(id, range);
+        let request = reader.as_proto(id);
+        self.ranges.lock().await.insert(id, reader);
         let request = BidiReadObjectRequest {
             read_ranges: vec![request],
             ..BidiReadObjectRequest::default()
@@ -202,7 +202,8 @@ mod tests {
     use super::super::mocks::{MockStream, MockStreamSender, MockTestClient, SharedMockClient};
     use super::super::tests::{proto_range_id, test_options};
     use super::*;
-    use crate::google::storage::v2::BidiReadObjectSpec;
+    use crate::google::storage::v2::{BidiReadObjectSpec, ChecksummedData};
+    use crate::model_ext::ReadRange;
     use std::error::Error as _;
     use test_case::test_case;
 
@@ -274,6 +275,66 @@ mod tests {
         drop(tx);
         worker.run(connection, rx).await?;
         Ok(())
+    }
+
+    #[tokio::test]
+    async fn run_partial_read() -> anyhow::Result<()> {
+        let (request_tx, mut request_rx) = tokio::sync::mpsc::channel(1);
+        let (response_tx, response_rx) = mock_stream();
+        let (tx, rx) = tokio::sync::mpsc::channel(1);
+        let connection = Connection::new(request_tx, response_rx);
+
+        let mut mock = MockTestClient::new();
+        mock.expect_start().never();
+        let connector = mock_connector(mock);
+        let worker = Worker::new(connector);
+        let join = tokio::spawn(async move { worker.run(connection, rx).await });
+
+        let mut reader = mock_reader(&tx, ReadRange::segment(100, 200)).await;
+        let request = request_rx
+            .recv()
+            .await
+            .expect("request queue is not closed");
+        assert!(request.read_object_spec.is_none(), "{request:?}");
+        assert_eq!(request.read_ranges.len(), 1, "{request:?}");
+        let request = request.read_ranges.first().unwrap();
+        assert_eq!(request.read_offset, 100);
+        assert_eq!(request.read_length, 200);
+
+        // Simulate a response for an unexpected read id.
+        let content = bytes::Bytes::from_owner(String::from_iter((0..100).map(|_| 'x')));
+        let response = BidiReadObjectResponse {
+            object_data_ranges: vec![ObjectRangeData {
+                read_range: Some(proto_range_id(100, content.len() as i64, request.read_id)),
+                checksummed_data: Some(ChecksummedData {
+                    content: content.clone(),
+                    ..ChecksummedData::default()
+                }),
+                ..ObjectRangeData::default()
+            }],
+            ..BidiReadObjectResponse::default()
+        };
+        response_tx.send(Ok(response)).await?;
+
+        let got = reader.recv().await;
+        assert!(matches!(got, Some(Ok(ref b)) if *b == content), "{got:?}");
+
+        drop(tx);
+        let _ = join.await??;
+        Ok(())
+    }
+
+    async fn mock_reader(
+        requests: &Sender<ActiveRead>,
+        range: ReadRange,
+    ) -> Receiver<ReadResult<bytes::Bytes>> {
+        let (tx, rx) = tokio::sync::mpsc::channel(1);
+        let reader = ActiveRead::new(tx, range.0);
+        requests
+            .send(reader)
+            .await
+            .expect("requests queue is not closed in tests");
+        rx
     }
 
     fn mock_connector(mock: MockTestClient) -> Connector<SharedMockClient> {
