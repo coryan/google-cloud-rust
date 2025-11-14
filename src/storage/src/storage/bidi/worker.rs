@@ -54,11 +54,14 @@ where
         mut requests: Receiver<ActiveRead>,
     ) -> LoopResult<()> {
         let (mut rx, mut tx) = (connection.rx, connection.tx);
+        // Note how this loop only exits when the `requests` queue is
+        // closed. A successfully closed stream and unrecoverable errors
+        // return immediatedly.
         loop {
             tokio::select! {
                 m = rx.next_message() => {
                     match self.handle_response(m).await {
-                        None => break,
+                        None => return Ok(()),
                         Some(Err(e)) => return Err(e),
                         Some(Ok(None)) => {},
                         Some(Ok(Some(connection))) => {
@@ -68,12 +71,15 @@ where
                 },
                 r = requests.recv() => {
                     let Some(range) = r else {
-                        return Ok(());
+                        break;
                     };
                     self.insert_range(tx.clone(), range).await;
                 },
             }
         }
+        // No need to continue reading. The `requests` queue closes
+        // only when the ObjectDescriptor is gone and when all the
+        // associated ReadResponseReaders are gone.
         Ok(())
     }
 
