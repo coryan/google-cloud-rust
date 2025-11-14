@@ -56,7 +56,7 @@ where
         let (mut rx, mut tx) = (connection.rx, connection.tx);
         // Note how this loop only exits when the `requests` queue is
         // closed. A successfully closed stream and unrecoverable errors
-        // return immediatedly.
+        // return immediately.
         loop {
             tokio::select! {
                 m = rx.next_message() => {
@@ -239,7 +239,7 @@ mod tests {
         let response = BidiReadObjectResponse {
             object_data_ranges: vec![ObjectRangeData {
                 read_range: Some(proto_range_id(0, 100, -123)),
-                range_end: range_end,
+                range_end,
                 ..ObjectRangeData::default()
             }],
             ..BidiReadObjectResponse::default()
@@ -320,7 +320,7 @@ mod tests {
         assert!(matches!(got, Some(Ok(ref b)) if *b == content), "{got:?}");
 
         drop(tx);
-        let _ = join.await??;
+        join.await??;
         Ok(())
     }
 
