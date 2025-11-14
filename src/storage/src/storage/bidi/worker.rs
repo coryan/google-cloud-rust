@@ -204,6 +204,7 @@ mod tests {
     use super::*;
     use crate::google::storage::v2::BidiReadObjectSpec;
     use std::error::Error as _;
+    use test_case::test_case;
 
     #[tokio::test]
     async fn run_immediately_closed() -> anyhow::Result<()> {
@@ -224,8 +225,10 @@ mod tests {
         Ok(())
     }
 
+    #[test_case(true)]
+    #[test_case(false)]
     #[tokio::test]
-    async fn run_bad_response() -> anyhow::Result<()> {
+    async fn run_bad_response(range_end: bool) -> anyhow::Result<()> {
         let (request_tx, _request_rx) = tokio::sync::mpsc::channel(1);
         let (response_tx, response_rx) = mock_stream();
         let (_tx, rx) = tokio::sync::mpsc::channel(1);
@@ -235,6 +238,7 @@ mod tests {
         let response = BidiReadObjectResponse {
             object_data_ranges: vec![ObjectRangeData {
                 read_range: Some(proto_range_id(0, 100, -123)),
+                range_end: range_end,
                 ..ObjectRangeData::default()
             }],
             ..BidiReadObjectResponse::default()
