@@ -20,77 +20,99 @@ use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse, 
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use tokio::sync::mpsc::Receiver;
+use tokio::sync::mpsc::{Receiver, Sender};
 
 type ReadResult<T> = std::result::Result<T, ReadError>;
-type LoopResult = std::result::Result<(), Arc<crate::Error>>;
+type LoopResult<T> = std::result::Result<T, Arc<crate::Error>>;
 
 #[derive(Debug)]
-pub struct Worker<S> {
+pub struct Worker<C> {
     next_range_id: i64,
     ranges: Arc<Mutex<HashMap<i64, ActiveRead>>>,
-    connection: Connection<S>,
+    connector: Connector<C>,
 }
 
-impl<S> Worker<S> {
-    pub fn new(connection: Connection<S>) -> Self {
+impl<C> Worker<C> {
+    pub fn new(connector: Connector<C>) -> Self {
         let ranges = Arc::new(Mutex::new(HashMap::new()));
         Self {
             next_range_id: 0_i64,
             ranges,
-            connection,
+            connector,
         }
     }
 }
 
-impl<S> Worker<S>
+impl<C> Worker<C>
 where
-    S: TonicStreaming,
+    C: Client + Clone + 'static,
+    <C as Client>::Stream: TonicStreaming,
 {
-    pub async fn run<C>(
+    pub async fn run(
         mut self,
-        mut connector: Connector<C>,
-        mut rx: Receiver<ActiveRead>,
-    ) -> LoopResult
-    where
-        C: Client<Stream = S> + Clone + 'static,
-    {
+        connection: Connection<C::Stream>,
+        mut requests: Receiver<ActiveRead>,
+    ) -> LoopResult<()> {
+        let (mut rx, mut tx) = (connection.rx, connection.tx);
         loop {
             tokio::select! {
-                m = self.next_message(&mut connector) => {
-                    let Some(message) = m else {
-                        break;
+                m = rx.next_message() => {
+                    match self.handle_response(m).await {
+                        None => break,
+                        Some(Err(e)) => return Err(e),
+                        Some(Ok(None)) => {},
+                        Some(Ok(Some(connection))) => {
+                            (rx, tx) = (connection.rx, connection.tx);
+                        }
                     };
-                    if let Err(e) = self.handle_response(message).await {
-                        // An error in the response. These are not recoverable.
-                        let error = Arc::new(e);
-                        self.close_readers(error.clone()).await;
-                        return Err(error);
-                    }
                 },
-                r = rx.recv() => {
+                r = requests.recv() => {
                     let Some(range) = r else {
                         return Ok(());
                     };
-                    self.insert_range(range).await;
+                    self.insert_range(tx.clone(), range).await;
                 },
             }
         }
         Ok(())
     }
 
-    async fn next_message<C>(
+    async fn handle_response(
         &mut self,
-        connector: &mut Connector<C>,
-    ) -> Option<BidiReadObjectResponse>
-    where
-        C: Client<Stream = S> + Clone + 'static,
-    {
-        let message = self.connection.rx.next_message().await;
-        let status = match message {
-            Ok(m) => return m,
-            Err(status) => status,
+        message: tonic::Result<Option<BidiReadObjectResponse>>,
+    ) -> Option<LoopResult<Option<Connection<C::Stream>>>> {
+        let response = match message.transpose()? {
+            Ok(r) => r,
+            Err(status) => return self.reconnect(status).await,
         };
+
+        if let Err(e) = self.handle_ranges(response.object_data_ranges).await {
+            // An error in the response. These are not recoverable.
+            let error = Arc::new(e);
+            self.close_readers(error.clone()).await;
+            return Some(Err(error));
+        }
+        Some(Ok(None))
+    }
+
+    async fn handle_ranges(&self, data: Vec<ObjectRangeData>) -> crate::Result<()> {
+        let ranges = self.ranges.clone();
+        let pending = data
+            .into_iter()
+            .map(|r| Self::handle_range_data(ranges.clone(), r))
+            .collect::<Vec<_>>();
+        let _ = futures::future::join_all(pending)
+            .await
+            .into_iter()
+            .collect::<ReadResult<Vec<_>>>()
+            .map_err(crate::Error::io)?; // TODO: think about the error type
+        Ok(())
+    }
+
+    async fn reconnect(
+        &mut self,
+        status: tonic::Status,
+    ) -> Option<LoopResult<Option<Connection<C::Stream>>>> {
         let ranges: Vec<_> = self
             .ranges
             .lock()
@@ -98,26 +120,22 @@ where
             .iter()
             .map(|(id, r)| r.as_proto(*id))
             .collect();
-        match connector.reconnect(status, ranges).await {
+        let (response, connection) = match self.connector.reconnect(status, ranges).await {
             Err(e) => {
-                self.close_readers(Arc::new(e)).await;
-                None
+                let error = Arc::new(e);
+                self.close_readers(error.clone()).await;
+                return Some(Err(error));
             }
-            Ok((m, connection)) => {
-                self.connection = connection;
-                Some(m)
-            }
-        }
-    }
-
-    async fn handle_message(&mut self, message: BidiReadObjectResponse) -> LoopResult {
-        if let Err(e) = self.handle_response(message).await {
+            Ok((m, connection)) => (m, connection),
+        };
+        if let Err(e) = self.handle_ranges(response.object_data_ranges).await {
             // An error in the response. These are not recoverable.
+            // TODO: refactor to handle_ranges().
             let error = Arc::new(e);
             self.close_readers(error.clone()).await;
-            return Err(error);
+            return Some(Err(error));
         }
-        Ok(())
+        Some(Ok(Some(connection)))
     }
 
     async fn close_readers(&mut self, error: Arc<crate::Error>) {
@@ -129,7 +147,7 @@ where
         let _ = futures::future::join_all(closing).await;
     }
 
-    async fn insert_range(&mut self, range: ActiveRead) {
+    async fn insert_range(&mut self, tx: Sender<BidiReadObjectRequest>, range: ActiveRead) {
         let id = self.next_range_id;
         self.next_range_id += 1;
 
@@ -140,24 +158,9 @@ where
             ..BidiReadObjectRequest::default()
         };
         // Any errors here are recovered by the main background loop.
-        if let Err(e) = self.connection.tx.send(request).await {
+        if let Err(e) = tx.send(request).await {
             tracing::error!("error sending read range request: {e:?}");
         }
-    }
-
-    async fn handle_response(&mut self, message: BidiReadObjectResponse) -> crate::Result<()> {
-        let ranges = self.ranges.clone();
-        let pending = message
-            .object_data_ranges
-            .into_iter()
-            .map(|r| Self::handle_range_data(ranges.clone(), r))
-            .collect::<Vec<_>>();
-        let _ = futures::future::join_all(pending)
-            .await
-            .into_iter()
-            .collect::<ReadResult<Vec<_>>>()
-            .map_err(crate::Error::io)?; // TODO: think about the error type
-        Ok(())
     }
 
     async fn handle_range_data(
@@ -202,7 +205,6 @@ mod tests {
         let (response_tx, response_rx) = mock_stream();
         let (_tx, rx) = tokio::sync::mpsc::channel(1);
         let connection = Connection::new(request_tx, response_rx);
-        let worker = Worker::new(connection);
 
         // Closing the stream without an error should not attempt a reconnect.
         drop(response_tx);
@@ -210,7 +212,8 @@ mod tests {
         mock.expect_start().never();
 
         let connector = mock_connector(mock);
-        let result = worker.run(connector, rx).await;
+        let worker = Worker::new(connector);
+        let result = worker.run(connection, rx).await;
         assert!(result.is_ok(), "{result:?}");
         Ok(())
     }
@@ -221,7 +224,6 @@ mod tests {
         let (response_tx, response_rx) = mock_stream();
         let (_tx, rx) = tokio::sync::mpsc::channel(1);
         let connection = Connection::new(request_tx, response_rx);
-        let worker = Worker::new(connection);
 
         // Simulate a response for an unexpected read id.
         let response = BidiReadObjectResponse {
@@ -236,7 +238,8 @@ mod tests {
         mock.expect_start().never();
 
         let connector = mock_connector(mock);
-        let err = worker.run(connector, rx).await.unwrap_err();
+        let worker = Worker::new(connector);
+        let err = worker.run(connection, rx).await.unwrap_err();
         assert!(err.is_transport(), "{err:?}");
         let source = err.source().and_then(|e| e.downcast_ref::<ReadError>());
         assert!(

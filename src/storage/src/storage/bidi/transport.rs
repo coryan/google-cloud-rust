@@ -47,8 +47,8 @@ impl ObjectDescriptorTransport {
             .map_err(Error::deser)?
             .ok_or_else(|| Error::deser("bidi_read_object is missing the object metadata value"))?;
         let object = Arc::new(object);
-        let worker = super::worker::Worker::new(connection);
-        let _handle = tokio::spawn(worker.run(connector, rx));
+        let worker = super::worker::Worker::new(connector);
+        let _handle = tokio::spawn(worker.run(connection, rx));
         Ok(Self { object, tx })
     }
 }
