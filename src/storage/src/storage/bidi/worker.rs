@@ -381,7 +381,6 @@ mod tests {
                     content: content.clone(),
                     ..ChecksummedData::default()
                 }),
-                ..ObjectRangeData::default()
             }],
             ..BidiReadObjectResponse::default()
         };
