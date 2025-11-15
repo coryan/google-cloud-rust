@@ -200,10 +200,11 @@ where
 #[cfg(test)]
 mod tests {
     use super::super::mocks::{MockStream, MockStreamSender, MockTestClient, SharedMockClient};
-    use super::super::tests::{proto_range_id, test_options};
+    use super::super::tests::{proto_range_id, redirect_status, test_options};
     use super::*;
     use crate::google::storage::v2::{BidiReadObjectSpec, ChecksummedData};
     use crate::model_ext::ReadRange;
+    use crate::storage::bidi::tests::permanent_error;
     use std::error::Error as _;
     use test_case::test_case;
 
@@ -257,6 +258,28 @@ mod tests {
             matches!(source, Some(ReadError::UnknownRange(r)) if *r == -123),
             "{err:?}"
         );
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn run_reconnect() -> anyhow::Result<()> {
+        let (request_tx, _request_rx) = tokio::sync::mpsc::channel(1);
+        let (response_tx, response_rx) = mock_stream();
+        let (_tx, rx) = tokio::sync::mpsc::channel(1);
+        let connection = Connection::new(request_tx, response_rx);
+
+        // Simulate a redirect response.
+        response_tx
+            .send(Err(redirect_status("redirect-01")))
+            .await?;
+        let mut mock = MockTestClient::new();
+        mock.expect_start()
+            .return_once(|_, _, _, _, _, _| Err(permanent_error()));
+
+        let connector = mock_connector(mock);
+        let worker = Worker::new(connector);
+        let err = worker.run(connection, rx).await.unwrap_err();
+        assert_eq!(err.status(), permanent_error().status());
         Ok(())
     }
 
