@@ -628,7 +628,7 @@ mod tests {
                 read_range: Some(ProtoRange {
                     read_offset: 100,
                     read_length: LEN,
-                    read_id: -123456, // The library never assings negative IDs
+                    read_id: -123456, // The library never assigns negative IDs
                 }),
                 range_end: true,
             }],
