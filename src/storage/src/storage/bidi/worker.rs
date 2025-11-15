@@ -552,14 +552,12 @@ mod tests {
             .send(Err(redirect_status("redirect-01")))
             .await?;
 
-        // Because the reconnect fails, the reader should get an error:
+        // The reader gets some data
         let got = reader.recv().await;
         assert!(
             matches!(got, Some(Ok(ref b)) if b.len() == LEN as usize),
             "{got:?}"
         );
-        let got = reader.recv().await;
-        assert!(got.is_none(), "{got:?}");
 
         // At this point the mock has executed and we can fetch the data it
         // captured:
@@ -599,6 +597,124 @@ mod tests {
         // shutdown.
         drop(tx); // Close the requests
         worker.await??;
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn run_reconnect_with_error_read() -> anyhow::Result<()> {
+        const LEN: i64 = 42;
+        let (request_tx, mut request_rx) = tokio::sync::mpsc::channel(4);
+        let (response_tx, response_rx) = mock_stream();
+        let (tx, rx) = tokio::sync::mpsc::channel(4);
+        let connection = Connection::new(request_tx, response_rx);
+
+        // Save the receivers sent to the mock connector.
+        let receivers = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let save = receivers.clone();
+
+        // Prepare for a redirect response
+        let (reconnect_tx, reconnect_rx) =
+            tokio::sync::mpsc::channel::<tonic::Result<BidiReadObjectResponse>>(5);
+        let initial = BidiReadObjectResponse {
+            metadata: Some(Object {
+                generation: 123456,
+                ..Object::default()
+            }),
+            object_data_ranges: vec![ObjectRangeData {
+                checksummed_data: Some(ChecksummedData {
+                    content: bytes::Bytes::from_owner(String::from_iter((0..LEN).map(|_| 'x'))),
+                    ..ChecksummedData::default()
+                }),
+                read_range: Some(ProtoRange {
+                    read_offset: 100,
+                    read_length: LEN,
+                    read_id: -123456, // The library never assings negative IDs
+                }),
+                range_end: true,
+            }],
+            ..BidiReadObjectResponse::default()
+        };
+        reconnect_tx.send(Ok(initial)).await?;
+        let reconnect_stream = tonic::Response::from(reconnect_rx);
+
+        let mut mock = MockTestClient::new();
+        mock.expect_start().return_once(move |_, _, rx, _, _, _| {
+            save.lock().expect("never poisoned").push(rx);
+            Ok(Ok(reconnect_stream))
+        });
+        // Launch the worker.
+        let connector = mock_connector(mock);
+        let worker = Worker::new(connector);
+        let worker = tokio::spawn(async move { worker.run(connection, rx).await });
+
+        // Populate a reader.
+        let mut reader = mock_reader(&tx, ReadRange::offset(100)).await;
+        let request = request_rx
+            .recv()
+            .await
+            .expect("request queue is not closed");
+        assert!(request.read_object_spec.is_none(), "{request:?}");
+        let read_id = request
+            .read_ranges
+            .first()
+            .expect("at least one range")
+            .read_id;
+
+        // Simulate a redirect.
+        response_tx
+            .send(Err(redirect_status("redirect-01")))
+            .await?;
+
+        // Because the reconnect fails, the reader should get an error:
+        let got = reader.recv().await;
+        assert!(
+            matches!(got, Some(Err(ReadError::UnrecoverableBidiReadInterrupt(_)))),
+            "{got:?}"
+        );
+
+        // At this point the mock has executed and we can fetch the data it
+        // captured:
+        let mut reconnect_rx = {
+            let mut guard = receivers.lock().expect("never poisoned");
+            let rx = guard.pop().expect("at least one receiver");
+            assert!(guard.is_empty(), "{receivers:?}");
+            rx
+        };
+        // Verify the reconnect request has the right spec and ranges.
+        let first = reconnect_rx
+            .recv()
+            .await
+            .expect("non-empty request in reconnect");
+        let want = BidiReadObjectSpec {
+            // From the mock creation.
+            bucket: "projects/_/buckets/test-bucket".into(),
+            object: "test-object".into(),
+            // From the redirect_error() helper
+            read_handle: Some(BidiReadHandle {
+                handle: bytes::Bytes::from_static(b"test-handle-redirect"),
+            }),
+            routing_token: Some("redirect-01".into()),
+            ..BidiReadObjectSpec::default()
+        };
+        assert_eq!(first.read_object_spec, Some(want), "{first:?}");
+        assert_eq!(
+            first
+                .read_ranges
+                .first()
+                .map(|r| (r.read_id, r.read_offset)),
+            Some((read_id, 100)),
+            "{first:?}"
+        );
+
+        // Wait for the worker to finish. Expect an error result.
+        drop(tx); // Close the requests
+        let err = worker.await?.unwrap_err();
+        assert!(err.is_transport(), "{err:?}");
+        let source = err.source().and_then(|e| e.downcast_ref::<ReadError>());
+        assert!(
+            matches!(source, Some(ReadError::UnknownRange(r)) if *r == -123456),
+            "{err:?}"
+        );
         Ok(())
     }
 
