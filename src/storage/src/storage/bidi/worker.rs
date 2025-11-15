@@ -202,7 +202,7 @@ mod tests {
     use super::super::mocks::{MockStream, MockStreamSender, MockTestClient, SharedMockClient};
     use super::super::tests::{proto_range_id, redirect_status, test_options};
     use super::*;
-    use crate::google::storage::v2::{BidiReadObjectSpec, ChecksummedData};
+    use crate::google::storage::v2::{BidiReadHandle, BidiReadObjectSpec, ChecksummedData};
     use crate::model_ext::ReadRange;
     use crate::storage::bidi::tests::permanent_error;
     use std::error::Error as _;
@@ -394,6 +394,95 @@ mod tests {
 
         drop(tx);
         join.await??;
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn run_reconnect_with_pending_reads() -> anyhow::Result<()> {
+        let (request_tx, mut request_rx) = tokio::sync::mpsc::channel(4);
+        let (response_tx, response_rx) = mock_stream();
+        let (tx, rx) = tokio::sync::mpsc::channel(4);
+        let connection = Connection::new(request_tx, response_rx);
+
+        // Save the receivers sent to the mock connector.
+        let receivers = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let save = receivers.clone();
+
+        // Prepare for a redirect response
+        let mut mock = MockTestClient::new();
+        mock.expect_start().return_once(move |_, _, rx, _, _, _| {
+            save.lock().expect("never poisoned").push(rx);
+            Err(permanent_error())
+        });
+        // Launch the worker.
+        let connector = mock_connector(mock);
+        let worker = Worker::new(connector);
+        let worker = tokio::spawn(async move { worker.run(connection, rx).await });
+
+        // Populate a reader.
+        let mut reader = mock_reader(&tx, ReadRange::tail(100)).await;
+        let request = request_rx
+            .recv()
+            .await
+            .expect("request queue is not closed");
+        assert!(request.read_object_spec.is_none(), "{request:?}");
+        let read_id = request
+            .read_ranges
+            .first()
+            .expect("at least one range")
+            .read_id;
+
+        // Simulate a redirect.
+        response_tx
+            .send(Err(redirect_status("redirect-01")))
+            .await?;
+
+        // Because the reconnect fails, the reader should get an error:
+        let got = reader.recv().await;
+        assert!(
+            matches!(got, Some(Err(ReadError::UnrecoverableBidiReadInterrupt(ref e))) if e.status() == permanent_error().status()),
+            "{got:?}"
+        );
+        let got = reader.recv().await;
+        assert!(got.is_none(), "{got:?}");
+
+        // At this point the mock has executed and we can fetch the data it
+        // captured:
+        let mut reconnect_rx = {
+            let mut guard = receivers.lock().expect("never poisoned");
+            let rx = guard.pop().expect("at least one receiver");
+            assert!(guard.is_empty(), "{receivers:?}");
+            rx
+        };
+        // Verify the reconnect request has the right spec and ranges.
+        let first = reconnect_rx
+            .recv()
+            .await
+            .expect("non-empty request in reconnect");
+        let want = BidiReadObjectSpec {
+            // From the mock creation.
+            bucket: "projects/_/buckets/test-bucket".into(),
+            object: "test-object".into(),
+            // From the redirect_error() helper
+            read_handle: Some(BidiReadHandle {
+                handle: bytes::Bytes::from_static(b"test-handle-redirect"),
+            }),
+            routing_token: Some("redirect-01".into()),
+            ..BidiReadObjectSpec::default()
+        };
+        assert_eq!(first.read_object_spec, Some(want), "{first:?}");
+        assert_eq!(
+            first
+                .read_ranges
+                .first()
+                .map(|r| (r.read_id, r.read_offset)),
+            Some((read_id, -100)),
+            "{first:?}"
+        );
+
+        // Wait for the worker to finish.
+        let err = worker.await?.unwrap_err();
+        assert_eq!(err.status(), permanent_error().status());
         Ok(())
     }
 
