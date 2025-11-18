@@ -53,6 +53,7 @@ where
         connection: Connection<C::Stream>,
         mut requests: Receiver<ActiveRead>,
     ) -> LoopResult<()> {
+        let mut ranges = Vec::new();
         let (mut rx, mut tx) = (connection.rx, connection.tx);
         // Note how this loop only exits when the `requests` queue is
         // closed. A successfully closed stream and unrecoverable errors
@@ -76,11 +77,11 @@ where
                         }
                     };
                 },
-                r = requests.recv() => {
-                    let Some(range) = r else {
+                r = requests.recv_many(&mut ranges, 16) => {
+                    if r == 0 {
                         break;
                     };
-                    self.insert_range(tx.clone(), range).await;
+                    self.insert_ranges(tx.clone(), std::mem::take(&mut ranges)).await;
                 },
             }
         }
@@ -163,14 +164,18 @@ where
         let _ = closing.count().await;
     }
 
-    async fn insert_range(&mut self, tx: Sender<BidiReadObjectRequest>, reader: ActiveRead) {
-        let id = self.next_range_id;
-        self.next_range_id += 1;
+    async fn insert_ranges(&mut self, tx: Sender<BidiReadObjectRequest>, readers: Vec<ActiveRead>) {
+        let mut ranges = Vec::new();
+        for r in readers {
+            let id = self.next_range_id;
+            self.next_range_id += 1;
 
-        let request = reader.as_proto(id);
-        self.ranges.lock().await.insert(id, reader);
+            let request = r.as_proto(id);
+            self.ranges.lock().await.insert(id, r);
+            ranges.push(request);
+        }
         let request = BidiReadObjectRequest {
-            read_ranges: vec![request],
+            read_ranges: ranges,
             ..BidiReadObjectRequest::default()
         };
         // If this fails the main loop will reconnect the stream and include the
