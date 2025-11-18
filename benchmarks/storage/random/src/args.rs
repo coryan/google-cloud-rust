@@ -1,0 +1,102 @@
+// Copyright 2025 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use anyhow::bail;
+use clap::Parser;
+use humantime::parse_duration;
+use std::time::Duration;
+
+/// Configuration options for the benchmark.
+#[derive(Clone, Debug, Parser)]
+#[command(version, about, long_about = super::DESCRIPTION)]
+pub struct Args {
+    /// The name of the bucket used by the benchmark.
+    ///
+    /// You should use a regional bucket in the same region as the VM running
+    /// the benchmark.
+    #[arg(long)]
+    bucket_name: String,
+
+    /// The number of concurrent tasks running the benchmark.
+    #[arg(long, default_value_t = 1)]
+    task_count: usize,
+
+    /// The number of iterations for each task.
+    #[arg(long, default_value_t = 1)]
+    iterations: u64,
+
+    /// The maximum time for the retry loop.
+    #[arg(long, value_parser = parse_duration)]
+    retry_timeout: Option<Duration>,
+
+    /// The maximum time for each attempt.
+    #[arg(long, value_parser = parse_duration, default_value = "30s")]
+    attempt_timeout: Duration,
+
+    /// The rampup period between new tasks.
+    #[arg(long, value_parser = parse_duration, default_value = "500ms")]
+    rampup_period: Duration,
+
+    /// The minimum number of ranges per object.
+    ///
+    /// Before starting, the benchmark creates a number of objects to read from.
+    /// Each object is at least of size `min_range_count * max_range_size`.
+    #[arg(long, default_value_t = 16)]
+    min_range_count: u64,
+
+    /// The minimum size of each ranged read.
+    #[arg(long, default_value_t = 8192, value_parser = parse_size_arg)]
+    min_range_size: u64,
+
+    /// The maximum size of each ranged read..
+    #[arg(long, default_value_t = 8192)]
+    max_range_size: u64,
+
+    /// The minimum number of concurrent reads in each iteration.˚˚
+    #[arg(long, default_value_t = 16)]
+    min_concurrent_reads: u64,
+
+    /// The maximum number of concurrent reads in each iteration.
+    #[arg(long, default_value_t = 16)]
+    max_concurrent_reads: u64,
+}
+
+impl Args {
+    /// Validates the arguments after parsing.
+    pub fn validate(&self) -> anyhow::Result<()> {
+        if self.min_range_count == 0 {
+            bail!("invalid min-range-count, must be greater than zero")
+        }
+        if self.max_range_size < self.min_range_size {
+            bail!(
+                "invalid range for concurrent reads: [{}, {}]",
+                self.min_range_size,
+                self.max_range_size,
+            );
+        }
+        if self.max_concurrent_reads < self.min_concurrent_reads {
+            bail!(
+                "invalid range for concurrent reads: [{}, {}]",
+                self.min_concurrent_reads,
+                self.max_concurrent_reads
+            );
+        }
+        Ok(())
+    }
+}
+
+fn parse_size_arg(arg: &str) -> anyhow::Result<u64> {
+    let value = parse_size::parse_size(arg)?;
+    Ok(value)
+}

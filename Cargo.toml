@@ -44,7 +44,7 @@ default-members = [
   "src/generated/cloud/workflows/v1",
   "src/generated/openapi-validation",
 ]
-members = [
+members = ["benchmarks/storage/random",
   "guide/samples",
   "src/auth",
   "src/auth/integration-tests",
