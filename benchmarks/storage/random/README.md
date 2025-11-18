@@ -54,7 +54,7 @@ statistical packages.
 If you have not done so already, make a dataset:
 
 ```shell
-bq mk dataset ${GOOGLE_CLOUD_PROJECT}:random
+bq mk ${GOOGLE_CLOUD_PROJECT}:random
 ```
 
 Then upload the results of the experiment:
@@ -62,7 +62,7 @@ Then upload the results of the experiment:
 ```shell
 bq load --source_format CSV --skip_leading_rows 1 \
     ${GOOGLE_CLOUD_PROJECT}:random.small001 bm-${TS}.txt \
-    Task:int64,Iteration:int64,IterationStart:int64,Operation,Size:int64,TransferSize:int64,ElapsedMicroseconds:int64,Object,Result,Details
+    Task:int64,Iteration:int64,IterationStart:int64,RangeId:int64,RangeSize:int64,Protocol,TtfbMicroseconds:int64,TtlbMicroseconds:int64,Object,Details
 ```
 
 [compute-optimized]: https://cloud.google.com/compute/docs/compute-optimized-machines
