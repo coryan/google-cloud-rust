@@ -43,4 +43,47 @@ impl ObjectDescriptor {
 }
 
 #[cfg(test)]
-mod tests {}
+mod tests {
+    use super::*;
+    use crate::model_ext::ObjectHighlights;
+    use crate::read_object::dynamic::ReadObjectResponse;
+    use mockall::mock;
+
+    #[tokio::test]
+    async fn can_be_mocked() -> anyhow::Result<()> {
+        let object = Object::new().set_name("test-object").set_generation(123456);
+        let mut mock = MockDescriptor::new();
+        mock.expect_object().times(1).return_const(object.clone());
+        mock.expect_read_range()
+            .times(1)
+            .withf(|range| range.0 == ReadRange::segment(100, 200).0)
+            .returning(|_| Box::new(MockResponse::new()));
+
+        let descriptor = ObjectDescriptor::new(mock);
+        assert_eq!(descriptor.object(), &object);
+
+        let _reader = descriptor.read_range(ReadRange::segment(100, 200)).await;
+        Ok(())
+    }
+
+    mock! {
+        #[derive(Debug)]
+        Descriptor {}
+
+        impl super::super::stub::ObjectDescriptor for Descriptor {
+            fn object(&self) -> &Object;
+            async fn read_range(&self, range: ReadRange) -> Box<dyn ReadObjectResponse + Send>;
+        }
+    }
+
+    mock! {
+        #[derive(Debug)]
+        Response {}
+
+        #[async_trait::async_trait]
+        impl crate::read_object::dynamic::ReadObjectResponse for Response {
+            fn object(&self) -> ObjectHighlights;
+            async fn next(&mut self) -> Option<crate::Result<bytes::Bytes>>;
+        }
+    }
+}
