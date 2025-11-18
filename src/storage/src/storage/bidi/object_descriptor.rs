@@ -17,6 +17,7 @@ use crate::model::Object;
 use crate::model_ext::ReadRange;
 use crate::read_object::ReadObjectResponse;
 
+/// An open object ready for reading ranges.
 #[derive(Debug)]
 pub struct ObjectDescriptor {
     inner: Box<dyn ObjectDescriptorStub>,

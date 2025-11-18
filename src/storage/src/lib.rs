@@ -33,6 +33,8 @@ pub use gax::Result;
 pub use gax::error::Error;
 
 pub mod backoff_policy;
+#[cfg(google_cloud_unstable_storage_bidi)]
+pub mod object_descriptor;
 pub mod read_object;
 pub mod read_resume_policy;
 pub mod retry_policy;
@@ -45,6 +47,8 @@ mod storage;
 pub mod client {
     //! Clients to interact with Google Cloud Storage.
     pub use crate::control::client::StorageControl;
+    #[cfg(google_cloud_unstable_storage_bidi)]
+    pub use crate::storage::bidi::Bidi;
     pub use crate::storage::client::Storage;
 }
 pub mod builder {

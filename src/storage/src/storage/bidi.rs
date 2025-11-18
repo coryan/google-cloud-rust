@@ -32,6 +32,7 @@ use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse};
 use crate::request_options::RequestOptions;
 use crate::storage::client::ClientBuilder;
 use builder::OpenObject;
+pub use object_descriptor::ObjectDescriptor;
 use tokio::sync::mpsc::Receiver;
 
 #[derive(Clone, Debug)]

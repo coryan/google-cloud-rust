@@ -16,6 +16,7 @@ use super::args::Args;
 use super::sample::Protocol;
 use anyhow::Result;
 use rand::distr::Uniform;
+use rand::seq::IndexedRandom;
 
 pub struct Range {
     pub bucket_name: String,
@@ -60,6 +61,10 @@ impl ExperimentGenerator {
         let mut rng = rand::rng();
         let read_count = rng.sample(self.read_count);
         let read_length = rng.sample(self.read_length);
+        let protocol = [Protocol::Json, Protocol::Bidi]
+            .choose(&mut rng)
+            .expect("input slice is not empty")
+            .to_owned();
 
         let ranges = (0..read_count)
             .map(move |_| {
@@ -78,9 +83,6 @@ impl ExperimentGenerator {
             })
             .collect::<Vec<_>>();
 
-        Experiment {
-            ranges,
-            protocol: Protocol::Json,
-        }
+        Experiment { ranges, protocol }
     }
 }

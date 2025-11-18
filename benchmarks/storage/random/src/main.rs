@@ -15,6 +15,7 @@
 //! Benchmark random-reads using the Cloud Storage client library fo Rust.
 
 mod args;
+mod bidi;
 mod dataset;
 mod experiment;
 mod json;
@@ -92,17 +93,15 @@ async fn runner(
         tracing::info!("Task::run({})", id);
     }
 
-    let json = google_cloud_storage::client::Storage::builder()
-        .with_credentials(credentials)
-        .build()
-        .await?;
+    let json = json::Runner::new(credentials.clone()).await?;
+    let bidi = bidi::Runner::new(&args, objects.clone(), credentials.clone()).await?;
 
     let generator = experiment::ExperimentGenerator::new(&args, objects)?;
     for iteration in 0..args.iterations {
         let experiment = generator.generate();
         let samples = match experiment.protocol {
-            Protocol::Json => json::iteration(id, iteration, &json, test_start, experiment).await,
-            Protocol::Bidi => unreachable!("not yet"),
+            Protocol::Json => json.iteration(id, iteration, test_start, experiment).await,
+            Protocol::Bidi => bidi.iteration(id, iteration, test_start, experiment).await,
         };
         for s in samples {
             let _ = tx.send(s).await;
