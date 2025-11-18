@@ -16,6 +16,8 @@
 
 mod args;
 mod dataset;
+mod experiment;
+mod json;
 mod names;
 mod sample;
 
@@ -23,10 +25,11 @@ use anyhow::Result;
 use args::Args;
 use clap::Parser;
 use google_cloud_auth::credentials::{Builder as CredentialsBuilder, Credentials};
-use rand::seq::IteratorRandom;
-use sample::{Protocol, Sample};
+use sample::Sample;
 use std::time::Instant;
 use tokio::sync::mpsc;
+
+use crate::sample::Protocol;
 
 const DESCRIPTION: &str = concat!(
     "This benchmark repeatedly reads ranges from a set of Cloud Storage objects.",
@@ -64,7 +67,15 @@ async fn main() -> Result<()> {
         println!("{}", sample.to_row());
     }
 
+    for (id, t) in tasks.into_iter().enumerate() {
+        match t.await {
+            Err(e) => tracing::error!("cannot join task {id}: {e}"),
+            Ok(Err(e)) => tracing::error!("error in task {id}: {e}"),
+            Ok(Ok(_)) => {}
+        }
+    }
     tracing::info!("DONE");
+
     Ok(())
 }
 
@@ -81,19 +92,21 @@ async fn runner(
         tracing::info!("Task::run({})", id);
     }
 
-    let bidi = google_cloud_storage::client::Storage::builder()
-        .build_bidi()
-        .await?;
-    let client = google_cloud_storage::client::Storage::builder()
-        .build_bidi()
+    let json = google_cloud_storage::client::Storage::builder()
+        .with_credentials(credentials)
+        .build()
         .await?;
 
-    let mut rng = rand::rng();
+    let generator = experiment::ExperimentGenerator::new(&args, objects)?;
     for iteration in 0..args.iterations {
-        let protocol = [Protocol::Bidi, Protocol::Json]
-            .into_iter()
-            .choose(&mut rng)
-            .expect("at lest one protocol selected");
+        let experiment = generator.generate();
+        let samples = match experiment.protocol {
+            Protocol::Json => json::iteration(id, iteration, &json, test_start, experiment).await,
+            Protocol::Bidi => unreachable!("not yet"),
+        };
+        for s in samples {
+            let _ = tx.send(s).await;
+        }
     }
 
     Ok(())

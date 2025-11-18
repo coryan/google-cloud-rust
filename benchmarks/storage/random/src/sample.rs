@@ -15,17 +15,23 @@
 use std::time::Duration;
 
 #[derive(Clone, Debug)]
+pub struct Attempt {
+    pub ttfb: Duration,
+    pub ttlb: Duration,
+}
+
+#[derive(Clone, Debug)]
 pub struct Sample {
-    task: usize,
-    iteration: u64,
-    start: Duration,
-    range_id: i64,
-    range_size: usize,
-    protocol: Protocol,
-    ttfb: Duration,
-    ttlb: Duration,
-    object: String,
-    details: String,
+    pub task: usize,
+    pub iteration: u64,
+    pub start: Duration,
+    pub range_id: usize,
+    pub range_length: u64,
+    pub protocol: Protocol,
+    pub ttfb: Duration,
+    pub ttlb: Duration,
+    pub object: String,
+    pub details: String,
 }
 
 impl Sample {
@@ -42,7 +48,7 @@ impl Sample {
             self.iteration,
             self.start.as_micros(),
             self.range_id,
-            self.range_size,
+            self.range_length,
             self.protocol.name(),
             self.ttfb.as_micros(),
             self.ttlb.as_micros(),
@@ -54,6 +60,7 @@ impl Sample {
 
 #[derive(Clone, Debug)]
 pub enum Protocol {
+    #[allow(unused)]
     Bidi,
     Json,
 }
