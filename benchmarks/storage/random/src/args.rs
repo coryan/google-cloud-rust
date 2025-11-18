@@ -26,50 +26,50 @@ pub struct Args {
     /// You should use a regional bucket in the same region as the VM running
     /// the benchmark.
     #[arg(long)]
-    bucket_name: String,
+    pub bucket_name: String,
 
     /// The number of concurrent tasks running the benchmark.
     #[arg(long, default_value_t = 1)]
-    task_count: usize,
+    pub task_count: usize,
 
     /// The number of iterations for each task.
     #[arg(long, default_value_t = 1)]
-    iterations: u64,
+    pub iterations: u64,
 
     /// The maximum time for the retry loop.
     #[arg(long, value_parser = parse_duration)]
-    retry_timeout: Option<Duration>,
+    pub retry_timeout: Option<Duration>,
 
     /// The maximum time for each attempt.
     #[arg(long, value_parser = parse_duration, default_value = "30s")]
-    attempt_timeout: Duration,
+    pub attempt_timeout: Duration,
 
     /// The rampup period between new tasks.
     #[arg(long, value_parser = parse_duration, default_value = "500ms")]
-    rampup_period: Duration,
+    pub rampup_period: Duration,
 
     /// The minimum number of ranges per object.
     ///
     /// Before starting, the benchmark creates a number of objects to read from.
     /// Each object is at least of size `min_range_count * max_range_size`.
     #[arg(long, default_value_t = 16)]
-    min_range_count: u64,
+    pub min_range_count: u64,
 
     /// The minimum size of each ranged read.
     #[arg(long, default_value_t = 8192, value_parser = parse_size_arg)]
-    min_range_size: u64,
+    pub min_range_size: u64,
 
     /// The maximum size of each ranged read..
     #[arg(long, default_value_t = 8192)]
-    max_range_size: u64,
+    pub max_range_size: u64,
 
     /// The minimum number of concurrent reads in each iteration.˚˚
     #[arg(long, default_value_t = 16)]
-    min_concurrent_reads: u64,
+    pub min_concurrent_reads: u64,
 
     /// The maximum number of concurrent reads in each iteration.
     #[arg(long, default_value_t = 16)]
-    max_concurrent_reads: u64,
+    pub max_concurrent_reads: u64,
 }
 
 impl Args {
