@@ -58,9 +58,8 @@ impl Sample {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum Protocol {
-    #[allow(unused)]
     Bidi,
     Json,
 }

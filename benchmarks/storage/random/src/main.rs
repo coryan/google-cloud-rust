@@ -81,7 +81,7 @@ async fn main() -> Result<()> {
 }
 
 async fn runner(
-    id: usize,
+    task: usize,
     test_start: Instant,
     credentials: Credentials,
     tx: mpsc::Sender<Sample>,
@@ -89,8 +89,8 @@ async fn runner(
     objects: Vec<String>,
 ) -> anyhow::Result<()> {
     let _guard = enable_tracing(&args);
-    if id % 128 == 0 {
-        tracing::info!("Task::run({})", id);
+    if task % 128 == 0 {
+        tracing::info!("Task::run({})", task);
     }
 
     let json = json::Runner::new(credentials.clone()).await?;
@@ -99,10 +99,41 @@ async fn runner(
     let generator = experiment::ExperimentGenerator::new(&args, objects)?;
     for iteration in 0..args.iterations {
         let experiment = generator.generate();
-        let samples = match experiment.protocol {
-            Protocol::Json => json.iteration(id, iteration, test_start, experiment).await,
-            Protocol::Bidi => bidi.iteration(id, iteration, test_start, experiment).await,
+        let start = Instant::now();
+        let relative_start = start - test_start;
+        let protocol = experiment.protocol;
+        let attempts = match experiment.protocol {
+            Protocol::Json => json.iteration(&experiment).await,
+            Protocol::Bidi => bidi.iteration(&experiment).await,
         };
+        let elapsed = Instant::now() - start;
+
+        let samples =
+            attempts
+                .into_iter()
+                .zip(experiment.ranges)
+                .enumerate()
+                .map(|(i, (result, range))| {
+                    let (ttfb, ttlb, details) = match result {
+                        Ok(a) => (a.ttfb, a.ttlb, "OK"),
+                        Err(e) => {
+                            tracing::error!("error on range {i}: {e:?}");
+                            (elapsed, elapsed, "ERROR")
+                        }
+                    };
+                    Sample {
+                        protocol,
+                        ttfb,
+                        ttlb,
+                        details: details.to_string(),
+                        task,
+                        iteration,
+                        range_id: i,
+                        start: relative_start,
+                        range_length: range.read_length,
+                        object: range.object_name,
+                    }
+                });
         for s in samples {
             let _ = tx.send(s).await;
         }

@@ -14,7 +14,7 @@
 
 use super::args::Args;
 use super::experiment::{Experiment, Range};
-use super::sample::{Attempt, Protocol, Sample};
+use super::sample::Attempt;
 use anyhow::Result;
 use anyhow::bail;
 use google_cloud_auth::credentials::Credentials;
@@ -45,50 +45,14 @@ impl Runner {
         Ok(Self { descriptors })
     }
 
-    pub async fn iteration(
-        &self,
-        task: usize,
-        iteration: u64,
-        test_start: Instant,
-        experiment: Experiment,
-    ) -> Vec<Sample> {
-        let start = Instant::now();
-        let relative_start = start - test_start;
-
+    pub async fn iteration(&self, experiment: &Experiment) -> Vec<Result<Attempt>> {
         let running = experiment
             .ranges
             .iter()
             .map(|r| self.attempt(r))
             .collect::<Vec<_>>();
-        let elapsed = Instant::now() - start;
 
-        futures::future::join_all(running)
-            .await
-            .into_iter()
-            .zip(experiment.ranges)
-            .enumerate()
-            .map(|(i, (result, range))| {
-                let (ttfb, ttlb, details) = match result {
-                    Ok(a) => (a.ttfb, a.ttlb, "OK"),
-                    Err(e) => {
-                        tracing::error!("error on range {i}: {e:?}");
-                        (elapsed, elapsed, "ERROR")
-                    }
-                };
-                Sample {
-                    protocol: Protocol::Bidi,
-                    ttfb,
-                    ttlb,
-                    details: details.to_string(),
-                    task,
-                    iteration,
-                    range_id: i,
-                    start: relative_start,
-                    range_length: range.read_length,
-                    object: range.object_name,
-                }
-            })
-            .collect()
+        futures::future::join_all(running).await
     }
 
     async fn attempt(&self, range: &Range) -> Result<Attempt> {
