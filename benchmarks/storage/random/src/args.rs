@@ -60,7 +60,7 @@ pub struct Args {
     pub min_range_size: u64,
 
     /// The maximum size of each ranged read..
-    #[arg(long, default_value_t = 8192)]
+    #[arg(long, default_value_t = 8192, value_parser = parse_size_arg)]
     pub max_range_size: u64,
 
     /// The minimum number of concurrent reads in each iteration.˚˚
