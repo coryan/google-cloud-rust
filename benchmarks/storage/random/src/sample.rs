@@ -58,9 +58,12 @@ impl Sample {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+/// Available protocols for the benchmark.
+#[derive(clap::ValueEnum, Clone, Copy, Debug)]
 pub enum Protocol {
+    /// Use bidirectional streaming RPC.
     Bidi,
+    /// Use JSON ranged reads.
     Json,
 }
 

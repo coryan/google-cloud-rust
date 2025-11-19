@@ -22,7 +22,7 @@ mod json;
 mod names;
 mod sample;
 
-use anyhow::Result;
+use anyhow::{Result, bail};
 use args::Args;
 use clap::Parser;
 use google_cloud_auth::credentials::{Builder as CredentialsBuilder, Credentials};
@@ -45,9 +45,13 @@ async fn main() -> Result<()> {
     let args = Args::parse();
     args.validate()?;
     let _guard = enable_tracing(&args);
+    tracing::info!("Configuration: {args:?}");
 
     let credentials = CredentialsBuilder::default().build()?;
     let objects = dataset::populate(&args, credentials.clone()).await?;
+    if objects.is_empty() {
+        bail!("no objects in the dataset for bucket {}", args.bucket_name);
+    }
     let (tx, mut rx) = mpsc::channel(1024 * args.task_count);
     let test_start = Instant::now();
     let tasks = (0..args.task_count)

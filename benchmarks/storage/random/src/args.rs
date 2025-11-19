@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use super::sample::Protocol;
 use anyhow::bail;
 use clap::Parser;
 use humantime::parse_duration;
@@ -27,6 +28,13 @@ pub struct Args {
     /// the benchmark.
     #[arg(long)]
     pub bucket_name: String,
+
+    /// Use existing objects for the test.
+    ///
+    /// When true, the benchmark uses existing objects in the bucket.
+    /// It ignores objects that are too small.
+    #[arg(long, default_value_t = false)]
+    pub use_existing_dataset: bool,
 
     /// The number of concurrent tasks running the benchmark.
     #[arg(long, default_value_t = 1)]
@@ -70,6 +78,9 @@ pub struct Args {
     /// The maximum number of concurrent reads in each iteration.
     #[arg(long, default_value_t = 16)]
     pub max_concurrent_reads: u64,
+
+    /// The protocols used by the benchmark.
+    pub protocols: Vec<Protocol>,
 }
 
 impl Args {

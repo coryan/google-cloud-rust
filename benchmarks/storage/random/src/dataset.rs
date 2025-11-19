@@ -22,15 +22,40 @@ use google_cloud_storage::model::{Object, compose_object_request::SourceObject};
 use rand::{Rng, distr::Uniform};
 
 pub async fn populate(args: &Args, credentials: Credentials) -> Result<Vec<String>> {
-    let client = Storage::builder()
-        .with_credentials(credentials.clone())
-        .build()
-        .await?;
     let control = StorageControl::builder()
         .with_credentials(credentials.clone())
         .build()
         .await?;
 
+    if args.use_existing_dataset {
+        existing(args, control).await
+    } else {
+        let client = Storage::builder()
+            .with_credentials(credentials.clone())
+            .build()
+            .await?;
+        create(args, client, control).await
+    }
+}
+
+async fn existing(args: &Args, control: StorageControl) -> Result<Vec<String>> {
+    use google_cloud_gax::paginator::ItemPaginator;
+    let target_size = args.min_range_count * args.max_range_size;
+    let mut objects = Vec::new();
+    let mut list = control
+        .list_objects()
+        .set_parent(format!("projects/_/buckets/{}", args.bucket_name))
+        .by_item();
+    while let Some(item) = list.next().await.transpose()? {
+        if (item.size as u64) < target_size {
+            continue;
+        }
+        objects.push(item.name);
+    }
+    Ok(objects)
+}
+
+async fn create(args: &Args, client: Storage, control: StorageControl) -> Result<Vec<String>> {
     const BLOCK_SIZE: usize = 1024 * 1024;
     tracing::info!("generating random data");
     let data = bytes::Bytes::from_owner(

@@ -34,9 +34,9 @@ pub struct ExperimentGenerator {
     read_count: Uniform<u64>,
     read_offset: Uniform<u64>,
     read_length: Uniform<u64>,
-    object_picker: Uniform<usize>,
     objects: Vec<String>,
     bucket_name: String,
+    protocols: Vec<Protocol>,
 }
 
 impl ExperimentGenerator {
@@ -46,24 +46,25 @@ impl ExperimentGenerator {
         let max_offset = args.min_range_count * args.max_range_size;
         let read_offset = Uniform::new_inclusive(0, max_offset)?;
         let read_length = Uniform::new_inclusive(args.min_range_size, args.max_range_size)?;
-        let object_picker = Uniform::new(0, objects.len())?;
         Ok(Self {
             read_count,
             read_offset,
             read_length,
-            object_picker,
             objects,
             bucket_name: format!("projects/_/buckets/{}", args.bucket_name),
+            protocols: args.protocols.clone(),
         })
     }
+
     pub fn generate(&self) -> Experiment {
         use rand::Rng;
         let mut rng = rand::rng();
         let read_count = rng.sample(self.read_count);
         let read_length = rng.sample(self.read_length);
-        let protocol = [Protocol::Json, Protocol::Bidi]
+        let protocol = self
+            .protocols
             .choose(&mut rng)
-            .expect("input slice is not empty")
+            .expect("protocols selection is not empty")
             .to_owned();
 
         let ranges = (0..read_count)
@@ -71,8 +72,8 @@ impl ExperimentGenerator {
                 let read_offset = rng.sample(self.read_offset);
                 let object_name = self
                     .objects
-                    .get(rng.sample(self.object_picker))
-                    .expect("should generate valid object index")
+                    .choose(&mut rng)
+                    .expect("object list is not empty")
                     .clone();
                 Range {
                     read_offset,
