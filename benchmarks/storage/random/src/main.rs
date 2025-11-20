@@ -103,14 +103,16 @@ async fn runner(
     let generator = experiment::ExperimentGenerator::new(&args, objects)?;
     for iteration in 0..args.iterations {
         let experiment = generator.generate();
-        let start = Instant::now();
-        let relative_start = start - test_start;
+        let range_count = experiment.ranges.len();
         let protocol = experiment.protocol;
+
+        let start = Instant::now();
         let attempts = match experiment.protocol {
             Protocol::Json => json.iteration(&experiment).await,
             Protocol::Bidi => bidi.iteration(&experiment).await,
         };
         let elapsed = Instant::now() - start;
+        let relative_start = start - test_start;
 
         let samples =
             attempts
@@ -133,6 +135,7 @@ async fn runner(
                         task,
                         iteration,
                         range_id: i,
+                        range_count,
                         start: relative_start,
                         range_length: range.read_length,
                         object: range.object_name,

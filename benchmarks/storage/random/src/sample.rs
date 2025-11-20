@@ -26,6 +26,7 @@ pub struct Sample {
     pub iteration: u64,
     pub start: Duration,
     pub range_id: usize,
+    pub range_count: usize,
     pub range_length: u64,
     pub protocol: Protocol,
     pub ttfb: Duration,
@@ -36,18 +37,19 @@ pub struct Sample {
 
 impl Sample {
     pub const HEADER: &str = concat!(
-        "Task,Iteration,IterationStart,RangeId",
+        "Task,Iteration,IterationStart,RangeId,RangeCount",
         ",RangeSize,Protocol,TtfbMicroseconds,TtlbMicroseconds",
         ",Object,Details"
     );
 
     pub fn to_row(&self) -> String {
         format!(
-            "{},{},{},{},{},{},{},{},{},{}",
+            "{},{},{},{},{},{},{},{},{},{},{}",
             self.task,
             self.iteration,
             self.start.as_micros(),
             self.range_id,
+            self.range_count,
             self.range_length,
             self.protocol.name(),
             self.ttfb.as_micros(),
