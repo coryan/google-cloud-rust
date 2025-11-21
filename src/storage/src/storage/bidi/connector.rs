@@ -170,7 +170,7 @@ where
                 s + &format!(",routing_token={token}")
             });
 
-        let (tx, rx) = tokio::sync::mpsc::channel::<BidiReadObjectRequest>(100);
+        let (tx, rx) = tokio::sync::mpsc::channel::<BidiReadObjectRequest>(1);
         tx.send(request.clone()).await.map_err(Error::io)?;
 
         let extensions = {

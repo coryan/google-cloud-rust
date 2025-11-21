@@ -39,7 +39,7 @@ impl ObjectDescriptorTransport {
     {
         use gaxi::prost::FromProto;
 
-        let (tx, rx) = tokio::sync::mpsc::channel(100);
+        let (tx, rx) = tokio::sync::mpsc::channel(1);
         let (initial, connection) = connector.connect(Vec::new()).await?;
         let object = FromProto::cnv(initial.metadata.ok_or_else(|| {
             Error::deser("initial response in bidi read must contain object metadata")
@@ -58,7 +58,7 @@ impl ObjectDescriptor for ObjectDescriptorTransport {
     }
 
     async fn read_range(&self, range: ReadRange) -> Box<dyn ReadObjectResponse + Send> {
-        let (tx, rx) = tokio::sync::mpsc::channel(100);
+        let (tx, rx) = tokio::sync::mpsc::channel(1);
         let range = ActiveRead::new(tx, range.0);
         let _error = self.tx.send(range).await;
         Box::new(RangeReader::new(rx, self.object.clone(), self.tx.clone()))
