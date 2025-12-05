@@ -15,8 +15,7 @@
 use super::args::Args;
 use super::experiment::{Experiment, Range};
 use super::sample::Attempt;
-use anyhow::Result;
-use anyhow::bail;
+use anyhow::{Result, bail};
 use google_cloud_auth::credentials::Credentials;
 use google_cloud_storage::model_ext::ReadRange;
 use google_cloud_storage::object_descriptor::ObjectDescriptor;
@@ -71,6 +70,9 @@ impl Runner {
         while let Some(b) = reader.next().await.transpose()? {
             let _ = ttfb.get_or_insert(start.elapsed());
             size += b.len();
+        }
+        if size != range.read_length as usize {
+            bail!("mismatched requested vs. received size");
         }
         let ttlb = start.elapsed();
         let ttfb = ttfb.unwrap_or(ttlb);

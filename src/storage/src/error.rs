@@ -100,6 +100,8 @@ pub enum KeyAes256Error {
     InvalidLength,
 }
 
+type BoxedSource = Box<dyn std::error::Error + Send + Sync + 'static>;
+
 /// Represents an error that can occur when reading response data.
 #[derive(thiserror::Error, Debug)]
 #[non_exhaustive]
@@ -126,10 +128,7 @@ pub enum ReadError {
 
     /// The received header format is invalid.
     #[error("the format for header '{0}' is incorrect")]
-    BadHeaderFormat(
-        &'static str,
-        #[source] Box<dyn std::error::Error + Send + Sync + 'static>,
-    ),
+    BadHeaderFormat(&'static str, #[source] BoxedSource),
 
     /// A bidi read was interrupted with an unrecoverable error.
     #[cfg(google_cloud_unstable_storage_bidi)]
@@ -210,6 +209,10 @@ pub enum ReadError {
     #[cfg(google_cloud_unstable_storage_bidi)]
     #[error("unknown range id in bidi response: {0}")]
     UnknownBidiRangeId(i64),
+
+    #[cfg(google_cloud_unstable_storage_bidi)]
+    #[error("failed to send read to worker")]
+    CannotScheduleRangeRead(#[source] BoxedSource),
 }
 
 /// An unrecoverable problem in the upload protocol.

@@ -59,8 +59,13 @@ impl ObjectDescriptor for ObjectDescriptorTransport {
 
     async fn read_range(&self, range: ReadRange) -> ReadObjectResponse {
         let (tx, rx) = tokio::sync::mpsc::channel(100);
-        let range = ActiveRead::new(tx, range.0);
-        let _error = self.tx.send(range).await;
+        let range = ActiveRead::new(tx.clone(), range.0);
+        if let Err(e) = self.tx.send(range).await {
+            tracing::error!("cannot schedule ranged read on object: {e:?}");
+            let _ = tx
+                .send(Err(ReadError::CannotScheduleRangeRead(e.into())))
+                .await;
+        }
         ReadObjectResponse::new(Box::new(RangeReader::new(
             rx,
             self.object.clone(),
