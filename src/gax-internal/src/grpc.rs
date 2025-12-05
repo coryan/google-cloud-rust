@@ -298,29 +298,12 @@ impl Client {
             &'static crate::options::InstrumentationClientInfo,
         >,
     ) -> gax::client_builder::Result<InnerClient> {
-        use tonic::transport::{ClientTlsConfig, Endpoint};
-
-        let origin =
-            crate::host::from_endpoint(endpoint.as_deref(), default_endpoint, |origin, _host| {
-                origin
-            });
-        let origin = origin?;
-        let endpoint =
-            Endpoint::from_shared(endpoint.unwrap_or_else(|| default_endpoint.to_string()))
-                .map_err(BuilderError::transport)?;
-        let endpoint = if endpoint
-            .uri()
-            .scheme()
-            .is_some_and(|s| s == &http::uri::Scheme::HTTPS)
-        {
-            endpoint
-                .tls_config(ClientTlsConfig::new().with_enabled_roots())
-                .map_err(BuilderError::transport)?
-        } else {
-            endpoint
-        };
-        let endpoint = endpoint.origin(origin);
-        let channel = endpoint.connect_lazy();
+        use tonic::transport::{Channel, channel::Change};
+        let endpoint = Self::make_endpoint(endpoint, default_endpoint).await?;
+        let (channel, tx) = Channel::balance_channel(1024);
+        for i in 0..32 {
+            let _ = tx.send(Change::Insert(i, endpoint.clone())).await;
+        }
 
         #[cfg(not(google_cloud_unstable_tracing))]
         {
@@ -349,6 +332,34 @@ impl Client {
                 Ok(InnerClient::new(Either::Right(service)))
             }
         }
+    }
+
+    async fn make_endpoint(
+        endpoint: Option<String>,
+        default_endpoint: &str,
+    ) -> gax::client_builder::Result<tonic::transport::Endpoint> {
+        use tonic::transport::{ClientTlsConfig, Endpoint};
+
+        let origin =
+            crate::host::from_endpoint(endpoint.as_deref(), default_endpoint, |origin, _host| {
+                origin
+            });
+        let origin = origin?;
+        let endpoint =
+            Endpoint::from_shared(endpoint.unwrap_or_else(|| default_endpoint.to_string()))
+                .map_err(BuilderError::transport)?;
+        let endpoint = if endpoint
+            .uri()
+            .scheme()
+            .is_some_and(|s| s == &http::uri::Scheme::HTTPS)
+        {
+            endpoint
+                .tls_config(ClientTlsConfig::new().with_enabled_roots())
+                .map_err(BuilderError::transport)?
+        } else {
+            endpoint
+        };
+        Ok(endpoint.origin(origin).concurrency_limit(90))
     }
 
     async fn make_credentials(
