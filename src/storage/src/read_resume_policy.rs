@@ -146,7 +146,16 @@ fn is_transient(error: &Error) -> bool {
         e if e.is_io() => true,
         // When using gRPC the errors may include more information.
         e if e.is_transport() => true,
-        e => e.status().is_some_and(|s| s.code == Code::Unavailable),
+        e if e.status().is_some_and(|s| s.code == Code::Unavailable) => true,
+        e if e.status().is_some_and(|s| s.code == Code::Unknown) => {
+            use std::error::Error as _;
+            tracing::error!("unknown error in read resume: {e:?}");
+            if let Some(s) = e.source().and_then(|e| e.downcast_ref::<tonic::Status>()) {
+                tracing::error!("unknown status in read resume: {s:?}");
+            }
+            true
+        }
+        _ => false,
     }
 }
 
