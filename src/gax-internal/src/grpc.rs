@@ -301,7 +301,12 @@ impl Client {
         use tonic::transport::{Channel, channel::Change};
         let endpoint = Self::make_endpoint(endpoint, default_endpoint).await?;
         let (channel, tx) = Channel::balance_channel(1024);
-        for i in 0..32 {
+        let count = std::thread::available_parallelism()
+            .map(|s| s.get())
+            .unwrap_or(1_usize);
+        let count = 4 * count / count.checked_ilog2().map(|x| x as usize).unwrap_or(1);
+        tracing::info!("creating a channel with {count} endpoints");
+        for i in 0..count {
             let _ = tx.send(Change::Insert(i, endpoint.clone())).await;
         }
 
