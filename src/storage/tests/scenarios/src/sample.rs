@@ -68,6 +68,7 @@ pub enum Scenario {
     OpenRead,
     OpenReadDiscard,
     OpenReadAfterDrop,
+    OpenConcurrentReads,
 }
 
 impl Scenario {
@@ -78,6 +79,7 @@ impl Scenario {
             Self::OpenRead => "open_read",
             Self::OpenReadDiscard => "open_read_discard",
             Self::OpenReadAfterDrop => "open_read_after_drop",
+            Self::OpenConcurrentReads => "open_concurrent_reads",
         }
     }
 
@@ -92,6 +94,8 @@ impl Scenario {
             Self::OpenReadDiscard => run::open_read_discard(client, objects).await,
             #[cfg(google_cloud_unstable_storage_bidi)]
             Self::OpenReadAfterDrop => run::open_read_after_drop(client, objects).await,
+            #[cfg(google_cloud_unstable_storage_bidi)]
+            Self::OpenConcurrentReads => run::open_concurrent_reads(client, objects).await,
             #[cfg(not(google_cloud_unstable_storage_bidi))]
             _ => Attempt {
                 result: Err(anyhow::format_err!(
