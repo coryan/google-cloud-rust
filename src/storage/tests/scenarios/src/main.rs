@@ -135,6 +135,7 @@ async fn runner(
     objects: Vec<Object>,
 ) -> anyhow::Result<()> {
     let _guard = enable_tracing(&args);
+    tokio::time::sleep(args.rampup_period * task as u32).await;
     if task % 128 == 0 {
         tracing::info!("Task::run({})", task);
     }
