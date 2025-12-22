@@ -146,6 +146,7 @@ fn is_transient(error: &Error) -> bool {
         e if e.is_io() => true,
         // When using gRPC the errors may include more information.
         e if e.is_transport() => true,
+        e if e.is_timeout() => true,
         e => e.status().is_some_and(|s| is_transient_code(s.code)),
     }
 }
