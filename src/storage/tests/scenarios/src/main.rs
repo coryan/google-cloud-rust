@@ -57,10 +57,15 @@ async fn main() -> anyhow::Result<()> {
     if args.scenarios.is_empty() {
         args.scenarios = vec![
             Scenario::Json,
+            #[cfg(google_cloud_unstable_storage_bidi)]
             Scenario::Open,
+            #[cfg(google_cloud_unstable_storage_bidi)]
             Scenario::OpenRead,
+            #[cfg(google_cloud_unstable_storage_bidi)]
             Scenario::OpenReadAtomic,
+            #[cfg(google_cloud_unstable_storage_bidi)]
             Scenario::OpenReadDiscard,
+            #[cfg(google_cloud_unstable_storage_bidi)]
             Scenario::OpenReadAfterDrop,
         ];
     }

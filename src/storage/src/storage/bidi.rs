@@ -29,6 +29,7 @@ use crate::google::storage::v2::{BidiReadObjectRequest, BidiReadObjectResponse};
 use crate::request_options::RequestOptions;
 use tokio::sync::mpsc::Receiver;
 
+#[cfg(google_cloud_unstable_storage_bidi)]
 pub use super::open_object::OpenObject;
 
 /// A trait to mock `tonic::Streaming<T>` in the unit tests.

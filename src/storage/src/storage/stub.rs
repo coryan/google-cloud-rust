@@ -14,16 +14,17 @@
 
 use crate::Result;
 use crate::model::{Object, ReadObjectRequest};
-use crate::model_ext::WriteObjectRequest;
+#[cfg(google_cloud_unstable_storage_bidi)]
+use crate::model_ext::OpenObjectRequest;
+use crate::model_ext::{ReadRange, WriteObjectRequest};
 use crate::read_object::ReadObjectResponse;
 use crate::storage::request_options::RequestOptions;
 use crate::streaming_source::{Seek, StreamingSource};
-use crate::{
-    model_ext::{OpenObjectRequest, ReadRange},
-    object_descriptor::HeaderMap,
-    object_descriptor::ObjectDescriptor as Descriptor,
-};
+#[cfg(google_cloud_unstable_storage_bidi)]
+use crate::{object_descriptor::HeaderMap, object_descriptor::ObjectDescriptor as Descriptor};
 use gaxi::unimplemented::UNIMPLEMENTED;
+#[cfg(not(google_cloud_unstable_storage_bidi))]
+use http::HeaderMap;
 
 /// Defines the trait used to implement [crate::client::Storage].
 ///
@@ -73,6 +74,7 @@ pub trait Storage: std::fmt::Debug + Send + Sync {
     }
 
     /// Implements [crate::client::Storage::open_object].
+    #[cfg(google_cloud_unstable_storage_bidi)]
     fn open_object(
         &self,
         _request: OpenObjectRequest,

@@ -17,6 +17,7 @@ use crate::Error;
 use crate::builder::storage::ReadObject;
 use crate::builder::storage::WriteObject;
 use crate::read_resume_policy::ReadResumePolicy;
+#[cfg(google_cloud_unstable_storage_bidi)]
 use crate::storage::bidi::OpenObject;
 use crate::storage::common_options::CommonOptions;
 use crate::streaming_source::Payload;
@@ -105,6 +106,7 @@ pub(crate) struct StorageInner {
     pub cred: auth::credentials::Credentials,
     pub endpoint: String,
     pub options: RequestOptions,
+    #[cfg(google_cloud_unstable_storage_bidi)]
     pub grpc: gaxi::grpc::Client,
 }
 
@@ -275,6 +277,7 @@ where
     /// * `bucket` - the bucket name containing the object. In
     ///   `projects/_/buckets/{bucket_id}` format.
     /// * `object` - the object name.
+    #[cfg(google_cloud_unstable_storage_bidi)]
     pub fn open_object<B, O>(&self, bucket: B, object: O) -> OpenObject<S>
     where
         B: Into<String>,
@@ -315,13 +318,14 @@ impl StorageInner {
         cred: Credentials,
         endpoint: String,
         options: RequestOptions,
-        grpc: gaxi::grpc::Client,
+        #[cfg(google_cloud_unstable_storage_bidi)] grpc: gaxi::grpc::Client,
     ) -> Self {
         Self {
             client,
             cred,
             endpoint,
             options,
+            #[cfg(google_cloud_unstable_storage_bidi)]
             grpc,
         }
     }
@@ -345,6 +349,7 @@ impl StorageInner {
             cred,
             endpoint,
             options,
+            #[cfg(google_cloud_unstable_storage_bidi)]
             gaxi::grpc::Client::new(config, super::DEFAULT_HOST).await?,
         );
         Ok(inner)

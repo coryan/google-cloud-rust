@@ -149,6 +149,7 @@ pub enum ReadError {
 }
 
 impl ReadError {
+    #[cfg(google_cloud_unstable_storage_bidi)]
     pub(crate) fn bidi_out_of_order(expected: i64, got: i64) -> Self {
         Self::InvalidBidiStreamingReadResponse(
             format!("message offset mismatch, expected={expected}, got={got}").into(),

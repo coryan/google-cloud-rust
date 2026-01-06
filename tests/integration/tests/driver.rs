@@ -263,6 +263,7 @@ mod driver {
     }
 
     #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
+    #[cfg(google_cloud_unstable_storage_bidi)]
     async fn run_storage_bidi() -> integration_tests::Result<()> {
         let _guard = integration_tests::enable_tracing();
         let (control, bucket) = integration_tests::storage::create_test_hns_bucket().await?;

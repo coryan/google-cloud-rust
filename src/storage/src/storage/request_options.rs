@@ -128,6 +128,7 @@ impl RequestOptions {
         }
     }
 
+    #[cfg(google_cloud_unstable_storage_bidi)]
     pub(crate) fn gax(&self) -> gax::options::RequestOptions {
         let mut options = gax::options::RequestOptions::default();
         options.set_backoff_policy(self.backoff_policy.clone());
@@ -141,6 +142,7 @@ impl RequestOptions {
 }
 
 #[cfg(test)]
+#[cfg(google_cloud_unstable_storage_bidi)]
 mod tests {
     use super::*;
     use crate::storage::client::tests::{MockBackoffPolicy, MockRetryPolicy, MockRetryThrottler};

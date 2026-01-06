@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[cfg(google_cloud_unstable_storage_bidi)]
+mod bidi;
 mod run;
 
 use super::args::Args;
@@ -88,12 +90,19 @@ impl Scenario {
     pub async fn run(&self, _args: &Args, client: &Storage, objects: &[Object]) -> Attempt {
         match self {
             Self::Json => run::json(client, objects).await,
-            Self::Open => run::open(client, objects).await,
-            Self::OpenRead => run::open_read(client, objects).await,
-            Self::OpenReadAtomic => run::open_read_atomic(client, objects).await,
-            Self::OpenReadDiscard => run::open_read_discard(client, objects).await,
-            Self::OpenReadAfterDrop => run::open_read_after_drop(client, objects).await,
-            Self::OpenConcurrentReads => run::open_concurrent_reads(client, objects).await,
+            #[cfg(google_cloud_unstable_storage_bidi)]
+            Self::Open => bidi::open(client, objects).await,
+            #[cfg(google_cloud_unstable_storage_bidi)]
+            Self::OpenRead => bidi::open_read(client, objects).await,
+            #[cfg(google_cloud_unstable_storage_bidi)]
+            Self::OpenReadAtomic => bidi::open_read_atomic(client, objects).await,
+            #[cfg(google_cloud_unstable_storage_bidi)]
+            Self::OpenReadDiscard => bidi::open_read_discard(client, objects).await,
+            #[cfg(google_cloud_unstable_storage_bidi)]
+            Self::OpenReadAfterDrop => bidi::open_read_after_drop(client, objects).await,
+            #[cfg(google_cloud_unstable_storage_bidi)]
+            Self::OpenConcurrentReads => bidi::open_concurrent_reads(client, objects).await,
+            _ => panic!("unsupported configuration"),
         }
     }
 }
