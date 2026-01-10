@@ -26,6 +26,11 @@
 //!
 //! # Features
 //!
+//! - `default-tls`: enabled by default. This feature select a default crypto
+//!   provider and trusted root ceritificate selection for TLS. Applications
+//!   that have specific requirements for TLS (such as exclusively using the
+//!   [aws-lc-rs], or [ring] crates) should disable this default and configure
+//!   the `reqwest` crate features to fit their needs.
 //! - `idtoken`: disabled by default, this feature enables support to create
 //!   and verify [OIDC ID Tokens]. This feature depends on the [jsonwebtoken]
 //!   crate.
@@ -35,8 +40,8 @@
 //!   applications that have specific needs for this backend should not rely
 //!   on the current default. To control the backend selection:
 //!   - Configure this crate with `default-features = false`, and
-//!     `features = ["idtoken"]`
-//!   - Configure the `jsonwebtoken` crate to use the desired backend.
+//!     `features = ["jsonwebtoken"]`
+//!   - Select the desired backend for `jsonwebtoken`.
 //!
 //! [jsonwebtoken]: https://crates.io/crates/jsonwebtoken
 //! [oidc id tokens]: https://cloud.google.com/docs/authentication/token-types#identity-tokens
