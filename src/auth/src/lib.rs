@@ -43,6 +43,8 @@
 //!     `features = ["jsonwebtoken"]`
 //!   - Select the desired backend for `jsonwebtoken`.
 //!
+//! [aws-lc-rs]: https://crates.io/crates/aws-lc-rs
+//! [ring]: https://crates.io/crates/ring
 //! [jsonwebtoken]: https://crates.io/crates/jsonwebtoken
 //! [oidc id tokens]: https://cloud.google.com/docs/authentication/token-types#identity-tokens
 //! [Authentication methods at Google]: https://cloud.google.com/docs/authentication
