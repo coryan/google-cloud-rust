@@ -27,7 +27,7 @@
 //! # Features
 //!
 //! - `default-tls`: enabled by default. This feature select a default crypto
-//!   provider and trusted root ceritificate selection for TLS. Applications
+//!   provider and trusted root certificate selection for TLS. Applications
 //!   that have specific requirements for TLS (such as exclusively using the
 //!   [aws-lc-rs], or [ring] crates) should disable this default and configure
 //!   the `reqwest` crate features to fit their needs.
