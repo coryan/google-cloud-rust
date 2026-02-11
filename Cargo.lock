@@ -5877,6 +5877,7 @@ dependencies = [
  "google-cloud-gax",
  "google-cloud-lro",
  "google-cloud-showcase-v1beta1",
+ "google-cloud-storage",
  "google-cloud-test-utils",
  "google-cloud-trace-v1",
  "http",
