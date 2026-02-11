@@ -159,6 +159,15 @@ impl ReqwestClient {
         self.retry_loop::<O>(builder, options).await
     }
 
+    pub async fn execute_once(
+        &self,
+        mut builder: reqwest::RequestBuilder,
+        options: RequestOptions,
+    ) -> Result<reqwest::Response> {
+        builder = self.configure_builder(builder, &options)?;
+        self.request_attempt(builder, &options, None, 0).await
+    }
+
     /// Executes a streaming request.
     ///
     /// The `builder` should be configured with the HTTP method, URL, and any

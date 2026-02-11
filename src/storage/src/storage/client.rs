@@ -290,9 +290,10 @@ where
 
 impl Storage {
     pub(crate) async fn new(builder: ClientBuilder) -> BuilderResult<Self> {
+        let tracing_is_enabled = gaxi::options::tracing_enabled(&builder.config);
         let inner = StorageInner::from_parts(builder).await?;
         let options = inner.options.clone();
-        let stub = crate::storage::transport::Storage::new(Arc::new(inner));
+        let stub = crate::storage::transport::Storage::new(Arc::new(inner), tracing_is_enabled);
         Ok(Self { stub, options })
     }
 }
@@ -321,8 +322,13 @@ impl StorageInner {
             .clone()
             .expect("into_parts() assigns default credentials");
 
+        let tracing_is_enabled = gaxi::options::tracing_enabled(&config);
         let client = gaxi::http::ReqwestClient::new(config.clone(), super::DEFAULT_HOST).await?;
-
+        let client = if tracing_is_enabled {
+            client.with_instrumentation(&super::info::INSTRUMENTATION_CLIENT_INFO)
+        } else {
+            client
+        };
         let inner = StorageInner::new(
             client,
             cred,
@@ -659,6 +665,12 @@ impl ClientBuilder {
     /// a single connection to about 100.
     pub fn with_grpc_subchannel_count(mut self, v: usize) -> Self {
         self.config.grpc_subchannel_count = Some(v);
+        self
+    }
+
+    #[cfg(google_cloud_unstable_tracing)]
+    pub fn with_tracing(mut self) -> Self {
+        self.config.tracing = true;
         self
     }
 

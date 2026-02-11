@@ -37,6 +37,10 @@ impl ReadObjectResponse {
         Self { inner }
     }
 
+    pub(crate) fn into_parts(self) -> Box<dyn dynamic::ReadObjectResponse + Send> {
+        self.inner
+    }
+
     /// Create a ReadObjectResponse, given a data source.
     ///
     /// Use this method to mock the return type of

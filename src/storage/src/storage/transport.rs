@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use super::tracing::TracingResponse;
 use crate::Result;
 use crate::model::{Object, ReadObjectRequest};
 use crate::model_ext::WriteObjectRequest;
@@ -45,17 +46,20 @@ use std::sync::Arc;
 #[derive(Clone, Debug)]
 pub struct Storage {
     inner: Arc<StorageInner>,
+    tracing: bool,
 }
 
 impl Storage {
-    pub(crate) fn new(inner: Arc<StorageInner>) -> Arc<Self> {
-        Arc::new(Self { inner })
+    #[cfg(test)]
+    pub(crate) fn new_test(inner: Arc<StorageInner>) -> Arc<Self> {
+        Self::new(inner, false)
     }
-}
 
-impl super::stub::Storage for Storage {
-    /// Implements [crate::client::Storage::read_object].
-    async fn read_object(
+    pub(crate) fn new(inner: Arc<StorageInner>, tracing: bool) -> Arc<Self> {
+        Arc::new(Self { inner, tracing })
+    }
+
+    async fn read_object_plain(
         &self,
         req: ReadObjectRequest,
         options: RequestOptions,
@@ -65,11 +69,28 @@ impl super::stub::Storage for Storage {
             request: req,
             options,
         };
-        reader.response().await
+        return reader.response().await;
     }
 
-    /// Implements [crate::client::Storage::write_object].
-    async fn write_object_buffered<P>(
+    async fn read_object_tracing(
+        &self,
+        req: ReadObjectRequest,
+        options: RequestOptions,
+    ) -> Result<ReadObjectResponse> {
+        let span = tracing::info_span!(
+            "client_request",
+            { "otel.name" } = concat!(env!("CARGO_PKG_NAME"), "::client::Storage::read_object"),
+        );
+        let response = {
+            let _enter = span.enter();
+            self.read_object_plain(req, options).await?
+        };
+        let inner = TracingResponse::new(response.into_parts(), span);
+        let response = ReadObjectResponse::new(Box::new(inner));
+        Ok(response)
+    }
+
+    async fn write_object_buffered_plain<P>(
         &self,
         payload: P,
         req: WriteObjectRequest,
@@ -83,8 +104,25 @@ impl super::stub::Storage for Storage {
             .await
     }
 
-    /// Implements [crate::client::Storage::write_object].
-    async fn write_object_unbuffered<P>(
+    async fn write_object_buffered_tracing<P>(
+        &self,
+        payload: P,
+        req: WriteObjectRequest,
+        options: RequestOptions,
+    ) -> Result<Object>
+    where
+        P: StreamingSource + Send + Sync + 'static,
+    {
+        let span = tracing::info_span!(
+            "client_request",
+            { "otel.name" } = concat!(env!("CARGO_PKG_NAME"), "::client::Storage::write_object"),
+        );
+        let _enter = span.enter();
+        self.write_object_buffered_plain(payload, req, options)
+            .await
+    }
+
+    async fn write_object_unbuffered_plain<P>(
         &self,
         payload: P,
         req: WriteObjectRequest,
@@ -98,7 +136,25 @@ impl super::stub::Storage for Storage {
             .await
     }
 
-    async fn open_object(
+    async fn write_object_unbuffered_tracing<P>(
+        &self,
+        payload: P,
+        req: WriteObjectRequest,
+        options: RequestOptions,
+    ) -> Result<Object>
+    where
+        P: StreamingSource + Seek + Send + Sync + 'static,
+    {
+        let span = tracing::info_span!(
+            "client_request",
+            { "otel.name" } = concat!(env!("CARGO_PKG_NAME"), "::client::Storage::write_object"),
+        );
+        let _enter = span.enter();
+        self.write_object_unbuffered_plain(payload, req, options)
+            .await
+    }
+
+    async fn open_object_plain(
         &self,
         request: OpenObjectRequest,
         options: RequestOptions,
@@ -108,5 +164,85 @@ impl super::stub::Storage for Storage {
         let (transport, readers) = ObjectDescriptorTransport::new(connector, ranges).await?;
 
         Ok((ObjectDescriptor::new(transport), readers))
+    }
+
+    async fn open_object_tracing(
+        &self,
+        request: OpenObjectRequest,
+        options: RequestOptions,
+    ) -> Result<(ObjectDescriptor, Vec<ReadObjectResponse>)> {
+        let span = tracing::info_span!(
+            "client_request",
+            { "otel.name" } = concat!(env!("CARGO_PKG_NAME"), "::client::Storage::open_object"),
+        );
+        let _enter = span.enter();
+        let (descriptor, responses) = self.open_object_plain(request, options).await?;
+        // TODO(#...) - wrap descriptor and responses with tracing decorators.
+        Ok((descriptor, responses))
+    }
+}
+
+impl super::stub::Storage for Storage {
+    /// Implements [crate::client::Storage::read_object].
+    async fn read_object(
+        &self,
+        req: ReadObjectRequest,
+        options: RequestOptions,
+    ) -> Result<ReadObjectResponse> {
+        if self.tracing {
+            self.read_object_tracing(req, options).await
+        } else {
+            self.read_object_plain(req, options).await
+        }
+    }
+
+    /// Implements [crate::client::Storage::write_object].
+    async fn write_object_buffered<P>(
+        &self,
+        payload: P,
+        req: WriteObjectRequest,
+        options: RequestOptions,
+    ) -> Result<Object>
+    where
+        P: StreamingSource + Send + Sync + 'static,
+    {
+        if self.tracing {
+            self.write_object_buffered_tracing(payload, req, options)
+                .await
+        } else {
+            self.write_object_buffered_plain(payload, req, options)
+                .await
+        }
+    }
+
+    /// Implements [crate::client::Storage::write_object].
+    async fn write_object_unbuffered<P>(
+        &self,
+        payload: P,
+        req: WriteObjectRequest,
+        options: RequestOptions,
+    ) -> Result<Object>
+    where
+        P: StreamingSource + Seek + Send + Sync + 'static,
+    {
+        if self.tracing {
+            self.write_object_unbuffered_tracing(payload, req, options)
+                .await
+        } else {
+            self.write_object_unbuffered_plain(payload, req, options)
+                .await
+        }
+    }
+
+    async fn open_object(
+        &self,
+        request: OpenObjectRequest,
+        options: RequestOptions,
+    ) -> Result<(ObjectDescriptor, Vec<ReadObjectResponse>)> {
+        if self.tracing {
+            self.open_object_tracing(request, options).await
+        } else {
+            self.open_object_plain(request, options).await
+        }
     }
 }

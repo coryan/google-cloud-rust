@@ -23,10 +23,7 @@ use crate::read_object::ReadObjectResponse;
 use crate::read_resume_policy::ReadResumePolicy;
 use crate::storage::checksum::details::Md5;
 use crate::storage::request_options::RequestOptions;
-use gaxi::http::{
-    map_send_error,
-    reqwest::{HeaderValue, Method, RequestBuilder, Response},
-};
+use gaxi::http::reqwest::{HeaderValue, Method, RequestBuilder, Response};
 
 /// The request builder for [Storage::read_object][crate::client::Storage::read_object] calls.
 ///
@@ -440,7 +437,14 @@ impl Reader {
 
     async fn read_attempt(&self) -> Result<Response> {
         let builder = self.http_request_builder().await?;
-        let response = builder.send().await.map_err(map_send_error)?;
+        let options = self.options.gax();
+        #[cfg(google_cloud_unstable_tracing)]
+        let options = google_cloud_gax::options::internal::set_path_template(
+            options,
+            "/storage/v1/b/{bucket}/o/{object}",
+        );
+
+        let response = self.inner.client.execute_once(builder, options).await?;
         if !response.status().is_success() {
             return gaxi::http::to_http_error(response).await;
         }
@@ -539,7 +543,7 @@ impl Reader {
             (o, l) => builder.header("range", format!("bytes={o}-{}", o + l - 1)),
         };
 
-        self.inner.apply_auth_headers(builder).await
+        Ok(builder)
     }
 
     fn is_gunzipped(response: &Response) -> bool {
@@ -620,7 +624,7 @@ mod tests {
     #[tokio::test]
     async fn test_clone() {
         let inner = test_inner_client(test_builder()).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let options = {
             let mut o = RequestOptions::new();
             o.set_resumable_upload_threshold(12345_usize);
@@ -956,7 +960,7 @@ mod tests {
     #[tokio::test]
     async fn read_object() -> Result {
         let inner = test_inner_client(test_builder()).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let builder = ReadObject::new(
             stub,
             "projects/_/buckets/bucket",
@@ -977,24 +981,24 @@ mod tests {
     async fn read_object_error_credentials() -> Result {
         let inner =
             test_inner_client(test_builder().with_credentials(error_credentials(false))).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let builder = ReadObject::new(
             stub,
             "projects/_/buckets/bucket",
             "object",
             inner.options.clone(),
         );
-        let _ = http_request_builder(inner, builder)
+        let _builder = http_request_builder(inner, builder)
             .await
-            .inspect_err(|e| assert!(e.is_authentication()))
-            .expect_err("invalid credentials should err");
+            .expect("the credentials are not used until the request is sent");
+
         Ok(())
     }
 
     #[tokio::test]
     async fn read_object_bad_bucket() -> Result {
         let inner = test_inner_client(test_builder()).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let builder = ReadObject::new(stub, "malformed", "object", inner.options.clone());
         let _ = http_request_builder(inner, builder)
             .await
@@ -1005,7 +1009,7 @@ mod tests {
     #[tokio::test]
     async fn read_object_query_params() -> Result {
         let inner = test_inner_client(test_builder()).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let builder = ReadObject::new(
             stub,
             "projects/_/buckets/bucket",
@@ -1045,7 +1049,7 @@ mod tests {
     async fn read_object_default_headers() -> Result {
         // The API takes the unencoded byte array.
         let inner = test_inner_client(test_builder()).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let builder = ReadObject::new(
             stub,
             "projects/_/buckets/bucket",
@@ -1076,7 +1080,7 @@ mod tests {
     async fn read_object_automatic_decompression_headers() -> Result {
         // The API takes the unencoded byte array.
         let inner = test_inner_client(test_builder()).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let builder = ReadObject::new(
             stub,
             "projects/_/buckets/bucket",
@@ -1104,7 +1108,7 @@ mod tests {
 
         // The API takes the unencoded byte array.
         let inner = test_inner_client(test_builder()).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let builder = ReadObject::new(
             stub,
             "projects/_/buckets/bucket",
@@ -1144,7 +1148,7 @@ mod tests {
     #[tokio::test]
     async fn range_header(input: ReadRange, want: Option<&http::HeaderValue>) -> Result {
         let inner = test_inner_client(test_builder()).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let builder = ReadObject::new(
             stub,
             "projects/_/buckets/bucket",
@@ -1179,7 +1183,7 @@ mod tests {
     #[tokio::test]
     async fn test_percent_encoding_object_name(name: &str, want: &str) -> Result {
         let inner = test_inner_client(test_builder()).await;
-        let stub = crate::storage::transport::Storage::new(inner.clone());
+        let stub = crate::storage::transport::Storage::new_test(inner.clone());
         let builder = ReadObject::new(
             stub,
             "projects/_/buckets/bucket",
