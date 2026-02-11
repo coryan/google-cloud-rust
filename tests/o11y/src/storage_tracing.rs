@@ -150,6 +150,7 @@ async fn setup_fake_storage() -> (TestLayerGuard, Server, Storage) {
     let client = Storage::builder()
         .with_endpoint(endpoint)
         .with_credentials(Anonymous::new().build())
+        .with_tracing()
         .build()
         .await
         .expect("failed to build client");

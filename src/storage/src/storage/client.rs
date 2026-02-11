@@ -662,6 +662,12 @@ impl ClientBuilder {
         self
     }
 
+    #[cfg(google_cloud_unstable_tracing)]
+    pub fn with_tracing(mut self) -> Self {
+        self.config.tracing = true;
+        self
+    }
+
     pub(crate) fn apply_default_credentials(&mut self) -> BuilderResult<()> {
         if self.config.cred.is_some() {
             return Ok(());

@@ -23,10 +23,7 @@ use crate::read_object::ReadObjectResponse;
 use crate::read_resume_policy::ReadResumePolicy;
 use crate::storage::checksum::details::Md5;
 use crate::storage::request_options::RequestOptions;
-use gaxi::http::{
-    map_send_error,
-    reqwest::{HeaderValue, Method, RequestBuilder, Response},
-};
+use gaxi::http::reqwest::{HeaderValue, Method, RequestBuilder, Response};
 
 /// The request builder for [Storage::read_object][crate::client::Storage::read_object] calls.
 ///
@@ -440,7 +437,11 @@ impl Reader {
 
     async fn read_attempt(&self) -> Result<Response> {
         let builder = self.http_request_builder().await?;
-        let response = builder.send().await.map_err(map_send_error)?;
+        let response = self
+            .inner
+            .client
+            .execute_once(builder, self.options.gax())
+            .await?;
         if !response.status().is_success() {
             return gaxi::http::to_http_error(response).await;
         }
@@ -539,7 +540,7 @@ impl Reader {
             (o, l) => builder.header("range", format!("bytes={o}-{}", o + l - 1)),
         };
 
-        self.inner.apply_auth_headers(builder).await
+        Ok(builder)
     }
 
     fn is_gunzipped(response: &Response) -> bool {
