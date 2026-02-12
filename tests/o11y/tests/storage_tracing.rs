@@ -15,7 +15,7 @@
 #[cfg(google_cloud_unstable_tracing)]
 mod storage_tracing {
     #[tokio::test]
-    async fn to_otlp() -> anyhow::Result<()> {
-        integration_tests_o11y::storage_tracing::to_otlp().await
+    async fn success_testlayer() -> anyhow::Result<()> {
+        integration_tests_o11y::storage_tracing::success_testlayer().await
     }
 }

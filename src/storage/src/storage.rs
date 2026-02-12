@@ -47,4 +47,15 @@ pub(crate) mod info {
             ac.grpc_header_value()
         };
     }
+
+    lazy_static::lazy_static! {
+        pub(crate) static ref INSTRUMENTATION_CLIENT_INFO: gaxi::options::InstrumentationClientInfo = {
+            let mut info = gaxi::options::InstrumentationClientInfo::default();
+            info.service_name = "storage";
+            info.client_version = VERSION;
+            info.client_artifact = NAME;
+            info.default_host = "storage.googleapis.com";
+            info
+        };
+    }
 }

@@ -13,43 +13,16 @@
 // limitations under the License.
 
 use super::Anonymous;
-use crate::mock_collector::MockCollector;
-use crate::otlp::CloudTelemetryTracerProviderBuilder;
 use google_cloud_storage::client::Storage;
-use google_cloud_test_utils::test_layer::{TestLayer, TestLayerGuard};
+use google_cloud_test_utils::test_layer::{AttributeValue, TestLayer, TestLayerGuard};
 use httptest::{Expectation, Server, matchers::*, responders::status_code};
-use tracing_subscriber::layer::SubscriberExt;
-use tracing_subscriber::util::SubscriberInitExt;
+use std::collections::BTreeMap;
 
-/// Validates that HTTP tracing makes it all the way to OTLP collectors like
-/// Cloud Telemetry.
-///
-/// This test sets up an in-memory service endpoint and OTLP collector
-/// endpoint and installs a standard Rust tracing -> authenticated OTLP tracer
-/// provider.  Then it uses the showcase client library to make a request and
-/// checks that the right spans are collected.
-///
-/// This makes sure that the end-to-end system of tracing to OpenTelemetry
-/// works as intended, value types are preserved, etc.
-pub async fn to_otlp() -> anyhow::Result<()> {
-    // 1. Start Mock OTLP Collector
-    let mock_collector = MockCollector::default();
-    let otlp_endpoint = mock_collector.start().await;
+pub async fn success_testlayer() -> anyhow::Result<()> {
+    // 1. Create a fake server and a client pointing to it.
+    let (guard, server, client) = setup_fake_storage().await;
 
-    // 2. Configure OTel Provider
-    let provider = CloudTelemetryTracerProviderBuilder::new("test-project", "integration-tests")
-        .with_endpoint(otlp_endpoint)
-        .with_credentials(Anonymous::new().build())
-        .build()
-        .await?;
-
-    // 3. Install Tracing Subscriber
-    let _guard = tracing_subscriber::Registry::default()
-        .with(crate::tracing::layer(provider.clone()))
-        .set_default();
-
-    // 4. Start Mock HTTP Server and configure the client.
-    let (_layer_guard, server, client) = setup_fake_storage().await;
+    // 2. Configure the fake server to expect a `read_object()` request.
     const CONTENTS: &str = "the quick brown fox jumps over the lazy dog";
     server.expect(
         Expectation::matching(all_of![
@@ -75,69 +48,53 @@ pub async fn to_otlp() -> anyhow::Result<()> {
         ),
     );
 
-    // 6. Make Request
+    // 3. Make the read_object() request and get all the data.
     let mut reader = client
         .read_object("projects/_/buckets/test-bucket", "test-object")
         .send()
         .await?;
     while let Some(_) = reader.next().await.transpose()? {}
 
-    // 7. Flush Spans
-    let _ = provider.force_flush();
+    // 4. Capture all the spans.
+    let spans = TestLayer::capture(&guard);
 
-    // 8. Verify Spans
-    let requests = mock_collector.requests.lock().unwrap();
-    assert!(
-        !requests.is_empty(),
-        "Should have received at least one OTLP request"
-    );
+    const EXPECTED_NAME: &str = "http_request";
+    // 5. Find the span for the underlying HTTP request.
+    let t4_span = spans.iter().find(|s| s.name == EXPECTED_NAME);
+    let t4_span = t4_span.unwrap_or_else(|| panic!("missing http_request span, spans={spans:?}"));
 
-    let request = &requests[0];
-    assert!(
-        !request.resource_spans.is_empty(),
-        "Should have received at least one resource span"
-    );
-    let scope_spans = &request.resource_spans[0].scope_spans;
-    assert!(
-        !scope_spans.is_empty(),
-        "request {request:?} should have scope spans"
-    );
-    let spans = &scope_spans[0].spans;
-    assert!(!spans.is_empty(), "{request:?} should have spans");
+    // Use a BTreeMap<> to simplify comparisons when there is a mismatch.
+    let expected_attributes: BTreeMap<String, AttributeValue> = [
+        ("otel.name", EXPECTED_NAME.into()),
+        ("otel.kind", "Client".into()),
+        ("rpc.system", "http".into()),
+        ("gcp.client.service", "storage".into()),
+        ("gcp.client.version", "1.8.0".into()),
+        ("gcp.client.repo", "googleapis/google-cloud-rust".into()),
+        ("gcp.client.artifact", "google-cloud-storage".into()),
+        ("gcp.client.language", "rust".into()),
+        ("otel.status_code", "UNSET".into()),
+        ("http.response.status_code", 200_i64.into()),
+        ("http.request.method", "GET".into()),
+        ("server.address", server.addr().ip().to_string().into()),
+        ("server.port", (server.addr().port() as i64).into()),
+        (
+            "url.full",
+            format!(
+                "http://{}/v1/storage/b/test-bucket/o/test-object?alt=media",
+                server.addr()
+            )
+            .into(),
+        ),
+    ]
+    .into_iter()
+    .map(|(k, v)| (k.to_string(), v))
+    .collect();
 
-    // Verify we captured the client span
-    let client_span = spans.iter().find(|s| s.kind == 3 /* CLIENT */); // 3 is SPAN_KIND_CLIENT
-    assert!(client_span.is_some(), "Should have a CLIENT span");
-
-    // 9. Verify HTTP Span Details
-    let client_span = client_span.unwrap();
     assert_eq!(
-        client_span.name,
-        "GET /storage/v1/b/test-bucket/o/test-object"
+        BTreeMap::from_iter(t4_span.attributes.clone().into_iter()),
+        expected_attributes
     );
-
-    let attributes: std::collections::HashMap<String, _> = client_span
-        .attributes
-        .iter()
-        .map(|kv| (kv.key.clone(), kv.value.clone().unwrap()))
-        .collect();
-
-    // Helper to get string value from AnyValue
-    let get_string = |key: &str| -> Option<String> {
-        attributes.get(key).and_then(|v| match &v.value {
-            Some(opentelemetry_proto::tonic::common::v1::any_value::Value::StringValue(s)) => {
-                Some(s.clone())
-            }
-            _ => None,
-        })
-    };
-
-    assert_eq!(get_string("http.request.method").as_deref(), Some("GET"));
-    assert_eq!(
-        get_string("gcp.client.repo").as_deref(),
-        Some("googleapis/google-cloud-rust")
-    );
-    assert!(get_string("gcp.client.version").is_some(), "{attributes:?}");
 
     Ok(())
 }

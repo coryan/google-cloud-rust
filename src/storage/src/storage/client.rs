@@ -321,8 +321,13 @@ impl StorageInner {
             .clone()
             .expect("into_parts() assigns default credentials");
 
+        let tracing_is_enabled = gaxi::options::tracing_enabled(&config);
         let client = gaxi::http::ReqwestClient::new(config.clone(), super::DEFAULT_HOST).await?;
-
+        let client = if tracing_is_enabled {
+            client.with_instrumentation(&super::info::INSTRUMENTATION_CLIENT_INFO)
+        } else {
+            client
+        };
         let inner = StorageInner::new(
             client,
             cred,
