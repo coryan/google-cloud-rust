@@ -63,37 +63,53 @@ pub async fn success_testlayer() -> anyhow::Result<()> {
     let t4_span = spans.iter().find(|s| s.name == EXPECTED_NAME);
     let t4_span = t4_span.unwrap_or_else(|| panic!("missing http_request span, spans={spans:?}"));
 
+    // The actual version changes as the library changes, we don't want to hard-code its value.
+    let version = t4_span.attributes.get("gcp.client.version").unwrap();
     // Use a BTreeMap<> to simplify comparisons when there is a mismatch.
     let expected_attributes: BTreeMap<String, AttributeValue> = [
-        ("otel.name", EXPECTED_NAME.into()),
+        ("otel.name", "GET /storage/v1/b/{bucket}/o/{object}".into()),
         ("otel.kind", "Client".into()),
         ("rpc.system", "http".into()),
         ("gcp.client.service", "storage".into()),
-        ("gcp.client.version", "1.8.0".into()),
+        ("gcp.client.version", version.clone()),
         ("gcp.client.repo", "googleapis/google-cloud-rust".into()),
         ("gcp.client.artifact", "google-cloud-storage".into()),
         ("gcp.client.language", "rust".into()),
         ("otel.status_code", "UNSET".into()),
         ("http.response.status_code", 200_i64.into()),
         ("http.request.method", "GET".into()),
+        ("http.response.body.size", (CONTENTS.len() as i64).into()),
         ("server.address", server.addr().ip().to_string().into()),
         ("server.port", (server.addr().port() as i64).into()),
+        ("url.domain", "storage.googleapis.com".into()),
         (
             "url.full",
             format!(
-                "http://{}/v1/storage/b/test-bucket/o/test-object?alt=media",
+                "http://{}/storage/v1/b/test-bucket/o/test-object?alt=media",
                 server.addr()
             )
             .into(),
         ),
+        ("url.scheme", "http".into()),
+        ("url.template", "/storage/v1/b/{bucket}/o/{object}".into()),
     ]
     .into_iter()
     .map(|(k, v)| (k.to_string(), v))
     .collect();
 
+    let unexpected = t4_span
+        .attributes
+        .iter()
+        .filter(|(k, v)| expected_attributes.get(*k) != Some(v))
+        .collect::<Vec<_>>();
+    let missing = expected_attributes
+        .iter()
+        .filter(|(k, v)| t4_span.attributes.get(*k) != Some(v))
+        .collect::<Vec<_>>();
     assert_eq!(
         BTreeMap::from_iter(t4_span.attributes.clone().into_iter()),
-        expected_attributes
+        expected_attributes,
+        "\nmissing={missing:?}\nunexpected={unexpected:?}"
     );
 
     Ok(())

@@ -437,11 +437,14 @@ impl Reader {
 
     async fn read_attempt(&self) -> Result<Response> {
         let builder = self.http_request_builder().await?;
-        let response = self
-            .inner
-            .client
-            .execute_once(builder, self.options.gax())
-            .await?;
+        let options = self.options.gax();
+        #[cfg(google_cloud_unstable_tracing)]
+        let options = google_cloud_gax::options::internal::set_path_template(
+            options,
+            "/storage/v1/b/{bucket}/o/{object}",
+        );
+
+        let response = self.inner.client.execute_once(builder, options).await?;
         if !response.status().is_success() {
             return gaxi::http::to_http_error(response).await;
         }
