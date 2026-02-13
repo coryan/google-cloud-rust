@@ -18,6 +18,8 @@ use crate::model::{Object, ReadObjectRequest};
 use crate::model_ext::WriteObjectRequest;
 use crate::read_object::ReadObjectResponse;
 use crate::storage::client::StorageInner;
+#[cfg(google_cloud_unstable_tracing)]
+use crate::storage::info::INSTRUMENTATION_CLIENT_INFO;
 use crate::storage::perform_upload::PerformUpload;
 use crate::storage::read_object::Reader;
 use crate::storage::request_options::RequestOptions;
@@ -26,6 +28,8 @@ use crate::{
     model_ext::OpenObjectRequest, object_descriptor::ObjectDescriptor,
     storage::bidi::connector::Connector, storage::bidi::transport::ObjectDescriptorTransport,
 };
+#[cfg(google_cloud_unstable_tracing)]
+use gaxi::observability::{ResultExt, SpanExt};
 use std::sync::Arc;
 
 /// An implementation of [`stub::Storage`][crate::storage::stub::Storage] that
@@ -77,13 +81,17 @@ impl Storage {
         req: ReadObjectRequest,
         options: RequestOptions,
     ) -> Result<ReadObjectResponse> {
-        let span = tracing::info_span!(
-            "client_request",
-            { "otel.name" } = concat!(env!("CARGO_PKG_NAME"), "::client::Storage::read_object"),
+        let span = tracing::info_span!("client_request");
+        span.client_request(
+            concat!(env!("CARGO_PKG_NAME"), "::client::Storage::read_object"),
+            "read_object",
+            &crate::storage::info::INSTRUMENTATION_CLIENT_INFO,
         );
         let response = {
             let _enter = span.enter();
-            self.read_object_plain(req, options).await?
+            self.read_object_plain(req, options)
+                .await
+                .record_in_span(&span)?
         };
         let inner = TracingResponse::new(response.into_parts(), span);
         let response = ReadObjectResponse::new(Box::new(inner));
@@ -113,13 +121,16 @@ impl Storage {
     where
         P: StreamingSource + Send + Sync + 'static,
     {
-        let span = tracing::info_span!(
-            "client_request",
-            { "otel.name" } = concat!(env!("CARGO_PKG_NAME"), "::client::Storage::write_object"),
+        let span = tracing::info_span!("client_request");
+        span.client_request(
+            concat!(env!("CARGO_PKG_NAME"), "::client::Storage::write_object"),
+            "write_object",
+            &INSTRUMENTATION_CLIENT_INFO,
         );
         let _enter = span.enter();
         self.write_object_buffered_plain(payload, req, options)
             .await
+            .record_in_span(&span)
     }
 
     async fn write_object_unbuffered_plain<P>(
@@ -145,13 +156,16 @@ impl Storage {
     where
         P: StreamingSource + Seek + Send + Sync + 'static,
     {
-        let span = tracing::info_span!(
-            "client_request",
-            { "otel.name" } = concat!(env!("CARGO_PKG_NAME"), "::client::Storage::write_object"),
+        let span = tracing::info_span!("client_request");
+        span.client_request(
+            concat!(env!("CARGO_PKG_NAME"), "::client::Storage::write_object"),
+            "write_object",
+            &INSTRUMENTATION_CLIENT_INFO,
         );
         let _enter = span.enter();
         self.write_object_unbuffered_plain(payload, req, options)
             .await
+            .record_in_span(&span)
     }
 
     async fn open_object_plain(
@@ -171,12 +185,17 @@ impl Storage {
         request: OpenObjectRequest,
         options: RequestOptions,
     ) -> Result<(ObjectDescriptor, Vec<ReadObjectResponse>)> {
-        let span = tracing::info_span!(
-            "client_request",
-            { "otel.name" } = concat!(env!("CARGO_PKG_NAME"), "::client::Storage::open_object"),
+        let span = tracing::info_span!("client_request");
+        span.client_request(
+            concat!(env!("CARGO_PKG_NAME"), "::client::Storage::open_object"),
+            "open_object",
+            &INSTRUMENTATION_CLIENT_INFO,
         );
         let _enter = span.enter();
-        let (descriptor, responses) = self.open_object_plain(request, options).await?;
+        let (descriptor, responses) = self
+            .open_object_plain(request, options)
+            .await
+            .record_in_span(&span)?;
         // TODO(#...) - wrap descriptor and responses with tracing decorators.
         Ok((descriptor, responses))
     }

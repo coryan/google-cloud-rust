@@ -49,6 +49,7 @@ pub(crate) mod info {
         };
     }
 
+    #[cfg(google_cloud_unstable_tracing)]
     lazy_static::lazy_static! {
         pub(crate) static ref INSTRUMENTATION_CLIENT_INFO: gaxi::options::InstrumentationClientInfo = {
             let mut info = gaxi::options::InstrumentationClientInfo::default();

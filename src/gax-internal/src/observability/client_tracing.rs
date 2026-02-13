@@ -40,30 +40,10 @@ pub fn create_client_request_span(
     method_name: &str,
     instrumentation: &'static InstrumentationClientInfo,
 ) -> Span {
-    tracing::info_span!(
-        "client_request",
-        "gax.client.span" = true, // Marker field
-        { OTEL_NAME } = span_name,
-        { OTEL_KIND } = OTEL_KIND_INTERNAL,
-        { otel_trace::RPC_SYSTEM } = RPC_SYSTEM_HTTP, // Default to HTTP, can be overridden
-        { otel_trace::RPC_SERVICE } = instrumentation.service_name,
-        { otel_trace::RPC_METHOD } = method_name,
-        { GCP_CLIENT_SERVICE } = instrumentation.service_name,
-        { GCP_CLIENT_VERSION } = instrumentation.client_version,
-        { GCP_CLIENT_REPO } = GCP_CLIENT_REPO_GOOGLEAPIS,
-        { GCP_CLIENT_ARTIFACT } = instrumentation.client_artifact,
-        { GCP_CLIENT_LANGUAGE } = GCP_CLIENT_LANGUAGE_RUST,
-        // Fields to be recorded later
-        { OTEL_STATUS_CODE } = otel_status_codes::UNSET,
-        { OTEL_STATUS_DESCRIPTION } = field::Empty,
-        { otel_trace::ERROR_TYPE } = field::Empty,
-        { otel_trace::SERVER_ADDRESS } = field::Empty,
-        { otel_trace::SERVER_PORT } = field::Empty,
-        { otel_trace::URL_FULL } = field::Empty,
-        { otel_trace::HTTP_REQUEST_METHOD } = field::Empty,
-        { otel_trace::HTTP_RESPONSE_STATUS_CODE } = field::Empty,
-        { otel_trace::HTTP_REQUEST_RESEND_COUNT } = field::Empty,
-    )
+    use SpanExt as _;
+    let span = tracing::info_span!("client_request");
+    span.client_request(span_name, method_name, instrumentation);
+    span
 }
 
 /// Records the final status on the client request span.
@@ -78,6 +58,67 @@ pub fn record_client_request_span<T>(result: &Result<Response<T>, Error>, span: 
             span.record(otel_trace::ERROR_TYPE, error_type.as_str());
             span.record(OTEL_STATUS_DESCRIPTION, err.to_string());
         }
+    }
+}
+
+pub trait SpanExt {
+    fn client_request(
+        &self,
+        span_name: &str,
+        method_name: &str,
+        instrumentation: &'static InstrumentationClientInfo,
+    );
+}
+
+impl SpanExt for Span {
+    fn client_request(
+        &self,
+        span_name: &str,
+        method_name: &str,
+        instrumentation: &'static InstrumentationClientInfo,
+    ) {
+        self.record("gax.client.span", true); // Marker field
+        self.record(OTEL_NAME, span_name);
+        self.record(OTEL_KIND, OTEL_KIND_INTERNAL);
+        self.record(otel_trace::RPC_SYSTEM, RPC_SYSTEM_HTTP); // Default to HTTP, can be overridden
+        self.record(otel_trace::RPC_SERVICE, instrumentation.service_name);
+        self.record(otel_trace::RPC_METHOD, method_name);
+        self.record(GCP_CLIENT_SERVICE, instrumentation.service_name);
+        self.record(GCP_CLIENT_VERSION, instrumentation.client_version);
+        self.record(GCP_CLIENT_REPO, GCP_CLIENT_REPO_GOOGLEAPIS);
+        self.record(GCP_CLIENT_ARTIFACT, instrumentation.client_artifact);
+        self.record(GCP_CLIENT_LANGUAGE, GCP_CLIENT_LANGUAGE_RUST);
+        // Fields to be recorded later
+        self.record(OTEL_STATUS_CODE, otel_status_codes::UNSET);
+        self.record(OTEL_STATUS_DESCRIPTION, field::Empty);
+        self.record(otel_trace::ERROR_TYPE, field::Empty);
+        self.record(otel_trace::SERVER_ADDRESS, field::Empty);
+        self.record(otel_trace::SERVER_PORT, field::Empty);
+        self.record(otel_trace::URL_FULL, field::Empty);
+        self.record(otel_trace::HTTP_REQUEST_METHOD, field::Empty);
+        self.record(otel_trace::HTTP_RESPONSE_STATUS_CODE, field::Empty);
+        self.record(otel_trace::HTTP_REQUEST_RESEND_COUNT, field::Empty);
+    }
+}
+
+pub trait ResultExt {
+    fn record_in_span(self, span: &Span) -> Self;
+}
+
+impl<T> ResultExt for std::result::Result<T, Error> {
+    fn record_in_span(self, span: &Span) -> Self {
+        match &self {
+            Ok(_) => {
+                span.record(OTEL_STATUS_CODE, otel_status_codes::OK);
+            }
+            Err(err) => {
+                span.record(OTEL_STATUS_CODE, otel_status_codes::ERROR);
+                let error_type = ErrorType::from_gax_error(err);
+                span.record(otel_trace::ERROR_TYPE, error_type.as_str());
+                span.record(OTEL_STATUS_DESCRIPTION, err.to_string());
+            }
+        }
+        self
     }
 }
 
