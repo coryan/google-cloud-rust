@@ -325,6 +325,7 @@ members = [
   "tests/protobuf",
   "tests/protojson-conformance",
   "tests/pubsub",
+  "tests/repro-4677",
   "tests/showcase",
   "tests/storage",
   "tools/check-copyright",
