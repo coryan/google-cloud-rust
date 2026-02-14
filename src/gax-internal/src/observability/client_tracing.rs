@@ -12,14 +12,60 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::observability::attributes::keys::*;
-use crate::observability::attributes::*;
+use crate::observability::attributes::keys::{OTEL_STATUS_CODE, OTEL_STATUS_DESCRIPTION};
+use crate::observability::attributes::otel_status_codes;
 use crate::observability::errors::ErrorType;
 use crate::options::InstrumentationClientInfo;
 use google_cloud_gax::error::Error;
 use google_cloud_gax::response::Response;
 use opentelemetry_semantic_conventions::trace as otel_trace;
-use tracing::{Span, field};
+use tracing::Span;
+
+#[macro_export]
+macro_rules! client_request_v {
+    ($span_name:expr, $method_name:expr, $info:expr) => {{
+        use $crate::observability::attributes::keys::*;
+        use $crate::observability::attributes::{
+            GCP_CLIENT_LANGUAGE_RUST, GCP_CLIENT_REPO_GOOGLEAPIS, RPC_SYSTEM_HTTP,
+            otel_status_codes,
+        };
+        tracing::info_span!(
+            "client_request",
+            "gax.client.span" = true, // Marker field
+            { OTEL_NAME } = $span_name,
+            { OTEL_KIND } = $crate::observability::attributes::OTEL_KIND_INTERNAL,
+            { RPC_SYSTEM } = RPC_SYSTEM_HTTP, // Default to HTTP, can be overridden
+            { RPC_SERVICE } = $info.service_name,
+            { RPC_METHOD } = $method_name,
+            { GCP_CLIENT_SERVICE } = $info.service_name,
+            { GCP_CLIENT_VERSION } = $info.client_version,
+            { GCP_CLIENT_REPO } = GCP_CLIENT_REPO_GOOGLEAPIS,
+            { GCP_CLIENT_ARTIFACT } = $info.client_artifact,
+            { GCP_CLIENT_LANGUAGE } = GCP_CLIENT_LANGUAGE_RUST,
+            // Fields to be recorded later
+            { OTEL_STATUS_CODE } = otel_status_codes::UNSET,
+            { OTEL_STATUS_DESCRIPTION } = ::tracing::field::Empty,
+            { ERROR_TYPE } = ::tracing::field::Empty,
+            { SERVER_ADDRESS } = ::tracing::field::Empty,
+            { SERVER_PORT } = ::tracing::field::Empty,
+            { URL_FULL } = ::tracing::field::Empty,
+            { HTTP_REQUEST_METHOD } = ::tracing::field::Empty,
+            { HTTP_RESPONSE_STATUS_CODE } = ::tracing::field::Empty,
+            { HTTP_REQUEST_RESEND_COUNT } = ::tracing::field::Empty,
+        )
+    }};
+}
+
+#[macro_export]
+macro_rules! client_request_span {
+    ($client:expr, $method:expr, $info:expr) => {
+        $crate::client_request_v!(
+            concat!(env!("CARGO_PKG_NAME"), "::", $client, "::", $method),
+            $method,
+            $info
+        )
+    };
+}
 
 /// Creates a new tracing span for a client request.
 ///
@@ -40,10 +86,7 @@ pub fn create_client_request_span(
     method_name: &str,
     instrumentation: &'static InstrumentationClientInfo,
 ) -> Span {
-    use SpanExt as _;
-    let span = tracing::info_span!("client_request");
-    span.client_request(span_name, method_name, instrumentation);
-    span
+    client_request_v!(span_name, method_name, instrumentation)
 }
 
 /// Records the final status on the client request span.
@@ -58,46 +101,6 @@ pub fn record_client_request_span<T>(result: &Result<Response<T>, Error>, span: 
             span.record(otel_trace::ERROR_TYPE, error_type.as_str());
             span.record(OTEL_STATUS_DESCRIPTION, err.to_string());
         }
-    }
-}
-
-pub trait SpanExt {
-    fn client_request(
-        &self,
-        span_name: &str,
-        method_name: &str,
-        instrumentation: &'static InstrumentationClientInfo,
-    );
-}
-
-impl SpanExt for Span {
-    fn client_request(
-        &self,
-        span_name: &str,
-        method_name: &str,
-        instrumentation: &'static InstrumentationClientInfo,
-    ) {
-        self.record("gax.client.span", true); // Marker field
-        self.record(OTEL_NAME, span_name);
-        self.record(OTEL_KIND, OTEL_KIND_INTERNAL);
-        self.record(otel_trace::RPC_SYSTEM, RPC_SYSTEM_HTTP); // Default to HTTP, can be overridden
-        self.record(otel_trace::RPC_SERVICE, instrumentation.service_name);
-        self.record(otel_trace::RPC_METHOD, method_name);
-        self.record(GCP_CLIENT_SERVICE, instrumentation.service_name);
-        self.record(GCP_CLIENT_VERSION, instrumentation.client_version);
-        self.record(GCP_CLIENT_REPO, GCP_CLIENT_REPO_GOOGLEAPIS);
-        self.record(GCP_CLIENT_ARTIFACT, instrumentation.client_artifact);
-        self.record(GCP_CLIENT_LANGUAGE, GCP_CLIENT_LANGUAGE_RUST);
-        // Fields to be recorded later
-        self.record(OTEL_STATUS_CODE, otel_status_codes::UNSET);
-        self.record(OTEL_STATUS_DESCRIPTION, field::Empty);
-        self.record(otel_trace::ERROR_TYPE, field::Empty);
-        self.record(otel_trace::SERVER_ADDRESS, field::Empty);
-        self.record(otel_trace::SERVER_PORT, field::Empty);
-        self.record(otel_trace::URL_FULL, field::Empty);
-        self.record(otel_trace::HTTP_REQUEST_METHOD, field::Empty);
-        self.record(otel_trace::HTTP_RESPONSE_STATUS_CODE, field::Empty);
-        self.record(otel_trace::HTTP_REQUEST_RESEND_COUNT, field::Empty);
     }
 }
 

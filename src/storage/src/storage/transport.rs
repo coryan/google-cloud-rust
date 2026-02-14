@@ -29,7 +29,7 @@ use crate::{
     storage::bidi::connector::Connector, storage::bidi::transport::ObjectDescriptorTransport,
 };
 #[cfg(google_cloud_unstable_tracing)]
-use gaxi::observability::{ResultExt, SpanExt};
+use gaxi::observability::ResultExt;
 use std::sync::Arc;
 
 /// An implementation of [`stub::Storage`][crate::storage::stub::Storage] that
@@ -81,11 +81,10 @@ impl Storage {
         req: ReadObjectRequest,
         options: RequestOptions,
     ) -> Result<ReadObjectResponse> {
-        let span = tracing::info_span!("client_request");
-        span.client_request(
-            concat!(env!("CARGO_PKG_NAME"), "::client::Storage::read_object"),
+        let span = gaxi::client_request_span!(
+            "client::Storage",
             "read_object",
-            &crate::storage::info::INSTRUMENTATION_CLIENT_INFO,
+            &INSTRUMENTATION_CLIENT_INFO
         );
         let response = {
             let _enter = span.enter();
@@ -121,11 +120,10 @@ impl Storage {
     where
         P: StreamingSource + Send + Sync + 'static,
     {
-        let span = tracing::info_span!("client_request");
-        span.client_request(
-            concat!(env!("CARGO_PKG_NAME"), "::client::Storage::write_object"),
+        let span = gaxi::client_request_span!(
+            "client::Storage",
             "write_object",
-            &INSTRUMENTATION_CLIENT_INFO,
+            &INSTRUMENTATION_CLIENT_INFO
         );
         let _enter = span.enter();
         self.write_object_buffered_plain(payload, req, options)
@@ -156,11 +154,10 @@ impl Storage {
     where
         P: StreamingSource + Seek + Send + Sync + 'static,
     {
-        let span = tracing::info_span!("client_request");
-        span.client_request(
-            concat!(env!("CARGO_PKG_NAME"), "::client::Storage::write_object"),
+        let span = gaxi::client_request_span!(
+            "client::Storage",
             "write_object",
-            &INSTRUMENTATION_CLIENT_INFO,
+            &INSTRUMENTATION_CLIENT_INFO
         );
         let _enter = span.enter();
         self.write_object_unbuffered_plain(payload, req, options)
@@ -185,11 +182,10 @@ impl Storage {
         request: OpenObjectRequest,
         options: RequestOptions,
     ) -> Result<(ObjectDescriptor, Vec<ReadObjectResponse>)> {
-        let span = tracing::info_span!("client_request");
-        span.client_request(
-            concat!(env!("CARGO_PKG_NAME"), "::client::Storage::open_object"),
+        let span = gaxi::client_request_span!(
+            "client::Storage",
             "open_object",
-            &INSTRUMENTATION_CLIENT_INFO,
+            &INSTRUMENTATION_CLIENT_INFO
         );
         let _enter = span.enter();
         let (descriptor, responses) = self

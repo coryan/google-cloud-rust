@@ -65,6 +65,13 @@ pub mod keys {
     ///
     /// 1 for the first retry.
     pub const GCP_GRPC_RESEND_COUNT: &str = "gcp.grpc.resend_count";
+
+    // RE-export the symbols so we can use them in macros.
+    pub use opentelemetry_semantic_conventions::trace::{
+        ERROR_TYPE, HTTP_REQUEST_METHOD, HTTP_REQUEST_RESEND_COUNT, HTTP_RESPONSE_STATUS_CODE,
+        SERVER_ADDRESS, SERVER_PORT, URL_FULL,
+    };
+    pub use opentelemetry_semantic_conventions::trace::{RPC_METHOD, RPC_SERVICE, RPC_SYSTEM};
 }
 
 /// Value for [keys::OTEL_KIND].
