@@ -69,7 +69,22 @@ impl<S> PerformUpload<S> {
 
     async fn start_resumable_upload_attempt(&self) -> Result<String> {
         let builder = self.start_resumable_upload_request().await?;
-        let response = builder.send().await.map_err(Error::io)?;
+        let options = self.options.gax();
+        #[cfg(google_cloud_unstable_tracing)]
+        let options = {
+            use google_cloud_gax::options::internal::InstrumentOptions;
+            options.instrument(
+                "/updated/storage/v1/b/{bucket}",
+                // TODO(#...) - this may not be the right resource name, check bucket vs. bucket_id
+                format!("//storage.googleapis.com/{}", self.resource().bucket),
+            )
+        };
+        let response = self
+            .inner
+            .client
+            .execute_once(builder, &options)
+            .await
+            .map_err(Error::io)?;
         self::handle_start_resumable_upload_response(response).await
     }
 
@@ -95,7 +110,7 @@ impl<S> PerformUpload<S> {
 
         let builder = self.apply_preconditions(builder);
         let builder = apply_customer_supplied_encryption_headers(builder, &self.params);
-        let builder = self.inner.apply_auth_headers(builder).await?;
+        // let builder = self.inner.apply_auth_headers(builder).await?;
         let builder = builder.json(&v1::insert_body(self.resource()));
         Ok(builder)
     }
@@ -104,6 +119,17 @@ impl<S> PerformUpload<S> {
         &self,
         upload_url: &str,
     ) -> Result<ResumableUploadStatus> {
+        let options = self.options.gax();
+        #[cfg(google_cloud_unstable_tracing)]
+        let options = {
+            use google_cloud_gax::options::internal::InstrumentOptions;
+            options.instrument(
+                // TODO(#...) - this may not be the right thing, upload URLs are dynamic.
+                "/upload/storage/v1/b/{bucket}/o",
+                // TODO(#...) - this may not be the right resource name, check bucket vs. bucket_id
+                format!("//storage.googleapis.com/{}", self.resource().bucket),
+            )
+        };
         let builder = self
             .inner
             .client
@@ -116,7 +142,12 @@ impl<S> PerformUpload<S> {
                 HeaderValue::from_static(&X_GOOG_API_CLIENT_HEADER),
             );
         let builder = self.inner.apply_auth_headers(builder).await?;
-        let response = builder.send().await.map_err(Error::io)?;
+        let response = self
+            .inner
+            .client
+            .execute_once_no_default_host(builder, &options)
+            .await
+            .map_err(Error::io)?;
         self::query_resumable_upload_handle_response(response).await
     }
 

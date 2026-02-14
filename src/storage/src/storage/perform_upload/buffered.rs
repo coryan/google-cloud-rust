@@ -21,10 +21,7 @@ use crate::error::WriteError;
 use crate::storage::checksum::details::{
     Checksum, update as checksum_update, validate as checksum_validate,
 };
-use gaxi::http::{
-    map_send_error,
-    reqwest::{HeaderValue, Method, RequestBuilder},
-};
+use gaxi::http::reqwest::{HeaderValue, Method, RequestBuilder};
 use progress::InProgressUpload;
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -95,12 +92,27 @@ where
             };
         }
 
+        let options = self.options.gax();
+        #[cfg(google_cloud_unstable_tracing)]
+        let options = {
+            use google_cloud_gax::options::internal::InstrumentOptions;
+            options.instrument(
+                // TODO(#...)
+                "/upload/storage/v1/b/{bucket}/o",
+                // TODO(#...) -
+                format!("//storage.googleapis.com/{}", self.resource().bucket),
+            )
+        };
         loop {
             progress
                 .next_buffer(&mut *self.payload.lock().await)
                 .await?;
             let builder = self.partial_upload_request(upload_url, progress).await?;
-            let response = builder.send().await.map_err(map_send_error)?;
+            let response = self
+                .inner
+                .client
+                .execute_once_no_default_host(builder, &options)
+                .await?;
             match super::query_resumable_upload_handle_response(response).await {
                 Err(e) => {
                     progress.handle_error();

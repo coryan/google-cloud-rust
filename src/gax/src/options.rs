@@ -259,6 +259,18 @@ pub mod internal {
     pub fn get_resource_name(options: &RequestOptions) -> Option<&str> {
         options.resource_name()
     }
+
+    pub trait InstrumentOptions {
+        fn instrument(self, path_template: &'static str, resource_name: String) -> Self;
+    }
+
+    impl InstrumentOptions for RequestOptions {
+        fn instrument(mut self, path_template: &'static str, resource_name: String) -> Self {
+            self.set_path_template(path_template);
+            self.set_resource_name(resource_name);
+            self
+        }
+    }
 }
 
 /// Implements the sealed [RequestOptionsBuilder] trait.

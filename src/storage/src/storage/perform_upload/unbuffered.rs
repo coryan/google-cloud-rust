@@ -129,7 +129,17 @@ where
 
     async fn single_shot_attempt(&self, hint: SizeHint) -> Result<Object> {
         let builder = self.single_shot_builder(hint).await?;
-        let response = builder.send().await.map_err(map_send_error)?;
+        let options = self.options.gax();
+        #[cfg(google_cloud_unstable_tracing)]
+        let options = {
+            use google_cloud_gax::options::internal::InstrumentOptions;
+            options.instrument(
+                "/upload/storage/v1/b/{bucket}/o",
+                // TODO(#...) - the format may be wrong
+                format!("//storage.googleapis.com/{}", self.resource().bucket),
+            )
+        };
+        let response = self.inner.client.execute_once(builder, &options).await?;
         let object = super::handle_object_response(response).await?;
         self.validate_response_object(object).await
     }

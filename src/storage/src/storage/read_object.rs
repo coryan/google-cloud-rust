@@ -439,12 +439,16 @@ impl Reader {
         let builder = self.http_request_builder().await?;
         let options = self.options.gax();
         #[cfg(google_cloud_unstable_tracing)]
-        let options = google_cloud_gax::options::internal::set_path_template(
-            options,
-            "/storage/v1/b/{bucket}/o/{object}",
-        );
+        let options = {
+            use google_cloud_gax::options::internal::InstrumentOptions;
+            options.instrument(
+                "/storage/v1/b/{bucket}/o/{object}",
+                // TODO(#...) - the format may be wrong
+                format!("//storage.googleapis.com/{}", self.request.bucket),
+            )
+        };
 
-        let response = self.inner.client.execute_once(builder, options).await?;
+        let response = self.inner.client.execute_once(builder, &options).await?;
         if !response.status().is_success() {
             return gaxi::http::to_http_error(response).await;
         }

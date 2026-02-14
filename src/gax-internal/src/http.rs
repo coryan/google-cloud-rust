@@ -162,10 +162,24 @@ impl ReqwestClient {
     pub async fn execute_once(
         &self,
         mut builder: reqwest::RequestBuilder,
-        options: RequestOptions,
+        options: &RequestOptions,
     ) -> Result<reqwest::Response> {
-        builder = self.configure_builder(builder, &options)?;
-        self.request_attempt(builder, &options, None, 0).await
+        builder = self.configure_builder(builder, options)?;
+        self.request_attempt(builder, options, None, 0).await
+    }
+
+    pub async fn execute_once_no_default_host(
+        &self,
+        builder: reqwest::RequestBuilder,
+        options: &RequestOptions,
+    ) -> Result<reqwest::Response> {
+        self.request_attempt(
+            self.configure_builder_no_host(builder, options)?,
+            options,
+            None,
+            0,
+        )
+        .await
     }
 
     /// Executes a streaming request.
@@ -206,13 +220,21 @@ impl ReqwestClient {
         mut builder: reqwest::RequestBuilder,
         options: &RequestOptions,
     ) -> Result<reqwest::RequestBuilder> {
+        builder = builder.header(::reqwest::header::HOST, &self.host);
+        self.configure_builder_no_host(builder, options)
+    }
+
+    fn configure_builder_no_host(
+        &self,
+        mut builder: reqwest::RequestBuilder,
+        options: &RequestOptions,
+    ) -> Result<reqwest::RequestBuilder> {
         if let Some(user_agent) = options.user_agent() {
             builder = builder.header(
                 ::reqwest::header::USER_AGENT,
                 reqwest::HeaderValue::from_str(user_agent).map_err(Error::ser)?,
             );
         }
-        builder = builder.header(::reqwest::header::HOST, &self.host);
         Ok(builder)
     }
 
