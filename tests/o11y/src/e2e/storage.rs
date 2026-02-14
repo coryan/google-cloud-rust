@@ -95,8 +95,17 @@ async fn client_library_operations() -> anyhow::Result<()> {
 async fn storage_data_operations(bucket_name: &str) -> anyhow::Result<()> {
     let client = Storage::builder().with_tracing().build().await?;
 
-    tracing::info!("uploading small object");
     const CONTENTS: &str = "the quick brown fox jumps over the lazy dog";
+    tracing::info!("uploading small object with send_buffered");
+    let _ = client
+        .write_object(bucket_name, format!("unused.txt"), CONTENTS)
+        .set_content_type("text/plain")
+        .set_content_language("en")
+        .set_storage_class("STANDARD")
+        .with_resumable_upload_threshold(0_usize)
+        .send_buffered()
+        .await?;
+    tracing::info!("uploading small object with send_unbuffered");
     let insert = client
         .write_object(bucket_name, format!("quick.txt"), CONTENTS)
         .set_metadata([("verify-metadata-works", "yes")])
@@ -120,6 +129,7 @@ async fn storage_data_operations(bucket_name: &str) -> anyhow::Result<()> {
         let mut response = descriptor.read_range(ReadRange::head(16)).await;
         while let Some(_) = response.next().await.transpose()? {}
     }
+    tracing::info!("all Storage operations done");
 
     Ok(())
 }

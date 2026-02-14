@@ -31,6 +31,7 @@ use crate::{
 #[cfg(google_cloud_unstable_tracing)]
 use gaxi::observability::ResultExt;
 use std::sync::Arc;
+use tracing::Instrument;
 
 /// An implementation of [`stub::Storage`][crate::storage::stub::Storage] that
 /// interacts with the Cloud Storage service.
@@ -86,12 +87,11 @@ impl Storage {
             "read_object",
             &INSTRUMENTATION_CLIENT_INFO
         );
-        let response = {
-            let _enter = span.enter();
-            self.read_object_plain(req, options)
-                .await
-                .record_in_span(&span)?
-        };
+        let response = self
+            .read_object_plain(req, options)
+            .instrument(span.clone())
+            .await
+            .record_in_span(&span)?;
         let inner = TracingResponse::new(response.into_parts(), span);
         let response = ReadObjectResponse::new(Box::new(inner));
         Ok(response)
@@ -125,8 +125,8 @@ impl Storage {
             "write_object",
             &INSTRUMENTATION_CLIENT_INFO
         );
-        let _enter = span.enter();
         self.write_object_buffered_plain(payload, req, options)
+            .instrument(span.clone())
             .await
             .record_in_span(&span)
     }
@@ -159,8 +159,8 @@ impl Storage {
             "write_object",
             &INSTRUMENTATION_CLIENT_INFO
         );
-        let _enter = span.enter();
         self.write_object_unbuffered_plain(payload, req, options)
+            .instrument(span.clone())
             .await
             .record_in_span(&span)
     }
@@ -187,9 +187,9 @@ impl Storage {
             "open_object",
             &INSTRUMENTATION_CLIENT_INFO
         );
-        let _enter = span.enter();
         let (descriptor, responses) = self
             .open_object_plain(request, options)
+            .instrument(span.clone())
             .await
             .record_in_span(&span)?;
         // TODO(#...) - wrap descriptor and responses with tracing decorators.
