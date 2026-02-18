@@ -24,7 +24,8 @@ const REGION: &str = "us-central1";
 const USER_COUNT: usize = 256;
 
 static SUCCESS_COUNT: AtomicU64 = AtomicU64::new(0);
-static ERROR_COUNT: AtomicU64 = AtomicU64::new(0);
+static RETRY_ERROR_COUNT: AtomicU64 = AtomicU64::new(0);
+static UNCLASSIFIED_ERROR_COUNT: AtomicU64 = AtomicU64::new(0);
 static RESOURCE_EXHAUSTED_COUNT: AtomicU64 = AtomicU64::new(0);
 static REPRO_COUNT: AtomicU64 = AtomicU64::new(0);
 
@@ -68,16 +69,17 @@ async fn simulate_user(
     );
     for iteration in 0..1000 {
         if id == 0 && iteration > 0 && iteration % 10 == 0 {
-            [
+            let msg = [
                 ("SUCCESS", &SUCCESS_COUNT),
                 ("REPRO", &REPRO_COUNT),
+                ("RETRY", &RETRY_ERROR_COUNT),
                 ("RESOURCE_EXHAUSTED", &RESOURCE_EXHAUSTED_COUNT),
-                ("ERROR", &ERROR_COUNT),
+                ("ERROR(OTHER)", &UNCLASSIFIED_ERROR_COUNT),
             ]
-            .iter()
-            .for_each(|(name, count)| {
-                println!("{name} = {}", count.load(Acquire));
-            });
+            .map(|(name, count)| format!("{name} = {}", count.load(Acquire)))
+            .to_vec()
+            .join(", ");
+            println!("iteration={iteration} {msg}");
         }
         let response = client
             .generate_content()
@@ -119,8 +121,11 @@ async fn simulate_user(
             {
                 RESOURCE_EXHAUSTED_COUNT.fetch_add(1, AcqRel);
             }
+            Err(e) if e.is_exhausted() => {
+                RETRY_ERROR_COUNT.fetch_add(1, AcqRel);
+            }
             Err(e) => {
-                ERROR_COUNT.fetch_add(1, AcqRel);
+                UNCLASSIFIED_ERROR_COUNT.fetch_add(1, AcqRel);
                 println!("[{id:04}] ERROR  : {e:?}");
             }
         };
