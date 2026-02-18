@@ -33,7 +33,7 @@ async fn main() -> anyhow::Result<()> {
     let project_id = std::env::var("GOOGLE_CLOUD_PROJECT")?;
     let client = PredictionService::builder()
         .with_endpoint(format!("https://{REGION}-aiplatform.googleapis.com"))
-        .with_retry_policy(AlwaysRetry.with_attempt_limit(3))
+        .with_retry_policy(AlwaysRetry.with_time_limit(Duration::from_secs(300)))
         .build()
         .await?;
 
