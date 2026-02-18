@@ -119,8 +119,9 @@ async fn simulate_user(
             {
                 RESOURCE_EXHAUSTED_COUNT.fetch_add(1, AcqRel);
             }
-            Err(_e) => {
+            Err(e) => {
                 ERROR_COUNT.fetch_add(1, AcqRel);
+                println!("[{id:04}] ERROR  : {e:?}");
             }
         };
         tokio::time::sleep(Duration::from_secs(1)).await;
