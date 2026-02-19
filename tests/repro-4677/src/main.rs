@@ -81,7 +81,7 @@ async fn simulate_user(
         let client = PredictionService::builder()
             .with_endpoint(target.endpoint())
             .with_credentials(credentials.clone())
-            .with_retry_policy(AlwaysRetry.with_time_limit(Duration::from_secs(300)))
+            .with_retry_policy(AlwaysRetry.with_attempt_limit(3))
             .build()
             .await?;
         if id == 0 && iteration > 0 && iteration % 10 == 0 {
@@ -139,6 +139,7 @@ async fn simulate_user(
             }
             Err(e) if e.is_exhausted() => {
                 RETRY_ERROR_COUNT.fetch_add(1, AcqRel);
+                println!("[{id:04}] RETRY  : {e:?}");
             }
             Err(e) => {
                 UNCLASSIFIED_ERROR_COUNT.fetch_add(1, AcqRel);
