@@ -14,13 +14,23 @@
 
 use google_cloud_aiplatform_v1::client::PredictionService;
 use google_cloud_aiplatform_v1::model::{Content, GenerationConfig, Part};
+use google_cloud_auth::credentials::{Builder as CredentialsBuilder, Credentials};
 use google_cloud_gax::error::rpc::Code;
 use google_cloud_gax::options::RequestOptionsBuilder;
 use google_cloud_gax::retry_policy::{AlwaysRetry, RetryPolicyExt};
+use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::{AtomicU64, Ordering::AcqRel, Ordering::Acquire};
 use std::time::Duration;
 
-const REGION: &str = "us-central1";
+const REGIONS: [&str; 7] = [
+    "us-central1",
+    "us-east1",
+    "us-east4",
+    "us-east5",
+    "us-south1",
+    "us-west1",
+    "us-west4",
+];
 const USER_COUNT: usize = 256;
 
 static SUCCESS_COUNT: AtomicU64 = AtomicU64::new(0);
@@ -29,14 +39,16 @@ static UNCLASSIFIED_ERROR_COUNT: AtomicU64 = AtomicU64::new(0);
 static RESOURCE_EXHAUSTED_COUNT: AtomicU64 = AtomicU64::new(0);
 static REPRO_COUNT: AtomicU64 = AtomicU64::new(0);
 
+static REGION_INDEX: AtomicUsize = AtomicUsize::new(0);
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let project_id = std::env::var("GOOGLE_CLOUD_PROJECT")?;
-    let client = PredictionService::builder()
-        .with_endpoint(format!("https://{REGION}-aiplatform.googleapis.com"))
-        .with_retry_policy(AlwaysRetry.with_time_limit(Duration::from_secs(300)))
-        .build()
-        .await?;
+    let targets = REGIONS
+        .map(|region| Target::new(region, &project_id))
+        .to_vec();
+
+    let credentials = CredentialsBuilder::default().build()?;
 
     // Verify we have at least 4 worker threads. It is boring otherwise.
     let runtime = tokio::runtime::Handle::try_current()?;
@@ -47,7 +59,7 @@ async fn main() -> anyhow::Result<()> {
     );
 
     let tasks = (0..USER_COUNT)
-        .map(|i| simulate_user(client.clone(), project_id.clone(), i))
+        .map(|i| simulate_user(credentials.clone(), targets.clone(), i))
         .collect::<Vec<_>>();
     let tasks = tokio::spawn(futures::future::join_all(tasks)).await?;
     for (i, t) in tasks.into_iter().enumerate() {
@@ -60,14 +72,18 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn simulate_user(
-    client: PredictionService,
-    project_id: String,
+    credentials: Credentials,
+    targets: Vec<Target>,
     id: usize,
 ) -> anyhow::Result<()> {
-    let model = format!(
-        "projects/{project_id}/locations/{REGION}/publishers/google/models/gemini-2.5-flash-lite"
-    );
     for iteration in 0..1000 {
+        let target = &targets[REGION_INDEX.fetch_add(1, AcqRel) % targets.len()];
+        let client = PredictionService::builder()
+            .with_endpoint(target.endpoint())
+            .with_credentials(credentials.clone())
+            .with_retry_policy(AlwaysRetry.with_time_limit(Duration::from_secs(300)))
+            .build()
+            .await?;
         if id == 0 && iteration > 0 && iteration % 10 == 0 {
             let msg = [
                 ("SUCCESS", &SUCCESS_COUNT),
@@ -84,7 +100,7 @@ async fn simulate_user(
         let response = client
             .generate_content()
             .with_attempt_timeout(Duration::from_secs(300))
-            .set_model(&model)
+            .set_model(target.model())
             .set_contents([Content::new()
                 .set_role("user")
                 .set_parts([Part::new().set_text(
@@ -132,4 +148,28 @@ async fn simulate_user(
         tokio::time::sleep(Duration::from_secs(1)).await;
     }
     Ok(())
+}
+
+#[derive(Debug, Clone)]
+struct Target {
+    endpoint: String,
+    model: String,
+}
+
+impl Target {
+    fn new(region: &str, project_id: &str) -> Self {
+        let endpoint = format!("https://{region}-aiplatform.googleapis.com");
+        let model = format!(
+            "projects/{project_id}/locations/{region}/publishers/google/models/gemini-2.5-flash-lite"
+        );
+        Self { endpoint, model }
+    }
+
+    pub fn endpoint(&self) -> &str {
+        &self.endpoint
+    }
+
+    pub fn model(&self) -> &str {
+        &self.model
+    }
 }
