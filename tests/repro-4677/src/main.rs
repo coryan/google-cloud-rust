@@ -126,7 +126,7 @@ async fn simulate_user(
                     println!("[{id:04}] SUCCESS : {r:?}");
                 }
             }
-            Err(e) if format!("{e}").contains("unexpected-eof") => {
+            Err(e) if format!("{e:?}").contains("unexpected-eof") => {
                 REPRO_COUNT.fetch_add(1, AcqRel);
                 println!("[{id:04}] REPRO  : {e:?}");
                 return Err(e.into());
