@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::e2e::wait_for_trace;
+use super::{set_up_providers, wait_for_trace};
 use google_cloud_storage::client::Storage;
 use google_cloud_storage::model_ext::ReadRange;
 use google_cloud_test_utils::runtime_config::project_id;
@@ -58,7 +58,7 @@ pub async fn run() -> anyhow::Result<()> {
 
 async fn send_trace(project_id: &str) -> anyhow::Result<String> {
     // 1. Setup Telemetry (Real Google Cloud Destination)
-    let provider = crate::e2e::set_up_tracer_provider(project_id).await?;
+    let providers = set_up_providers(project_id).await?;
 
     // 2. Generate Trace
     // Start a root span
@@ -80,7 +80,7 @@ async fn send_trace(project_id: &str) -> anyhow::Result<String> {
     );
 
     // 4. Force flush to ensure spans are sent.
-    if let Err(e) = provider.force_flush() {
+    if let Err(e) = providers.trace.force_flush() {
         tracing::error!("error flushing provider: {e:}");
     }
     Ok(trace_id)

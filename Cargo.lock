@@ -5907,11 +5907,15 @@ name = "integration-tests-o11y"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "base64",
  "bytes",
  "chrono",
  "futures",
+ "google-cloud-api",
  "google-cloud-auth",
  "google-cloud-gax",
+ "google-cloud-logging-type",
+ "google-cloud-logging-v2",
  "google-cloud-lro",
  "google-cloud-monitoring-v3",
  "google-cloud-showcase-v1beta1",
@@ -5921,7 +5925,9 @@ dependencies = [
  "google-cloud-wkt",
  "http",
  "httptest",
+ "mockall",
  "opentelemetry",
+ "opentelemetry-appender-tracing",
  "opentelemetry-otlp",
  "opentelemetry-proto",
  "opentelemetry_sdk",
@@ -6476,6 +6482,18 @@ dependencies = [
  "pin-project-lite",
  "thiserror 2.0.18",
  "tracing",
+]
+
+[[package]]
+name = "opentelemetry-appender-tracing"
+version = "0.31.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ef6a1ac5ca3accf562b8c306fa8483c85f4390f768185ab775f242f7fe8fdcc2"
+dependencies = [
+ "opentelemetry",
+ "tracing",
+ "tracing-core",
+ "tracing-subscriber",
 ]
 
 [[package]]

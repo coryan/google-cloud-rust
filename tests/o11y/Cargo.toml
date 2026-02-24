@@ -28,6 +28,7 @@ log-integration-tests = ["google-cloud-test-utils/log-integration-tests"]
 
 [dependencies]
 anyhow.workspace              = true
+base64.workspace              = true
 bytes.workspace               = true
 chrono                        = { workspace = true, features = ["now"] }
 futures.workspace             = true
@@ -39,13 +40,15 @@ google-cloud-showcase-v1beta1 = { workspace = true, features = ["default"] }
 google-cloud-storage          = { workspace = true, features = ["default"] }
 google-cloud-wkt              = { workspace = true }
 storage-samples               = { workspace = true }
-google-cloud-trace-v1         = { workspace = true, features = ["default"] }
+google-cloud-api              = { workspace = true }
+google-cloud-logging-type     = { workspace = true }
+google-cloud-logging-v2       = { workspace = true, features = ["default"] }
 google-cloud-monitoring-v3    = { workspace = true, features = ["default"] }
+google-cloud-trace-v1         = { workspace = true, features = ["default"] }
 http.workspace                = true
 httptest.workspace            = true
-opentelemetry                 = { workspace = true, features = ["metrics", "trace"] }
-opentelemetry_sdk             = { workspace = true, features = ["metrics", "rt-tokio", "spec_unstable_metrics_views", "trace"] }
-opentelemetry-proto           = { workspace = true, features = ["gen-tonic", "metrics", "trace"] }
+opentelemetry                 = { workspace = true, features = ["logs", "metrics", "trace"] }
+opentelemetry-proto           = { workspace = true, features = ["gen-tonic", "logs", "metrics", "trace"] }
 thiserror.workspace           = true
 rand.workspace                = true
 reqwest                       = { workspace = true, features = ["json"] }
@@ -60,12 +63,20 @@ tracing-opentelemetry         = { workspace = true }
 uuid                          = { workspace = true, features = ["v4"] }
 
 # Separate for cleaner formatting.
+[dependencies.opentelemetry_sdk]
+workspace = true
+features  = ["logs", "metrics", "rt-tokio", "spec_unstable_metrics_views", "trace"]
+
 # Enable `internal-logs` to troubleshoot errors.
 [dependencies.opentelemetry-otlp]
 workspace = true
-features  = ["grpc-tonic", "internal-logs", "metrics", "tls", "tls-roots", "trace"]
+features  = ["grpc-tonic", "internal-logs", "logs", "metrics", "tls", "tls-roots", "trace"]
+
+[dependencies.opentelemetry-appender-tracing]
+workspace = true
 
 [dev-dependencies]
+mockall           = { workspace = true }
 opentelemetry_sdk = { workspace = true, features = ["testing"] }
 serial_test       = { workspace = true }
 scoped-env        = { workspace = true }

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::resource_detector::TestResourceDetector;
-use super::{MetricService, set_up_meter_provider, set_up_tracer_provider, try_get_metric};
+use super::{MetricService, set_up_providers, try_get_metric};
 use google_cloud_test_utils::runtime_config::project_id;
 use opentelemetry::KeyValue;
 use rand::RngExt;
@@ -25,9 +24,7 @@ const METRIC_NAME: &str = "workload.googleapis.com/test.e2e.metric";
 pub async fn run() -> anyhow::Result<()> {
     let id = uuid::Uuid::new_v4().to_string();
     let project_id = project_id()?;
-    let _tracer_provider = set_up_tracer_provider(&project_id).await?;
-    let provider =
-        set_up_meter_provider(&project_id, TestResourceDetector::new(&project_id)).await?;
+    let providers = set_up_providers(&project_id).await?;
 
     let client = MetricService::builder().build().await?;
 
@@ -43,7 +40,7 @@ pub async fn run() -> anyhow::Result<()> {
             metric.record(d.as_secs_f64(), &[KeyValue::new("testId", id.clone())]);
         }
         // Ignore errors because it may have flushed recently.
-        if let Err(e) = provider.force_flush() {
+        if let Err(e) = providers.logs.force_flush() {
             tracing::warn!("error flushing provider: {e:}");
         }
         found = try_get_metric(&client, &project_id, METRIC_NAME, ("testId", id.as_str())).await?;
