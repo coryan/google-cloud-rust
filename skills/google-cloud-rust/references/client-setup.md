@@ -11,7 +11,7 @@ Clients are the main abstraction to interface with specific Google Cloud service
 // Example: Secret Manager
 use google_cloud_secretmanager_v1::client::Client;
 
-async fn initialize_client() -> Result<Client, Box<dyn std::error::Error>> {
+async fn initialize_client() -> anyhow::Result<Client> {
     let client = Client::builder().build().await?;
     Ok(client)
 }

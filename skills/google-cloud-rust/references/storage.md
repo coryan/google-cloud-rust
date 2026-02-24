@@ -16,7 +16,7 @@ use google_cloud_storage::model::Bucket;
 use google_cloud_storage::model::bucket::IamConfig;
 use google_cloud_storage::model::bucket::iam_config::UniformBucketLevelAccess;
 
-pub async fn create_bucket_with_ubla(control_client: &StorageControl) -> Result<(), google_cloud_gax::error::Error> {
+pub async fn create_bucket_with_ubla(control_client: &StorageControl) -> anyhow::Result<()> {
     let bucket = control_client
         .create_bucket()
         .set_parent("projects/_")

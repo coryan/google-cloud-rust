@@ -11,7 +11,7 @@ use google_cloud_secretmanager_v1::client::SecretManagerService;
 use google_cloud_gax::error::Error;
 use google_cloud_gax::error::rpc::Code;
 
-pub async fn handle_error(client: &SecretManagerService) -> Result<(), Error> {
+pub async fn handle_error(client: &SecretManagerService) -> anyhow::Result<()> {
     let response = client
         .add_secret_version()
         // ... set request parameters
@@ -36,7 +36,7 @@ pub async fn handle_error(client: &SecretManagerService) -> Result<(), Error> {
             
             // Handle other service or transient errors
             eprintln!("Operation failed: {:?}", e);
-            Err(e)
+            Err(e.into())
         }
     }
 }
