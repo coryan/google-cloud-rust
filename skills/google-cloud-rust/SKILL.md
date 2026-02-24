@@ -1,11 +1,11 @@
 ---
 name: google-cloud-rust
-description: Guidelines and workflows for users building applications with the google-cloud-rust crates. Use when writing Rust code that uses Google Cloud client libraries, to handle initialization, storage, or errors.
+description: Guidelines and workflows for users building applications with the google-cloud-rust crates. Use when writing Rust code that uses Google Cloud client libraries, to handle initialization, custom authentication, storage, or errors.
 ---
 
 # Google Cloud Rust Client Libraries
 
-This skill provides essential guidelines and patterns for developers using the `google-cloud-rust` crates. It covers common workflows such as initializing clients, using Cloud Storage idiomatics, and handling errors.
+This skill provides essential guidelines and patterns for developers using the `google-cloud-rust` crates. It covers common workflows such as initializing clients, using Cloud Storage idiomatics, overriding authentication, and handling errors.
 
 ## Philosophy
 
@@ -17,6 +17,7 @@ This skill provides essential guidelines and patterns for developers using the `
 
 Choose the appropriate reference guide for your task:
 
-- **Client Setup & Configuration**: See [references/client-setup.md](references/client-setup.md) for how to initialize clients and authenticate.
+- **Client Setup & Configuration**: See [references/client-setup.md](references/client-setup.md) for how to initialize clients.
+- **Overriding Authentication**: See [references/authentication.md](references/authentication.md) for using API Keys or Service Account Impersonation instead of default credentials.
 - **Cloud Storage Operations**: See [references/storage.md](references/storage.md) for idiomatic bucket and object operations, including specific crate quirks.
 - **Error Handling**: See [references/errors.md](references/errors.md) for parsing service errors and retrying logic.
