@@ -4,26 +4,40 @@ Applications often need to branch based on the error returned by the client libr
 
 ## Extracting Service Errors
 
-When an RPC fails for a service-related reason (e.g., resource not found), you can match on the `google_cloud_gax::error::Error` to check the `status` code.
+When an RPC fails for a service-related reason (e.g., resource not found), you can inspect the error by calling its `.status()` method to check the RPC `Code`.
 
 ```rust
+use google_cloud_secretmanager_v1::client::SecretManagerService;
 use google_cloud_gax::error::Error;
-use google_cloud_rpc::model::Code;
+use google_cloud_gax::error::rpc::Code;
 
-let response = client.update_secret(/* ... */).send().await;
+pub async fn handle_error(client: &SecretManagerService) -> Result<(), Error> {
+    let response = client
+        .add_secret_version()
+        // ... set request parameters
+        .send()
+        .await;
 
-match response {
-    Ok(result) => {
-        println!("Success!");
-    }
-    Err(Error::Rpc(status)) if status.code == Code::NotFound as i32 => {
-        // Handle the "Not Found" case, e.g., by creating the resource first.
-        println!("Secret not found, creating it...");
-        // client.create_secret(...).send().await?;
-    }
-    Err(e) => {
-        // Handle other service or transient errors
-        eprintln!("Operation failed: {:?}", e);
+    match response {
+        Ok(_result) => {
+            println!("Success!");
+            Ok(())
+        }
+        Err(e) => {
+            // Check if the error has an associated RPC status
+            if let Some(status) = e.status() {
+                // Compare the status code
+                if status.code == Code::NotFound {
+                    println!("Secret not found, creating it...");
+                    // Handle the "Not Found" case, e.g., by creating the resource first.
+                    return Ok(());
+                }
+            }
+            
+            // Handle other service or transient errors
+            eprintln!("Operation failed: {:?}", e);
+            Err(e)
+        }
     }
 }
 ```
