@@ -13,26 +13,27 @@ When modifying or updating a bucket via Rust, **always** use `.set_bucket(bucket
 ```rust
 use google_cloud_storage::client::StorageControl;
 use google_cloud_storage::model::Bucket;
+use google_cloud_storage::model::bucket::IamConfig;
+use google_cloud_storage::model::bucket::iam_config::UniformBucketLevelAccess;
 
-let control_client = StorageControl::builder().build().await?;
-
-let bucket = control_client
-    .create_bucket()
-    .set_project("projects/my-project".to_string())
-    .set_bucket_id("my-bucket-id".to_string())
-    // For Uniform bucket-level access:
-    // .set_bucket(Bucket {
-    //     iam_configuration: Some(IamConfiguration {
-    //         uniform_bucket_level_access: Some(UniformBucketLevelAccess {
-    //             enabled: true,
-    //             ..Default::default()
-    //         }),
-    //         ..Default::default()
-    //     }),
-    //     ..Default::default()
-    // })
-    .send()
-    .await?;
+pub async fn create_bucket_with_ubla(control_client: &StorageControl) -> Result<(), google_cloud_gax::error::Error> {
+    let bucket = control_client
+        .create_bucket()
+        .set_parent("projects/_")
+        .set_bucket_id("my-bucket-id".to_string())
+        // For Uniform bucket-level access:
+        .set_bucket(
+            Bucket::new()
+                .set_project("projects/my-project".to_string())
+                .set_iam_config(IamConfig::new().set_uniform_bucket_level_access(
+                    UniformBucketLevelAccess::new().set_enabled(true),
+                )),
+        )
+        .send()
+        .await?;
+        
+    Ok(())
+}
 ```
 
 ## Uploading and Downloading Objects
