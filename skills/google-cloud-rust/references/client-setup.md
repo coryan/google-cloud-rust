@@ -9,10 +9,10 @@ Clients are the main abstraction to interface with specific Google Cloud service
 
 ```rust
 // Example: Secret Manager
-use google_cloud_secretmanager_v1::client::Client;
+use google_cloud_secretmanager_v1::client::SecretManagerService;
 
-async fn initialize_client() -> anyhow::Result<Client> {
-    let client = Client::builder().build().await?;
+async fn initialize_client() -> anyhow::Result<SecretManagerService> {
+    let client = SecretManagerService::builder().build().await?;
     Ok(client)
 }
 ```
