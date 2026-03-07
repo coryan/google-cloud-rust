@@ -21,15 +21,22 @@ Because this application relies on other crates in the Rust workspace, you must 
      --description="Docker repository for Cloud Run apps"
    ```
 
-3. Build the Docker image using Google Cloud Build (run from the workspace root):
+3. Grant Cloud Run permission to read from the repository (using the default Compute Engine service account):
    ```bash
-   gcloud builds submit \
-     --tag us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/cloud-run-apps/demo-apphub \
-     --file demos/apphub/Dockerfile \
-     .
+   PROJECT_NUMBER=$(gcloud projects describe ${GOOGLE_CLOUD_PROJECT} --format="value(projectNumber)")
+   gcloud artifacts repositories add-iam-policy-binding cloud-run-apps \
+     --location=us-central1 \
+     --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+     --role="roles/artifactregistry.reader"
    ```
 
-4. Deploy the built image to Cloud Run:
+4. Build the Docker image using Google Cloud Build (run from the workspace root):
+   ```bash
+   gcloud builds submit demos/apphub \
+     --tag us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/cloud-run-apps/demo-apphub
+   ```
+
+5. Deploy the built image to Cloud Run:
    ```bash
    gcloud run deploy demo-apphub \
      --image us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/cloud-run-apps/demo-apphub \
