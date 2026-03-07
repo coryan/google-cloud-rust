@@ -13,18 +13,26 @@ Because this application relies on other crates in the Rust workspace, you must 
    GOOGLE_CLOUD_PROJECT="$(gcloud config get project)"
    ```
 
-2. Build the Docker image using Google Cloud Build (run from the workspace root):
+2. Create an Artifact Registry repository (if you don't already have one):
+   ```bash
+   gcloud artifacts repositories create cloud-run-apps \
+     --repository-format=docker \
+     --location=us-central1 \
+     --description="Docker repository for Cloud Run apps"
+   ```
+
+3. Build the Docker image using Google Cloud Build (run from the workspace root):
    ```bash
    gcloud builds submit \
-     --tag us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/YOUR_REPO_NAME/demo-apphub \
+     --tag us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/cloud-run-apps/demo-apphub \
      --file demos/apphub/Dockerfile \
      .
    ```
 
-3. Deploy the built image to Cloud Run:
+4. Deploy the built image to Cloud Run:
    ```bash
    gcloud run deploy demo-apphub \
-     --image us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/YOUR_REPO_NAME/demo-apphub \
+     --image us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/cloud-run-apps/demo-apphub \
      --allow-unauthenticated \
      --region us-central1
    ```
