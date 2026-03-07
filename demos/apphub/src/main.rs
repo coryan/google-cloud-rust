@@ -43,6 +43,7 @@ use error::AppError;
 use google_cloud_auth::credentials::Builder as CredentialsBuilder;
 use state::AppState;
 use tokio::net::TcpListener;
+use tracing::Instrument;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -51,24 +52,16 @@ async fn main() -> anyhow::Result<()> {
         .build()
         .inspect_err(|e| tracing::error!("Cannot initialize credentials: {e:#?}"))?;
     observability::exporters(&args, credentials.clone()).await?;
-    tracing::info!(key0 = "value0", key1 = "value1", "info 123");
-    tracing::warn!(key0 = "value0", key1 = "value1", "warn 234");
-    {
-        let _span = tracing::info_span!("blah blah", key2 = "v2").entered();
-        tracing::info!("in span");
-    }
-
-    tracing::info!("Initial configuration: {args:?}");
+    tracing::info!("configuration: {args:?}");
 
     let state = AppState::new(args.clone(), credentials.clone()).await?;
     let app = Router::new()
         .route("/", routing::get(handler))
-        .route("/fortune", routing::get(predict))
+        .route("/predict", routing::get(predict))
         .with_state(state);
     let addr = format!("0.0.0.0:{}", args.port);
     let listener = TcpListener::bind(&addr).await?;
     axum::serve(listener, app).await?;
-
     Ok(())
 }
 
@@ -78,6 +71,8 @@ async fn handler() -> &'static str {
 
 async fn predict(State(state): State<AppState>) -> anyhow::Result<String, AppError> {
     use google_cloud_aiplatform_v1::model::{Content, FileData, Part};
+
+    let span = tracing::info_span!("handling /predict request");
 
     const MODEL: &str = "gemini-2.5-flash";
     let model = format!(
@@ -101,6 +96,7 @@ async fn predict(State(state): State<AppState>) -> anyhow::Result<String, AppErr
             // [END rust_prompt_and_image_prompt_part] ANCHOR_END: prompt-and-image-prompt-part
         ])])
         .send()
+        .instrument(span)
         .await?;
 
     Ok(format!("{response:#?}"))

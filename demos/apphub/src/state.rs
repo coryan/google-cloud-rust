@@ -26,6 +26,7 @@ impl AppState {
     pub async fn new(args: Args, credentials: Credentials) -> anyhow::Result<Self> {
         let prediction_service = PredictionService::builder()
             .with_credentials(credentials)
+            .with_tracing()
             .build()
             .await?;
         Ok(Self {
