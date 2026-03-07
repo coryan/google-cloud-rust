@@ -47,7 +47,7 @@ where
             let mut serializer = Serializer::new(WriteAdaptor::new(&mut writer));
             let mut serializer = serializer.serialize_map(None)?;
             serializer.serialize_entry("timestamp", &chrono::Utc::now().to_rfc3339())?;
-            serializer.serialize_entry("level", &meta.level().as_serde())?;
+            serializer.serialize_entry("severity", &meta.level().as_serde())?;
             serializer.serialize_entry("fields", &event.field_map())?;
             serializer.serialize_entry("target", meta.target())?;
 

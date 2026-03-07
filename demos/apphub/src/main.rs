@@ -72,7 +72,10 @@ async fn handler() -> &'static str {
 async fn predict(State(state): State<AppState>) -> anyhow::Result<String, AppError> {
     use google_cloud_aiplatform_v1::model::{Content, FileData, Part};
 
-    let span = tracing::info_span!("handling /predict request");
+    let span = tracing::info_span!(
+        "handling /predict request",
+        "otel.status_code" = tracing::field::Empty
+    );
 
     const MODEL: &str = "gemini-2.5-flash";
     let model = format!(
@@ -96,8 +99,19 @@ async fn predict(State(state): State<AppState>) -> anyhow::Result<String, AppErr
             // [END rust_prompt_and_image_prompt_part] ANCHOR_END: prompt-and-image-prompt-part
         ])])
         .send()
-        .instrument(span)
-        .await?;
+        .instrument(span.clone())
+        .await;
 
-    Ok(format!("{response:#?}"))
+    let span = span.entered();
+    match response {
+        Ok(r) => {
+            span.record("otel.status_code", "OK");
+            Ok(format!("{:#?}", r.candidates))
+        }
+        Err(e) => {
+            tracing::error!("response error: {e:?}");
+            span.record("otel.status_code", "ERROR");
+            Err(e.into())
+        }
+    }
 }
