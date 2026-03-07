@@ -18,3 +18,7 @@ steps:
 
 images:
   - '${_IMAGE_NAME}'
+
+options:
+  machineType: 'E2_HIGHCPU_32'
+

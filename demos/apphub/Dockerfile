@@ -16,7 +16,7 @@ FROM rust:1.93-slim-bookworm AS builder
 
 WORKDIR /usr/src/workspace
 COPY . .
-RUN cargo build -p demo-apphub --release
+RUN env RUSTFLAGS="--cfg google_cloud_unstable_tracing" cargo build -p demo-apphub --release
 
 # Use a lightweight Debian image for the runtime
 FROM debian:bookworm-slim
