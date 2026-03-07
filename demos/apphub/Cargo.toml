@@ -26,8 +26,8 @@ categories.workspace   = true
 rust-version.workspace = true
 
 [dependencies]
-clap                       = { workspace = true, features = ["std"] }
-axum.workspace             = true
+clap = { workspace = true, features = ["env", "std"] }
+axum = { workspace = true, features = ["tokio", "http1"] }
 anyhow.workspace           = true
 google-cloud-aiplatform-v1 = { workspace = true, features = ["default-rustls-provider", "prediction-service"] }
 google-cloud-auth          = { workspace = true, features = ["default", "idtoken"] }
@@ -35,6 +35,7 @@ google-cloud-storage       = { workspace = true, features = ["default"] }
 tokio                      = { workspace = true, features = ["full", "macros"] }
 tracing-subscriber         = { workspace = true, default-features = true }
 integration-tests-o11y     = { path = "../../tests/o11y" }
+tracing.workspace          = true
 
 [lints]
 workspace = true

@@ -30,7 +30,26 @@ const DESCRIPTION: &str = concat!(
 
 mod args;
 
+use args::Args;
+use axum::Router;
+use axum::routing::get;
+use clap::Parser;
+use tokio::net::TcpListener;
+
+async fn handler() -> &'static str {
+    "Hello, world!\n"
+}
+
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    tracing_subscriber::fmt::init();
+    let args = Args::parse();
+    tracing::info!("Initial configuration: {args:?}");
+
+    let app = Router::new().route("/", get(handler));
+    let addr = format!("0.0.0.0:{}", args.port);
+    let listener = TcpListener::bind(&addr).await?;
+    axum::serve(listener, app).await?;
+
     Ok(())
 }

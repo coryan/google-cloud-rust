@@ -17,16 +17,16 @@ use clap::Parser;
 /// Command-line arguments.
 #[derive(Clone, Debug, Parser)]
 #[command(version, about, long_about = super::DESCRIPTION)]
-struct Args {
-    /// The name of the bucket used by the application.
-    #[arg(long)]
-    bucket_name: String,
-
+pub struct Args {
     /// The default project name, if not found via resource discovery.
     #[arg(long, env = "GOOGLE_CLOUD_PROJECT")]
-    project_id: String,
+    pub project_id: String,
 
     /// The default project name, if not found via resource discovery.
-    #[arg(long, env = "K_SERVICE")]
-    service_name: String,
+    #[arg(long, env = "K_SERVICE", default_value = "demo-apphub")]
+    pub service_name: String,
+
+    /// The default port.
+    #[arg(long, env = "PORT", default_value = "8080")]
+    pub port: String,
 }
