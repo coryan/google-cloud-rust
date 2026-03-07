@@ -21,6 +21,7 @@ use integration_tests_o11y::otlp::trace::Builder as TracerProviderBuilder;
 use integration_tests_o11y::tracing::layer as otlp_layer;
 use opentelemetry::KeyValue;
 use opentelemetry_sdk::Resource;
+use opentelemetry_sdk::propagation::TraceContextPropagator;
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::Registry;
 use tracing_subscriber::fmt::format::FmtSpan;
@@ -71,6 +72,7 @@ pub async fn exporters(args: &Args, credentials: Credentials) -> anyhow::Result<
             .with(logging_layer)
             .with(otlp_layer(tracer_provider.clone())),
     )?;
+    opentelemetry::global::set_text_map_propagator(TraceContextPropagator::new());
     opentelemetry::global::set_meter_provider(meter_provider.clone());
     Ok(())
 }
