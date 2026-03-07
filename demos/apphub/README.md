@@ -40,5 +40,6 @@ Because this application relies on other crates in the Rust workspace, you must 
    gcloud run deploy demo-apphub \
      --image us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/cloud-run-apps/demo-apphub \
      --allow-unauthenticated \
-     --region us-central1
+     --region us-central1 \
+     --set-env-vars=GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
    ```

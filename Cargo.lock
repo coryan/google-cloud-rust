@@ -536,6 +536,7 @@ dependencies = [
  "google-cloud-storage",
  "integration-tests-o11y",
  "opentelemetry",
+ "opentelemetry-http",
  "opentelemetry_sdk",
  "serde",
  "serde_json",

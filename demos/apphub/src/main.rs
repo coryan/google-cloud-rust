@@ -37,6 +37,7 @@ mod state;
 use args::Args;
 use axum::Router;
 use axum::extract::State;
+use axum::http::HeaderMap;
 use axum::routing;
 use clap::Parser;
 use error::AppError;
@@ -44,6 +45,7 @@ use google_cloud_auth::credentials::Builder as CredentialsBuilder;
 use state::AppState;
 use tokio::net::TcpListener;
 use tracing::Instrument;
+use tracing_opentelemetry::OpenTelemetrySpanExt;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -69,13 +71,23 @@ async fn handler() -> &'static str {
     "Hello, world!\n"
 }
 
-async fn predict(State(state): State<AppState>) -> anyhow::Result<String, AppError> {
+async fn predict(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> anyhow::Result<String, AppError> {
     use google_cloud_aiplatform_v1::model::{Content, FileData, Part};
+    use opentelemetry_http::HeaderExtractor;
 
+    let extractor = HeaderExtractor(&headers);
+    let remote_context =
+        opentelemetry::global::get_text_map_propagator(|propagator| propagator.extract(&extractor));
     let span = tracing::info_span!(
         "handling /predict request",
         "otel.status_code" = tracing::field::Empty
     );
+    let _ = span
+        .set_parent(remote_context)
+        .inspect_err(|e| tracing::error!("cannot set context: {e:?}"));
 
     const MODEL: &str = "gemini-2.5-flash";
     let model = format!(
