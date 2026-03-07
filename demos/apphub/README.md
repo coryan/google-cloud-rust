@@ -32,9 +32,7 @@ Because this application relies on other crates in the Rust workspace, you must 
 
 4. Build the Docker image using Google Cloud Build (run from the workspace root):
    ```bash
-   gcloud builds submit . \
-     --config demos/apphub/cloudbuild.yaml \
-     --substitutions _IMAGE_NAME=us-central1-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/cloud-run-apps/demo-apphub
+   gcloud builds submit . --config demos/apphub/cloudbuild.yaml
    ```
 
 5. Deploy the built image to Cloud Run:

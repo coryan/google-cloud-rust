@@ -1,4 +1,4 @@
-# Copyright 2026 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,13 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/${PROJECT_ID}/cloud-run-apps/demo-apphub', '-f', 'demos/apphub/Dockerfile', '.']
-    automapSubstitutions: true
-
-images:
-  - 'us-central1-docker.pkg.dev/${PROJECT_ID}/cloud-run-apps/demo-apphub'
-
-options:
-  machineType: 'E2_HIGHCPU_32'
+# A .ignore file for Docker
+target/
