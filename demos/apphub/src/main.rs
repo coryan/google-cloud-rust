@@ -30,6 +30,7 @@ const DESCRIPTION: &str = concat!(
 
 mod args;
 mod error;
+mod logs;
 mod observability;
 mod state;
 
@@ -39,12 +40,17 @@ use axum::extract::State;
 use axum::routing;
 use clap::Parser;
 use error::AppError;
+use google_cloud_auth::credentials::Builder as CredentialsBuilder;
 use state::AppState;
 use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    observability::only_logs()?;
+    let args = Args::parse();
+    let credentials = CredentialsBuilder::default()
+        .build()
+        .inspect_err(|e| tracing::error!("Cannot initialize credentials: {e:#?}"))?;
+    observability::exporters(&args, credentials.clone()).await?;
     tracing::info!(key0 = "value0", key1 = "value1", "info 123");
     tracing::warn!(key0 = "value0", key1 = "value1", "warn 234");
     {
@@ -52,11 +58,9 @@ async fn main() -> anyhow::Result<()> {
         tracing::info!("in span");
     }
 
-    let args = Args::parse();
     tracing::info!("Initial configuration: {args:?}");
 
-    let state = AppState::new(args.clone()).await?;
-
+    let state = AppState::new(args.clone(), credentials.clone()).await?;
     let app = Router::new()
         .route("/", routing::get(handler))
         .route("/fortune", routing::get(predict))
