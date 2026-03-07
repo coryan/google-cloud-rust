@@ -53,6 +53,7 @@ const INSTANCE_METADATA_PATH: &str = "/computeMetadata/v1/instance/";
 ///
 /// GAE is unlikely, as there is no Rust runtime for it. Though applications
 /// could deploy with Rust embedded in a language supported by the runtime.
+#[derive(Clone, Debug)]
 pub struct GoogleCloudResourceDetector(Resource);
 
 impl GoogleCloudResourceDetector {

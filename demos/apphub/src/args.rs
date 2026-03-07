@@ -19,11 +19,11 @@ use clap::Parser;
 #[command(version, about, long_about = super::DESCRIPTION)]
 pub struct Args {
     /// The default project name, if not found via resource discovery.
-    #[arg(long, env = "GOOGLE_CLOUD_PROJECT")]
+    #[arg(long, env = "GOOGLE_CLOUD_PROJECT", default_value = "")]
     pub project_id: String,
 
     /// The default project name, if not found via resource discovery.
-    #[arg(long, env = "K_SERVICE", default_value = "demo-apphub")]
+    #[arg(long, env = "K_SERVICE", default_value = "")]
     pub service_name: String,
 
     /// The default port.

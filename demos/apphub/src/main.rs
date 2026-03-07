@@ -30,6 +30,7 @@ const DESCRIPTION: &str = concat!(
 
 mod args;
 mod error;
+mod observability;
 mod state;
 
 use args::Args;
@@ -43,7 +44,14 @@ use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    tracing_subscriber::fmt::init();
+    observability::only_logs()?;
+    tracing::info!(key0 = "value0", key1 = "value1", "info 123");
+    tracing::warn!(key0 = "value0", key1 = "value1", "warn 234");
+    {
+        let _span = tracing::info_span!("blah blah", key2 = "v2").entered();
+        tracing::info!("in span");
+    }
+
     let args = Args::parse();
     tracing::info!("Initial configuration: {args:?}");
 
