@@ -35,7 +35,7 @@ pub async fn exporters(args: &Args, credentials: Credentials) -> anyhow::Result<
         .with_span_events(FmtSpan::NONE)
         .with_level(true)
         .with_thread_ids(true)
-        .event_format(EventFormatter)
+        .event_format(EventFormatter::new(args.project_id.clone()))
         .with_filter(LevelFilter::INFO);
 
     let id = Uuid::new_v4();

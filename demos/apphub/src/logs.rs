@@ -15,6 +15,7 @@
 use opentelemetry::TraceId;
 use serde::Serializer;
 use serde::ser::SerializeMap;
+use serde_json::Serializer as JsonSerializer;
 use std::fmt::Result as FmtResult;
 use tracing::{Event, Subscriber};
 use tracing_opentelemetry::OtelData;
@@ -24,7 +25,16 @@ use tracing_subscriber::fmt::format::{FormatEvent, Writer};
 use tracing_subscriber::fmt::{FmtContext, FormatFields};
 use tracing_subscriber::registry::LookupSpan;
 
-pub struct EventFormatter;
+pub struct EventFormatter {
+    project_id: String,
+}
+
+impl EventFormatter {
+    pub fn new(project_id: String) -> Self {
+        Self { project_id }
+    }
+}
+
 impl<S, N> FormatEvent<S, N> for EventFormatter
 where
     S: Subscriber + for<'a> LookupSpan<'a>,
@@ -40,11 +50,10 @@ where
         S: Subscriber + for<'a> LookupSpan<'a>,
         N: for<'a> FormatFields<'a> + 'static,
     {
-        use serde_json::Serializer;
         let meta = event.metadata();
 
         let mut visit = || {
-            let mut serializer = Serializer::new(WriteAdaptor::new(&mut writer));
+            let mut serializer = JsonSerializer::new(WriteAdaptor::new(&mut writer));
             let mut serializer = serializer.serialize_map(None)?;
             serializer.serialize_entry("timestamp", &chrono::Utc::now().to_rfc3339())?;
             serializer.serialize_entry("severity", &meta.level().as_serde())?;
@@ -57,7 +66,7 @@ where
                         if tid != TraceId::INVALID {
                             serializer.serialize_entry(
                                 "logging.googleapis.com/trace",
-                                &tid.to_string(),
+                                &format!("projects/{}/traces/{tid}", self.project_id),
                             )?;
                             serializer
                                 .serialize_entry("logging.googleapis.com/trace_sampled", &true)?;
