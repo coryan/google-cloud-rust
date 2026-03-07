@@ -531,9 +531,12 @@ dependencies = [
  "clap",
  "google-cloud-aiplatform-v1",
  "google-cloud-auth",
+ "google-cloud-gax",
  "google-cloud-storage",
  "integration-tests-o11y",
+ "thiserror 2.0.18",
  "tokio",
+ "tracing",
  "tracing-subscriber",
 ]
 

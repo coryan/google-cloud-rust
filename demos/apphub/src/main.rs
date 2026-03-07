@@ -29,16 +29,17 @@ const DESCRIPTION: &str = concat!(
 );
 
 mod args;
+mod error;
+mod state;
 
 use args::Args;
 use axum::Router;
-use axum::routing::get;
+use axum::extract::State;
+use axum::routing;
 use clap::Parser;
+use error::AppError;
+use state::AppState;
 use tokio::net::TcpListener;
-
-async fn handler() -> &'static str {
-    "Hello, world!\n"
-}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -46,10 +47,49 @@ async fn main() -> anyhow::Result<()> {
     let args = Args::parse();
     tracing::info!("Initial configuration: {args:?}");
 
-    let app = Router::new().route("/", get(handler));
+    let state = AppState::new(args.clone()).await?;
+
+    let app = Router::new()
+        .route("/", routing::get(handler))
+        .route("/fortune", routing::get(predict))
+        .with_state(state);
     let addr = format!("0.0.0.0:{}", args.port);
     let listener = TcpListener::bind(&addr).await?;
     axum::serve(listener, app).await?;
 
     Ok(())
+}
+
+async fn handler() -> &'static str {
+    "Hello, world!\n"
+}
+
+async fn predict(State(state): State<AppState>) -> anyhow::Result<String, AppError> {
+    use google_cloud_aiplatform_v1::model::{Content, FileData, Part};
+
+    const MODEL: &str = "gemini-2.5-flash";
+    let model = format!(
+        "projects/{}/locations/global/publishers/google/models/{MODEL}",
+        state.args().project_id
+    );
+    let response = state
+        .prediction_service()
+        .generate_content()
+        .set_model(&model)
+        .set_contents([Content::new().set_role("user").set_parts([
+            // [START rust_prompt_and_image_image_part] ANCHOR: prompt-and-image-image-part
+            Part::new().set_file_data(
+                FileData::new()
+                    .set_mime_type("image/jpeg")
+                    .set_file_uri("gs://generativeai-downloads/images/scones.jpg"),
+            ),
+            // [END rust_prompt_and_image_image_part] ANCHOR_END: prompt-and-image-image-part
+            // [START rust_prompt_and_image_prompt_part] ANCHOR: prompt-and-image-prompt-part
+            Part::new().set_text("Describe this picture."),
+            // [END rust_prompt_and_image_prompt_part] ANCHOR_END: prompt-and-image-prompt-part
+        ])])
+        .send()
+        .await?;
+
+    Ok(format!("{response:#?}"))
 }
