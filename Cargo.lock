@@ -523,6 +523,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "demo-apphub"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "clap",
+ "google-cloud-aiplatform-v1",
+ "google-cloud-auth",
+ "google-cloud-storage",
+ "integration-tests-o11y",
+ "tokio",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "der"
 version = "0.7.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"

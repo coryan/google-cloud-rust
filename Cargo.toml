@@ -59,6 +59,7 @@ default-members = [
 ]
 
 members = [
+  "demos/apphub",
   "guide/samples",
   "src/auth",
   "src/bigquery",
