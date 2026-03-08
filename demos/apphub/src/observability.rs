@@ -23,7 +23,6 @@ use opentelemetry::KeyValue;
 use opentelemetry_sdk::Resource;
 use opentelemetry_sdk::propagation::TraceContextPropagator;
 use opentelemetry_sdk::resource::ResourceDetector;
-use tracing::level_filters::LevelFilter;
 use tracing_subscriber::fmt::format::FmtSpan;
 use tracing_subscriber::{EnvFilter, Registry};
 use uuid::Uuid;
@@ -66,8 +65,7 @@ pub async fn exporters(args: &Args, credentials: Credentials) -> anyhow::Result<
     tracing::subscriber::set_global_default(
         Registry::default()
             .with(logging_layer.with_filter(EnvFilter::from_default_env()))
-            .with(otlp_layer(tracer_provider.clone()))
-            .with(tracing_subscriber::fmt::layer()), // Also log to stdout,
+            .with(otlp_layer(tracer_provider.clone())), // Also log to stdout,
     )?;
     opentelemetry::global::set_text_map_propagator(TraceContextPropagator::new());
     opentelemetry::global::set_meter_provider(meter_provider.clone());
