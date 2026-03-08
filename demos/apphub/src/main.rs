@@ -100,26 +100,24 @@ async fn predict(
         .generate_content()
         .set_model(&model)
         .set_contents([Content::new().set_role("user").set_parts([
-            // [START rust_prompt_and_image_image_part] ANCHOR: prompt-and-image-image-part
             Part::new().set_file_data(
                 FileData::new()
                     .set_mime_type("image/jpeg")
                     .set_file_uri("gs://generativeai-downloads/images/scones.jpg"),
             ),
-            // [END rust_prompt_and_image_image_part] ANCHOR_END: prompt-and-image-image-part
-            // [START rust_prompt_and_image_prompt_part] ANCHOR: prompt-and-image-prompt-part
             Part::new().set_text("Describe this picture."),
-            // [END rust_prompt_and_image_prompt_part] ANCHOR_END: prompt-and-image-prompt-part
         ])])
         .send()
         .instrument(span.clone())
         .await;
 
     let span = span.entered();
-    match rand::rng().random_range(0..100) {
-        n if n % 15 == 0 => tracing::error!("fizzbuzz: a random error to keep things interesting"),
-        n if n % 5 == 0 => tracing::warn!("fizz: a random warning to spice things up"),
-        n if n % 3 == 0 => tracing::info!("buzz: and some infos too!"),
+    match rand::rng().random_range(0..1000) {
+        n if n % 37 * 31 == 0 => {
+            tracing::error!("fizzbuzz: a random error to keep things interesting")
+        }
+        n if n % 31 == 0 => tracing::warn!("fizz: a random warning to spice things up"),
+        n if n % 37 == 0 => tracing::info!("buzz: and some infos too!"),
         _ => { /* silence is golden */ }
     }
     match response {
