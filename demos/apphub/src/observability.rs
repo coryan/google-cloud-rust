@@ -24,8 +24,8 @@ use opentelemetry_sdk::Resource;
 use opentelemetry_sdk::propagation::TraceContextPropagator;
 use opentelemetry_sdk::resource::ResourceDetector;
 use tracing::level_filters::LevelFilter;
-use tracing_subscriber::Registry;
 use tracing_subscriber::fmt::format::FmtSpan;
+use tracing_subscriber::{EnvFilter, Registry};
 use uuid::Uuid;
 
 /// Configure exporters for traces, logs, and metrics.
@@ -36,16 +36,18 @@ pub async fn exporters(args: &Args, credentials: Credentials) -> anyhow::Result<
         .with_span_events(FmtSpan::NONE)
         .with_level(true)
         .with_thread_ids(true)
-        .event_format(EventFormatter::new(args.project_id.clone()))
-        .with_filter(LevelFilter::INFO);
+        .event_format(EventFormatter::new(args.project_id.clone()));
 
-    let task = TaskDetector::new();
+    let node = GenericNodeDetector::new();
     let detector = GoogleCloudResourceDetector::builder()
-        .with_fallback(task.detect())
+        .with_fallback(node.detect())
         .build()
         .await?;
     if args.project_id.is_empty() || args.service_name.is_empty() {
-        tracing::subscriber::set_global_default(Registry::default().with(logging_layer))?;
+        tracing::subscriber::set_global_default(
+            Registry::default().with(logging_layer.with_filter(EnvFilter::from_default_env())),
+        )?;
+        tracing::warn!("observability disabled");
         return Ok(());
     }
     let project_id = &args.project_id;
@@ -57,28 +59,32 @@ pub async fn exporters(args: &Args, credentials: Credentials) -> anyhow::Result<
         .await?;
     let meter_provider = MeterProviderBuilder::new(project_id, service)
         .with_credentials(credentials.clone())
-        .with_detector(task)
+        .with_detector(node.clone())
         .build()
         .await?;
 
     tracing::subscriber::set_global_default(
         Registry::default()
-            .with(logging_layer)
-            .with(otlp_layer(tracer_provider.clone())),
+            .with(logging_layer.with_filter(EnvFilter::from_default_env()))
+            .with(otlp_layer(tracer_provider.clone()))
+            .with(tracing_subscriber::fmt::layer()), // Also log to stdout,
     )?;
     opentelemetry::global::set_text_map_propagator(TraceContextPropagator::new());
     opentelemetry::global::set_meter_provider(meter_provider.clone());
+
+    tracing::info!("Detected resource: {:?}", detector.detect());
+    tracing::info!("Detected node: {:?}", node.detect());
     Ok(())
 }
 
 #[derive(Clone, Debug)]
-struct TaskDetector {
+struct GenericNodeDetector {
     id: String,
     location: String,
     namespace: String,
 }
 
-impl TaskDetector {
+impl GenericNodeDetector {
     pub fn new() -> Self {
         let id = Uuid::new_v4().to_string();
         Self {
@@ -89,7 +95,7 @@ impl TaskDetector {
     }
 }
 
-impl ResourceDetector for TaskDetector {
+impl ResourceDetector for GenericNodeDetector {
     fn detect(&self) -> Resource {
         Resource::builder_empty()
             .with_attributes([
