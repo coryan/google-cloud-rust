@@ -538,6 +538,7 @@ dependencies = [
  "opentelemetry",
  "opentelemetry-http",
  "opentelemetry_sdk",
+ "rand 0.10.0",
  "serde",
  "serde_json",
  "thiserror 2.0.18",

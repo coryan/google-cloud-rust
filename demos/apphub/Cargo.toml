@@ -38,6 +38,7 @@ integration-tests-o11y     = { path = "../../tests/o11y" }
 opentelemetry              = { workspace = true, features = ["trace"] }
 opentelemetry-http         = { workspace = true }
 opentelemetry_sdk          = { workspace = true }
+rand.workspace             = true
 serde                      = { workspace = true }
 serde_json.workspace       = true
 thiserror.workspace        = true

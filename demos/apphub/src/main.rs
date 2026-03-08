@@ -77,6 +77,7 @@ async fn predict(
 ) -> anyhow::Result<String, AppError> {
     use google_cloud_aiplatform_v1::model::{Content, FileData, Part};
     use opentelemetry_http::HeaderExtractor;
+    use rand::RngExt;
 
     let extractor = HeaderExtractor(&headers);
     let remote_context =
@@ -115,6 +116,12 @@ async fn predict(
         .await;
 
     let span = span.entered();
+    match rand::rng().random_range(0..100) {
+        n if n % 15 == 0 => tracing::error!("fizzbuzz: a random error to keep things interesting"),
+        n if n % 5 == 0 => tracing::warn!("fizz: a random warning to spice things up"),
+        n if n % 3 == 0 => tracing::warn!("buzz: and some infos too!"),
+        _ => { /* silence is golden */ }
+    }
     match response {
         Ok(r) => {
             span.record("otel.status_code", "OK");
