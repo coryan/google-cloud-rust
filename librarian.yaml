@@ -141,6 +141,7 @@ libraries:
     version: 1.9.0
     copyright_year: "2025"
     rust:
+      detailed_tracing_attributes: true
       disabled_rustdoc_warnings:
         - redundant_explicit_links
         - broken_intra_doc_links
