@@ -19,35 +19,52 @@ use google_cloud_aiplatform_v1::client::PredictionService;
 use google_cloud_auth::credentials::Credentials;
 use google_cloud_gax::retry_policy::{Aip194Strict, RetryPolicyExt};
 
+const MODEL: &str = "gemini-2.5-flash";
+
 #[derive(Clone, Debug)]
 pub struct AppState {
-    args: Args,
     prediction_service: PredictionService,
+    model: String,
 }
 
 impl AppState {
     pub async fn new(args: Args, credentials: Credentials) -> anyhow::Result<Self> {
-        let prediction_service = PredictionService::builder()
+        let builder = PredictionService::builder()
             .with_credentials(credentials)
             .with_retry_policy(
                 Aip194Strict
                     .continue_on_too_many_requests()
                     .with_time_limit(Duration::from_secs(15)),
             )
-            .with_tracing()
-            .build()
-            .await?;
-        Ok(Self {
-            args,
-            prediction_service,
-        })
-    }
+            .with_tracing();
+        let (builder, model) = if let Some(region) = args.regional.as_ref() {
+            let model = format!(
+                "projects/{}/locations/{region}/publishers/google/models/{MODEL}",
+                args.project_id
+            );
+            let builder =
+                builder.with_endpoint(format!("https://{region}-aiplatform.googleapis.com"));
+            (builder, model)
+        } else {
+            let model = format!(
+                "projects/{}/locations/global/publishers/google/models/{MODEL}",
+                args.project_id
+            );
+            (builder, model)
+        };
 
-    pub fn args(&self) -> &Args {
-        &self.args
+        let prediction_service = builder.build().await?;
+        Ok(Self {
+            prediction_service,
+            model,
+        })
     }
 
     pub fn prediction_service(&self) -> &PredictionService {
         &self.prediction_service
+    }
+
+    pub fn model(&self) -> &str {
+        self.model.as_str()
     }
 }

@@ -29,4 +29,8 @@ pub struct Args {
     /// The default port.
     #[arg(long, env = "PORT", default_value = "8080")]
     pub port: String,
+
+    /// Use the regional version of Vertex AI.
+    #[arg(long)]
+    pub regional: Option<String>,
 }

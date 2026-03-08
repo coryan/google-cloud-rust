@@ -90,15 +90,10 @@ async fn predict(
         .set_parent(remote_context)
         .inspect_err(|e| tracing::error!("cannot set context: {e:?}"));
 
-    const MODEL: &str = "gemini-2.5-flash";
-    let model = format!(
-        "projects/{}/locations/global/publishers/google/models/{MODEL}",
-        state.args().project_id
-    );
     let response = state
         .prediction_service()
         .generate_content()
-        .set_model(&model)
+        .set_model(state.model())
         .set_contents([Content::new().set_role("user").set_parts([
             Part::new().set_file_data(
                 FileData::new()
