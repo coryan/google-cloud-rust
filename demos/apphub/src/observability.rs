@@ -22,6 +22,7 @@ use integration_tests_o11y::tracing::layer as otlp_layer;
 use opentelemetry::KeyValue;
 use opentelemetry_sdk::Resource;
 use opentelemetry_sdk::propagation::TraceContextPropagator;
+use opentelemetry_sdk::resource::ResourceDetector;
 use tracing::level_filters::LevelFilter;
 use tracing_subscriber::Registry;
 use tracing_subscriber::fmt::format::FmtSpan;
@@ -38,16 +39,9 @@ pub async fn exporters(args: &Args, credentials: Credentials) -> anyhow::Result<
         .event_format(EventFormatter::new(args.project_id.clone()))
         .with_filter(LevelFilter::INFO);
 
-    let id = Uuid::new_v4();
-    let development = Resource::builder_empty()
-        .with_attributes([
-            KeyValue::new("location", "us-central1"),
-            KeyValue::new("namespace", "google-cloud-rust"),
-            KeyValue::new("node_id", id.to_string()),
-        ])
-        .build();
+    let task = TaskDetector::new();
     let detector = GoogleCloudResourceDetector::builder()
-        .with_fallback(development)
+        .with_fallback(task.detect())
         .build()
         .await?;
     if args.project_id.is_empty() || args.service_name.is_empty() {
@@ -63,7 +57,7 @@ pub async fn exporters(args: &Args, credentials: Credentials) -> anyhow::Result<
         .await?;
     let meter_provider = MeterProviderBuilder::new(project_id, service)
         .with_credentials(credentials.clone())
-        .with_detector(detector.clone())
+        .with_detector(task)
         .build()
         .await?;
 
@@ -75,4 +69,34 @@ pub async fn exporters(args: &Args, credentials: Credentials) -> anyhow::Result<
     opentelemetry::global::set_text_map_propagator(TraceContextPropagator::new());
     opentelemetry::global::set_meter_provider(meter_provider.clone());
     Ok(())
+}
+
+#[derive(Clone, Debug)]
+struct TaskDetector {
+    id: String,
+    location: String,
+    namespace: String,
+}
+
+impl TaskDetector {
+    pub fn new() -> Self {
+        let id = Uuid::new_v4().to_string();
+        Self {
+            id,
+            location: "us-central1".to_string(),
+            namespace: "google-cloud-rust".to_string(),
+        }
+    }
+}
+
+impl ResourceDetector for TaskDetector {
+    fn detect(&self) -> Resource {
+        Resource::builder_empty()
+            .with_attributes([
+                KeyValue::new("location", self.location.clone()),
+                KeyValue::new("namespace", self.namespace.clone()),
+                KeyValue::new("node_id", self.id.clone()),
+            ])
+            .build()
+    }
 }
