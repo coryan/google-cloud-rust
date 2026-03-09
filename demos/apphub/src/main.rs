@@ -107,19 +107,8 @@ async fn predict(
         .await;
 
     let span = span.entered();
-    match rand::rng().random_range(0..1000) {
-        n if n % 37 * 31 == 0 => {
-            tracing::error!("fizzbuzz: a random error to keep things interesting")
-        }
-        n if n % 31 == 0 => tracing::warn!("fizz: a random warning to spice things up"),
-        n if n % 37 == 0 => tracing::info!("buzz: and some infos too!"),
-        _ => { /* silence is golden */ }
-    }
     match response {
-        Ok(r) => {
-            span.record("otel.status_code", "OK");
-            Ok(format!("{:#?}", r.candidates))
-        }
+        Ok(r) => Ok(format!("{:#?}", r.candidates)),
         Err(e) => {
             tracing::error!("response error: {e:?}");
             span.record("otel.status_code", "ERROR");

@@ -34,7 +34,7 @@ impl AppState {
             .with_retry_policy(
                 Aip194Strict
                     .continue_on_too_many_requests()
-                    .with_time_limit(Duration::from_secs(15)),
+                    .with_time_limit(Duration::from_secs(45)),
             )
             .with_tracing();
         let (builder, model) = if let Some(region) = args.regional.as_ref() {
