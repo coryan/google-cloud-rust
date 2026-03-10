@@ -377,6 +377,29 @@ impl ReqwestClient {
             Ok(CacheableResource::New { data, .. }) => builder.headers(data),
             Ok(CacheableResource::NotModified) => unreachable!("headers are not cached"),
         };
+        #[cfg(google_cloud_unstable_tracing)]
+        let builder = {
+            use opentelemetry::global;
+            use tracing_opentelemetry::OpenTelemetrySpanExt;
+            let current_span = tracing::Span::current();
+            let context = current_span.context();
+            struct Injector(Option<reqwest::RequestBuilder>);
+            impl opentelemetry::propagation::Injector for Injector {
+                fn set(&mut self, key: &str, value: String) {
+                    let builder = self.0.take().unwrap().header(key, value);
+                    self.0 = Some(builder);
+                }
+            }
+
+            let mut injector = Injector(Some(builder));
+
+            // Use the global propagator to inject the context into the headers
+            global::get_text_map_propagator(|propagator| {
+                propagator.inject_context(&context, &mut injector);
+            });
+            injector.0.unwrap()
+        };
+
         builder.build().map_err(map_send_error)
     }
 
