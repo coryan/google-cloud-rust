@@ -77,7 +77,6 @@ async fn predict(
 ) -> anyhow::Result<String, AppError> {
     use google_cloud_aiplatform_v1::model::{Content, FileData, Part};
     use opentelemetry_http::HeaderExtractor;
-    use rand::RngExt;
 
     let extractor = HeaderExtractor(&headers);
     let remote_context =
