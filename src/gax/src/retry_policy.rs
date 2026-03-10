@@ -53,6 +53,7 @@
 //!
 //! [idempotent]: https://en.wikipedia.org/wiki/Idempotence
 
+mod attempt_timeout;
 mod too_many_requests;
 
 use crate::error::Error;
@@ -62,6 +63,7 @@ use crate::throttle_result::ThrottleResult;
 use std::sync::Arc;
 use std::time::Duration;
 
+pub use attempt_timeout::AttemptTimeout;
 pub use too_many_requests::TooManyRequests;
 
 /// Determines how errors are handled in the retry loop.
@@ -224,6 +226,10 @@ pub trait RetryPolicyExt: RetryPolicy + Sized {
     /// [ResourceExhausted]: crate::error::rpc::Code::ResourceExhausted
     fn continue_on_too_many_requests(self) -> TooManyRequests<Self> {
         TooManyRequests::new(self)
+    }
+
+    fn continue_on_attempt_timeout(self) -> AttemptTimeout<Self> {
+        AttemptTimeout::new(self)
     }
 }
 
