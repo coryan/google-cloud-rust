@@ -34,6 +34,8 @@ mod logs;
 mod observability;
 mod state;
 
+use std::time::Duration;
+
 use args::Args;
 use axum::Router;
 use axum::extract::State;
@@ -42,6 +44,7 @@ use axum::routing;
 use clap::Parser;
 use error::AppError;
 use google_cloud_auth::credentials::Builder as CredentialsBuilder;
+use google_cloud_gax::options::RequestOptionsBuilder;
 use state::AppState;
 use tokio::net::TcpListener;
 use tracing::Instrument;
@@ -101,6 +104,7 @@ async fn predict(
             ),
             Part::new().set_text("Describe this picture."),
         ])])
+        .with_attempt_timeout(Duration::from_secs(15))
         .send()
         .instrument(span.clone())
         .await;
