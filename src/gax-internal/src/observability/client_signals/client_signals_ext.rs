@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::observability::{RequestRecorder, client_signals::with_client_signals::WithRecorder};
+
 use super::{DurationMetric, RequestStart, WithClientSignals};
 use google_cloud_gax::error::Error;
 use std::future::Future;
@@ -58,6 +60,13 @@ pub trait ClientSignalsExt: Sized + sealed::ClientSignalsExt {
         start: RequestStart,
         span: Span,
     ) -> WithClientSignals<Self::Inner>;
+
+    fn with_recorder(
+        self,
+        recorder: RequestRecorder,
+        metric: DurationMetric,
+        span: Span,
+    ) -> WithRecorder<Self::Inner>;
 }
 
 mod sealed {
@@ -78,6 +87,15 @@ where
         span: Span,
     ) -> WithClientSignals<Self::Inner> {
         WithClientSignals::new(self, metric, start, span)
+    }
+
+    fn with_recorder(
+        self,
+        recorder: RequestRecorder,
+        t3_metric: DurationMetric,
+        t3_span: Span,
+    ) -> WithRecorder<Self::Inner> {
+        WithRecorder::new(self, recorder, t3_metric, t3_span)
     }
 }
 

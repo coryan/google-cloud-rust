@@ -15,6 +15,7 @@
 use crate::options::InstrumentationClientInfo;
 use google_cloud_gax::options::RequestOptions;
 use std::time::Duration;
+use tokio::time::Instant;
 
 /// Captures the "start of request" information needed to generate client request signals.
 ///
@@ -45,7 +46,7 @@ use std::time::Duration;
 /// timestamp and the core attributes of the request.
 #[derive(Clone, Copy, Debug)]
 pub struct RequestStart {
-    start: tokio::time::Instant,
+    start: Instant,
     info: InstrumentationClientInfo,
     url_template: &'static str,
     method: &'static str,
@@ -59,7 +60,7 @@ impl RequestStart {
         method: &'static str,
     ) -> Self {
         use google_cloud_gax::options::internal::{PathTemplate, RequestOptionsExt};
-        let start = tokio::time::Instant::now();
+        let start = Instant::now();
         let url_template = options
             .get_extension::<PathTemplate>()
             .map(|p| p.0)
@@ -67,6 +68,21 @@ impl RequestStart {
         Self {
             start,
             info: *info,
+            method,
+            url_template,
+        }
+    }
+
+    /// Creates a new instance, capturing the relevant data.
+    pub(crate) fn from_parts(
+        start: Instant,
+        info: InstrumentationClientInfo,
+        url_template: &'static str,
+        method: &'static str,
+    ) -> Self {
+        Self {
+            start,
+            info,
             method,
             url_template,
         }

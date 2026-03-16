@@ -17,11 +17,12 @@
 //! This is a private module, it is not exposed in the public API.
 
 use super::DurationMetric;
+use super::RequestRecorder;
 use super::RequestStart;
 use crate::observability::attributes::RPC_SYSTEM_HTTP;
 use crate::observability::attributes::keys::OTEL_STATUS_DESCRIPTION;
 use crate::observability::attributes::keys::{
-    OTEL_STATUS_CODE, RPC_RESPONSE_STATUS_CODE, RPC_SYSTEM_NAME,
+    OTEL_STATUS_CODE, RPC_RESPONSE_STATUS_CODE, RPC_SYSTEM_NAME, SERVER_ADDRESS, SERVER_PORT,
 };
 use crate::observability::attributes::otel_status_codes;
 use crate::observability::errors::ErrorType;
@@ -158,6 +159,86 @@ where
                     );
                 }
                 this.metric.record_error(&this.start, error)
+            }
+        }
+        Poll::Ready(output)
+    }
+}
+
+#[must_use = "futures do nothing unless you `.await` or poll them"]
+#[pin_project]
+pub struct WithRecorder<F> {
+    #[pin]
+    inner: F,
+    #[pin]
+    recorder: RequestRecorder,
+    #[pin]
+    t3_metric: DurationMetric,
+    #[pin]
+    t3_span: Span,
+}
+
+impl<F, R> WithRecorder<Instrumented<F>>
+where
+    F: Future<Output = Result<R, Error>>,
+{
+    pub(crate) fn new(
+        inner: F,
+        recorder: RequestRecorder,
+        t3_metric: DurationMetric,
+        t3_span: Span,
+    ) -> Self {
+        let inner = inner.instrument(t3_span.clone());
+        Self {
+            inner,
+            recorder,
+            t3_metric,
+            t3_span,
+        }
+    }
+}
+
+impl<F, R> Future for WithRecorder<Instrumented<F>>
+where
+    F: Future<Output = Result<R, Error>>,
+{
+    type Output = <F as Future>::Output;
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        let this = self.project();
+        let output = futures::ready!(this.inner.poll(cx));
+        // Record the metric and log the value in the context of the span.
+        let span = this.t3_span.clone().entered();
+        let snapshot = this.recorder.t3_snapshot();
+        if let Some(address) = snapshot.server_address() {
+            span.record(SERVER_ADDRESS, address.ip().to_string());
+            span.record(SERVER_PORT, address.port().to_string());
+        }
+
+        match &output {
+            Ok(_) => this.t3_metric.record_ok(&snapshot.t3_start()),
+            Err(error) => {
+                let error_type = ErrorType::from_gax_error(error);
+                tracing::record_all!(
+                    span,
+                    { OTEL_STATUS_CODE } = otel_status_codes::ERROR,
+                    { OTEL_STATUS_DESCRIPTION } = error.to_string(),
+                    { ERROR_TYPE } = error_type.as_str()
+                );
+                let rpc_status_code = error.status().map(|s| s.code.name());
+                // TODO(#4795) - use the correct name and target
+                tracing::event!(
+                    name: NAME,
+                    target: TARGET,
+                    tracing::Level::ERROR,
+                    { RPC_SYSTEM_NAME } = snapshot.rpc_system(),
+                    { URL_DOMAIN } = snapshot.default_host(),
+                    { URL_TEMPLATE } = snapshot.url_template(),
+                    { RPC_METHOD } = snapshot.rpc_method(),
+                    { RPC_RESPONSE_STATUS_CODE } = rpc_status_code,
+                    { HTTP_RESPONSE_STATUS_CODE } = snapshot.http_status_code(),
+                    "{error:?}"
+                );
+                this.t3_metric.record_error(&snapshot.t3_start(), error)
             }
         }
         Poll::Ready(output)
