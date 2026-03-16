@@ -261,27 +261,25 @@ impl ReqwestClient {
         options: RequestOptions,
         attempt_info: AttemptInfo,
     ) -> Result<reqwest::Response> {
-        use crate::observability::HttpResultExt;
+        use crate::observability::{HttpResultExt, RequestRecorder};
+
         let span = create_http_attempt_span(
             &request,
             &options,
             self.instrumentation,
             attempt_info.attempt_count,
         );
-        let (method, url) = (request.method().clone(), request.url().clone());
+        let recorder = RequestRecorder::current();
+        if let Some(recorder) = &recorder {
+            recorder.on_http_request(&options, &request);
+        }
         self.execute_http_inner(request)
             .instrument(span.clone())
             .await
-            .record_http(&span, attempt_info.attempt_count, method, url)
+            .record_http(&span, recorder)
     }
 
-    #[cfg_attr(not(google_cloud_unstable_tracing), allow(unused_mut))]
-    async fn execute_http_inner(&self, mut request: reqwest::Request) -> Result<reqwest::Response> {
-        #[cfg(google_cloud_unstable_tracing)]
-        crate::observability::propagation::inject_context(
-            &tracing::Span::current(),
-            request.headers_mut(),
-        );
+    async fn execute_http_inner(&self, request: reqwest::Request) -> Result<reqwest::Response> {
         self.inner.execute(request).await.map_err(map_send_error)
     }
 
@@ -410,25 +408,20 @@ impl ReqwestClient {
         options: &RequestOptions,
         attempt_count: u32,
     ) -> Result<reqwest::Response> {
-        use crate::observability::HttpResultExt;
+        use crate::observability::{HttpResultExt, RequestRecorder};
+
         let span = create_http_attempt_span(&request, options, self.instrumentation, attempt_count);
-        let (method, url) = (request.method().clone(), request.url().clone());
+        let recorder = RequestRecorder::current();
+        if let Some(recorder) = &recorder {
+            recorder.on_http_request(options, &request);
+        }
         self.request_attempt_inner(request)
             .instrument(span.clone())
             .await
-            .record_http(&span, attempt_count, method, url)
+            .record_http(&span, recorder)
     }
 
-    #[cfg_attr(not(google_cloud_unstable_tracing), allow(unused_mut))]
-    async fn request_attempt_inner(
-        &self,
-        mut request: reqwest::Request,
-    ) -> Result<reqwest::Response> {
-        #[cfg(google_cloud_unstable_tracing)]
-        crate::observability::propagation::inject_context(
-            &tracing::Span::current(),
-            request.headers_mut(),
-        );
+    async fn request_attempt_inner(&self, request: reqwest::Request) -> Result<reqwest::Response> {
         let response = self.inner.execute(request).await.map_err(map_send_error)?;
         if !response.status().is_success() {
             return self::to_http_error(response).await;
@@ -792,16 +785,13 @@ mod tests {
         } // T4 exit
 
         let response = resp_from_code_content(reqwest::StatusCode::OK, "{}").unwrap();
-        let url = "https://example.com".parse().unwrap();
 
         // Manually call the enrichment function, mimicking request_attempt
         let response = {
             use crate::observability::HttpResultExt;
 
             let _enter = t3_span.enter();
-            Ok(response)
-                .record_http(&t4_span, 1, Method::GET, url)
-                .unwrap()
+            Ok(response).record_http(&t4_span, None).unwrap()
         };
 
         let _ = super::to_http_response::<wkt::Empty>(response)

@@ -13,14 +13,13 @@
 // limitations under the License.
 
 #[cfg(google_cloud_unstable_tracing)]
-use super::tracing::TracingResponse;
+mod o11y;
+
 use crate::Result;
 use crate::model::{Object, ReadObjectRequest};
 use crate::model_ext::WriteObjectRequest;
 use crate::read_object::ReadObjectResponse;
 use crate::storage::client::StorageInner;
-#[cfg(google_cloud_unstable_tracing)]
-use crate::storage::info::INSTRUMENTATION;
 use crate::storage::perform_upload::PerformUpload;
 use crate::storage::read_object::Reader;
 use crate::storage::request_options::RequestOptions;
@@ -29,11 +28,7 @@ use crate::{
     model_ext::OpenObjectRequest, object_descriptor::ObjectDescriptor,
     storage::bidi::connector::Connector, storage::bidi::transport::ObjectDescriptorTransport,
 };
-#[cfg(google_cloud_unstable_tracing)]
-use gaxi::observability::ResultExt;
 use std::sync::Arc;
-#[cfg(google_cloud_unstable_tracing)]
-use tracing::Instrument;
 
 /// An implementation of [`stub::Storage`][crate::storage::stub::Storage] that
 /// interacts with the Cloud Storage service.
@@ -54,6 +49,8 @@ use tracing::Instrument;
 pub struct Storage {
     inner: Arc<StorageInner>,
     tracing: bool,
+    #[cfg(google_cloud_unstable_tracing)]
+    metric: o11y::DurationMetric,
 }
 
 impl Storage {
@@ -62,6 +59,17 @@ impl Storage {
         Self::new(inner, false)
     }
 
+    #[cfg(google_cloud_unstable_tracing)]
+    pub(crate) fn new(inner: Arc<StorageInner>, tracing: bool) -> Arc<Self> {
+        let metric = o11y::duration_metric();
+        Arc::new(Self {
+            inner,
+            tracing,
+            metric,
+        })
+    }
+
+    #[cfg(not(google_cloud_unstable_tracing))]
     pub(crate) fn new(inner: Arc<StorageInner>, tracing: bool) -> Arc<Self> {
         Arc::new(Self { inner, tracing })
     }
@@ -87,13 +95,17 @@ impl Storage {
     ) -> Result<ReadObjectResponse> {
         #[cfg(google_cloud_unstable_tracing)]
         {
-            let span =
-                gaxi::client_request_span!("client::Storage", "read_object", &INSTRUMENTATION);
-            let response = self
-                .read_object_plain(request, options)
-                .instrument(span.clone())
-                .await
-                .record_in_span(&span)?;
+            use super::tracing::TracingResponse;
+            use o11y::ClientSignalsExt;
+
+            let (span, recorder) = o11y::storage_client_request!("read_object");
+            let response = recorder
+                .record(self.read_object_plain(request, options).with_recorder(
+                    recorder.clone(),
+                    self.metric.clone(),
+                    span.clone(),
+                ))
+                .await?;
             let inner = TracingResponse::new(response.into_parts(), span);
             let response = ReadObjectResponse::new(Box::new(inner));
             Ok(response)
@@ -134,12 +146,15 @@ impl Storage {
     {
         #[cfg(google_cloud_unstable_tracing)]
         {
-            let span =
-                gaxi::client_request_span!("client::Storage", "write_object", &INSTRUMENTATION);
-            self.write_object_buffered_plain(payload, request, options)
-                .instrument(span.clone())
+            use o11y::ClientSignalsExt;
+
+            let (span, recorder) = o11y::storage_client_request!("write_object");
+            recorder
+                .record(
+                    self.write_object_buffered_plain(payload, request, options)
+                        .with_recorder(recorder.clone(), self.metric.clone(), span.clone()),
+                )
                 .await
-                .record_in_span(&span)
         }
         #[cfg(not(google_cloud_unstable_tracing))]
         self.write_object_buffered_plain(payload, request, options)
@@ -178,12 +193,15 @@ impl Storage {
     {
         #[cfg(google_cloud_unstable_tracing)]
         {
-            let span =
-                gaxi::client_request_span!("client::Storage", "write_object", &INSTRUMENTATION);
-            self.write_object_unbuffered_plain(payload, request, options)
-                .instrument(span.clone())
+            use o11y::ClientSignalsExt;
+
+            let (span, recorder) = o11y::storage_client_request!("write_object");
+            recorder
+                .record(
+                    self.write_object_unbuffered_plain(payload, request, options)
+                        .with_recorder(recorder.clone(), self.metric.clone(), span.clone()),
+                )
                 .await
-                .record_in_span(&span)
         }
         #[cfg(not(google_cloud_unstable_tracing))]
         self.write_object_unbuffered_plain(payload, request, options)
@@ -209,13 +227,17 @@ impl Storage {
     ) -> Result<(ObjectDescriptor, Vec<ReadObjectResponse>)> {
         #[cfg(google_cloud_unstable_tracing)]
         {
-            let span =
-                gaxi::client_request_span!("client::Storage", "open_object", &INSTRUMENTATION);
+            use o11y::ClientSignalsExt;
+
+            let (span, recorder) = o11y::storage_client_request!("open_object");
             // TODO(#3178) - wrap descriptor and responses with tracing decorators.
-            self.open_object_plain(request, options)
-                .instrument(span.clone())
+            recorder
+                .record(self.open_object_plain(request, options).with_recorder(
+                    recorder.clone(),
+                    self.metric.clone(),
+                    span.clone(),
+                ))
                 .await
-                .record_in_span(&span)
         }
         #[cfg(not(google_cloud_unstable_tracing))]
         self.open_object_plain(request, options).await
