@@ -96,15 +96,14 @@ impl Storage {
         #[cfg(google_cloud_unstable_tracing)]
         {
             use super::tracing::TracingResponse;
-            use o11y::ClientSignalsExt;
 
             let (span, recorder) = o11y::storage_client_request!("read_object");
             let response = recorder
-                .record(self.read_object_plain(request, options).with_recorder(
-                    recorder.clone(),
+                .t3_scope(
                     self.metric.clone(),
                     span.clone(),
-                ))
+                    self.read_object_plain(request, options),
+                )
                 .await?;
             let inner = TracingResponse::new(response.into_parts(), span);
             let response = ReadObjectResponse::new(Box::new(inner));
@@ -146,13 +145,12 @@ impl Storage {
     {
         #[cfg(google_cloud_unstable_tracing)]
         {
-            use o11y::ClientSignalsExt;
-
             let (span, recorder) = o11y::storage_client_request!("write_object");
             recorder
-                .record(
-                    self.write_object_buffered_plain(payload, request, options)
-                        .with_recorder(recorder.clone(), self.metric.clone(), span.clone()),
+                .t3_scope(
+                    self.metric.clone(),
+                    span,
+                    self.write_object_buffered_plain(payload, request, options),
                 )
                 .await
         }
@@ -193,13 +191,12 @@ impl Storage {
     {
         #[cfg(google_cloud_unstable_tracing)]
         {
-            use o11y::ClientSignalsExt;
-
             let (span, recorder) = o11y::storage_client_request!("write_object");
             recorder
-                .record(
-                    self.write_object_unbuffered_plain(payload, request, options)
-                        .with_recorder(recorder.clone(), self.metric.clone(), span.clone()),
+                .t3_scope(
+                    self.metric.clone(),
+                    span,
+                    self.write_object_unbuffered_plain(payload, request, options),
                 )
                 .await
         }
@@ -227,16 +224,14 @@ impl Storage {
     ) -> Result<(ObjectDescriptor, Vec<ReadObjectResponse>)> {
         #[cfg(google_cloud_unstable_tracing)]
         {
-            use o11y::ClientSignalsExt;
-
             let (span, recorder) = o11y::storage_client_request!("open_object");
             // TODO(#3178) - wrap descriptor and responses with tracing decorators.
             recorder
-                .record(self.open_object_plain(request, options).with_recorder(
-                    recorder.clone(),
+                .t3_scope(
                     self.metric.clone(),
-                    span.clone(),
-                ))
+                    span,
+                    self.open_object_plain(request, options),
+                )
                 .await
         }
         #[cfg(not(google_cloud_unstable_tracing))]

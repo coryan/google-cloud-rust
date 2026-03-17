@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use crate::storage::info::INSTRUMENTATION;
-pub use gaxi::observability::{ClientSignalsExt, DurationMetric};
+pub use gaxi::observability::DurationMetric;
 
 pub fn duration_metric() -> DurationMetric {
     DurationMetric::new(&INSTRUMENTATION)

@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::observability::RequestStart;
+use crate::observability::client_signals::with_client_signals::WithRecorder;
+use crate::observability::{ClientSignalsExt, DurationMetric, RequestStart};
 use crate::options::InstrumentationClientInfo;
 #[cfg(feature = "_internal-http-client")]
 use google_cloud_gax::error::Error;
@@ -22,6 +23,8 @@ use reqwest::Method;
 use std::net::SocketAddr;
 use std::sync::{Arc, Mutex};
 use tokio::time::Instant;
+use tracing::Span;
+use tracing::instrument::Instrumented;
 
 tokio::task_local! {
     static RECORDER: RequestRecorder;
@@ -55,11 +58,17 @@ impl RequestRecorder {
         Self { inner }
     }
 
-    pub fn record<F>(&self, future: F) -> tokio::task::futures::TaskLocalFuture<Self, F>
+    pub fn t3_scope<F, R>(
+        self,
+        metric: DurationMetric,
+        span: Span,
+        future: F,
+    ) -> tokio::task::futures::TaskLocalFuture<Self, WithRecorder<Instrumented<F>>>
     where
-        F: std::future::Future,
+        F: std::future::Future<Output = Result<R, Error>>,
     {
-        RECORDER.scope(self.clone(), future)
+        let wrapped = future.with_recorder(self.clone(), metric, span);
+        RECORDER.scope(self, wrapped)
     }
 
     pub fn current() -> Option<Self> {
