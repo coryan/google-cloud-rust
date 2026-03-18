@@ -269,14 +269,13 @@ impl ReqwestClient {
             self.instrumentation,
             attempt_info.attempt_count,
         );
-        let recorder = RequestRecorder::current();
-        if let Some(recorder) = &recorder {
+        if let Some(recorder) = RequestRecorder::current() {
             recorder.on_http_request(&options, &request);
         }
         self.execute_http_inner(request)
             .instrument(span.clone())
             .await
-            .record_http(&span, recorder)
+            .record_http(&span)
     }
 
     async fn execute_http_inner(&self, request: reqwest::Request) -> Result<reqwest::Response> {
@@ -411,14 +410,13 @@ impl ReqwestClient {
         use crate::observability::{HttpResultExt, RequestRecorder};
 
         let span = create_http_attempt_span(&request, options, self.instrumentation, attempt_count);
-        let recorder = RequestRecorder::current();
-        if let Some(recorder) = &recorder {
+        if let Some(recorder) = RequestRecorder::current() {
             recorder.on_http_request(options, &request);
         }
         self.request_attempt_inner(request)
             .instrument(span.clone())
             .await
-            .record_http(&span, recorder)
+            .record_http(&span)
     }
 
     async fn request_attempt_inner(&self, request: reqwest::Request) -> Result<reqwest::Response> {
@@ -791,7 +789,7 @@ mod tests {
             use crate::observability::HttpResultExt;
 
             let _enter = t3_span.enter();
-            Ok(response).record_http(&t4_span, None).unwrap()
+            Ok(response).record_http(&t4_span).unwrap()
         };
 
         let _ = super::to_http_response::<wkt::Empty>(response)

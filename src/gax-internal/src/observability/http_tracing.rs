@@ -110,7 +110,7 @@ pub(crate) fn create_http_attempt_span(
 
 /// Records additional attributes to the span based on the `Result`.
 pub trait ResultExt: sealed::ResultExt {
-    fn record_http(self, span: &Span, recorder: Option<RequestRecorder>) -> Self;
+    fn record_http(self, span: &Span) -> Self;
 }
 
 mod sealed {
@@ -119,7 +119,8 @@ mod sealed {
 
 impl sealed::ResultExt for Result<reqwest::Response> {}
 impl ResultExt for Result<reqwest::Response> {
-    fn record_http(self, span: &Span, recorder: Option<RequestRecorder>) -> Self {
+    fn record_http(self, span: &Span) -> Self {
+        let recorder = RequestRecorder::current();
         match &self {
             Ok(response) => {
                 if let Some(r) = &recorder {
@@ -347,7 +348,7 @@ mod tests {
 
         let response = http::Response::builder().status(status_code).body("")?;
         let response: reqwest::Response = response.into();
-        let _ = Ok(response).record_http(&span, None);
+        let _ = Ok(response).record_http(&span);
 
         let want: BTreeMap<String, AttributeValue> = [
             (OTEL_NAME, "GET".into()),
@@ -386,7 +387,7 @@ mod tests {
 
         // Simulate a timeout error as a gax::Error
         let error = Error::timeout("test timeout");
-        let _ = Err(error).record_http(&span, None);
+        let _ = Err(error).record_http(&span);
 
         let want: BTreeMap<String, AttributeValue> = [
             (OTEL_NAME, "GET".into()),
@@ -439,7 +440,7 @@ mod tests {
             http::HeaderMap::new(),
             bytes::Bytes::new(),
         );
-        let _ = Err(error).record_http(&span, None);
+        let _ = Err(error).record_http(&span);
 
         let captured = TestLayer::capture(&guard);
         assert_eq!(captured.len(), 1, "captured spans: {:?}", captured);
@@ -498,7 +499,7 @@ mod tests {
             .set_message("Invalid API Key")
             .set_details(vec![StatusDetails::ErrorInfo(error_info)]);
         let error = Error::service(status);
-        let _ = Err(error).record_http(&span, None);
+        let _ = Err(error).record_http(&span);
 
         let captured = TestLayer::capture(&guard);
         assert_eq!(captured.len(), 1, "captured spans: {:?}", captured);
@@ -591,7 +592,7 @@ mod tests {
         let response: reqwest::Response = response.into();
         let recorder = crate::observability::RequestRecorder::new(TEST_INFO.clone());
         let t4 = tracing::info_span!("t4");
-        let _ = Ok(response).record_http(&t4, Some(recorder.clone()));
+        let _ = Ok(response).record_http(&t4);
 
         let captured = TestLayer::capture(&guard);
         let test = captured
@@ -624,7 +625,7 @@ mod tests {
         let error = Error::http(404, http::HeaderMap::new(), bytes::Bytes::new());
         let recorder = crate::observability::RequestRecorder::new(TEST_INFO.clone());
         let t4 = tracing::info_span!("t4");
-        let _response = Err(error).record_http(&t4, Some(recorder.clone()));
+        let _response = Err(error).record_http(&t4);
 
         let captured = TestLayer::capture(&guard);
         let t3 = captured
