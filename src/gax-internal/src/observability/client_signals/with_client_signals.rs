@@ -37,8 +37,6 @@ use std::pin::Pin;
 use std::task::{Context, Poll};
 use tracing::Instrument;
 use tracing::Span;
-use tracing::field::Empty;
-use tracing::field::Field;
 use tracing::instrument::Instrumented;
 
 // A tentative name for the error logs.
