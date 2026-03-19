@@ -12,6 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Capture telemetry information for a typical client request.
+//!
+//! In this module we use the nomenclature from go/clo:product-requirements-v1
+//!
+//! We want the client library to emit telemetry signals ( spans, duration metrics, and logs) for
+//! each client (T3) and low-level request (T4). To meet the requirements we need to capture
+//! information as the request makes progress. For example, the client request telemetry includes
+//! information about the last low-level request, such as the remote server IP address and port. It
+//! is difficult to carry this information through the different layers without breaking changes
+//! APIs.
+//!
+//! This module solves that problem by setting a task-local (think "thread local" but for
+//! asynchronous tasks) variable valid for the full request. Each layer adds information to this
+//! variable. Once the telemetry layer is ready to emit a signal it consults the variable and uses
+//! the latest snapshot to populate the attributes of the signal.
+//!
+//! # Example
+//! ```
+//! # use google_cloud_gax_internal::observability::RequestRecorder;
+//! use google_cloud_gax_internal::observability::DurationMetric;
+//! use google_cloud_gax_internal::options::InstrumentationClientInfo;
+//! async fn telemetry_layer() -> google_cloud_gax::Result<String> {
+//!     let t3_span = tracing::info_span!("client_request" /* more attributes */);
+//!     let recorder = RequestRecorder::new(info());
+//!     // Calls `transport_layer()` and capture all the T3 operations,
+//!     // including the duration metric, spans, and logs.
+//!     recorder.t3_scope(t3_metric(), t3_span, transport_layer()).await
+//! }
+//!
+//! fn t3_metric() -> DurationMetric {
+//! # panic!();
+//! }
+//! fn info() -> InstrumentationClientInfo {
+//! # panic!();
+//! }
+//! async fn transport_layer() -> google_cloud_gax::Result<String> {
+//! # panic!("")
+//! }
+//! ```
+
 use crate::observability::client_signals::with_client_signals::WithRecorder;
 use crate::observability::{ClientSignalsExt, DurationMetric, RequestStart};
 use crate::options::InstrumentationClientInfo;
@@ -39,12 +79,17 @@ pub struct RequestRecorder {
 }
 
 impl RequestRecorder {
+    /// Creates a new request recorder based on the client library instrumentation in `info`.
     pub fn new(info: InstrumentationClientInfo) -> Self {
         let inner = T3Snapshot::new(info);
         let inner = Arc::new(Mutex::new(inner));
         Self { inner }
     }
 
+    /// Runs a `future` in the scope of a request recorder.
+    ///
+    /// # Example
+    /// See the [module reference][recorder].
     pub fn t3_scope<F, R>(
         self,
         metric: DurationMetric,
@@ -127,17 +172,12 @@ impl T3Snapshot {
 
     // TODO(#48..) - remove once it is no longer used.
     pub fn t3_start(&self) -> RequestStart {
+        let t4 = self.t4_snapshot.as_ref();
         RequestStart::from_parts(
             self.start,
             self.info.clone(),
-            self.t4_snapshot
-                .as_ref()
-                .and_then(|s| s.url_template.clone())
-                .unwrap_or_default(),
-            self.t4_snapshot
-                .as_ref()
-                .and_then(|s| s.rpc_method.clone())
-                .unwrap_or_default(),
+            t4.and_then(|s| s.url_template.clone()).unwrap_or_default(),
+            t4.and_then(|s| s.rpc_method.clone()).unwrap_or_default(),
         )
     }
 }
