@@ -12,19 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use tracing_subscriber::EnvFilter;
+use tracing_subscriber::fmt::format::FmtSpan;
+
 /// Enables tracing for the application.
 pub fn enable_tracing() -> ::tracing::subscriber::DefaultGuard {
-    use tracing_subscriber::fmt::format::FmtSpan;
-    #[cfg(feature = "log-integration-tests")]
-    let max_level = tracing::Level::INFO;
-    #[cfg(not(feature = "log-integration-tests"))]
-    let max_level = tracing::Level::WARN;
     let builder = tracing_subscriber::fmt()
         .with_level(true)
         .with_thread_ids(true)
         .with_span_events(FmtSpan::NEW | FmtSpan::CLOSE)
-        .with_max_level(max_level);
-    let builder = builder.with_max_level(max_level);
+        .with_env_filter(EnvFilter::from_default_env());
     let subscriber = builder.finish();
 
     tracing::subscriber::set_default(subscriber)
