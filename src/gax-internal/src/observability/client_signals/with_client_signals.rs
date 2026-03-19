@@ -37,6 +37,8 @@ use std::pin::Pin;
 use std::task::{Context, Poll};
 use tracing::Instrument;
 use tracing::Span;
+use tracing::field::Empty;
+use tracing::field::Field;
 use tracing::instrument::Instrumented;
 
 // A tentative name for the error logs.
@@ -208,14 +210,14 @@ where
         let output = futures::ready!(this.inner.poll(cx));
         // Record the metric and log the value in the context of the span.
         let span = this.t3_span.clone().entered();
-        let start = this.recorder.t3_start();
-        if let Some(address) = this.recorder.server_address() {
+        let snapshot = this.recorder.t3_snapshot();
+        if let Some(address) = snapshot.t4_snapshot.as_ref().and_then(|s| s.server_address) {
             span.record(SERVER_ADDRESS, address.ip().to_string());
             span.record(SERVER_PORT, address.port().to_string());
         }
 
         match &output {
-            Ok(_) => this.t3_metric.record_ok(&start),
+            Ok(_) => this.t3_metric.record_ok(&snapshot.t3_start()),
             Err(error) => {
                 let error_type = ErrorType::from_gax_error(error);
                 tracing::record_all!(
@@ -224,38 +226,22 @@ where
                     { OTEL_STATUS_DESCRIPTION } = error.to_string(),
                     { ERROR_TYPE } = error_type.as_str()
                 );
-                let rpc_status_code = error
-                    .status()
-                    .map(|s| s.code.name())
-                    .unwrap_or(Code::Unknown.name());
-                if let Some(http_code) = error.http_status_code() {
-                    // TODO(#4795) - use the correct name and target
-                    tracing::event!(
-                        name: NAME,
-                        target: TARGET,
-                        tracing::Level::ERROR,
-                        { RPC_SYSTEM_NAME } = RPC_SYSTEM_HTTP,
-                        { URL_DOMAIN } = start.info().default_host,
-                        { URL_TEMPLATE } = start.url_template(),
-                        { RPC_METHOD } = start.method(),
-                        { RPC_RESPONSE_STATUS_CODE } = rpc_status_code,
-                        { HTTP_RESPONSE_STATUS_CODE } = http_code,
-                        "{error:?}"
-                    );
-                } else {
-                    tracing::event!(
-                        name: NAME,
-                        target: TARGET,
-                        tracing::Level::ERROR,
-                        { RPC_SYSTEM_NAME } = RPC_SYSTEM_HTTP,
-                        { URL_DOMAIN } = start.info().default_host,
-                        { URL_TEMPLATE } = start.url_template(),
-                        { RPC_METHOD } = start.method(),
-                        { RPC_RESPONSE_STATUS_CODE } = rpc_status_code,
-                        "{error:?}"
-                    );
-                }
-                this.t3_metric.record_error(&start, error)
+                let rpc_status_code = error.status().map(|s| s.code.name());
+                let t4 = snapshot.t4_snapshot.as_ref();
+                // TODO(#4795) - use the correct name and target
+                tracing::event!(
+                    name: NAME,
+                    target: TARGET,
+                    tracing::Level::ERROR,
+                    { RPC_SYSTEM_NAME } = RPC_SYSTEM_HTTP,
+                    { URL_DOMAIN } = snapshot.info.default_host,
+                    { URL_TEMPLATE } = t4.and_then(|s| s.url_template),
+                    { RPC_METHOD } = t4.and_then(|s| s.rpc_method),
+                    { RPC_RESPONSE_STATUS_CODE } = rpc_status_code,
+                    { HTTP_RESPONSE_STATUS_CODE } = error.http_status_code(),
+                    "{error:?}"
+                );
+                this.t3_metric.record_error(&snapshot.t3_start(), error)
             }
         }
         Poll::Ready(output)

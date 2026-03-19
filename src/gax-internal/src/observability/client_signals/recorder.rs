@@ -35,25 +35,12 @@ tokio::task_local! {
 /// The name should evoke a "flight recorder" the devices to records interesting events about airplane operations.
 #[derive(Clone, Debug)]
 pub struct RequestRecorder {
-    inner: Arc<Mutex<RecorderInner>>,
-}
-
-#[derive(Clone, Debug)]
-struct RecorderInner {
-    t3_start: Instant,
-    info: InstrumentationClientInfo,
-    attempt_count: u32,
-    t4_start: Option<Instant>,
-    server_address: Option<SocketAddr>,
-    http_method: Option<Method>,
-    url: Option<String>,
-    url_template: Option<&'static str>,
-    rpc_method: Option<&'static str>,
+    inner: Arc<Mutex<T3Snapshot>>,
 }
 
 impl RequestRecorder {
     pub fn new(info: InstrumentationClientInfo) -> Self {
-        let inner = RecorderInner::new(info);
+        let inner = T3Snapshot::new(info);
         let inner = Arc::new(Mutex::new(inner));
         Self { inner }
     }
@@ -75,14 +62,9 @@ impl RequestRecorder {
         RECORDER.try_get().ok()
     }
 
-    pub fn t3_start(&self) -> RequestStart {
+    pub fn t3_snapshot(&self) -> T3Snapshot {
         let guard = self.inner.lock().expect("never poisoned");
-        RequestStart::from_parts(
-            guard.t3_start,
-            guard.info.clone(),
-            guard.url_template.unwrap_or_default(),
-            guard.rpc_method.unwrap_or_default(),
-        )
+        guard.clone()
     }
 
     pub fn extend(&self, options: RequestOptions) -> RequestOptions {
@@ -90,75 +72,83 @@ impl RequestRecorder {
         options.insert_extension(self.clone())
     }
 
-    pub fn server_address(&self) -> Option<SocketAddr> {
-        self.inner
-            .lock()
-            .expect("never poisoned")
-            .server_address
-            .clone()
-    }
-
-    pub fn method(&self) -> Option<Method> {
-        self.inner
-            .lock()
-            .expect("never poisoned")
-            .http_method
-            .clone()
-    }
-
-    pub fn url(&self) -> Option<String> {
-        self.inner.lock().expect("never poisoned").url.clone()
-    }
-
-    pub fn attempt_count(&self) -> u32 {
-        self.inner.lock().expect("never poisoned").attempt_count
-    }
-
-    pub fn last_server_address(&self, address: Option<SocketAddr>) {
-        if let Some(a) = address {
-            let mut guard = self.inner.lock().expect("never poisoned");
-            guard.server_address = Some(a);
-        }
-    }
-
     #[cfg(feature = "_internal-http-client")]
     pub fn on_http_request(&self, options: &RequestOptions, request: &reqwest::Request) {
         let mut guard = self.inner.lock().expect("never poisoned");
-        guard.t4_start = Some(Instant::now());
-        guard.url_template = options.get_extension::<PathTemplate>().map(|e| e.0);
-        guard.http_method = Some(request.method().clone());
-        guard.url = Some(request.url().to_string());
+        let snapshot = T4Snapshot {
+            start: Instant::now(),
+            server_address: None,
+            url_template: options.get_extension::<PathTemplate>().map(|e| e.0),
+            rpc_method: None,
+            http_method: Some(request.method().clone()),
+            url: Some(request.url().to_string()),
+        };
+        guard.t4_snapshot = Some(snapshot);
     }
 
     #[cfg(feature = "_internal-http-client")]
     pub fn on_http_response(&self, response: &reqwest::Response) {
         let mut guard = self.inner.lock().expect("never poisoned");
-        guard.server_address = response.remote_addr();
         guard.attempt_count += 1;
+        if let Some(s) = guard.t4_snapshot.as_mut() {
+            s.server_address = response.remote_addr();
+        }
     }
 
     #[cfg(feature = "_internal-http-client")]
     pub fn on_http_error(&self, _err: &Error) {
         let mut guard = self.inner.lock().expect("never poisoned");
-        println!("#### -> on_http_error: {_err:?}");
-        guard.server_address = None;
         guard.attempt_count += 1;
+        if let Some(s) = guard.t4_snapshot.as_mut() {
+            s.server_address = None;
+        }
     }
 }
 
-impl RecorderInner {
+#[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
+pub struct T3Snapshot {
+    pub start: Instant,
+    pub info: InstrumentationClientInfo,
+    pub attempt_count: u32,
+    pub t4_snapshot: Option<T4Snapshot>,
+}
+
+impl T3Snapshot {
     fn new(info: InstrumentationClientInfo) -> Self {
-        let t3_start = Instant::now();
+        let start = Instant::now();
         Self {
-            t3_start,
+            start,
             info,
-            attempt_count: 0,
-            t4_start: None,
-            server_address: None,
-            http_method: None,
-            url: None,
-            url_template: None,
-            rpc_method: None,
+            attempt_count: 0_u32,
+            t4_snapshot: None,
         }
     }
+
+    // TODO(#48..) - remove once it is no longer used.
+    pub fn t3_start(&self) -> RequestStart {
+        RequestStart::from_parts(
+            self.start,
+            self.info.clone(),
+            self.t4_snapshot
+                .as_ref()
+                .and_then(|s| s.url_template.clone())
+                .unwrap_or_default(),
+            self.t4_snapshot
+                .as_ref()
+                .and_then(|s| s.rpc_method.clone())
+                .unwrap_or_default(),
+        )
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+#[non_exhaustive]
+pub struct T4Snapshot {
+    pub start: Instant,
+    pub server_address: Option<SocketAddr>,
+    pub url_template: Option<&'static str>,
+    pub rpc_method: Option<&'static str>,
+    pub http_method: Option<Method>,
+    pub url: Option<String>,
 }
