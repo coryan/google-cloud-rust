@@ -13,7 +13,6 @@
 // limitations under the License.
 
 use crate::observability::attributes::RPC_SYSTEM_HTTP;
-use crate::observability::client_signals::with_client_signals::WithRecorder;
 use crate::observability::{ClientSignalsExt, DurationMetric, RequestStart};
 use crate::options::InstrumentationClientInfo;
 #[cfg(feature = "_internal-http-client")]
@@ -21,11 +20,11 @@ use google_cloud_gax::error::Error;
 use google_cloud_gax::options::RequestOptions;
 use google_cloud_gax::options::internal::{PathTemplate, RequestOptionsExt};
 use reqwest::Method;
+use std::future::Future;
 use std::net::SocketAddr;
 use std::sync::{Arc, Mutex};
 use tokio::time::Instant;
 use tracing::Span;
-use tracing::instrument::Instrumented;
 
 tokio::task_local! {
     static RECORDER: RequestRecorder;
@@ -89,9 +88,9 @@ impl RequestRecorder {
         metric: DurationMetric,
         span: Span,
         future: F,
-    ) -> tokio::task::futures::TaskLocalFuture<Self, WithRecorder<Instrumented<F>>>
+    ) -> impl Future<Output = Result<R, Error>>
     where
-        F: std::future::Future<Output = Result<R, Error>>,
+        F: Future<Output = Result<R, Error>>,
     {
         let wrapped = future.with_recorder(self.clone(), metric, span);
         RECORDER.scope(self, wrapped)
@@ -225,7 +224,7 @@ impl T3Snapshot {
     ///
     /// Use with the "rpc.method" attribute.
     pub fn rpc_method(&self) -> Option<&'static str> {
-        self.t4_snapshot.as_ref().and_then(|s| s.url_template)
+        self.t4_snapshot.as_ref().and_then(|s| s.rpc_method)
     }
 
     /// Returns the HTTP status code (e.g. 404) returned in the last request.
@@ -357,6 +356,7 @@ mod tests {
         let snap = recorder.t3_snapshot();
         assert_eq!(snap.attempt_count, 0, "{snap:?}");
         recorder.on_http_error(&Error::deser("fake error"));
+        let snap = recorder.t3_snapshot();
         assert_eq!(snap.attempt_count, 1, "{snap:?}");
         recorder.on_http_error(&Error::deser("fake error"));
         Ok(())
