@@ -12,46 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Capture telemetry information for a typical client request.
-//!
-//! In this module we use the nomenclature from go/clo:product-requirements-v1
-//!
-//! We want the client library to emit telemetry signals ( spans, duration metrics, and logs) for
-//! each client (T3) and low-level request (T4). To meet the requirements we need to capture
-//! information as the request makes progress. For example, the client request telemetry includes
-//! information about the last low-level request, such as the remote server IP address and port. It
-//! is difficult to carry this information through the different layers without breaking changes
-//! APIs.
-//!
-//! This module solves that problem by setting a task-local (think "thread local" but for
-//! asynchronous tasks) variable valid for the full request. Each layer adds information to this
-//! variable. Once the telemetry layer is ready to emit a signal it consults the variable and uses
-//! the latest snapshot to populate the attributes of the signal.
-//!
-//! # Example
-//! ```
-//! # use google_cloud_gax_internal::observability::RequestRecorder;
-//! use google_cloud_gax_internal::observability::DurationMetric;
-//! use google_cloud_gax_internal::options::InstrumentationClientInfo;
-//! async fn telemetry_layer() -> google_cloud_gax::Result<String> {
-//!     let t3_span = tracing::info_span!("client_request" /* more attributes */);
-//!     let recorder = RequestRecorder::new(info());
-//!     // Calls `transport_layer()` and capture all the T3 operations,
-//!     // including the duration metric, spans, and logs.
-//!     recorder.t3_scope(t3_metric(), t3_span, transport_layer()).await
-//! }
-//!
-//! fn t3_metric() -> DurationMetric {
-//! # panic!();
-//! }
-//! fn info() -> InstrumentationClientInfo {
-//! # panic!();
-//! }
-//! async fn transport_layer() -> google_cloud_gax::Result<String> {
-//! # panic!("")
-//! }
-//! ```
-
+use crate::observability::attributes::RPC_SYSTEM_HTTP;
 use crate::observability::client_signals::with_client_signals::WithRecorder;
 use crate::observability::{ClientSignalsExt, DurationMetric, RequestStart};
 use crate::options::InstrumentationClientInfo;
@@ -70,9 +31,45 @@ tokio::task_local! {
     static RECORDER: RequestRecorder;
 }
 
-/// Collects key information about a request to update the telemetry information.
+/// Capture telemetry information for a typical client request.
 ///
-/// The name should evoke a "flight recorder" the devices to records interesting events about airplane operations.
+/// In this type we use the nomenclature from go/clo:product-requirements-v1
+///
+/// We want the client library to emit telemetry signals ( spans, duration metrics, and logs) for
+/// each client (T3) and low-level request (T4). To meet the requirements we need to capture
+/// information as the request makes progress. For example, the client request telemetry includes
+/// information about the last low-level request, such as the remote server IP address and port. It
+/// is difficult to carry this information through the different layers without breaking changes
+/// APIs.
+///
+/// This type solves that problem by setting a task-local (think "thread local" but for
+/// asynchronous tasks) variable valid for the full request. Each layer adds information to this
+/// variable. Once the telemetry layer is ready to emit a signal it consults the variable and uses
+/// the latest snapshot to populate the attributes of the signal.
+///
+/// # Example
+/// ```
+/// # use google_cloud_gax_internal::observability::RequestRecorder;
+/// use google_cloud_gax_internal::observability::DurationMetric;
+/// use google_cloud_gax_internal::options::InstrumentationClientInfo;
+/// async fn telemetry_layer() -> google_cloud_gax::Result<String> {
+///     let t3_span = tracing::info_span!("client_request" /* more attributes */);
+///     let recorder = RequestRecorder::new(info());
+///     // Calls `transport_layer()` and capture all the T3 operations,
+///     // including the duration metric, spans, and logs.
+///     recorder.t3_scope(t3_metric(), t3_span, transport_layer()).await
+/// }
+///
+/// fn t3_metric() -> DurationMetric {
+/// # panic!();
+/// }
+/// fn info() -> InstrumentationClientInfo {
+/// # panic!();
+/// }
+/// async fn transport_layer() -> google_cloud_gax::Result<String> {
+/// # panic!("")
+/// }
+/// ```
 #[derive(Clone, Debug)]
 pub struct RequestRecorder {
     inner: Arc<Mutex<T3Snapshot>>,
@@ -87,9 +84,6 @@ impl RequestRecorder {
     }
 
     /// Runs a `future` in the scope of a request recorder.
-    ///
-    /// # Example
-    /// See the [module reference][recorder].
     pub fn t3_scope<F, R>(
         self,
         metric: DurationMetric,
@@ -103,20 +97,46 @@ impl RequestRecorder {
         RECORDER.scope(self, wrapped)
     }
 
+    /// Returns the current scope.
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_gax_internal::observability::RequestRecorder;
+    /// use google_cloud_gax::options::RequestOptions;
+    /// async fn sample(options: &RequestOptions, request: reqwest::RequestBuilder) -> anyhow::Result<()> {
+    ///     let response = request.send().await?;
+    ///     if let Some(current) = RequestRecorder::current() {
+    ///         current.on_http_response(&response);
+    ///     }
+    ///     // ... do something with `response` ...
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn current() -> Option<Self> {
         RECORDER.try_get().ok()
     }
 
+    /// Returns the data captured for the T3 layer.
+    ///
+    /// # Example
+    /// ```
+    /// # use google_cloud_gax_internal::observability::RequestRecorder;
+    /// async fn emit_l3_log<T>(result: &google_cloud_gax::Result<T>) {
+    ///     let Err(e) = result else { return; };
+    ///     let Some(recorder) = RequestRecorder::current() else { return; };
+    ///     let snapshot = recorder.t3_snapshot();
+    ///     tracing::error!(
+    ///         { URL_DOMAIN } = snapshot.info.default_host,
+    ///         // use more things from snapshot here.
+    ///     );
+    /// }
+    /// ```
     pub fn t3_snapshot(&self) -> T3Snapshot {
         let guard = self.inner.lock().expect("never poisoned");
         guard.clone()
     }
 
-    pub fn extend(&self, options: RequestOptions) -> RequestOptions {
-        use google_cloud_gax::options::internal::RequestOptionsExt;
-        options.insert_extension(self.clone())
-    }
-
+    /// Call before issuing a HTTP request to capture its data.
     #[cfg(feature = "_internal-http-client")]
     pub fn on_http_request(&self, options: &RequestOptions, request: &reqwest::Request) {
         let mut guard = self.inner.lock().expect("never poisoned");
@@ -124,29 +144,34 @@ impl RequestRecorder {
             start: Instant::now(),
             server_address: None,
             url_template: options.get_extension::<PathTemplate>().map(|e| e.0),
+            rpc_system: Some(RPC_SYSTEM_HTTP),
             rpc_method: None,
             http_method: Some(request.method().clone()),
+            http_status_code: None,
             url: Some(request.url().to_string()),
         };
         guard.t4_snapshot = Some(snapshot);
     }
 
+    /// Call when receiving a HTTP response to capture its data.
+    ///
+    /// For theese purpopses, responses that return an error status code are considered successful,
+    /// we just need them to capture their data for the spans and metrics.
     #[cfg(feature = "_internal-http-client")]
     pub fn on_http_response(&self, response: &reqwest::Response) {
         let mut guard = self.inner.lock().expect("never poisoned");
         guard.attempt_count += 1;
         if let Some(s) = guard.t4_snapshot.as_mut() {
             s.server_address = response.remote_addr();
+            s.http_status_code = Some(response.status().as_u16());
         }
     }
 
+    /// Call when it was not possible to send an HTTP request.
     #[cfg(feature = "_internal-http-client")]
     pub fn on_http_error(&self, _err: &Error) {
         let mut guard = self.inner.lock().expect("never poisoned");
         guard.attempt_count += 1;
-        if let Some(s) = guard.t4_snapshot.as_mut() {
-            s.server_address = None;
-        }
     }
 }
 
@@ -187,8 +212,10 @@ impl T3Snapshot {
 pub struct T4Snapshot {
     pub start: Instant,
     pub server_address: Option<SocketAddr>,
-    pub url_template: Option<&'static str>,
+    pub rpc_system: Option<&'static str>,
     pub rpc_method: Option<&'static str>,
+    pub url_template: Option<&'static str>,
     pub http_method: Option<Method>,
+    pub http_status_code: Option<u16>,
     pub url: Option<String>,
 }

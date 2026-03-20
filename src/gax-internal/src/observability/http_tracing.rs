@@ -590,7 +590,6 @@ mod tests {
             .body("")
             .unwrap();
         let response: reqwest::Response = response.into();
-        let recorder = crate::observability::RequestRecorder::new(TEST_INFO.clone());
         let t4 = tracing::info_span!("t4");
         let _ = Ok(response).record_http(&t4);
 
@@ -623,7 +622,6 @@ mod tests {
 
         // Simulate a 404 error
         let error = Error::http(404, http::HeaderMap::new(), bytes::Bytes::new());
-        let recorder = crate::observability::RequestRecorder::new(TEST_INFO.clone());
         let t4 = tracing::info_span!("t4");
         let _response = Err(error).record_http(&t4);
 
