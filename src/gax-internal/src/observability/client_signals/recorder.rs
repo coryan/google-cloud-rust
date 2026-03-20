@@ -195,7 +195,53 @@ impl T3Snapshot {
         }
     }
 
-    // TODO(#48..) - remove once it is no longer used.
+    /// Returns the default host (e.g. `storage.googleapis.com`).
+    ///
+    /// Use with the "url.domain" attribute.
+    pub fn default_host(&self) -> &'static str {
+        self.info.default_host
+    }
+
+    /// Returns the RPC system (HTTP or gRPC) used in the last low-level request.
+    ///
+    /// Use with the "rpc.system.name" attribute.
+    pub fn rpc_system(&self) -> Option<&'static str> {
+        self.t4_snapshot.as_ref().and_then(|s| s.rpc_system)
+    }
+
+    /// Returns the URL template (e.g. "/v1/storage/b/{bucket}") used in the last low-level request.
+    ///
+    /// Use with the "url.template" attribute.
+    pub fn url_template(&self) -> Option<&'static str> {
+        self.t4_snapshot.as_ref().and_then(|s| s.url_template)
+    }
+
+    /// Returns the RPC method (e.g. "cloud.google.secretmanager.v1.SecretManager/GetSecret") used in the request.
+    ///
+    /// Use with the "rpc.method" attribute.
+    pub fn rpc_method(&self) -> Option<&'static str> {
+        self.t4_snapshot.as_ref().and_then(|s| s.url_template)
+    }
+
+    /// Returns the HTTP status code (e.g. 404) returned in the last request.
+    ///
+    /// Note that this may not be populated for gRPC requests.
+    ///
+    /// Use with the "rpc.method" attribute.
+    pub fn http_status_code(&self) -> Option<u16> {
+        self.t4_snapshot.as_ref().and_then(|s| s.http_status_code)
+    }
+
+    /// Returns the full URL used in the last request.
+    ///
+    /// Note that this may not be populated for gRPC requests.
+    ///
+    /// Use with the "rpc.method" attribute.
+    pub fn url(&self) -> Option<&str> {
+        self.t4_snapshot.as_ref().and_then(|s| s.url.as_deref())
+    }
+
+    // TODO(#4795) - remove once it is no longer used.
     pub fn t3_start(&self) -> RequestStart {
         let t4 = self.t4_snapshot.as_ref();
         RequestStart::from_parts(
@@ -218,4 +264,56 @@ pub struct T4Snapshot {
     pub http_method: Option<Method>,
     pub http_status_code: Option<u16>,
     pub url: Option<String>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::super::tests::TEST_INFO;
+    use super::*;
+
+    #[tokio::test]
+    async fn scope() {
+        let metric = DurationMetric::new(&TEST_INFO);
+        let span = tracing::info_span!("test-only");
+        let recorder = RequestRecorder::new(TEST_INFO.clone());
+
+        let scoped = recorder.clone();
+        let got = scoped
+            .t3_scope(metric, span, async {
+                let current =
+                    RequestRecorder::current().expect("current recorder should be available");
+                let snap = current.t3_snapshot();
+                assert_eq!(snap.attempt_count, 0, "{snap:?}");
+                assert_eq!(snap.default_host(), TEST_INFO.default_host, "{snap:?}");
+                current.on_http_error(&Error::deser("cannot deserialize"));
+                Ok(123)
+            })
+            .await;
+
+        assert!(matches!(got, Ok(ref v) if v == &123), "{got:?}");
+        let snap = recorder.t3_snapshot();
+        assert_eq!(snap.attempt_count, 1, "{snap:?}");
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn on_http_request() -> anyhow::Result<()> {
+        let recorder = RequestRecorder::new(TEST_INFO.clone());
+        let options = RequestOptions::default().insert_extension(PathTemplate("/v7/{funny}"));
+        let client = reqwest::Client::new();
+        let request = client.get("http://127.0.0.1:1/v7/will-not-work").build()?;
+
+        recorder.on_http_request(&options, &request);
+        let snap = recorder.t3_snapshot();
+        assert_eq!(snap.start, Instant::now(), "{snap:?}");
+        assert_eq!(snap.url_template(), Some("/v7/{funny}"), "{snap:?}");
+        assert_eq!(snap.rpc_system(), Some("http"), "{snap:?}");
+        assert!(snap.rpc_method().is_none(), "{snap:?}");
+        assert!(snap.http_status_code().is_none(), "{snap:?}");
+        assert_eq!(
+            snap.url(),
+            Some("http://127.0.0.1:1/v7/will-not-work"),
+            "{snap:?}"
+        );
+        Ok(())
+    }
 }

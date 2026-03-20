@@ -225,18 +225,17 @@ where
                     { ERROR_TYPE } = error_type.as_str()
                 );
                 let rpc_status_code = error.status().map(|s| s.code.name());
-                let t4 = snapshot.t4_snapshot.as_ref();
                 // TODO(#4795) - use the correct name and target
                 tracing::event!(
                     name: NAME,
                     target: TARGET,
                     tracing::Level::ERROR,
-                    { RPC_SYSTEM_NAME } = RPC_SYSTEM_HTTP,
-                    { URL_DOMAIN } = snapshot.info.default_host,
-                    { URL_TEMPLATE } = t4.and_then(|s| s.url_template),
-                    { RPC_METHOD } = t4.and_then(|s| s.rpc_method),
+                    { RPC_SYSTEM_NAME } = snapshot.rpc_system(),
+                    { URL_DOMAIN } = snapshot.default_host(),
+                    { URL_TEMPLATE } = snapshot.url_template(),
+                    { RPC_METHOD } = snapshot.rpc_method(),
                     { RPC_RESPONSE_STATUS_CODE } = rpc_status_code,
-                    { HTTP_RESPONSE_STATUS_CODE } = error.http_status_code(),
+                    { HTTP_RESPONSE_STATUS_CODE } = snapshot.http_status_code(),
                     "{error:?}"
                 );
                 this.t3_metric.record_error(&snapshot.t3_start(), error)
