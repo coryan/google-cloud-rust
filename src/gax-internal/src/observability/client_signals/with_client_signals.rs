@@ -209,7 +209,7 @@ where
         // Record the metric and log the value in the context of the span.
         let span = this.t3_span.clone().entered();
         let snapshot = this.recorder.t3_snapshot();
-        if let Some(address) = snapshot.t4_snapshot.as_ref().and_then(|s| s.server_address) {
+        if let Some(address) = snapshot.server_address() {
             span.record(SERVER_ADDRESS, address.ip().to_string());
             span.record(SERVER_PORT, address.port().to_string());
         }

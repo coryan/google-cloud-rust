@@ -209,6 +209,11 @@ impl T3Snapshot {
         self.t4_snapshot.as_ref().and_then(|s| s.rpc_system)
     }
 
+    /// Returns the server address used in the last low-level request.
+    pub fn server_address(&self) -> Option<SocketAddr> {
+        self.t4_snapshot.as_ref().and_then(|s| s.server_address)
+    }
+
     /// Returns the URL template (e.g. "/v1/storage/b/{bucket}") used in the last low-level request.
     ///
     /// Use with the "url.template" attribute.
@@ -256,20 +261,23 @@ impl T3Snapshot {
 #[derive(Clone, Debug, PartialEq)]
 #[non_exhaustive]
 pub struct T4Snapshot {
-    pub start: Instant,
-    pub server_address: Option<SocketAddr>,
-    pub rpc_system: Option<&'static str>,
-    pub rpc_method: Option<&'static str>,
-    pub url_template: Option<&'static str>,
-    pub http_method: Option<Method>,
-    pub http_status_code: Option<u16>,
-    pub url: Option<String>,
+    start: Instant,
+    server_address: Option<SocketAddr>,
+    rpc_system: Option<&'static str>,
+    rpc_method: Option<&'static str>,
+    url_template: Option<&'static str>,
+    http_method: Option<Method>,
+    http_status_code: Option<u16>,
+    url: Option<String>,
 }
 
 #[cfg(test)]
 mod tests {
     use super::super::tests::TEST_INFO;
     use super::*;
+    use httptest::matchers::request::method_path;
+    use httptest::responders::status_code;
+    use httptest::{Expectation, Server};
 
     #[tokio::test]
     async fn scope() {
@@ -314,6 +322,43 @@ mod tests {
             Some("http://127.0.0.1:1/v7/will-not-work"),
             "{snap:?}"
         );
+        Ok(())
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn on_http_response() -> anyhow::Result<()> {
+        let server = Server::run();
+        server.expect(
+            Expectation::matching(method_path("GET", "/v1/test-only"))
+                .respond_with(status_code(404).body("NOT FOUND")),
+        );
+        let client = reqwest::Client::new();
+        let request = client.get(server.url_str("/v1/test-only")).build()?;
+        let options = RequestOptions::default();
+
+        let recorder = RequestRecorder::new(TEST_INFO.clone());
+        recorder.on_http_request(&options, &request);
+        let snap = recorder.t3_snapshot();
+        assert_eq!(snap.attempt_count, 0, "{snap:?}");
+
+        let response = client.execute(request).await?;
+        recorder.on_http_response(&response);
+        let snap = recorder.t3_snapshot();
+        assert_eq!(snap.attempt_count, 1, "{snap:?}");
+        assert_eq!(snap.http_status_code(), Some(404), "{snap:?}");
+        assert_eq!(snap.server_address(), Some(server.addr()), "{snap:?}");
+
+        Ok(())
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn on_http_error() -> anyhow::Result<()> {
+        let recorder = RequestRecorder::new(TEST_INFO.clone());
+        let snap = recorder.t3_snapshot();
+        assert_eq!(snap.attempt_count, 0, "{snap:?}");
+        recorder.on_http_error(&Error::deser("fake error"));
+        assert_eq!(snap.attempt_count, 1, "{snap:?}");
+        recorder.on_http_error(&Error::deser("fake error"));
         Ok(())
     }
 }
