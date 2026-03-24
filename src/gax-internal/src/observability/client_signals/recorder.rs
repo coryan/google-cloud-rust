@@ -83,6 +83,14 @@ impl RequestRecorder {
     }
 
     /// Runs a `future` in the scope of a request recorder.
+    pub fn scope<F, R>(self, future: F) -> impl Future<Output = Result<R, Error>>
+    where
+        F: Future<Output = Result<R, Error>>,
+    {
+        RECORDER.scope(self, future)
+    }
+
+    /// Runs a `future` in the scope of a request recorder.
     pub fn t3_scope<F, R>(
         self,
         metric: DurationMetric,
@@ -280,6 +288,28 @@ mod tests {
 
     #[tokio::test]
     async fn scope() {
+        let recorder = RequestRecorder::new(TEST_INFO.clone());
+
+        let scoped = recorder.clone();
+        let got = scoped
+            .scope(async {
+                let current =
+                    RequestRecorder::current().expect("current recorder should be available");
+                let snap = current.t3_snapshot();
+                assert_eq!(snap.attempt_count, 0, "{snap:?}");
+                assert_eq!(snap.default_host(), TEST_INFO.default_host, "{snap:?}");
+                current.on_http_error(&Error::deser("cannot deserialize"));
+                Ok(123)
+            })
+            .await;
+
+        assert!(matches!(got, Ok(ref v) if v == &123), "{got:?}");
+        let snap = recorder.t3_snapshot();
+        assert_eq!(snap.attempt_count, 1, "{snap:?}");
+    }
+
+    #[tokio::test]
+    async fn t3_scope() {
         let metric = DurationMetric::new(&TEST_INFO);
         let span = tracing::info_span!("test-only");
         let recorder = RequestRecorder::new(TEST_INFO.clone());
