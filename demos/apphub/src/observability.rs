@@ -18,7 +18,7 @@ use google_cloud_auth::credentials::Credentials;
 use integration_tests_o11y::detector::GoogleCloudResourceDetector;
 use integration_tests_o11y::otlp::metrics::Builder as MeterProviderBuilder;
 use integration_tests_o11y::otlp::trace::Builder as TracerProviderBuilder;
-use integration_tests_o11y::tracing::layer as otlp_layer;
+use integration_tests_o11y::tracing::trace_layer;
 use opentelemetry::KeyValue;
 use opentelemetry_sdk::Resource;
 use opentelemetry_sdk::propagation::TraceContextPropagator;
@@ -65,7 +65,7 @@ pub async fn exporters(args: &Args, credentials: Credentials) -> anyhow::Result<
     tracing::subscriber::set_global_default(
         Registry::default()
             .with(logging_layer.with_filter(EnvFilter::from_default_env()))
-            .with(otlp_layer(tracer_provider.clone())), // Also log to stdout,
+            .with(trace_layer(tracer_provider.clone())), // Also log to stdout,
     )?;
     opentelemetry::global::set_text_map_propagator(TraceContextPropagator::new());
     opentelemetry::global::set_meter_provider(meter_provider.clone());
