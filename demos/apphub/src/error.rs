@@ -22,7 +22,9 @@ use google_cloud_gax::error::Error;
 pub enum AppError {
     #[error("the backend reported an error: {0}")]
     Backend(#[source] Error),
-    #[error("there was a problem concanting the backend: {0}")]
+    #[error("the backend response had an unexpected format: {0}")]
+    BadResponseFormat(String),
+    #[error("there was a problem contacting the backend: {0}")]
     Request(#[source] Error),
     #[error("cannot initialize the service credentials: {0}")]
     Credentials(#[source] BuildError),
@@ -57,6 +59,7 @@ impl IntoResponse for AppError {
         tracing::error!("internal service error: {self:?}");
         let (status, message) = match self {
             Self::Backend(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("{e:?}")),
+            Self::BadResponseFormat(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("{e:?}")),
             Self::Request(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("{e:#?}")),
             Self::Credentials(e) => (StatusCode::UNAUTHORIZED, format!("{e:#?}")),
             Self::Client(e) => (StatusCode::SERVICE_UNAVAILABLE, format!("{e:#?}")),
