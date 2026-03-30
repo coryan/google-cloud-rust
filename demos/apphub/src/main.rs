@@ -34,8 +34,6 @@ mod logs;
 mod observability;
 mod state;
 
-use std::time::Duration;
-
 use args::Args;
 use axum::Router;
 use axum::extract::State;
@@ -44,9 +42,11 @@ use axum::response::Html;
 use axum::routing;
 use clap::Parser;
 use error::AppError;
+use google_cloud_aiplatform_v1::model::part::Data;
 use google_cloud_auth::credentials::Builder as CredentialsBuilder;
 use google_cloud_gax::options::RequestOptionsBuilder;
 use state::AppState;
+use std::time::Duration;
 use tokio::net::TcpListener;
 use tracing::Instrument;
 use tracing_opentelemetry::OpenTelemetrySpanExt;
@@ -79,22 +79,20 @@ async fn ok() -> &'static str {
 }
 
 async fn handler(state: State<AppState>, headers: HeaderMap) -> Result<Html<String>, AppError> {
-    let predict = predict(state, headers).await?;
+    let prediction = predict(state, headers).await?;
+    let description = markdown::to_html(&prediction);
     let body = format!(
         r#"
-<!DOCTYPE html>
-<html>
-<body>
-  <h1>AppHub Demo: Vertex AI Prediction</h1>
-  <p>
-  <img src="https://storage.googleapis.com/{IMAGE}" alt="a stock image">
-  </p>
-  <p>
-  <b>Gemini Response:</b><br>
-  {predict}
-  </p>
-</body>
-</html>
+<!DOCTYPE html><html><body>
+<h1>AppHub Demo: Vertex AI Prediction</h1>
+<p>
+<img src="https://storage.googleapis.com/{IMAGE}" alt="a stock image">
+</p>
+<p>
+<b>Gemini Response:</b><br>
+{description}
+</p>
+</body></html>
 "#
     );
     Ok(Html::from(body))
@@ -133,12 +131,21 @@ async fn predict(State(state): State<AppState>, headers: HeaderMap) -> Result<St
         .await;
 
     let span = span.entered();
-    match response {
-        Ok(r) => Ok(format!("{:#?}", r.candidates)),
-        Err(e) => {
-            tracing::error!("response error: {e:?}");
-            span.record("otel.status_code", "ERROR");
-            Err(e.into())
-        }
-    }
+    let response = response.inspect_err(|e| {
+        tracing::error!("response error: {e:?}");
+        span.record("otel.status_code", "ERROR");
+    })?;
+    let Some(Data::Text(data)) = response
+        .candidates
+        .into_iter()
+        .filter_map(|candidate| candidate.content)
+        .flat_map(|content| content.parts.into_iter())
+        .filter_map(|part| part.data)
+        .next()
+    else {
+        return Err(AppError::BadResponseFormat(
+            "missing Data::Text element".into(),
+        ));
+    };
+    Ok(data)
 }

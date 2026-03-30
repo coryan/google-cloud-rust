@@ -35,6 +35,7 @@ google-cloud-auth          = { workspace = true, features = ["default", "idtoken
 google-cloud-gax           = { workspace = true }
 google-cloud-storage       = { workspace = true, features = ["default"] }
 integration-tests-o11y     = { path = "../../tests/o11y" }
+markdown = { version = "1.0" }
 opentelemetry              = { workspace = true, features = ["trace"] }
 opentelemetry-http         = { workspace = true }
 opentelemetry_sdk          = { workspace = true }
