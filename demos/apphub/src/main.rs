@@ -40,6 +40,7 @@ use args::Args;
 use axum::Router;
 use axum::extract::State;
 use axum::http::HeaderMap;
+use axum::response::Html;
 use axum::routing;
 use clap::Parser;
 use error::AppError;
@@ -62,6 +63,7 @@ async fn main() -> anyhow::Result<()> {
     let state = AppState::new(args.clone(), credentials.clone()).await?;
     let app = Router::new()
         .route("/", routing::get(handler))
+        .route("/ok", routing::get(ok))
         .route("/predict", routing::get(predict))
         .with_state(state);
     let addr = format!("0.0.0.0:{}", args.port);
@@ -70,14 +72,35 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn handler() -> &'static str {
-    "Hello, world!\n"
+const IMAGE: &str = "generativeai-downloads/images/scones.jpg";
+
+async fn ok() -> &'static str {
+    "OK\n"
 }
 
-async fn predict(
-    State(state): State<AppState>,
-    headers: HeaderMap,
-) -> anyhow::Result<String, AppError> {
+async fn handler(state: State<AppState>, headers: HeaderMap) -> Result<Html<String>, AppError> {
+    let predict = predict(state, headers).await?;
+    let body = format!(
+        r#"
+<!DOCTYPE html>
+<html>
+<body>
+  <h1>AppHub Demo: Vertex AI Prediction</h1>
+  <p>
+  <img src="https://storage.googleapis.com/{IMAGE}" alt="a stock image">
+  </p>
+  <p>
+  <b>Gemini Response:</b><br>
+  {predict}
+  </p>
+</body>
+</html>
+"#
+    );
+    Ok(Html::from(body))
+}
+
+async fn predict(State(state): State<AppState>, headers: HeaderMap) -> Result<String, AppError> {
     use google_cloud_aiplatform_v1::model::{Content, FileData, Part};
     use opentelemetry_http::HeaderExtractor;
 
@@ -100,7 +123,7 @@ async fn predict(
             Part::new().set_file_data(
                 FileData::new()
                     .set_mime_type("image/jpeg")
-                    .set_file_uri("gs://generativeai-downloads/images/scones.jpg"),
+                    .set_file_uri(format!("gs://{IMAGE}")),
             ),
             Part::new().set_text("Describe this picture."),
         ])])
