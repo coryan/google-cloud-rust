@@ -18,6 +18,7 @@ use super::args::Args;
 use google_cloud_aiplatform_v1::client::PredictionService;
 use google_cloud_auth::credentials::Credentials;
 use google_cloud_gax::retry_policy::{Aip194Strict, RetryPolicyExt};
+use google_cloud_storage::client::StorageControl;
 
 const MODEL: &str = "gemini-2.5-flash";
 
@@ -25,12 +26,13 @@ const MODEL: &str = "gemini-2.5-flash";
 pub struct AppState {
     prediction_service: PredictionService,
     model: String,
+    storage_control: StorageControl,
 }
 
 impl AppState {
     pub async fn new(args: Args, credentials: Credentials) -> anyhow::Result<Self> {
         let builder = PredictionService::builder()
-            .with_credentials(credentials)
+            .with_credentials(credentials.clone())
             .with_retry_policy(
                 Aip194Strict
                     .continue_on_too_many_requests()
@@ -55,14 +57,24 @@ impl AppState {
         };
 
         let prediction_service = builder.build().await?;
+        let storage_control = StorageControl::builder()
+            .with_credentials(credentials.clone())
+            .with_tracing()
+            .build()
+            .await?;
         Ok(Self {
             prediction_service,
             model,
+            storage_control,
         })
     }
 
     pub fn prediction_service(&self) -> &PredictionService {
         &self.prediction_service
+    }
+
+    pub fn storage_control(&self) -> &StorageControl {
+        &self.storage_control
     }
 
     pub fn model(&self) -> &str {

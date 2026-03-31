@@ -42,9 +42,15 @@ use axum::response::Html;
 use axum::routing;
 use clap::Parser;
 use error::AppError;
+use google_cloud_aiplatform_v1::client::PredictionService;
 use google_cloud_aiplatform_v1::model::part::Data;
+use google_cloud_aiplatform_v1::model::{Content, FileData, Part};
 use google_cloud_auth::credentials::Builder as CredentialsBuilder;
 use google_cloud_gax::options::RequestOptionsBuilder;
+use google_cloud_gax::paginator::ItemPaginator as _;
+use google_cloud_storage::client::StorageControl;
+use google_cloud_storage::model::Object;
+use opentelemetry_http::HeaderExtractor;
 use state::AppState;
 use std::time::Duration;
 use tokio::net::TcpListener;
@@ -72,36 +78,49 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-const IMAGE: &str = "generativeai-downloads/images/scones.jpg";
+const BUCKET: &str = "generativeai-downloads";
 
 async fn ok() -> &'static str {
     "OK\n"
 }
 
-async fn handler(state: State<AppState>, headers: HeaderMap) -> Result<Html<String>, AppError> {
-    let prediction = predict(state, headers).await?;
+async fn handler(
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<Html<String>, AppError> {
+    let extractor = HeaderExtractor(&headers);
+    let remote_context =
+        opentelemetry::global::get_text_map_propagator(|propagator| propagator.extract(&extractor));
+    let span = tracing::info_span!(
+        "handling / request",
+        "otel.status_code" = tracing::field::Empty
+    );
+    let _ = span
+        .set_parent(remote_context)
+        .inspect_err(|e| tracing::warn!("cannot set context: {e:?}"));
+
+    let object = random_image(state.storage_control()).await?;
+    let prediction = call_model(state.prediction_service(), state.model(), &object).await?;
     let description = markdown::to_html(&prediction);
+    let path = format!("{BUCKET}/{}", object.name);
     let body = format!(
         r#"
 <!DOCTYPE html><html><body>
 <h1>AppHub Demo: Vertex AI Prediction</h1>
 <p>
-<img src="https://storage.googleapis.com/{IMAGE}" alt="a stock image">
+<img src="https://storage.googleapis.com/{path}" alt="a stock image">
 </p>
 <p>
 <b>Gemini Response:</b><br>
 {description}
 </p>
 </body></html>
-"#
+"#,
     );
     Ok(Html::from(body))
 }
 
 async fn predict(State(state): State<AppState>, headers: HeaderMap) -> Result<String, AppError> {
-    use google_cloud_aiplatform_v1::model::{Content, FileData, Part};
-    use opentelemetry_http::HeaderExtractor;
-
     let extractor = HeaderExtractor(&headers);
     let remote_context =
         opentelemetry::global::get_text_map_propagator(|propagator| propagator.extract(&extractor));
@@ -111,30 +130,62 @@ async fn predict(State(state): State<AppState>, headers: HeaderMap) -> Result<St
     );
     let _ = span
         .set_parent(remote_context)
-        .inspect_err(|e| tracing::error!("cannot set context: {e:?}"));
+        .inspect_err(|e| tracing::warn!("cannot set context: {e:?}"));
 
-    let response = state
-        .prediction_service()
+    let object = random_image(state.storage_control())
+        .instrument(span.clone())
+        .await?;
+    let prediction = call_model(state.prediction_service(), state.model(), &object)
+        .instrument(span.clone())
+        .await?;
+    Ok(prediction)
+}
+
+async fn random_image(storage_control: &StorageControl) -> Result<Object, AppError> {
+    let bucket = format!("projects/_/buckets/{BUCKET}");
+    let mut items = storage_control
+        .list_objects()
+        .set_parent(&bucket)
+        .set_prefix("images/")
+        .by_item();
+    // Implement Jeffrey Vitter "Algorith R" for a reservoir of size 1:
+    //     https://en.wikipedia.org/wiki/Reservoir_sampling
+    let mut object = None;
+    let mut count = 0_usize;
+    while let Some(o) = items.next().await.transpose().map_err(AppError::Backend)? {
+        count += 1;
+        if rand::random_range(0..count) == 0 {
+            object = Some(o);
+        }
+    }
+    object.ok_or_else(|| AppError::BadResponseFormat(format!("cannot find image in {bucket}")))
+}
+
+async fn call_model(
+    prediction_service: &PredictionService,
+    model: &str,
+    object: &Object,
+) -> Result<String, AppError> {
+    let response = prediction_service
         .generate_content()
-        .set_model(state.model())
+        .set_model(model)
         .set_contents([Content::new().set_role("user").set_parts([
             Part::new().set_file_data(
                 FileData::new()
-                    .set_mime_type("image/jpeg")
-                    .set_file_uri(format!("gs://{IMAGE}")),
+                    .set_mime_type(&object.content_type)
+                    .set_file_uri(format!("gs://{BUCKET}/{}", object.name)),
             ),
             Part::new().set_text("Describe this picture."),
         ])])
         .with_attempt_timeout(Duration::from_secs(15))
         .send()
-        .instrument(span.clone())
         .await;
 
-    let span = span.entered();
-    let response = response.inspect_err(|e| {
-        tracing::error!("response error: {e:?}");
-        span.record("otel.status_code", "ERROR");
-    })?;
+    let response = response
+        .inspect_err(|e| {
+            tracing::error!("response error: {e:?}");
+        })
+        .map_err(AppError::Backend)?;
     let Some(Data::Text(data)) = response
         .candidates
         .into_iter()
