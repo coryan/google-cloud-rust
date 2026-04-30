@@ -432,7 +432,15 @@ impl TokenProvider for ImpersonatedTokenProvider {
             }
         };
 
-        let url = self.service_account_impersonation_url.id_token_url();
+        // We resolve the URL on every token call because fetching the universe domain
+        // is async and must be done here rather than in the builder.
+        // Since `token()` takes `&self`, we cannot mutate `self` to cache the URL
+        // without using a lock for inner mutability, which is worse than just
+        // building the URL string for each request.
+        let url = self
+            .service_account_impersonation_url
+            .id_token_url(&self.source_credentials)
+            .await;
 
         generate_id_token(
             source_headers,
@@ -455,6 +463,7 @@ struct GenerateIdTokenResponse {
 mod tests {
     use super::*;
     use crate::credentials::idtoken::tests::generate_test_id_token;
+    use crate::credentials::tests::MockCredentials;
     use crate::credentials::tests::{
         get_mock_auth_retry_policy, get_mock_backoff_policy, get_mock_retry_throttler,
     };
@@ -786,6 +795,81 @@ mod tests {
 
         let err = creds.id_token().await.unwrap_err();
         assert!(!err.is_transient());
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_impersonated_id_token_custom_universe_domain() -> TestResult {
+        let audience = "test-audience";
+        let token_string = generate_test_id_token(audience);
+        let server = Server::run();
+        let universe_domain = "my-custom-universe.com".to_string();
+
+        server.expect(
+            Expectation::matching(all_of![
+                request::method_path(
+                    "POST",
+                    "/v1/projects/-/serviceAccounts/test-principal:generateIdToken"
+                ),
+                request::headers(contains((
+                    "authorization",
+                    "Bearer test-user-account-token"
+                ))),
+                request::body(json_decoded(eq(json!({
+                    "audience": audience,
+                }))))
+            ])
+            .respond_with(json_encoded(json!({
+                "token": token_string,
+            }))),
+        );
+
+        let universe_domain_clone = universe_domain.clone();
+        let mut mock = MockCredentials::new();
+        mock.expect_universe_domain()
+            .returning(move || Some(universe_domain_clone.clone()));
+        mock.expect_headers().returning(move |_| {
+            let mut headers = HeaderMap::new();
+            headers.insert(
+                "authorization",
+                "Bearer test-user-account-token".parse().unwrap(),
+            );
+            Ok(CacheableResource::New {
+                entity_tag: Default::default(),
+                data: headers,
+            })
+        });
+        let source_credentials = Credentials::from(mock);
+
+        let builder = Builder::from_source_credentials(
+            audience,
+            "test-principal",
+            source_credentials.clone(),
+        );
+
+        // resolve url with universe domain
+        let url = builder
+            .service_account_impersonation_url
+            .as_ref()
+            .expect("url should be set from the with_target_principal call")
+            .id_token_url(&source_credentials)
+            .await;
+
+        assert_eq!(
+            url,
+            format!(
+                "https://iamcredentials.{universe_domain}/v1/projects/-/serviceAccounts/test-principal:generateIdToken"
+            )
+        );
+
+        let endpoint = server.url("/").to_string();
+        let endpoint = endpoint.trim_end_matches('/');
+
+        let creds = builder.with_impersonation_endpoint(endpoint).build()?;
+
+        let token = creds.id_token().await?;
+        assert_eq!(token, token_string);
 
         Ok(())
     }
