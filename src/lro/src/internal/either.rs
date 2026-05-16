@@ -47,65 +47,63 @@ mod tests {
     use super::*;
     use crate::PollingResult;
     use google_cloud_wkt::{Duration, Timestamp};
-    use std::sync::Arc;
-    use std::sync::atomic::{AtomicUsize, Ordering};
+    use mockall::mock;
 
     type ResponseType = Duration;
     type MetadataType = Timestamp;
 
-    struct PollerA(Arc<AtomicUsize>);
-    impl sealed::Poller for PollerA {}
-    impl BasePoller<ResponseType, MetadataType> for PollerA {
-        async fn poll(&mut self) -> Option<PollingResult<ResponseType, MetadataType>> {
-            self.0.fetch_add(1, Ordering::SeqCst);
-            None
-        }
-        async fn sleep(&mut self, _backoff: std::time::Duration) {
-            self.0.fetch_add(10, Ordering::SeqCst);
+    mock! {
+        PollerA {}
+        impl sealed::Poller for PollerA {}
+        impl BasePoller<ResponseType, MetadataType> for PollerA {
+            async fn poll(&mut self) -> Option<PollingResult<ResponseType, MetadataType>>;
+            async fn sleep(&mut self, backoff: std::time::Duration);
         }
     }
-
-    struct PollerB(Arc<AtomicUsize>);
-    impl sealed::Poller for PollerB {}
-    impl BasePoller<ResponseType, MetadataType> for PollerB {
-        async fn poll(&mut self) -> Option<PollingResult<ResponseType, MetadataType>> {
-            self.0.fetch_add(2, Ordering::SeqCst);
-            None
-        }
-        async fn sleep(&mut self, _backoff: std::time::Duration) {
-            self.0.fetch_add(20, Ordering::SeqCst);
-        }
-    }
-
-    fn create_poller(
-        use_a: bool,
-        counter: Arc<AtomicUsize>,
-    ) -> impl BasePoller<ResponseType, MetadataType> {
-        if use_a {
-            Either::Left(PollerA(counter))
-        } else {
-            Either::Right(PollerB(counter))
+    mock! {
+        PollerB {}
+        impl sealed::Poller for PollerB {}
+        impl BasePoller<ResponseType, MetadataType> for PollerB {
+            async fn poll(&mut self) -> Option<PollingResult<ResponseType, MetadataType>>;
+            async fn sleep(&mut self, backoff: std::time::Duration);
         }
     }
 
     #[tokio::test]
-    async fn test_either_poller() {
-        let counter_a = Arc::new(AtomicUsize::new(0));
-        let mut poller_a = create_poller(true, Arc::clone(&counter_a));
+    async fn test_either_poller_left() {
+        let mut mock = MockPollerA::new();
+        mock.expect_poll().times(1).returning(|| None);
+        mock.expect_sleep().times(1).returning(|_| ());
 
-        let counter_b = Arc::new(AtomicUsize::new(0));
-        let mut poller_b = create_poller(false, Arc::clone(&counter_b));
+        let mut poller: Either<MockPollerA, MockPollerB> = Either::Left(mock);
 
-        // Verify that Left delegates correctly
-        poller_a.poll().await;
-        assert_eq!(counter_a.load(Ordering::SeqCst), 1);
-        poller_a.sleep(std::time::Duration::from_millis(1)).await;
-        assert_eq!(counter_a.load(Ordering::SeqCst), 11);
+        poller.poll().await;
+        poller.sleep(std::time::Duration::from_millis(1)).await;
+    }
 
-        // Verify that Right delegates correctly
-        poller_b.poll().await;
-        assert_eq!(counter_b.load(Ordering::SeqCst), 2);
-        poller_b.sleep(std::time::Duration::from_millis(1)).await;
-        assert_eq!(counter_b.load(Ordering::SeqCst), 22);
+    #[tokio::test]
+    async fn test_either_poller_right() {
+        let mut mock = MockPollerB::new();
+        mock.expect_poll().times(1).returning(|| None);
+        mock.expect_sleep().times(1).returning(|_| ());
+
+        let mut poller: Either<MockPollerA, MockPollerB> = Either::Right(mock);
+
+        poller.poll().await;
+        poller.sleep(std::time::Duration::from_millis(1)).await;
+    }
+
+    #[tokio::test]
+    async fn test_return_impl_base_poller() {
+        fn factory(use_a: bool) -> impl BasePoller<ResponseType, MetadataType> {
+            if use_a {
+                Either::Left(MockPollerA::new())
+            } else {
+                Either::Right(MockPollerB::new())
+            }
+        }
+
+        let _poller_a = factory(true);
+        let _poller_b = factory(false);
     }
 }

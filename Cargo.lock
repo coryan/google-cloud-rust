@@ -3539,6 +3539,7 @@ dependencies = [
  "google-cloud-rpc",
  "google-cloud-wkt",
  "httptest",
+ "mockall",
  "pin-project",
  "serde",
  "serde_json",
