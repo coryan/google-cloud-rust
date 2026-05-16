@@ -20,6 +20,7 @@
 
 mod aip151;
 mod discovery;
+mod either;
 #[allow(deprecated)]
 pub use aip151::{
     Operation, PollerOptions, new_poller, new_poller_with_options, new_unit_metadata_poller,
@@ -27,3 +28,4 @@ pub use aip151::{
 };
 
 pub use discovery::{DiscoveryOperation, new_discovery_poller};
+pub use either::Either;

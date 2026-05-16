@@ -56,7 +56,7 @@
 //!
 //! # Example: poll with metadata
 //! ```
-//! # use google_cloud_lro::{internal::Operation, Poller, PollingResult};
+//! # use google_cloud_lro::{internal::Operation, BasePoller, Poller, PollingResult};
 //! # use serde::{Deserialize, Serialize};
 //! # use google_cloud_gax::Result;
 //! # use google_cloud_wkt::Timestamp as Response;
@@ -146,6 +146,7 @@ pub trait BasePoller<ResponseType, MetadataType>: Send + sealed::Poller {
         &mut self,
     ) -> impl Future<Output = Option<PollingResult<ResponseType, MetadataType>>> + Send;
 
+    /// Sleep until the backoff time has elapsed.
     fn sleep(&mut self, backoff: Duration) -> impl Future<Output = ()> + Send;
 }
 
