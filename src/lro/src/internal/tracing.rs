@@ -12,13 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{BasePoller, sealed};
-use tracing::{Instrument, info_span};
+use crate::{BasePoller, Poller, PollingResult, Result, sealed};
+use google_cloud_gax::polling_state::PollingState;
+use tracing::{Instrument, Span, info_span};
 
 /// Decorate a poller with tracing information.
 #[derive(Clone, Debug)]
 pub struct Tracing<P> {
     inner: P,
+    span: Span,
+}
+
+impl<P> Tracing<P> {
+    pub(crate) fn new(inner: P, span: Span) -> Self {
+        Self { inner, span }
+    }
 }
 
 impl<P> sealed::Poller for Tracing<P> {}
@@ -31,8 +39,23 @@ where
         let span = info_span!("LRO Poll");
         self.inner.poll().instrument(span).await
     }
-    async fn sleep(&mut self, backoff: std::time::Duration) {
+    async fn backoff(&mut self, state: &PollingState) {
         let span = info_span!("LRO Sleep");
-        self.inner.sleep(backoff).instrument(span).await
+        self.inner.backoff(state).instrument(span).await
+    }
+}
+
+impl<P, ResponseType, MetadataType> Poller<ResponseType, MetadataType> for Tracing<P>
+where
+    P: Poller<ResponseType, MetadataType>,
+{
+    async fn until_done(self) -> Result<ResponseType> {
+        self.inner.until_done().instrument(self.span.clone()).await
+    }
+    #[cfg(feature = "unstable-stream")]
+    fn into_stream(
+        self,
+    ) -> impl futures::Stream<Item = PollingResult<ResponseType, MetadataType>> + Unpin {
+        crate::into_stream(self)
     }
 }

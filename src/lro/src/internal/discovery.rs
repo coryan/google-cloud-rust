@@ -23,7 +23,7 @@
 //! we can name directly.
 //!
 
-use crate::{BasePoller, Poller, PollingBackoffPolicy, PollingErrorPolicy, PollingResult, Result};
+use crate::{Poller, PollingBackoffPolicy, PollingErrorPolicy, PollingResult, Result};
 use google_cloud_gax::polling_state::PollingState;
 use google_cloud_gax::retry_result::RetryResult;
 use std::sync::Arc;
@@ -120,7 +120,8 @@ where
         }
         None
     }
-    async fn sleep(&mut self, backoff: std::time::Duration) {
+    async fn backoff(&mut self, state: &PollingState) {
+        let backoff = self.backoff_policy.wait_period(state);
         tokio::time::sleep(backoff).await;
     }
 }
@@ -133,34 +134,13 @@ where
     Q: FnMut(String) -> QF + Send + Sync + Clone,
     QF: std::future::Future<Output = Result<O>> + Send + 'static,
 {
-    async fn until_done(mut self) -> Result<O> {
-        while let Some(p) = self.poll().await {
-            match p {
-                // Return, the operation completed or the polling policy is
-                // exhausted.
-                PollingResult::Completed(r) => return r,
-                // Continue, the operation was successfully polled and the
-                // polling policy was queried.
-                PollingResult::InProgress(_) => (),
-                // Continue, the polling policy was queried and decided the
-                // error is recoverable.
-                PollingResult::PollingError(_) => (),
-            }
-            self.sleep(self.backoff_policy.wait_period(&self.state))
-                .await
-        }
-        // We can only get here if `poll()` returns `None`, but it only returns
-        // `None` after it returned `Polling::Completed` and therefore this is
-        // never reached.
-        unreachable!("loop should exit via the `Completed` branch vs. this line");
+    async fn until_done(self) -> Result<O> {
+        crate::until_done(self).await
     }
 
     #[cfg(feature = "unstable-stream")]
     fn into_stream(self) -> impl futures::Stream<Item = PollingResult<O, O>> + Unpin {
-        use futures::stream::unfold;
-        Box::pin(unfold(self, |mut poller| async move {
-            poller.poll().await.map(|item| (item, poller))
-        }))
+        crate::into_stream(self)
     }
 }
 

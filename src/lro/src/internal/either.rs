@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::{BasePoller, sealed};
+use crate::{BasePoller, Poller, PollingResult, Result, sealed};
+use google_cloud_gax::polling_state::PollingState;
 
 /// Combine two different `BasePoller` types into a single type.
 #[derive(Clone, Debug)]
@@ -34,11 +35,30 @@ where
             Self::Right(s) => s.poll().await,
         }
     }
-    async fn sleep(&mut self, backoff: std::time::Duration) {
+    async fn backoff(&mut self, state: &PollingState) {
         match self {
-            Self::Left(s) => s.sleep(backoff).await,
-            Self::Right(s) => s.sleep(backoff).await,
+            Self::Left(s) => s.backoff(state).await,
+            Self::Right(s) => s.backoff(state).await,
         }
+    }
+}
+
+impl<A, B, ResponseType, MetadataType> Poller<ResponseType, MetadataType> for Either<A, B>
+where
+    A: BasePoller<ResponseType, MetadataType>,
+    B: BasePoller<ResponseType, MetadataType>,
+    ResponseType: Send,
+    MetadataType: Send,
+{
+    async fn until_done(self) -> Result<ResponseType> {
+        crate::until_done(self).await
+    }
+
+    #[cfg(feature = "unstable-stream")]
+    fn into_stream(
+        self,
+    ) -> impl futures::Stream<Item = PollingResult<ResponseType, MetadataType>> + Unpin {
+        crate::into_stream(self)
     }
 }
 
@@ -57,7 +77,7 @@ mod tests {
         impl sealed::Poller for PollerA {}
         impl BasePoller<ResponseType, MetadataType> for PollerA {
             async fn poll(&mut self) -> Option<PollingResult<ResponseType, MetadataType>>;
-            async fn sleep(&mut self, backoff: std::time::Duration);
+            async fn backoff(&mut self, state: &PollingState);
         }
     }
     mock! {
@@ -65,7 +85,7 @@ mod tests {
         impl sealed::Poller for PollerB {}
         impl BasePoller<ResponseType, MetadataType> for PollerB {
             async fn poll(&mut self) -> Option<PollingResult<ResponseType, MetadataType>>;
-            async fn sleep(&mut self, backoff: std::time::Duration);
+            async fn backoff(&mut self, state: &PollingState);
         }
     }
 
@@ -73,24 +93,24 @@ mod tests {
     async fn test_either_poller_left() {
         let mut mock = MockPollerA::new();
         mock.expect_poll().times(1).returning(|| None);
-        mock.expect_sleep().times(1).returning(|_| ());
+        mock.expect_backoff().times(1).returning(|_| ());
 
         let mut poller: Either<MockPollerA, MockPollerB> = Either::Left(mock);
 
         poller.poll().await;
-        poller.sleep(std::time::Duration::from_millis(1)).await;
+        poller.backoff(&PollingState::default()).await;
     }
 
     #[tokio::test]
     async fn test_either_poller_right() {
         let mut mock = MockPollerB::new();
         mock.expect_poll().times(1).returning(|| None);
-        mock.expect_sleep().times(1).returning(|_| ());
+        mock.expect_backoff().times(1).returning(|_| ());
 
         let mut poller: Either<MockPollerA, MockPollerB> = Either::Right(mock);
 
         poller.poll().await;
-        poller.sleep(std::time::Duration::from_millis(1)).await;
+        poller.backoff(&PollingState::default()).await;
     }
 
     #[tokio::test]
