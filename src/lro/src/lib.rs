@@ -92,6 +92,7 @@ use google_cloud_gax::error::Error;
 use google_cloud_gax::polling_backoff_policy::PollingBackoffPolicy;
 use google_cloud_gax::polling_error_policy::PollingErrorPolicy;
 use std::future::Future;
+use std::time::Duration;
 
 /// The result of polling a Long-Running Operation (LRO).
 ///
@@ -139,12 +140,25 @@ pub(crate) mod sealed {
 ///   successfully.
 /// * `MetadataType` - The LRO may return values of this type while the
 ///   operation is in progress. This may include some measure of "progress".
-pub trait Poller<ResponseType, MetadataType>: Send + sealed::Poller {
+pub trait BasePoller<ResponseType, MetadataType>: Send + sealed::Poller {
     /// Query the current status of the long-running operation.
     fn poll(
         &mut self,
     ) -> impl Future<Output = Option<PollingResult<ResponseType, MetadataType>>> + Send;
 
+    fn sleep(&mut self, backoff: Duration) -> impl Future<Output = ()> + Send;
+}
+
+/// Automatically polls long-running operations.
+///
+/// # Parameters
+/// * `ResponseType` - This is the type returned when the LRO completes
+///   successfully.
+/// * `MetadataType` - The LRO may return values of this type while the
+///   operation is in progress. This may include some measure of "progress".
+pub trait Poller<ResponseType, MetadataType>:
+    BasePoller<ResponseType, MetadataType> + Send + sealed::Poller
+{
     /// Poll the long-running operation until it completes.
     fn until_done(self) -> impl Future<Output = Result<ResponseType>> + Send;
 

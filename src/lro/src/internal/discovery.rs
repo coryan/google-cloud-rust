@@ -23,7 +23,7 @@
 //! we can name directly.
 //!
 
-use crate::{Poller, PollingBackoffPolicy, PollingErrorPolicy, PollingResult, Result};
+use crate::{BasePoller, Poller, PollingBackoffPolicy, PollingErrorPolicy, PollingResult, Result};
 use google_cloud_gax::polling_state::PollingState;
 use google_cloud_gax::retry_result::RetryResult;
 use std::sync::Arc;
@@ -95,7 +95,7 @@ impl<S, Q> DiscoveryPoller<S, Q> {
 
 impl<S, Q> crate::sealed::Poller for DiscoveryPoller<S, Q> {}
 
-impl<O, S, SF, Q, QF> crate::Poller<O, O> for DiscoveryPoller<S, Q>
+impl<O, S, SF, Q, QF> crate::BasePoller<O, O> for DiscoveryPoller<S, Q>
 where
     O: DiscoveryOperation + Send,
     S: FnOnce() -> SF + Send + Sync,
@@ -120,7 +120,19 @@ where
         }
         None
     }
+    async fn sleep(&mut self, backoff: std::time::Duration) {
+        tokio::time::sleep(backoff).await;
+    }
+}
 
+impl<O, S, SF, Q, QF> crate::Poller<O, O> for DiscoveryPoller<S, Q>
+where
+    O: DiscoveryOperation + Send,
+    S: FnOnce() -> SF + Send + Sync,
+    SF: std::future::Future<Output = Result<O>> + Send + 'static,
+    Q: FnMut(String) -> QF + Send + Sync + Clone,
+    QF: std::future::Future<Output = Result<O>> + Send + 'static,
+{
     async fn until_done(mut self) -> Result<O> {
         while let Some(p) = self.poll().await {
             match p {
@@ -134,7 +146,8 @@ where
                 // error is recoverable.
                 PollingResult::PollingError(_) => (),
             }
-            tokio::time::sleep(self.backoff_policy.wait_period(&self.state)).await;
+            self.sleep(self.backoff_policy.wait_period(&self.state))
+                .await
         }
         // We can only get here if `poll()` returns `None`, but it only returns
         // `None` after it returned `Polling::Completed` and therefore this is

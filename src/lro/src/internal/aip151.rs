@@ -18,11 +18,12 @@
 //! module may be changed or removed without warnings. Applications should not
 //! use any types contained within.
 
-use crate::{Poller, PollingBackoffPolicy, PollingErrorPolicy, PollingResult, Result};
+use crate::{BasePoller, Poller, PollingBackoffPolicy, PollingErrorPolicy, PollingResult, Result};
 use google_cloud_gax::polling_state::PollingState;
 use google_cloud_wkt::Empty;
 use google_cloud_wkt::message::Message;
 use std::sync::Arc;
+use std::time::Duration;
 
 pub type Operation<R, M> = crate::details::Operation<R, M>;
 
@@ -208,13 +209,22 @@ impl<P> UnitResponsePoller<P> {
 
 impl<P> crate::sealed::Poller for UnitResponsePoller<P> {}
 
-impl<P, M> Poller<(), M> for UnitResponsePoller<P>
+impl<P, M> BasePoller<(), M> for UnitResponsePoller<P>
 where
-    P: Poller<Empty, M>,
+    P: BasePoller<Empty, M>,
 {
     async fn poll(&mut self) -> Option<PollingResult<(), M>> {
         self.poller.poll().await.map(self::map_polling_result)
     }
+    async fn sleep(&mut self, backoff: Duration) {
+        self.poller.sleep(backoff).await
+    }
+}
+
+impl<P, M> Poller<(), M> for UnitResponsePoller<P>
+where
+    P: Poller<Empty, M>,
+{
     async fn until_done(self) -> Result<()> {
         self.poller.until_done().await.map(|_| ())
     }
@@ -237,13 +247,22 @@ impl<P> UnitMetadataPoller<P> {
 
 impl<P> crate::sealed::Poller for UnitMetadataPoller<P> {}
 
-impl<P, R> Poller<R, ()> for UnitMetadataPoller<P>
+impl<P, R> BasePoller<R, ()> for UnitMetadataPoller<P>
 where
-    P: Poller<R, Empty>,
+    P: BasePoller<R, Empty>,
 {
     async fn poll(&mut self) -> Option<PollingResult<R, ()>> {
         self.poller.poll().await.map(self::map_polling_metadata)
     }
+    async fn sleep(&mut self, backoff: Duration) {
+        self.poller.sleep(backoff).await
+    }
+}
+
+impl<P, R> Poller<R, ()> for UnitMetadataPoller<P>
+where
+    P: Poller<R, Empty>,
+{
     async fn until_done(self) -> Result<R> {
         self.poller.until_done().await
     }
@@ -333,7 +352,7 @@ impl<S, Q> PollerImpl<S, Q> {
 ///   It receives the name of the operation as its only input parameter. It
 ///   should have captured any stubs and request options.
 /// * `QF` - the type of future returned by `Q`.
-impl<ResponseType, MetadataType, S, SF, P, PF> Poller<ResponseType, MetadataType>
+impl<ResponseType, MetadataType, S, SF, P, PF> BasePoller<ResponseType, MetadataType>
     for PollerImpl<S, P>
 where
     ResponseType: Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send,
@@ -364,7 +383,25 @@ where
         }
         None
     }
+    async fn sleep(&mut self, backoff: Duration) {
+        tokio::time::sleep(backoff).await;
+    }
+}
 
+impl<ResponseType, MetadataType, S, SF, P, PF> Poller<ResponseType, MetadataType>
+    for PollerImpl<S, P>
+where
+    ResponseType: Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send,
+    MetadataType: Message + serde::ser::Serialize + serde::de::DeserializeOwned + Send,
+    S: FnOnce() -> SF + Send + Sync,
+    SF: std::future::Future<Output = Result<Operation<ResponseType, MetadataType>>>
+        + Send
+        + 'static,
+    P: Fn(String) -> PF + Send + Sync + Clone,
+    PF: std::future::Future<Output = Result<Operation<ResponseType, MetadataType>>>
+        + Send
+        + 'static,
+{
     async fn until_done(mut self) -> Result<ResponseType> {
         let mut state = PollingState::default();
         while let Some(p) = self.poll().await {
@@ -380,7 +417,7 @@ where
                 PollingResult::PollingError(_) => (),
             }
             state.attempt_count += 1;
-            tokio::time::sleep(self.backoff_policy.wait_period(&state)).await;
+            self.sleep(self.backoff_policy.wait_period(&state)).await
         }
         // We can only get here if `poll()` returns `None`, but it only returns
         // `None` after it returned `Polling::Completed` and therefore this is
