@@ -21,6 +21,9 @@
 mod aip151;
 mod discovery;
 mod either;
+#[cfg(google_cloud_unstable_tracing)]
+mod tracing;
+
 #[allow(deprecated)]
 pub use aip151::{
     Operation, PollerOptions, new_poller, new_poller_with_options, new_unit_metadata_poller,
@@ -29,3 +32,5 @@ pub use aip151::{
 
 pub use discovery::{DiscoveryOperation, new_discovery_poller};
 pub use either::Either;
+#[cfg(google_cloud_unstable_tracing)]
+pub use tracing::Tracing;
