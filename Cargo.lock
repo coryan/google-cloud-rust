@@ -8596,6 +8596,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "pubsub-conformance-proxy"
+version = "0.0.0"
+dependencies = [
+ "google-cloud-auth",
+ "google-cloud-gax",
+ "google-cloud-pubsub",
+ "prost",
+ "prost-types",
+ "tokio",
+ "tokio-stream",
+ "tonic",
+ "tonic-prost",
+ "tonic-prost-build",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "pubsub-grpc-mock"
 version = "0.0.0"
 dependencies = [

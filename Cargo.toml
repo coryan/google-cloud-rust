@@ -408,6 +408,7 @@ members = [
   "tests/protobuf",
   "tests/protojson-conformance",
   "tests/pubsub",
+  "tests/pubsub-conformance-proxy",
   "tests/showcase",
   "tests/spanner",
   "tests/storage",
